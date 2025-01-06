@@ -37,19 +37,6 @@ import {
 import StatsBar from "../StatsBar/StatsBar";
 import { languageInfoQuery } from "../../queries/language";
 
-const PAGINATION = {
-  pageIndex: 0,
-  pageSize: 10,
-};
-
-const COLUMN_FILTER_FNS = {
-  title: "contains",
-  language: "contains",
-  wordCount: "greaterThan",
-  status: "greaterThan",
-};
-
-//build the URL (start=0&size=10&filters=[]&globalFilter=&sorting=[])
 const fetchURL = new URL("/api/books", "http://localhost:5001");
 
 function BookTable({ languageChoices, tagChoices }) {
@@ -59,25 +46,7 @@ function BookTable({ languageChoices, tagChoices }) {
   );
 
   const [shelf, setShelf] = useState("active");
-  const [sorting, setSorting] = useState([]);
-  const [pagination, setPagination] = useState(PAGINATION);
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [columnFilterFns, setColumnFilterFns] = useState(COLUMN_FILTER_FNS);
-
   fetchURL.searchParams.set("shelf", shelf);
-  fetchURL.searchParams.set(
-    "start",
-    `${pagination.pageIndex * pagination.pageSize}`
-  );
-  fetchURL.searchParams.set("size", `${pagination.pageSize}`);
-  fetchURL.searchParams.set("filters", JSON.stringify(columnFilters ?? []));
-  fetchURL.searchParams.set(
-    "filterModes",
-    JSON.stringify(columnFilterFns ?? {})
-  );
-  fetchURL.searchParams.set("globalFilter", globalFilter ?? "");
-  fetchURL.searchParams.set("sorting", JSON.stringify(sorting ?? []));
 
   const { data } = useQuery({
     queryKey: ["allBooks", fetchURL.href],
@@ -103,14 +72,6 @@ function BookTable({ languageChoices, tagChoices }) {
       },
     },
 
-    state: {
-      columnFilterFns,
-      columnFilters,
-      globalFilter,
-      pagination,
-      sorting,
-    },
-
     paginationDisplayMode: "pages",
     positionActionsColumn: "last",
     enableStickyHeader: true,
@@ -124,15 +85,6 @@ function BookTable({ languageChoices, tagChoices }) {
     renderEditRowModalContent: ({ row, table }) => (
       <EditModal row={row} table={table} />
     ),
-
-    manualFiltering: true,
-    manualPagination: true,
-    manualSorting: true,
-    onColumnFilterFnsChange: setColumnFilterFns,
-    onColumnFiltersChange: setColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
 
     mantinePaperProps: {
       withBorder: false,
@@ -274,6 +226,7 @@ function getColumns(languageChoices, tagChoices) {
       accessorKey: "title",
       minSize: 600,
       columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
+      filterFn: "contains",
       Cell: ({ row }) => {
         const currentPage = row.original.currentPage;
         const pageCount = row.original.pageCount;
@@ -323,6 +276,7 @@ function getColumns(languageChoices, tagChoices) {
     {
       header: "Word Count",
       accessorKey: "wordCount",
+      filterFn: "greaterThan",
       columnFilterModeOptions: [
         "equals",
         "greaterThan",
@@ -335,6 +289,7 @@ function getColumns(languageChoices, tagChoices) {
       id: "status",
       accessorFn: (row) => row.unknownPercent,
       Cell: ({ row }) => <StatsBar id={row.original.id} />,
+      filterFn: "greaterThan",
       columnFilterModeOptions: [
         "equals",
         "greaterThan",
@@ -351,7 +306,7 @@ function getColumns(languageChoices, tagChoices) {
       mantineFilterSelectProps: {
         data: tagChoices,
       },
-      filterVariant: "select",
+      filterVariant: "multi-select",
       columnFilterModeOptions: false,
       accessorFn: (row) => (row.tags.length > 0 ? row.tags.join() : ""),
       Cell: ({ row }) => (

@@ -1,7 +1,6 @@
 "Book endpoints"
 
 import os
-import json
 
 from flask import Blueprint, jsonify, send_file, current_app, request
 from sqlalchemy import text as SQLText
@@ -18,31 +17,11 @@ from lute.utils.data_tables import supported_parser_type_criteria
 bp = Blueprint("api_books", __name__, url_prefix="/api/books")
 
 
-def parse_url_params():
-    """
-    parse table url params
-    """
-    # Pagination
-    start = int(request.args.get("start", 0))  # Starting index
-    size = int(request.args.get("size", 10))  # Page size
-    # Filters
-    global_filter = request.args.get("globalFilter", "").strip()
-    # [{"id": "title", "value": "Book"}]
-    filters = json.loads(request.args.get("filters", "[]"))
-    # {"title": "contains"}
-    filter_modes = json.loads(request.args.get("filterModes", "{}"))
-    # Sorting [{"id": "WordCount", "desc": True}]
-    sorting = json.loads(request.args.get("sorting", "[]"))
-
-    return start, size, filters, filter_modes, global_filter, sorting
-
-
 @bp.route("/", methods=["GET"])
 def get_all_books():
     "Get all books applying filters and sorting"
 
     shelf = request.args.get("shelf", "active")
-    start, size, filters, filter_modes, global_filter, sorting = parse_url_params()
 
     # Base SQL Query
     base_sql = f"""
@@ -106,91 +85,6 @@ def get_all_books():
         base_sql += " AND books.BkArchived != TRUE"
     elif shelf == "archived":
         base_sql += " AND books.BkArchived = TRUE"
-
-    # Apply Filters
-    for flt in filters:
-        field = flt.get("id")
-        value = flt.get("value", "").strip()
-        mode = filter_modes.get(field, "contains")  # Default mode: 'contains'
-
-        if field == "title":
-            if mode == "contains":
-                base_sql += f" AND BkTitle LIKE '%{value}%'"
-            elif mode == "startsWith":
-                base_sql += f" AND BkTitle LIKE '{value}%'"
-            elif mode == "endsWith":
-                base_sql += f" AND BkTitle LIKE '%{value}'"
-
-        elif field == "language":
-            if mode == "contains":
-                base_sql += f" AND LgName LIKE '%{value}%'"
-            elif mode == "equals":
-                base_sql += f" AND LgName = '{value}'"
-
-        elif field == "tags":
-            if mode == "contains":
-                base_sql += f" AND TagList LIKE '%{value}%'"
-            elif mode == "equals":
-                base_sql += f" AND TagList = '{value}'"
-
-        elif field == "wordCount":
-            value = int(value)
-            if mode == "greaterThan":
-                base_sql += f" AND WordCount > {value}"
-            elif mode == "lessThan":
-                base_sql += f" AND WordCount < {value}"
-            elif mode == "equals":
-                base_sql += f" AND WordCount = {value}"
-            elif mode == "notEquals":
-                base_sql += f" AND WordCount != {value}"
-
-        elif field == "status":
-            value = int(value)
-            if mode == "greaterThan":
-                base_sql += f" AND UnknownPercent > {value}"
-            elif mode == "lessThan":
-                base_sql += f" AND UnknownPercent < {value}"
-            elif mode == "equals":
-                base_sql += f" AND UnknownPercent = {value}"
-            elif mode == "notEquals":
-                base_sql += f" AND UnknownPercent != {value}"
-
-    # Apply Global Filter
-    if global_filter:
-        if global_filter.isdigit():
-            base_sql += f""" AND (BkTitle LIKE '%{global_filter}%' OR
-                            LgName LIKE '%{global_filter}%' OR
-                            WordCount = {global_filter} OR
-                            UnknownPercent = {global_filter}
-                        )"""
-        else:  # String value
-            base_sql += f""" AND (
-                            BkTitle LIKE '%{global_filter}%' OR
-                            LgName LIKE '%{global_filter}%'
-                        )"""
-
-    # Apply Sorting
-    if sorting:
-        sort_clauses = []
-        for sort in sorting:
-            field = sort.get("id")
-            desc_order = sort.get("desc", False)
-
-            if field == "wordCount":
-                sort_clauses.append(f"WordCount {'DESC' if desc_order else 'ASC'}")
-            elif field == "language":
-                sort_clauses.append(f"LgName {'DESC' if desc_order else 'ASC'}")
-            elif field == "title":
-                sort_clauses.append(f"BkTitle {'DESC' if desc_order else 'ASC'}")
-            elif field == "status":
-                sort_clauses.append(f"UnknownPercent {'DESC' if desc_order else 'ASC'}")
-
-        # Add the ORDER BY clause
-        if sort_clauses:
-            base_sql += " ORDER BY " + ", ".join(sort_clauses)
-
-    # Apply Pagination
-    base_sql += f" LIMIT {size} OFFSET {start}"
 
     # Execute the Query
     results = db.session.execute(SQLText(base_sql)).fetchall()
