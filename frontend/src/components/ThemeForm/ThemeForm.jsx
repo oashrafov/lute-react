@@ -9,6 +9,7 @@ import {
   Divider,
   Group,
   NativeSelect,
+  Select,
   Stack,
   Table,
   useMantineColorScheme,
@@ -95,8 +96,17 @@ function ThemeForm() {
       <CloseButton />
       <form>
         <Box>
+          <Select
+            size="xs"
+            label="Presets"
+            withCheckIcon={false}
+            allowDeselect={false}
+            defaultValue="default"
+            data={["default", "LWT", "LinQ"]}
+          />
           <Group wrap="nowrap" mb={10}>
             <NativeSelect
+              size="xs"
               flex={1}
               label="Text font"
               data={[
@@ -106,6 +116,7 @@ function ThemeForm() {
               ]}
             />
             <ColorInput
+              size="xs"
               flex={1}
               label="Body color"
               popoverProps={{ position: "bottom" }}
@@ -123,6 +134,7 @@ function ThemeForm() {
               }
             />
             <ColorInput
+              size="xs"
               flex={1}
               label="Primary scheme color"
               popoverProps={{ position: "bottom" }}
@@ -154,7 +166,9 @@ function ThemeForm() {
                   .getValues()
                   .highlights.statuses.map((highlight, index) => (
                     <Table.Tr key={highlight.label}>
-                      <Table.Td style={{ minWidth: "170px", paddingRight: 0 }}>
+                      <Table.Td
+                        style={{ minWidth: "170px", paddingRight: 0 }}
+                        fz="xs">
                         {highlight.label}
                       </Table.Td>
                       <Table.Td>
@@ -172,12 +186,12 @@ function ThemeForm() {
                           format="hex"
                           popoverProps={{ position: "bottom" }}
                           fixOnBlur
-                          // size="xs"
+                          size="xs"
                         />
                       </Table.Td>
                       <Table.Td>
                         <NativeSelect
-                          // size="xs"
+                          size="xs"
                           data={[
                             { label: "Background", value: "bg" },
                             { label: "Text", value: "text" },
@@ -201,7 +215,7 @@ function ThemeForm() {
                   <Table.Td></Table.Td>
                   <Table.Td>
                     <NativeSelect
-                      // size="xs"
+                      size="xs"
                       data={[
                         { label: "-", value: "-" },
                         { label: "Background", value: "bg" },
@@ -237,12 +251,14 @@ function ThemeForm() {
               <Table.Tbody>
                 {form.getValues().highlights.general.map((highlight, index) => (
                   <Table.Tr key={highlight.label}>
-                    <Table.Td style={{ minWidth: "170px", paddingRight: 0 }}>
+                    <Table.Td
+                      style={{ minWidth: "170px", paddingRight: 0 }}
+                      fz="xs">
                       {highlight.label}
                     </Table.Td>
                     <Table.Td>
                       <ColorInput
-                        // size="xs"
+                        size="xs"
                         {...form.getInputProps(
                           `highlights.general.${index}.color`
                         )}
