@@ -2,6 +2,8 @@
 API endpoints
 """
 
+import json
+
 from flask import Blueprint, jsonify, current_app
 
 from lute import __version__
@@ -11,11 +13,12 @@ from lute.db import db
 
 from lute.settings.current import current_settings
 from lute.models.language import Language
-from lute.models.setting import UserSetting
 from lute.models.repositories import UserSettingRepository
 from lute.book.model import Repository as BookRepository
 from lute.db.demo import Service as DemoService
 from lute.backup.service import Service as BackupService
+from lute.settings.hotkey_data import hotkey_descriptions
+from lute.settings.routes import _get_categorized_hotkeys
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -146,116 +149,20 @@ def user_settings():
     return jsonify(settings)
 
 
-@bp.route("/shortcuts", methods=["GET", "POST"])
-def keys():
+@bp.route("/shortcuts", methods=["GET"])
+def get_shortcuts():
     """
-    Return hotkey UserSetting keys and values,
-    grouped by category.
+    get shortcuts
     """
-
-    categorized_settings = [
-        {
-            "Navigation": [
-                "hotkey_StartHover",
-                "hotkey_PrevWord",
-                "hotkey_NextWord",
-                "hotkey_PrevUnknownWord",
-                "hotkey_NextUnknownWord",
-                "hotkey_PrevSentence",
-                "hotkey_NextSentence",
-            ]
-        },
-        {
-            "Update status": [
-                "hotkey_Status1",
-                "hotkey_Status2",
-                "hotkey_Status3",
-                "hotkey_Status4",
-                "hotkey_Status5",
-                "hotkey_StatusIgnore",
-                "hotkey_StatusWellKnown",
-                "hotkey_StatusUp",
-                "hotkey_StatusDown",
-                "hotkey_DeleteTerm",
-            ]
-        },
-        {
-            "Translate": [
-                "hotkey_TranslateSentence",
-                "hotkey_TranslatePara",
-                "hotkey_TranslatePage",
-            ]
-        },
-        {
-            "Copy": [
-                "hotkey_CopySentence",
-                "hotkey_CopyPara",
-                "hotkey_CopyPage",
-            ]
-        },
-        {
-            "Misc": [
-                "hotkey_Bookmark",
-                "hotkey_EditPage",
-                "hotkey_NextTheme",
-                "hotkey_ToggleHighlight",
-                "hotkey_ToggleFocus",
-            ]
-        },
-    ]
-
-    setting_descs = {
-        "hotkey_StartHover": "Deselect all words",
-        "hotkey_PrevWord": "Move to previous word",
-        "hotkey_NextWord": "Move to next word",
-        "hotkey_PrevUnknownWord": "Move to previous unknown word",
-        "hotkey_NextUnknownWord": "Move to next unknown word",
-        "hotkey_PrevSentence": "Move to previous sentence",
-        "hotkey_NextSentence": "Move to next sentence",
-        "hotkey_StatusUp": "Bump up by 1",
-        "hotkey_StatusDown": "Bump down by 1",
-        "hotkey_Bookmark": "Bookmark the current page",
-        "hotkey_CopySentence": "Sentence of the current word",
-        "hotkey_CopyPara": "Paragraph of the current word",
-        "hotkey_CopyPage": "Full page",
-        "hotkey_TranslateSentence": "Sentence of the current word",
-        "hotkey_TranslatePara": "Paragraph of the current word",
-        "hotkey_TranslatePage": "Full page",
-        "hotkey_NextTheme": "Cycle theme",
-        "hotkey_ToggleHighlight": "Toggle highlights",
-        "hotkey_ToggleFocus": "Toggle focus mode",
-        "hotkey_Status1": "Set to 1",
-        "hotkey_Status2": "Set to 2",
-        "hotkey_Status3": "Set to 3",
-        "hotkey_Status4": "Set to 4",
-        "hotkey_Status5": "Set to 5",
-        "hotkey_StatusIgnore": "Set to Ignore",
-        "hotkey_StatusWellKnown": "Set to Well Known",
-        "hotkey_DeleteTerm": "Set to Unknown (Delete term)",
-        "hotkey_EditPage": "Edit the current page",
+    # print(_get_categorized_hotkeys())
+    # jsonify doesn't preserve order
+    return {
+        "descriptions": json.dumps(hotkey_descriptions()),
+        "shortcuts": json.dumps(_get_categorized_hotkeys()),
     }
-
-    settings = {h.key: h.value for h in db.session.query(UserSetting).all()}
-    return jsonify(
-        [
-            {
-                "name": category,
-                "shortcuts": [
-                    {
-                        "label": setting_descs[key],
-                        "key": settings[key],
-                        "description": key,
-                    }
-                    for key in keylist
-                ],
-            }
-            for entry in categorized_settings
-            for category, keylist in entry.items()
-        ]
-    )
+    # return  jsonify({"descriptions": hotkey_descriptions(), "shortcuts": _get_categorized_hotkeys()})
 
 
-#
 @bp.route("/appinfo")
 def version():
     """
