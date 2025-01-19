@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Badge, Group, Image, Pill, PillGroup, Text } from "@mantine/core";
+import { Badge, Image, Pill, PillGroup, Text } from "@mantine/core";
 import {
   IconCheck,
   IconMinus,
@@ -92,16 +92,14 @@ const columnDefinition = (languageChoices, tagChoices) => [
       const id = row.original.statusId;
       const label = id === 98 ? "−" : id === 99 ? "✓" : id;
       return (
-        <Group gap={6}>
-          <Badge
-            fw={600}
-            size="md"
-            leftSection={String(label)}
-            c={`var(--lute-text-color-status${id})`}
-            bg={`var(--lute-color-highlight-status${id}`}>
-            {status[id].label}
-          </Badge>
-        </Group>
+        <Badge
+          fw={600}
+          size="md"
+          leftSection={String(label)}
+          c={`var(--lute-text-color-status${id})`}
+          bg={`var(--lute-color-highlight-status${id}`}>
+          {status[id].label}
+        </Badge>
       );
     },
     mantineFilterRangeSliderProps: {
