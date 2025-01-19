@@ -1,13 +1,5 @@
 import { Link } from "react-router-dom";
-import {
-  Group,
-  Image,
-  Pill,
-  PillGroup,
-  rem,
-  Text,
-  ThemeIcon,
-} from "@mantine/core";
+import { Badge, Group, Image, Pill, PillGroup, Text } from "@mantine/core";
 import {
   IconCheck,
   IconMinus,
@@ -98,17 +90,17 @@ const columnDefinition = (languageChoices, tagChoices) => [
     },
     Cell: ({ row }) => {
       const id = row.original.statusId;
-      const Icon = status[id].icon;
+      const label = id === 98 ? "−" : id === 99 ? "✓" : id;
       return (
         <Group gap={6}>
-          <ThemeIcon
-            variant="filled"
-            size={rem(20)}
-            radius="50%"
-            color={`var(--lute-color-highlight-status${id}`}>
-            {<Icon color={`var(--lute-text-color-status${id})`} size="80%" />}
-          </ThemeIcon>
-          <Text size="sm">{status[id].label}</Text>
+          <Badge
+            fw={600}
+            size="md"
+            leftSection={String(label)}
+            c={`var(--lute-text-color-status${id})`}
+            bg={`var(--lute-color-highlight-status${id}`}>
+            {status[id].label}
+          </Badge>
         </Group>
       );
     },
