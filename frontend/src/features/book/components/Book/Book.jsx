@@ -8,7 +8,7 @@ import { termDataQuery } from "@term/api/term";
 import { paneResizeStorage } from "@actions/utils";
 import TranslationPane from "../TranslationPane/TranslationPane";
 import ReadPane from "../ReadPane/ReadPane";
-import { bookQuery, pageQuery } from "../../api/book";
+import { getBookQuery, getPageQuery } from "../../api/query";
 import useNavigationProgress from "../../hooks/useNavigationProgress";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
 import useBookState from "../../hooks/useBookState";
@@ -37,8 +37,8 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
       ? `${activeTerm.data}/${activeTerm.langID}`
       : activeTerm.data);
 
-  const { data: book } = useQuery(bookQuery(id));
-  const { data: page } = useQuery(pageQuery(id, pageNum));
+  const { data: book } = useQuery(getBookQuery(id));
+  const { data: page } = useQuery(getPageQuery(id, pageNum));
   const { data: language } = useQuery(definedLangInfoQuery(book.languageId));
   const { data: term } = useQuery(termDataQuery(key));
 

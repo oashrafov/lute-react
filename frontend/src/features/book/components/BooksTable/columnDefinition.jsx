@@ -1,10 +1,12 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Group, Pill, PillGroup, Text, ThemeIcon } from "@mantine/core";
 import { IconArchiveFilled, IconCircleCheckFilled } from "@tabler/icons-react";
+import StatsBar from "../StatsBar/StatsBar";
+import { getBookStatsQuery } from "../../api/query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
-import StatsBar from "../StatsBar/StatsBar";
 
 const columnDefinition = (languageChoices, tagChoices) => [
   {
@@ -69,7 +71,10 @@ const columnDefinition = (languageChoices, tagChoices) => [
     header: "STATUS",
     id: "status",
     accessorKey: "unknownPercent",
-    Cell: ({ row }) => <StatsBar id={row.original.id} />,
+    Cell: ({ row }) => {
+      const { data } = useQuery(getBookStatsQuery(row.original.id));
+      return <StatsBar data={data} />;
+    },
     columnFilterModeOptions: ["equals", "greaterThan", "lessThan", "notEquals"],
     mantineFilterTextInputProps: {
       placeholder: "Filter by Unknown %",

@@ -1,4 +1,4 @@
-import { allBooksQuery } from "@book/api/book";
+import { getBooksQuery } from "@book/api/query";
 import {
   initialQuery,
   settingsQuery,
@@ -10,7 +10,7 @@ function loader(queryClient) {
     const softwareInfoData =
       await queryClient.ensureQueryData(softwareInfoQuery);
     const settingsData = await queryClient.ensureQueryData(settingsQuery);
-    const allBooksData = await queryClient.ensureQueryData(allBooksQuery);
+    const allBooksData = await queryClient.ensureQueryData(getBooksQuery);
     const initialData = await queryClient.ensureQueryData(initialQuery);
 
     return {
