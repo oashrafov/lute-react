@@ -1,5 +1,5 @@
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import { IconDownload } from "@tabler/icons-react";
 import getDefaultTableOptions from "@resources/table-options-default";
 
@@ -8,32 +8,15 @@ const defaultOptions = getDefaultTableOptions();
 const columns = [
   {
     accessorKey: "name",
-    header: "File name",
+    header: "FILE NAME",
   },
   {
     accessorKey: "size",
-    header: "File size",
+    header: "FILE SIZE",
   },
   {
     accessorKey: "lastModified",
-    header: "Last modified",
-  },
-  {
-    id: "download",
-    header: "Download",
-    columnDefType: "display",
-    minSize: 10,
-    size: 10,
-    Cell: ({ row }) => (
-      <Tooltip label="Download">
-        <ActionIcon
-          variant="subtle"
-          component="a"
-          href={`http://localhost:5001/backup/download/${row.original.name}`}>
-          <IconDownload />
-        </ActionIcon>
-      </Tooltip>
-    ),
+    header: "LAST MODIFIED",
   },
 ];
 
@@ -46,11 +29,30 @@ function BackupsTable({ data }) {
     mantineTableContainerProps: {
       mah: 500,
     },
+
     mantineTableProps: {
       ...defaultOptions.mantineTableProps,
       highlightOnHover: false,
     },
 
+    displayColumnDefOptions: {
+      "mrt-row-actions": {
+        header: "DOWNLOAD",
+        size: 10,
+        minSize: 10,
+      },
+    },
+
+    renderRowActions: ({ row }) => (
+      <ActionIcon
+        variant="subtle"
+        component="a"
+        href={`http://localhost:5001/backup/download/${row.original.name}`}>
+        <IconDownload />
+      </ActionIcon>
+    ),
+
+    enableRowActions: true,
     enableToolbarInternalActions: false,
     enableGlobalFilter: false,
     enableColumnActions: false,

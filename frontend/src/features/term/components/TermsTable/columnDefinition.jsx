@@ -34,7 +34,7 @@ const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
 
 const columnDefinition = (languageChoices, tagChoices) => [
   {
-    header: "Term",
+    header: "TERM",
     accessorKey: "text",
     minSize: 300,
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
@@ -50,13 +50,13 @@ const columnDefinition = (languageChoices, tagChoices) => [
     ),
   },
   {
-    header: "Parent",
+    header: "PARENT",
     accessorKey: "parentText",
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     minSize: 200,
   },
   {
-    header: "Translation",
+    header: "TRANSLATION",
     accessorKey: "translation",
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     minSize: 300,
@@ -76,7 +76,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     },
   },
   {
-    header: "Status",
+    header: "STATUS",
     id: "status",
     filterVariant: "range-slider",
     enableColumnFilterModes: false,
@@ -121,7 +121,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     },
   },
   {
-    header: "Language",
+    header: "LANGUAGE",
     accessorKey: "language",
     filterVariant: "select",
     columnFilterModeOptions: false,
@@ -131,7 +131,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     enableClickToCopy: false,
   },
   {
-    header: "Tags",
+    header: "TAGS",
     id: "tags",
     mantineFilterSelectProps: {
       data: tagChoices,
@@ -148,7 +148,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     ),
   },
   {
-    header: "Added On",
+    header: "ADDED ON",
     id: "createdOn",
     filterVariant: "date-range",
     accessorFn: (originalRow) => new Date(originalRow.createdOn),

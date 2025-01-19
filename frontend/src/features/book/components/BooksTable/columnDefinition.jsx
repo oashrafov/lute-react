@@ -8,7 +8,7 @@ import StatsBar from "../StatsBar/StatsBar";
 
 const columnDefinition = (languageChoices, tagChoices) => [
   {
-    header: "Title",
+    header: "TITLE",
     accessorKey: "title",
     minSize: 600,
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
@@ -52,7 +52,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     },
   },
   {
-    header: "Language",
+    header: "LANGUAGE",
     accessorKey: "language",
     filterVariant: "select",
     columnFilterModeOptions: false,
@@ -61,12 +61,12 @@ const columnDefinition = (languageChoices, tagChoices) => [
     },
   },
   {
-    header: "Word Count",
+    header: "WORD COUNT",
     accessorKey: "wordCount",
     columnFilterModeOptions: ["equals", "greaterThan", "lessThan", "notEquals"],
   },
   {
-    header: "Status",
+    header: "STATUS",
     id: "status",
     accessorKey: "unknownPercent",
     Cell: ({ row }) => <StatsBar id={row.original.id} />,
@@ -76,18 +76,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     },
   },
   {
-    header: "Last read",
-    id: "lastRead",
-    accessorKey: "lastRead",
-    columnFilterModeOptions: false,
-    enableColumnFilter: false,
-    Cell: ({ row }) =>
-      row.original.lastRead && (
-        <span>{dayjs(row.original.lastRead).fromNow()}</span>
-      ),
-  },
-  {
-    header: "Tags",
+    header: "TAGS",
     id: "tags",
     mantineFilterSelectProps: {
       data: tagChoices,
@@ -102,6 +91,17 @@ const columnDefinition = (languageChoices, tagChoices) => [
         ))}
       </PillGroup>
     ),
+  },
+  {
+    header: "LAST READ",
+    id: "lastRead",
+    accessorKey: "lastRead",
+    columnFilterModeOptions: false,
+    enableColumnFilter: false,
+    Cell: ({ row }) =>
+      row.original.lastRead && (
+        <span>{dayjs(row.original.lastRead).fromNow()}</span>
+      ),
   },
 ];
 

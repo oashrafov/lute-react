@@ -16,15 +16,15 @@ const defaultOptions = getDefaultTableOptions();
 const columns = [
   {
     accessorKey: "text",
-    header: "Tag",
+    header: "TAG",
   },
   {
     accessorKey: "comment",
-    header: "Comment",
+    header: "COMMENT",
   },
   {
     accessorKey: "termCount",
-    header: "Term Count",
+    header: "TERM COUNT",
     columnFilterModeOptions: false,
     enableEditing: false,
   },
@@ -54,16 +54,24 @@ function TagsTable({ data }) {
     enableColumnFilterModes: true,
     enableEditing: true,
     editDisplayMode: "row",
+
+    displayColumnDefOptions: {
+      "mrt-row-actions": {
+        header: "",
+      },
+    },
+
     renderRowActions: ({ row, table }) => (
       <>
         <ActionIcon
+          size="sm"
           variant="transparent"
           onClick={() => {
             table.setEditingRow(row);
           }}>
           <IconEdit />
         </ActionIcon>
-        <ActionIcon variant="transparent" color="red.6">
+        <ActionIcon size="sm" variant="transparent" color="red.6">
           <IconTrash />
         </ActionIcon>
       </>

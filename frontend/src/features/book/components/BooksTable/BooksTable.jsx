@@ -123,6 +123,12 @@ function BooksTable({ languageChoices, tagChoices }) {
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
 
+    displayColumnDefOptions: {
+      "mrt-row-actions": {
+        header: "",
+      },
+    },
+
     renderEmptyRowsFallback: ({ table }) => {
       const language = table.getColumn("language").getFilterValue();
       const isLanguageFiltered = language?.length > 0;
