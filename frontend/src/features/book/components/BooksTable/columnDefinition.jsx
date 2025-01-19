@@ -19,7 +19,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
       const isCompleted = row.original.isCompleted;
       const isArchived = row.original.isArchived;
       return (
-        <Group gap={5} align="center">
+        <Group gap={5} align="center" wrap="nowrap">
           <ThemeIcon
             size="sm"
             color={isCompleted ? "green.6" : "dark.1"}
@@ -34,7 +34,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
             </Text>
           </Link>
           {currentPage > 1 && (
-            <Text component="span" size="sm" c="dimmed">
+            <Text component="span" size="xs" c="dimmed">
               ({currentPage}/{pageCount})
             </Text>
           )}
