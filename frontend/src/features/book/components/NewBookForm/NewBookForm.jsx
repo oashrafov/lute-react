@@ -161,7 +161,11 @@ function NewBookForm({ openDrawer }) {
 
       <TextInput label="Source URL" leftSection={<IconLink />} />
 
-      <TagsInput label="Tags" leftSection={<IconTags />} />
+      <TagsInput
+        label="Tags"
+        data={initial.bookTags}
+        leftSection={<IconTags />}
+      />
 
       <FormButtons />
     </form>
