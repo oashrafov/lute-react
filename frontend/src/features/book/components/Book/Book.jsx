@@ -70,6 +70,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
 
   return (
     <PanelGroup
+      style={{ height: "100vh" }}
       className="readpage"
       autoSaveId="Lute.horizontalSize"
       direction="horizontal"

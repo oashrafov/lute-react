@@ -6,12 +6,6 @@
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
-  height: 100%;
-}
-
 :root {
   --lute-text-color-status0: var(--mantine-color-dark-7);
   --lute-text-color-status1: var(--mantine-color-dark-7);
