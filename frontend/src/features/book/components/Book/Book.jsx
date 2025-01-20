@@ -7,12 +7,12 @@ import { definedLangInfoQuery } from "@language/api/language";
 import { termDataQuery } from "@term/api/term";
 import { paneResizeStorage } from "@actions/utils";
 import useNavigationProgress from "@hooks/useNavigationProgress";
+import useDocumentTitle from "@hooks/useDocumentTitle";
 import TranslationPane from "../TranslationPane/TranslationPane";
 import ReadPane from "../ReadPane/ReadPane";
 import { getBookQuery, getPageQuery } from "../../api/query";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
 import useBookState from "../../hooks/useBookState";
-import useDocumentTitle from "../../hooks/useDocumentTitle";
 import classes from "./Book.module.css";
 
 const ThemeForm = lazy(
@@ -45,7 +45,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const { data: term } = useQuery(termDataQuery(key));
 
   const [state, dispatch] = useBookState();
-  useDocumentTitle(book);
+  useDocumentTitle(`Reading "${book.title}"`);
   useNavigationProgress();
   useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen);
 
