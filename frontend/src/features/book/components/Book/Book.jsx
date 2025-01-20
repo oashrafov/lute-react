@@ -1,6 +1,6 @@
-import { lazy, Suspense, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Box, Center, Group, Loader } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { definedLangInfoQuery } from "@language/api/language";
@@ -23,6 +23,8 @@ const BulkTermForm = lazy(
 );
 
 function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
+  const queryClient = useQueryClient();
+
   const { id, page: pageNum } = useParams();
   const [params] = useSearchParams();
   const editMode = params.get("edit") === "true";
@@ -53,6 +55,18 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const showThemeForm = themeFormOpen && !editMode;
 
   const paneRightRef = useRef(null);
+
+  useEffect(() => {
+    const nextPage = Number(pageNum) + 1;
+    const prevPage = Number(pageNum) - 1;
+
+    if (nextPage <= book.pageCount) {
+      queryClient.prefetchQuery(getPageQuery(id, String(nextPage)));
+    }
+    if (prevPage >= 1) {
+      queryClient.prefetchQuery(getPageQuery(id, String(prevPage)));
+    }
+  }, [book.pageCount, id, pageNum, queryClient]);
 
   return (
     <PanelGroup

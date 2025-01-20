@@ -27,7 +27,7 @@ function TheText({ paragraphs, onSetActiveTerm }) {
     startHoverMode();
     applyLuteHighlights(settings.highlights.status, colorScheme);
     applyLuteHighlights(settings.highlights.general, colorScheme);
-  }, [colorScheme, settings.highlights]);
+  });
 
   function handleSetTerm(termData) {
     // do nothing with the form
