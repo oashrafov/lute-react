@@ -6,10 +6,10 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { definedLangInfoQuery } from "@language/api/language";
 import { termDataQuery } from "@term/api/term";
 import { paneResizeStorage } from "@actions/utils";
+import useNavigationProgress from "@hooks/useNavigationProgress";
 import TranslationPane from "../TranslationPane/TranslationPane";
 import ReadPane from "../ReadPane/ReadPane";
 import { getBookQuery, getPageQuery } from "../../api/query";
-import useNavigationProgress from "../../hooks/useNavigationProgress";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
 import useBookState from "../../hooks/useBookState";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
@@ -46,7 +46,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
 
   const [state, dispatch] = useBookState();
   useDocumentTitle(book);
-  useNavigationProgress(book);
+  useNavigationProgress();
   useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen);
 
   const showTranslationPane =

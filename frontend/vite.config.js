@@ -20,6 +20,7 @@ export default defineConfig({
       "@common": path.resolve(__dirname, "src/components/common"),
       "@actions": path.resolve(__dirname, "src/actions"),
       "@resources": path.resolve(__dirname, "src/resources"),
+      "@hooks": path.resolve(__dirname, "src/hooks"),
     },
   },
 });
