@@ -3,7 +3,7 @@ import { Box, Stack } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import DictTabs from "@language/components/DictTabs/DictTabs";
 import TermForm from "@term/components/TermForm/TermForm";
-import { paneResizeStorage } from "../../../../actions/utils";
+import { paneResizeStorage } from "@actions/utils";
 import classes from "../Book/Book.module.css";
 
 function TranslationPane({

@@ -23,9 +23,9 @@ import {
 } from "@tabler/icons-react";
 import StatusRadio from "../StatusRadio/StatusRadio";
 import TagsField from "./components/TagsField/TagsField";
-import FormButtons from "../../../../components/common/FormButtons/FormButtons";
+import FormButtons from "@common/FormButtons/FormButtons";
+import { moveCursorToEnd } from "@actions/utils";
 import { tagSuggestionsQuery } from "../../api/term";
-import { moveCursorToEnd } from "../../../../actions/utils";
 import classes from "./TermForm.module.css";
 
 function TermForm({

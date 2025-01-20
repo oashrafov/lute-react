@@ -2,7 +2,7 @@ import { memo, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Checkbox, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import ActionsMenu from "./ActionsMenu";
+import ActionsMenu from "./components/ActionsMenu";
 import BulkTermForm from "../BulkTermForm/BulkTermForm";
 import EmptyRow from "@common/EmptyRow/EmptyRow";
 import getDefaultTableOptions from "@resources/table-options-default";

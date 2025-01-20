@@ -1,4 +1,3 @@
-// lute\templates\read\textitem.html
 import { forwardRef, memo } from "react";
 
 const TextItem = forwardRef(function TextItem(props, ref) {

@@ -2,7 +2,7 @@ import { memo, useState } from "react";
 import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQueryClient } from "@tanstack/react-query";
-import PopupData from "./PopupData";
+import PopupData from "./components/PopupData/PopupData";
 import { popupQuery } from "../../api/term";
 
 function Popup({ children, id }) {

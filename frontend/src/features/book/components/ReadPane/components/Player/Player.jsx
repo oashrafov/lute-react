@@ -15,8 +15,8 @@ import {
   IconPlayerTrackNextFilled,
   IconPlayerTrackPrevFilled,
 } from "@tabler/icons-react";
-import PlayerMenu from "./PlayerMenu";
-import { convertSecsToDisplayString } from "../../../../../../actions/utils";
+import PlayerMenu from "./components/PlayerMenu";
+import { convertSecsToDisplayString } from "@actions/utils";
 
 const audio = new Audio();
 

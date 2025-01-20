@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Text, useComputedColorScheme } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconClipboardCheck } from "@tabler/icons-react";
-import TextItem from "./TextItem";
+import TextItem from "./components/TextItem";
 import Popup from "@term/components/Popup/Popup";
 import { settingsQuery } from "@settings/api/settings";
 import {
