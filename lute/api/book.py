@@ -9,6 +9,11 @@ from sqlalchemy import text as SQLText
 from lute.db import db
 from lute.models.book import Text
 from lute.models.repositories import BookRepository
+from lute.book.model import Book, Repository
+from lute.book.service import (
+    Service as BookService,
+    BookImportException,
+)
 from lute.read.service import Service as ReadService
 from lute.read.render.service import Service as RenderService
 from lute.book.stats import Service as StatsService
@@ -38,7 +43,7 @@ def parse_url_params():
 
 
 @bp.route("/", methods=["GET"])
-def get_all_books():
+def get_books():
     "Get all books applying filters and sorting"
 
     shelf = request.args.get("shelf", "active")
@@ -52,6 +57,7 @@ def get_all_books():
             BkLgID,
             BkSourceURI,
             BkTitle,
+            BkAudioFilename,
             CASE WHEN currtext.TxID IS null then 1 else currtext.TxOrder END AS PageNum,
             textcounts.pagecount AS PageCount,
             booklastopened.lastopeneddate AS LastOpenedDate,
@@ -221,7 +227,8 @@ def get_all_books():
                 "id": row.BkID,
                 "language": row.LgName,
                 "languageId": row.BkLgID,
-                "source": row.BkSourceURI,
+                "source": row.BkSourceURI or "",
+                "audioName": row.BkAudioFilename or "",
                 "title": row.BkTitle,
                 "wordCount": row.WordCount,
                 "pageCount": row.PageCount,
@@ -240,8 +247,8 @@ def get_all_books():
 
 
 @bp.route("/<int:bookid>", methods=["GET"])
-def book_info(bookid):
-    "book object to json"
+def get_book(bookid):
+    "get book"
 
     book = _find_book(bookid)
     if book is None:
@@ -308,6 +315,105 @@ def book_info(bookid):
     }
 
     return jsonify(book_dict)
+
+
+@bp.route("/new", methods=["POST"])
+def create_book():
+    """
+    create new book
+    """
+    data = request.form
+    data = {k: None if v == "undefined" else v for k, v in data.items()}
+    files_dict = request.files.to_dict()
+
+    domain_book = Book()
+
+    try:
+        for key, value in data.items():
+            if hasattr(domain_book, key):
+                if value and value.isdigit():
+                    value = int(value)
+                setattr(domain_book, key, value)
+
+        text_file = files_dict.get("text_file", None)
+        audio_file = files_dict.get("audio_file", None)
+
+        if text_file:
+            setattr(domain_book, "text_stream", text_file.stream)
+            setattr(domain_book, "text_stream_filename", text_file.filename)
+        if audio_file:
+            setattr(domain_book, "audio_stream", audio_file.stream)
+            setattr(domain_book, "audio_stream_filename", audio_file.filename)
+
+        svc = BookService()
+        book = svc.import_book(domain_book, db.session)
+        response = {"id": book.id, "title": book.title}
+
+        return jsonify(response), 200
+
+    except BookImportException as e:
+        return jsonify(e.message), 400
+
+
+@bp.route("/<int:bookid>", methods=["PATCH"])
+def edit_book(bookid):
+    "Edit a book"
+
+    data = request.form
+    data = {k: None if v == "undefined" else v for k, v in data.items()}
+
+    archived = "archived" in data.keys()
+    if archived:
+        book = _find_book(bookid)
+        book.archived = data.get("archived")
+
+        db.session.add(book)
+        db.session.commit()
+    else:
+        files_dict = request.files.to_dict()
+        repo = Repository(db.session)
+        book = repo.load(bookid)
+
+        for key, value in data.items():
+            if hasattr(book, key):
+                setattr(book, key, value)
+
+        audio_file = files_dict.get("audio_file", None)
+        if audio_file:
+            setattr(book, "audio_stream", audio_file.stream)
+            setattr(book, "audio_stream_filename", audio_file.filename)
+
+        svc = BookService()
+        svc.import_book(book, db.session)
+
+    return jsonify({"title": book.title}), 200
+
+
+@bp.route("/<int:bookid>", methods=["DELETE"])
+def delete_book(bookid):
+    "delete a book."
+
+    b = _find_book(bookid)
+
+    db.session.delete(b)
+    db.session.commit()
+
+    return {"title": b.title}, 200
+
+
+@bp.route("/url", methods=["POST"])
+def parse_content_from_url():
+    "Get data for a new book, or flash an error if can't parse."
+    service = BookService()
+    url = request.data.decode("utf-8")
+    try:
+        b = service.book_data_from_url(url)
+    except BookImportException as e:
+        return jsonify(e.message), 400
+
+    response = {"title": b.title, "source_uri": b.source_uri, "text": b.text}
+
+    return jsonify(response)
 
 
 @bp.route("/<int:bookid>/pages/<int:pagenum>", methods=["GET"])
@@ -382,16 +488,6 @@ def book_stats(bookid):
         with_percentages[status] = {"wordCount": words, "percentage": pct}
 
     return jsonify(with_percentages)
-
-
-def _get_current_page(book):
-    page_num = 1
-    text = book.texts[0]
-    if book.current_tx_id:
-        text = db.session.get(Text, book.current_tx_id)
-        page_num = text.order
-
-    return page_num
 
 
 def _find_book(bookid):

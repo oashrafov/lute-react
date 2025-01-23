@@ -1,6 +1,7 @@
-import { useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import {
   ActionIcon,
   Button,
@@ -34,21 +35,40 @@ import LanguageCards from "@language/components/LanguageCards/LanguageCards";
 import FormButtons from "@common/FormButtons/FormButtons";
 import { defFormSettingsQuery } from "@language/api/language";
 import { initialQuery } from "@settings/api/settings";
+import { errorMessage } from "@resources/notifications";
+import { createBook, getBookDataFromUrl } from "../../api/api";
+import { getFormDataFromObj } from "@actions/utils";
 import classes from "./NewBookForm.module.css";
 
 function NewBookForm({ openDrawer }) {
+  const navigate = useNavigate();
   const [params] = useSearchParams();
   const langId = params.get("langId");
-  const definedLang = langId && langId !== "0";
+  const isLangSelected = langId && langId !== "0";
   const { data } = useQuery(defFormSettingsQuery(langId));
   const { data: initial } = useQuery(initialQuery);
   const dir = data?.right_to_left ? "rtl" : "ltr";
 
   const form = useForm({
-    mode: "uncontrolled",
     initialValues: {
-      wordsPerPage: 250,
-      splitBy: "paragraphs",
+      language_id: "",
+      title: "",
+      text: "",
+      importurl: "",
+      text_file: undefined,
+      audio_file: undefined,
+      threshold_page_tokens: 250,
+      split_by: "paragraphs",
+      source_uri: "",
+      book_tags: [],
+    },
+    transformValues: (values) => {
+      const data = {
+        ...values,
+        language_id: Number(langId),
+      };
+
+      return getFormDataFromObj(data);
     },
   });
 
@@ -67,8 +87,27 @@ function NewBookForm({ openDrawer }) {
     </Group>
   );
 
+  const createBookMutation = useMutation({
+    mutationFn: createBook,
+    onSuccess: (response) => navigate(`/books/${response.id}/pages/1`),
+    onError: (error) => notifications.show(errorMessage(error.message)),
+  });
+
+  const getBookDataFromUrlMutation = useMutation({
+    mutationFn: getBookDataFromUrl,
+    onSuccess: (data) => form.setValues(data),
+    onError: (error) => notifications.show(errorMessage(error.message)),
+  });
+
+  function handlePopulateFromUrl() {
+    getBookDataFromUrlMutation.mutate(form.getValues().importurl);
+    form.setFieldValue("importurl", "");
+  }
+
   return (
-    <form className={classes.container}>
+    <form
+      className={classes.container}
+      onSubmit={form.onSubmit(createBookMutation.mutate)}>
       {initial.haveLanguages ? (
         <LanguageCards
           label={cardsRadioLabel}
@@ -79,14 +118,16 @@ function NewBookForm({ openDrawer }) {
       )}
       <TextInput
         wrapperProps={{ dir: dir }}
-        disabled={definedLang ? false : true}
+        disabled={isLangSelected ? false : true}
         required
         withAsterisk
         label="Title"
         leftSection={<IconHeading />}
+        key={form.key("title")}
+        {...form.getInputProps("title")}
       />
       <Fieldset
-        disabled={definedLang ? false : true}
+        disabled={isLangSelected ? false : true}
         variant="filled"
         legend="Content"
         flex={1}
@@ -95,6 +136,7 @@ function NewBookForm({ openDrawer }) {
         }}>
         <Stack wrap="nowrap" gap={5}>
           <Textarea
+            disabled={form.getValues().text_file}
             wrapperProps={{ dir: dir }}
             spellCheck={false}
             autoCapitalize="off"
@@ -103,7 +145,9 @@ function NewBookForm({ openDrawer }) {
             resize="vertical"
             autosize
             minRows={15}
-            maxRows={40}
+            maxRows={25}
+            key={form.key("text")}
+            {...form.getInputProps("text")}
           />
 
           <p>or</p>
@@ -111,21 +155,46 @@ function NewBookForm({ openDrawer }) {
           <FileInput
             label="Import from file"
             description=".txt, .epub, .pdf, .srt, .vtt"
-            accept="text/txt,text/apub,text/pdf,text/srt,text/vtt"
+            accept="text/plain, application/pdf, .epub, .srt, .vtt"
             leftSection={<IconBookUpload />}
             clearable
+            key={form.key("text_file")}
+            {...form.getInputProps("text_file")}
+            // value={form.getValues().text_file}
+            onChange={(value) => {
+              // console.log(value);
+              if (value) {
+                form.setFieldValue(
+                  "title",
+                  value.name.slice(0, value.name.lastIndexOf("."))
+                );
+              }
+              form.setFieldValue("text_file", value);
+              // setTextFile(value);
+            }}
           />
 
           <p>or</p>
 
           <Group align="flex-end">
             <TextInput
+              disabled={form.getValues().text_file}
               flex={1}
               label="Import from URL"
               leftSection={<IconWorldWww />}
               rightSection={<ImportURLInfo />}
+              key={form.key("importurl")}
+              {...form.getInputProps("importurl")}
             />
-            <Button variant="filled">Import</Button>
+            <Button
+              disabled={
+                !form.getValues().importurl || form.getValues().text_file
+              }
+              variant="filled"
+              loading={getBookDataFromUrlMutation.isPending}
+              onClick={handlePopulateFromUrl}>
+              Import
+            </Button>
           </Group>
         </Stack>
       </Fieldset>
@@ -140,34 +209,47 @@ function NewBookForm({ openDrawer }) {
         withCheckIcon={false}
         searchable={false}
         allowDeselect={false}
-        key={form.key("splitBy")}
-        {...form.getInputProps("splitBy")}
+        key={form.key("split_by")}
+        {...form.getInputProps("split_by")}
       />
 
       <NumberInput
         label="Words per page"
-        key={form.key("wordsPerPage")}
-        {...form.getInputProps("wordsPerPage")}
+        key={form.key("threshold_page_tokens")}
+        {...form.getInputProps("threshold_page_tokens")}
         leftSection={<IconBracketsContain />}
       />
 
       <FileInput
         label="Audio file"
         description=".mp3, .m4a, .wav, .ogg, .opus"
-        accept="audio/mpeg,audio/ogg, audio/mp4"
+        accept="audio/mpeg,audio/ogg,audio/mp4"
         leftSection={<IconHeadphones />}
         clearable
+        key={form.key("audio_file")}
+        {...form.getInputProps("audio_file")}
+        // onChange={(v) => form.setFieldValue("audio_file", v)}
       />
 
-      <TextInput label="Source URL" leftSection={<IconLink />} />
+      <TextInput
+        label="Source URL"
+        leftSection={<IconLink />}
+        key={form.key("source_uri")}
+        {...form.getInputProps("source_uri")}
+      />
 
       <TagsInput
         label="Tags"
         data={initial.bookTags}
         leftSection={<IconTags />}
+        key={form.key("book_tags")}
+        {...form.getInputProps("book_tags")}
       />
 
-      <FormButtons />
+      <FormButtons
+        okDisabled={!isLangSelected}
+        okLoading={createBookMutation.isPending}
+      />
     </form>
   );
 }

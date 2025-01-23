@@ -17,6 +17,7 @@ const definedLangInfoQuery = (id) => ({
     return await response.json();
   },
   enabled: id != null && id !== "0",
+  refetchOnWindowFocus: false,
 });
 
 const defFormSettingsQuery = (id) => ({

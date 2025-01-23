@@ -220,6 +220,16 @@ function handleExternalUrl(url, inNewTab) {
   window.open(url, "otherwin", settings);
 }
 
+function getFormDataFromObj(obj) {
+  const formData = new FormData();
+
+  Object.entries(obj).forEach(([key, value]) => {
+    formData.append(key, value);
+  });
+
+  return formData;
+}
+
 export {
   paneResizeStorage,
   getFromLocalStorage,
@@ -238,4 +248,5 @@ export {
   moveCursorToEnd,
   scrollSentenceIntoView,
   handleExternalUrl,
+  getFormDataFromObj,
 };

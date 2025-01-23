@@ -1,34 +1,27 @@
 import { memo, useMemo, useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
-  Box,
-  FileInput,
-  Flex,
-  LoadingOverlay,
-  Menu,
-  SegmentedControl,
-  Stack,
-  TagsInput,
-  TextInput,
-  Title,
-} from "@mantine/core";
-import {
-  MantineReactTable,
-  MRT_EditActionButtons,
-  useMantineReactTable,
-} from "mantine-react-table";
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { Box, Menu, Modal, SegmentedControl } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import {
   IconArchive,
-  IconHeading,
-  IconHeadphones,
-  IconLink,
-  IconTags,
+  IconArchiveOff,
+  IconEdit,
   IconTrash,
 } from "@tabler/icons-react";
 import EmptyRow from "@common/EmptyRow/EmptyRow";
+import EditBookForm from "../EditBookForm/EditBookForm";
 import getDefaultTableOptions from "@resources/table-options-default";
-import { definedLangInfoQuery } from "@language/api/language";
 import columnDefinition from "./columnDefinition";
+import { editBook, deleteBook } from "../../api/api";
+import { bookDeleted, bookUpdated } from "../../resources/notifications";
+import { keys } from "../../api/keys";
+import { getFormDataFromObj } from "@actions/utils";
 
 const defaultOptions = getDefaultTableOptions();
 
@@ -48,6 +41,10 @@ const COLUMN_FILTER_FNS = {
 const fetchURL = new URL("/api/books", "http://localhost:5001");
 
 function BooksTable({ languageChoices, tagChoices }) {
+  const queryClient = useQueryClient();
+
+  const [editedRow, setEditedRow] = useState(null);
+
   const columns = useMemo(
     () => columnDefinition(languageChoices, tagChoices),
     [languageChoices, tagChoices]
@@ -75,7 +72,7 @@ function BooksTable({ languageChoices, tagChoices }) {
   fetchURL.searchParams.set("sorting", JSON.stringify(sorting ?? []));
 
   const { data } = useQuery({
-    queryKey: ["allBooks", fetchURL.href],
+    queryKey: ["books", fetchURL.href],
     queryFn: async () => {
       const response = await fetch(fetchURL.href);
       return await response.json();
@@ -83,6 +80,33 @@ function BooksTable({ languageChoices, tagChoices }) {
     placeholderData: keepPreviousData,
     staleTime: 30_000,
   });
+
+  const deleteBookMutation = useMutation({
+    mutationFn: deleteBook,
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: keys.books });
+      notifications.show(bookDeleted(response.title));
+    },
+  });
+
+  const editBookMutation = useMutation({
+    mutationFn: editBook,
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: keys.books });
+      notifications.show(bookUpdated(response.title));
+    },
+  });
+
+  function handleDelete(id) {
+    deleteBookMutation.mutate(id);
+  }
+
+  function handleEdit(id, data) {
+    editBookMutation.mutate({
+      id: id,
+      data: getFormDataFromObj(data),
+    });
+  }
 
   const table = useMantineReactTable({
     ...defaultOptions,
@@ -108,11 +132,6 @@ function BooksTable({ languageChoices, tagChoices }) {
 
     enableRowActions: true,
     enableColumnFilterModes: true,
-    enableEditing: true,
-    editDisplayMode: "modal",
-    renderEditRowModalContent: ({ row, table }) => (
-      <EditModal row={row} table={table} />
-    ),
 
     manualFiltering: true,
     manualPagination: true,
@@ -140,56 +159,71 @@ function BooksTable({ languageChoices, tagChoices }) {
         />
       ) : null;
     },
-    renderRowActionMenuItems: ({ row }) => actionItems(row),
+
+    renderRowActionMenuItems: ({ row }) => [
+      <Menu.Item
+        leftSection={<IconEdit />}
+        key="edit"
+        onClick={() => setEditedRow(row)}>
+        Edit
+      </Menu.Item>,
+
+      row.original.isArchived ? (
+        <Menu.Item
+          leftSection={<IconArchiveOff />}
+          key="unarchive"
+          onClick={() => handleEdit(row.original.id, { archived: false })}>
+          Unarchive
+        </Menu.Item>
+      ) : (
+        <Menu.Item
+          leftSection={<IconArchive />}
+          key="archive"
+          onClick={() => handleEdit(row.original.id, { archived: true })}>
+          Archive
+        </Menu.Item>
+      ),
+
+      <Menu.Item
+        leftSection={<IconTrash />}
+        key="delete"
+        onClick={() => handleDelete(row.original.id)}>
+        Delete
+      </Menu.Item>,
+    ],
+
     renderBottomToolbarCustomActions: () => (
       <ShelfSwitch shelf={shelf} onSetShelf={setShelf} />
     ),
   });
 
-  return data && <MantineReactTable table={table} />;
+  return (
+    <>
+      {data && <MantineReactTable table={table} />}
+      <EditModal
+        row={editedRow}
+        onClose={() => setEditedRow(null)}
+        editBookMutation={editBookMutation}
+      />
+    </>
+  );
 }
 
-function EditModal({ row, table }) {
-  const { data: language, isFetching } = useQuery(
-    definedLangInfoQuery(row.original.languageId)
-  );
+function EditModal({ row, onClose, editBookMutation }) {
   return (
-    <Box pos="relative">
-      <LoadingOverlay visible={isFetching} />
-      {language && (
-        <Stack>
-          <Title order={5}>Edit Book</Title>
-          <TextInput
-            wrapperProps={{ dir: language.isRightToLeft ? "rtl" : "ltr" }}
-            required
-            withAsterisk
-            label="Title"
-            leftSection={<IconHeading />}
-            defaultValue={row.original.title}
-          />
-          <FileInput
-            label="Audio file"
-            description=".mp3, .m4a, .wav, .ogg, .opus"
-            accept="audio/mpeg,audio/ogg, audio/mp4"
-            leftSection={<IconHeadphones />}
-            clearable
-          />
-          <TextInput
-            label="Source URL"
-            leftSection={<IconLink />}
-            defaultValue={row.original.source}
-          />
-          <TagsInput
-            label="Tags"
-            leftSection={<IconTags />}
-            defaultValue={row.original.tags}
-          />
-          <Flex justify="flex-end">
-            <MRT_EditActionButtons row={row} table={table} variant="text" />
-          </Flex>
-        </Stack>
+    <Modal
+      opened={row ? true : false}
+      onClose={onClose}
+      title="Edit book"
+      styles={{ title: { fontSize: "1.1rem", fontWeight: 600 } }}>
+      {row && (
+        <EditBookForm
+          book={row.original}
+          onSubmit={editBookMutation.mutate}
+          onCloseModal={onClose}
+        />
       )}
-    </Box>
+    </Modal>
   );
 }
 
@@ -208,27 +242,6 @@ function ShelfSwitch({ shelf, onSetShelf }) {
       />
     </Box>
   );
-}
-
-function actionItems(row) {
-  return [
-    <Menu.Item
-      leftSection={<IconArchive />}
-      key={"archive"}
-      onClick={() => {
-        console.info("Archive", row);
-      }}>
-      Archive
-    </Menu.Item>,
-    <Menu.Item
-      leftSection={<IconTrash />}
-      key={"delete"}
-      onClick={() => {
-        console.info("Delete", row);
-      }}>
-      Delete
-    </Menu.Item>,
-  ];
 }
 
 export default memo(BooksTable);
