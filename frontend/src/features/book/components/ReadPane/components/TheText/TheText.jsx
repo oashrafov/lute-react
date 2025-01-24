@@ -1,6 +1,7 @@
 // lute\templates\read\page_content.html
 import { memo, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import { Text, useComputedColorScheme } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconClipboardCheck } from "@tabler/icons-react";
@@ -18,10 +19,14 @@ import {
 } from "@actions/interactions-desktop";
 import { applyLuteHighlights } from "@actions/general";
 import { copyToClipboard } from "@actions/utils";
+import { commitPage } from "../../../../api/api";
+import { keys } from "../../../../api/keys";
 
 function TheText({ paragraphs, onSetActiveTerm }) {
+  const { id, page } = useParams();
   const { data: settings } = useQuery(settingsQuery);
   const colorScheme = useComputedColorScheme();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     startHoverMode();
@@ -39,6 +44,32 @@ function TheText({ paragraphs, onSetActiveTerm }) {
       : resetFocusActiveSentence();
   }
 
+  const { mutate } = useMutation({
+    mutationFn: commitPage,
+    onSuccess: () => queryClient.invalidateQueries(keys.books),
+  });
+
+  useEffect(() => {
+    mutate({ id, page });
+  }, [id, mutate, page]);
+
+  function handleSelectStart(e) {
+    // trigger only with lmb
+    if (e.button !== 0) return;
+    handleMouseDown(e);
+  }
+
+  function handleSelectEnd(e) {
+    if (e.button !== 0) return;
+    const termData = handleMouseUp(e);
+
+    if (!termData) return;
+    handleSetTerm(termData);
+
+    if (termData.type !== "copy") return;
+    handleCopyText(termData);
+  }
+
   return (
     <div className="thetext">
       {paragraphs.map((paragraph, index) => (
@@ -46,25 +77,15 @@ function TheText({ paragraphs, onSetActiveTerm }) {
           {paragraph.map((sentence, index) => (
             <span
               key={`sent_${index + 1}`}
-              className="textsentence"
-              id={`sent_${index + 1}`}>
+              id={`sent_${index + 1}`}
+              className="textsentence">
               {sentence.map((textitem) =>
                 textitem.isWord ? (
                   <Popup id={textitem.wid} key={textitem.id}>
                     <TextItem
                       data={textitem}
-                      onMouseDown={(e) => {
-                        // trigger only with lmb
-                        if (e.button !== 0) return;
-                        handleMouseDown(e);
-                      }}
-                      onMouseUp={(e) => {
-                        if (e.button !== 0) return;
-                        const termData = handleMouseUp(e);
-                        if (!termData) return;
-                        handleSetTerm(termData);
-                        handleCopyText(termData);
-                      }}
+                      onMouseDown={handleSelectStart}
+                      onMouseUp={handleSelectEnd}
                       onMouseOver={handleMouseOver}
                       onMouseOut={hoverOut}
                     />
@@ -84,8 +105,6 @@ function TheText({ paragraphs, onSetActiveTerm }) {
 }
 
 async function handleCopyText(termData) {
-  if (termData.type !== "copy") return;
-
   const text = await copyToClipboard(termData.data);
   text &&
     notifications.show({

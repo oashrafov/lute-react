@@ -44,20 +44,19 @@ function EditBookForm({ book, onSubmit, onCloseModal }) {
       book_tags: book.tags,
       audio_file: undefined,
     },
-    transformValues: (values) => {
-      const data = {
-        ...values,
-        audio_filename: existingAudioName,
-      };
-
-      return getFormDataFromObj(data);
-    },
+    transformValues: (values) => ({
+      ...values,
+      audio_filename: existingAudioName,
+    }),
   });
 
   if (!language) return;
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
+    <form
+      onSubmit={form.onSubmit((data) =>
+        handleSubmit(getFormDataFromObj({ ...data, action: "edit" }))
+      )}>
       <TextInput
         wrapperProps={{ dir: language.isRightToLeft ? "rtl" : "ltr" }}
         required

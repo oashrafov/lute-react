@@ -78,6 +78,26 @@ async function editBook({ id, data }) {
   return await response.json();
 }
 
+async function commitPage({ id, page }) {
+  const response = await fetch(
+    `http://localhost:5001/api/books/${id}/pages/${page}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ shouldTrack: true }),
+    }
+  );
+
+  if (!response.ok) {
+    const message = await response.json();
+    throw new Error(message);
+  }
+
+  return await response.json();
+}
+
 export {
   getBooks,
   getBook,
@@ -86,5 +106,6 @@ export {
   createBook,
   deleteBook,
   editBook,
+  commitPage,
   getBookDataFromUrl,
 };

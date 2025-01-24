@@ -1,11 +1,11 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Box, Center, Group, Loader } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { definedLangInfoQuery } from "@language/api/language";
 import { termDataQuery } from "@term/api/term";
-import { paneResizeStorage } from "@actions/utils";
+import { paneResizeStorage, getFormDataFromObj } from "@actions/utils";
 import useNavigationProgress from "@hooks/useNavigationProgress";
 import useDocumentTitle from "@hooks/useDocumentTitle";
 import TranslationPane from "../TranslationPane/TranslationPane";
@@ -13,7 +13,9 @@ import ReadPane from "../ReadPane/ReadPane";
 import { getBookQuery, getPageQuery } from "../../api/query";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
 import useBookState from "../../hooks/useBookState";
+import { editBook } from "../../api/api";
 import classes from "./Book.module.css";
+import { keys } from "../../api/keys";
 
 const ThemeForm = lazy(
   () => import("@settings/components/ThemeForm/ThemeForm")
@@ -40,7 +42,6 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
       : activeTerm.data);
 
   const { data: book } = useQuery(getBookQuery(id));
-  const { data: page } = useQuery(getPageQuery(id, pageNum));
   const { data: language } = useQuery(definedLangInfoQuery(book.languageId));
   const { data: term } = useQuery(termDataQuery(key));
 
@@ -55,6 +56,16 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const showThemeForm = themeFormOpen && !editMode;
 
   const paneRightRef = useRef(null);
+
+  const { mutate } = useMutation({
+    mutationFn: editBook,
+    onSuccess: (response) =>
+      queryClient.invalidateQueries(keys.stats(response.id)),
+  });
+
+  useEffect(() => {
+    mutate({ id, data: getFormDataFromObj({ action: "markAsStale" }) });
+  }, [id, mutate]);
 
   useEffect(() => {
     const nextPage = Number(pageNum) + 1;
@@ -82,7 +93,6 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
         className={classes.paneLeft}>
         <ReadPane
           book={book}
-          page={page}
           isRtl={language.isRightToLeft}
           state={state}
           dispatch={dispatch}

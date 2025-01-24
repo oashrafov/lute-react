@@ -5,7 +5,6 @@ import PageHeader from "./components/PageHeader/PageHeader";
 import Player from "./components/Player/Player";
 import Toolbar from "./components/Toolbar/Toolbar";
 import TheText from "./components/TheText/TheText";
-import classes from "../Book/Book.module.css";
 import {
   handleClickOutside,
   resetFocusActiveSentence,
@@ -13,10 +12,12 @@ import {
 import EditTheText from "./components/EditTheText/EditTheText";
 import EditHeader from "./components/EditHeader/EditHeader";
 import ContextMenu from "./components/ContextMenu/ContextMenu";
+import { useQuery } from "@tanstack/react-query";
+import { getPageQuery } from "../../api/query";
+import classes from "../Book/Book.module.css";
 
 function ReadPane({
   book,
-  page,
   state,
   dispatch,
   activeTerm,
@@ -24,7 +25,8 @@ function ReadPane({
   onDrawerOpen,
   isRtl,
 }) {
-  const { page: pageNum } = useParams();
+  const { id, page: pageNum } = useParams();
+  const { data: page } = useQuery(getPageQuery(id, pageNum));
   const [params, setParams] = useSearchParams();
   const contextMenuAreaRef = useRef(null);
 

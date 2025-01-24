@@ -2,6 +2,7 @@
 
 import os
 import json
+from datetime import datetime
 
 from flask import Blueprint, jsonify, send_file, current_app, request
 from sqlalchemy import text as SQLText
@@ -14,7 +15,6 @@ from lute.book.service import (
     Service as BookService,
     BookImportException,
 )
-from lute.read.service import Service as ReadService
 from lute.read.render.service import Service as RenderService
 from lute.book.stats import Service as StatsService
 from lute.utils.data_tables import supported_parser_type_criteria
@@ -362,14 +362,22 @@ def edit_book(bookid):
     data = request.form
     data = {k: None if v == "undefined" else v for k, v in data.items()}
 
-    archived = "archived" in data.keys()
-    if archived:
+    action = data.get("action")
+    if action == "archive":
         book = _find_book(bookid)
-        book.archived = data.get("archived")
+        book.archived = True
 
         db.session.add(book)
         db.session.commit()
-    else:
+
+    if action == "unarchive":
+        book = _find_book(bookid)
+        book.archived = False
+
+        db.session.add(book)
+        db.session.commit()
+
+    if action == "edit":
         files_dict = request.files.to_dict()
         repo = Repository(db.session)
         book = repo.load(bookid)
@@ -386,7 +394,14 @@ def edit_book(bookid):
         svc = BookService()
         svc.import_book(book, db.session)
 
-    return jsonify({"title": book.title}), 200
+    if action == "markAsStale":
+        book = _find_book(bookid)
+        if book is None:
+            return jsonify("No such book")
+
+        _mark_book_as_stale(book)
+
+    return jsonify({"id": book.id}), 200
 
 
 @bp.route("/<int:bookid>", methods=["DELETE"])
@@ -417,43 +432,33 @@ def parse_content_from_url():
 
 
 @bp.route("/<int:bookid>/pages/<int:pagenum>", methods=["GET"])
-def page_info(bookid, pagenum):
-    "send book info in json"
+def get_page_content(bookid, pagenum):
+    "get page content"
     book = _find_book(bookid)
     if book is None:
         return jsonify("No such book")
 
-    service = ReadService(db.session)
+    text, paragraphs = _load_page_content(book, pagenum)
+
+    return jsonify(
+        {"text": text.text, "paragraphs": _paragraphs_to_dict_array(paragraphs)}
+    )
+
+
+@bp.route("/<int:bookid>/pages/<int:pagenum>", methods=["POST"])
+def commit_page(bookid, pagenum):
+    "commit page to db"
+
+    book = _find_book(bookid)
+    if book is None:
+        return jsonify("No such book")
+
     text = book.text_at_page(pagenum)
-    text.load_sentences()  # determine if this is need at the load time
-    lang = text.book.language
-    rs = RenderService(service.session)
-    paragraphs = rs.get_paragraphs(text.text, lang)
 
-    paras = [
-        [
-            [
-                {
-                    "id": textitem.span_id,
-                    "displayText": textitem.html_display_text,
-                    "classes": getattr(textitem, "html_class_string", ""),
-                    "langId": getattr(textitem, "lang_id", ""),
-                    "paragraphId": textitem.paragraph_number,
-                    "sentenceId": textitem.sentence_number,
-                    "text": textitem.text,
-                    "statusClass": textitem.status_class,
-                    "order": textitem.index,
-                    "wid": textitem.wo_id,
-                    "isWord": textitem.is_word,
-                }
-                for textitem in sentence
-            ]
-            for sentence in paragraph
-        ]
-        for paragraph in paragraphs
-    ]
+    should_track = request.get_json().get("shouldTrack", True)
+    _commit_session(book, text, should_track)
 
-    return jsonify({"text": text.text, "paragraphs": paras})
+    return jsonify({"id": book.id}), 200
 
 
 @bp.route("<int:bookid>/audio", methods=["GET"])
@@ -494,3 +499,58 @@ def _find_book(bookid):
     "Find book from db."
     br = BookRepository(db.session)
     return br.find(bookid)
+
+
+def _mark_book_as_stale(dbbook):
+    "mark as stale"
+    svc = StatsService(db.session)
+    svc.mark_stale(dbbook)
+
+
+def _commit_session(dbbook, text, track_page_open=False):
+    "commit current page"
+
+    if track_page_open:
+        text.start_date = datetime.now()
+        dbbook.current_tx_id = text.id
+
+    db.session.add(dbbook)
+    db.session.add(text)
+    db.session.commit()
+
+
+def _load_page_content(dbbook, pagenum):
+    "get raw text and paragraphs"
+
+    text = dbbook.text_at_page(pagenum)
+    text.load_sentences()
+    lang = text.book.language
+    rs = RenderService(db.session)
+    paragraphs = rs.get_paragraphs(text.text, lang)
+
+    return text, paragraphs
+
+
+def _paragraphs_to_dict_array(paragraphs):
+    return [
+        [
+            [
+                {
+                    "id": textitem.span_id,
+                    "displayText": textitem.html_display_text,
+                    "classes": getattr(textitem, "html_class_string", ""),
+                    "langId": getattr(textitem, "lang_id", ""),
+                    "paragraphId": textitem.paragraph_number,
+                    "sentenceId": textitem.sentence_number,
+                    "text": textitem.text,
+                    "statusClass": textitem.status_class,
+                    "order": textitem.index,
+                    "wid": textitem.wo_id,
+                    "isWord": textitem.is_word,
+                }
+                for textitem in sentence
+            ]
+            for sentence in paragraph
+        ]
+        for paragraph in paragraphs
+    ]

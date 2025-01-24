@@ -172,14 +172,14 @@ function BooksTable({ languageChoices, tagChoices }) {
         <Menu.Item
           leftSection={<IconArchiveOff />}
           key="unarchive"
-          onClick={() => handleEdit(row.original.id, { archived: false })}>
+          onClick={() => handleEdit(row.original.id, { action: "unarchive" })}>
           Unarchive
         </Menu.Item>
       ) : (
         <Menu.Item
           leftSection={<IconArchive />}
           key="archive"
-          onClick={() => handleEdit(row.original.id, { archived: true })}>
+          onClick={() => handleEdit(row.original.id, { action: "archive" })}>
           Archive
         </Menu.Item>
       ),
