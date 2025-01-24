@@ -8,7 +8,7 @@ from flask import Blueprint, jsonify, send_file, current_app, request
 from sqlalchemy import text as SQLText
 
 from lute.db import db
-from lute.models.book import Text
+from lute.models.book import Text, Book as BookModel
 from lute.models.repositories import BookRepository
 from lute.book.model import Book, Repository
 from lute.book.service import (
@@ -243,7 +243,14 @@ def get_books():
             }
         )
 
-    return jsonify({"data": response, "total": rowCount})
+    return jsonify(
+        {
+            "data": response,
+            "total": rowCount,
+            "activeCount": activeCount,
+            "archivedCount": archivedCount,
+        }
+    )
 
 
 @bp.route("/<int:bookid>", methods=["GET"])
@@ -369,6 +376,16 @@ def edit_book(bookid):
 
         db.session.add(book)
         db.session.commit()
+        archived_count = len(
+            db.session.query(BookModel).filter(BookModel.archived == 1).all()
+        )
+
+        return (
+            jsonify(
+                {"id": book.id, "title": book.title, "archivedCount": archived_count}
+            ),
+            200,
+        )
 
     if action == "unarchive":
         book = _find_book(bookid)
@@ -376,6 +393,16 @@ def edit_book(bookid):
 
         db.session.add(book)
         db.session.commit()
+        archived_count = len(
+            db.session.query(BookModel).filter(BookModel.archived == 1).all()
+        )
+
+        return (
+            jsonify(
+                {"id": book.id, "title": book.title, "archivedCount": archived_count}
+            ),
+            200,
+        )
 
     if action == "edit":
         files_dict = request.files.to_dict()
@@ -401,7 +428,7 @@ def edit_book(bookid):
 
         _mark_book_as_stale(book)
 
-    return jsonify({"id": book.id}), 200
+    return jsonify({"id": book.id, "title": book.title}), 200
 
 
 @bp.route("/<int:bookid>", methods=["DELETE"])

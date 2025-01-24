@@ -71,7 +71,7 @@ function BooksTable({ languageChoices, tagChoices }) {
   fetchURL.searchParams.set("globalFilter", globalFilter ?? "");
   fetchURL.searchParams.set("sorting", JSON.stringify(sorting ?? []));
 
-  const { data } = useQuery({
+  const { data: books } = useQuery({
     queryKey: ["books", fetchURL.href],
     queryFn: async () => {
       const response = await fetch(fetchURL.href);
@@ -102,18 +102,27 @@ function BooksTable({ languageChoices, tagChoices }) {
   }
 
   function handleEdit(id, data) {
-    editBookMutation.mutate({
-      id: id,
-      data: getFormDataFromObj(data),
-    });
+    editBookMutation.mutate(
+      {
+        id: id,
+        data: getFormDataFromObj(data),
+      },
+      {
+        onSuccess: (response) => {
+          if (response.archivedCount === 0) {
+            setShelf("active");
+          }
+        },
+      }
+    );
   }
 
   const table = useMantineReactTable({
     ...defaultOptions,
 
     columns: columns,
-    data: data?.data || [],
-    rowCount: data?.total,
+    data: books?.data || [],
+    rowCount: books?.total,
 
     initialState: {
       ...defaultOptions.initialState,
@@ -193,13 +202,17 @@ function BooksTable({ languageChoices, tagChoices }) {
     ],
 
     renderBottomToolbarCustomActions: () => (
-      <ShelfSwitch shelf={shelf} onSetShelf={setShelf} />
+      <ShelfSwitch
+        shelf={shelf}
+        onSetShelf={setShelf}
+        archivedCount={books.archivedCount}
+      />
     ),
   });
 
   return (
     <>
-      {data && <MantineReactTable table={table} />}
+      {books && <MantineReactTable table={table} />}
       <EditModal
         row={editedRow}
         onClose={() => setEditedRow(null)}
@@ -227,7 +240,8 @@ function EditModal({ row, onClose, editBookMutation }) {
   );
 }
 
-function ShelfSwitch({ shelf, onSetShelf }) {
+function ShelfSwitch({ shelf, onSetShelf, archivedCount }) {
+  const showActiveOnly = archivedCount === 0 ? true : false;
   return (
     <Box pl={5}>
       <SegmentedControl
@@ -236,8 +250,16 @@ function ShelfSwitch({ shelf, onSetShelf }) {
         onChange={onSetShelf}
         data={[
           { label: "Active", value: "active" },
-          { label: "All", value: "all" },
-          { label: "Archived", value: "archived" },
+          {
+            label: "All",
+            value: "all",
+            disabled: showActiveOnly,
+          },
+          {
+            label: "Archived",
+            value: "archived",
+            disabled: showActiveOnly,
+          },
         ]}
       />
     </Box>
