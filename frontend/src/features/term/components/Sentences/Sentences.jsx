@@ -1,10 +1,12 @@
 import { LoadingOverlay } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { sentencesQuery } from "../../api/term";
+import { getSentencesQuery } from "../../api/query";
 import classes from "./Sentences.module.css";
 
 function Sentences({ langId, termText }) {
-  const { data, isSuccess, error } = useQuery(sentencesQuery(langId, termText));
+  const { data, isSuccess, error } = useQuery(
+    getSentencesQuery(langId, termText)
+  );
   if (error) return "An error has occurred: " + error.message;
 
   return (

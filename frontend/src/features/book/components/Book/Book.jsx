@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Box, Center, Group, Loader } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { definedLangInfoQuery } from "@language/api/language";
-import { termDataQuery } from "@term/api/term";
+import { getTermQuery } from "@term/api/query";
 import { paneResizeStorage, getFormDataFromObj } from "@actions/utils";
 import useNavigationProgress from "@hooks/useNavigationProgress";
 import useDocumentTitle from "@hooks/useDocumentTitle";
@@ -43,7 +43,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
 
   const { data: book } = useQuery(getBookQuery(id));
   const { data: language } = useQuery(definedLangInfoQuery(book.languageId));
-  const { data: term } = useQuery(termDataQuery(key));
+  const { data: term } = useQuery(getTermQuery(key));
 
   const [state, dispatch] = useBookState();
   useDocumentTitle(`Reading "${book.title}"`);

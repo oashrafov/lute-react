@@ -25,7 +25,7 @@ import StatusRadio from "../StatusRadio/StatusRadio";
 import TagsField from "./components/TagsField/TagsField";
 import FormButtons from "@common/FormButtons/FormButtons";
 import { moveCursorToEnd } from "@actions/utils";
-import { tagSuggestionsQuery } from "../../api/term";
+import { getTagSuggestionsQuery } from "../../api/query";
 import classes from "./TermForm.module.css";
 
 function TermForm({
@@ -35,7 +35,7 @@ function TermForm({
   onSetActiveTerm = null, // selected word from the page text
   onSetTerm = null, // typed text in the term field
 }) {
-  const { data: tags } = useQuery(tagSuggestionsQuery);
+  const { data: tags } = useQuery(getTagSuggestionsQuery);
   const dir = language.isRightToLeft ? "rtl" : "ltr";
 
   const form = useForm({

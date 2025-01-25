@@ -10,7 +10,7 @@ import {
   ScrollArea,
   Input,
 } from "@mantine/core";
-import { termSuggestionsQuery } from "../../../../api/term";
+import { getTermSuggestionsQuery } from "../../../../api/query";
 import { buildSuggestionsList } from "@actions/utils";
 import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "@resources/constants";
 
@@ -115,7 +115,7 @@ function useInitializeTagsField(
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
   });
   const { data, isFetching } = useQuery(
-    termSuggestionsQuery(search, languageId)
+    getTermSuggestionsQuery(search, languageId)
   );
 
   const suggestions = data ? buildSuggestionsList(termText, data) : [];

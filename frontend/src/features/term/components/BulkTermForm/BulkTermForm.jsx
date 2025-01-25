@@ -10,10 +10,10 @@ import {
 } from "@mantine/core";
 import StatusRadio from "../StatusRadio/StatusRadio";
 import FormButtons from "@common/FormButtons/FormButtons";
-import { tagSuggestionsQuery } from "../../api/term";
+import { getTagSuggestionsQuery } from "../../api/query";
 
 function BulkTermForm({ terms }) {
-  const { data: tags } = useQuery(tagSuggestionsQuery);
+  const { data: tags } = useQuery(getTagSuggestionsQuery);
 
   const form = useForm({
     initialValues: {

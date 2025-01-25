@@ -8,7 +8,7 @@ import LanguageCards from "@language/components/LanguageCards/LanguageCards";
 import DictTabs from "@language/components/DictTabs/DictTabs";
 import TermForm from "@term/components/TermForm/TermForm";
 import { definedLangInfoQuery } from "@language/api/language";
-import { termDataQuery } from "@term/api/term";
+import { getTermQuery } from "@term/api/query";
 
 function NewEditTermPage() {
   const [newTerm, setNewTerm] = useState("");
@@ -16,7 +16,7 @@ function NewEditTermPage() {
   const langId = params.get("langId");
   const termId = params.get("termId");
   const { data: language } = useQuery(definedLangInfoQuery(langId));
-  const { data: term } = useQuery(termDataQuery(termId));
+  const { data: term } = useQuery(getTermQuery(termId));
 
   const editMode = termId && language && term;
 

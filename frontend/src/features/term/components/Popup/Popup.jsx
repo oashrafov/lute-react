@@ -3,7 +3,7 @@ import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import PopupData from "./components/PopupData/PopupData";
-import { popupQuery } from "../../api/term";
+import { getPopupQuery } from "../../api/query";
 
 function Popup({ children, id }) {
   const queryClient = useQueryClient();
@@ -26,7 +26,7 @@ function Popup({ children, id }) {
       shadow="md"
       opened={opened}
       onOpen={async () =>
-        setPopupData(await queryClient.fetchQuery(popupQuery(id)))
+        setPopupData(await queryClient.fetchQuery(getPopupQuery(id)))
       }
       onMouseEnter={open}
       onMouseLeave={close}

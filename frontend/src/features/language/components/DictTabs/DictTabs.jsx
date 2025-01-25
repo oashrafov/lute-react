@@ -16,7 +16,7 @@ import {
   IconPhoto,
 } from "@tabler/icons-react";
 import Sentences from "@term/components/Sentences/Sentences";
-import { sentencesQuery } from "@term/api/term";
+import { getSentencesQuery } from "@term/api/query";
 import { getLookupURL, handleExternalUrl } from "@actions/utils";
 import { MAX_VISIBLE_DICT_TABS } from "@resources/constants";
 import classes from "./DictTabs.module.css";
@@ -105,7 +105,7 @@ function DictTabs({
             id="sentencesTab"
             value="sentencesTab"
             onMouseEnter={() =>
-              queryClient.prefetchQuery(sentencesQuery(language.id, term))
+              queryClient.prefetchQuery(getSentencesQuery(language.id, term))
             }
             onClick={() => {
               setTabValue("sentencesTab");
