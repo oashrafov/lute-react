@@ -14,7 +14,6 @@ import {
   handleMouseOver,
   handleMouseUp,
   hoverOut,
-  resetFocusActiveSentence,
   startHoverMode,
 } from "@actions/interactions-desktop";
 import { applyLuteHighlights } from "@actions/general";
@@ -39,9 +38,9 @@ function TheText({ paragraphs, onSetActiveTerm }) {
     if (!termData || termData.type === "copy") return;
     onSetActiveTerm(termData);
     // do not focus sentence when in bulk edit(shift) mode
-    termData.data && termData.type !== "shift"
-      ? focusActiveSentence(termData.textitems)
-      : resetFocusActiveSentence();
+    termData.data &&
+      termData.type !== "shift" &&
+      focusActiveSentence(termData.textitems);
   }
 
   const { mutate } = useMutation({

@@ -10,12 +10,17 @@ import useNavigationProgress from "@hooks/useNavigationProgress";
 import useDocumentTitle from "@hooks/useDocumentTitle";
 import TranslationPane from "../TranslationPane/TranslationPane";
 import ReadPane from "../ReadPane/ReadPane";
-import { getBookQuery, getPageQuery } from "../../api/query";
+import { getBookQuery } from "../../api/query";
+import { editBook } from "../../api/api";
+import { keys } from "../../api/keys";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
 import useBookState from "../../hooks/useBookState";
-import { editBook } from "../../api/api";
+import usePrefetchPages from "@book/hooks/usePrefetchPages";
+import {
+  resetFocusActiveSentence,
+  startHoverMode,
+} from "@actions/interactions-desktop";
 import classes from "./Book.module.css";
-import { keys } from "../../api/keys";
 
 const ThemeForm = lazy(
   () => import("@settings/components/ThemeForm/ThemeForm")
@@ -49,6 +54,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   useDocumentTitle(`Reading "${book.title}"`);
   useNavigationProgress();
   useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen);
+  usePrefetchPages(id, pageNum, book.pageCount);
 
   const showTranslationPane =
     activeTerm.data && activeTerm.type !== "shift" && term && !themeFormOpen;
@@ -57,27 +63,30 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
 
   const paneRightRef = useRef(null);
 
-  const { mutate } = useMutation({
+  const { mutate: markAsStaleMutate } = useMutation({
     mutationFn: editBook,
     onSuccess: (response) =>
       queryClient.invalidateQueries(keys.stats(response.id)),
   });
 
   useEffect(() => {
-    mutate({ id, data: getFormDataFromObj({ action: "markAsStale" }) });
-  }, [id, mutate]);
+    markAsStaleMutate({
+      id,
+      data: getFormDataFromObj({ action: "markAsStale" }),
+    });
+  }, [id, markAsStaleMutate]);
 
   useEffect(() => {
-    const nextPage = Number(pageNum) + 1;
-    const prevPage = Number(pageNum) - 1;
+    if (!activeTerm.data) {
+      resetFocusActiveSentence();
+      startHoverMode();
+    }
+  }, [activeTerm.data]);
 
-    if (nextPage <= book.pageCount) {
-      queryClient.prefetchQuery(getPageQuery(id, String(nextPage)));
-    }
-    if (prevPage >= 1) {
-      queryClient.prefetchQuery(getPageQuery(id, String(prevPage)));
-    }
-  }, [book.pageCount, id, pageNum, queryClient]);
+  function onDblClickResize() {
+    const panel = paneRightRef.current;
+    if (panel) panel.getSize() < 15 ? panel.resize(50) : panel.resize(5);
+  }
 
   return (
     <PanelGroup
@@ -107,11 +116,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
           <PanelResizeHandle
             hitAreaMargins={{ coarse: 10, fine: 10 }}
             className={classes.resizeHandle}
-            onDoubleClick={() => {
-              const panel = paneRightRef.current;
-              if (panel)
-                panel.getSize() < 15 ? panel.resize(50) : panel.resize(5);
-            }}
+            onDoubleClick={onDblClickResize}
           />
 
           <Panel

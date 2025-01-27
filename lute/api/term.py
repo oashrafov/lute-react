@@ -277,8 +277,8 @@ def export_terms():
     return send_file(export_file, as_attachment=True)
 
 
-@bp.route("/<int:term_id>", methods=["GET", "POST"])
-def term_info(term_id):
+@bp.route("/<int:term_id>", methods=["GET"])
+def get_term(term_id):
     """
     term info for term form
     """
@@ -288,7 +288,47 @@ def term_info(term_id):
     return _term_to_dict(term)
 
 
-@bp.route("/<text>/<int:langid>", methods=["GET", "POST"])
+@bp.route("/", methods=["POST"])
+def create_term():
+    """
+    create term
+    """
+    data = request.get_json()
+    # text = data.get("text")
+    text = data.get("langId")
+
+    print(data)
+
+    # usetext = text.replace("LUTESLASH", "/")
+    # repo = Repository(db.session)
+    # term = repo.find_or_new(langid, usetext)
+
+    # print(term, "ID")
+
+    return jsonify({"text": text})
+
+
+@bp.route("/<int:termid>", methods=["PUT"])
+def edit_term(termid):
+    """
+    edit term
+    """
+    print(request.data)
+
+    return jsonify({"id": termid})
+
+
+@bp.route("/<int:termid>", methods=["DELETE"])
+def delete_term(termid):
+    """
+    delete term
+    """
+    print(request.data)
+
+    return jsonify({"id": termid})
+
+
+@bp.route("/<text>/<int:langid>", methods=["GET"])
 def multiterm_info(langid, text):
     """
     multiterm info for term form
@@ -377,7 +417,7 @@ def get_sentences(langid, text):
     return jsonify({"text": text, "variations": variations if refcount > 0 else []})
 
 
-@bp.route("/<int:langid>/<text>", methods=["GET"])
+@bp.route("/<text>/<int:langid>/suggestions", methods=["GET"])
 def get_term_suggestions(text, langid):
     "term suggestions for parent data"
 
@@ -412,6 +452,7 @@ def _term_to_dict(term):
         term.status = 1
 
     return {
+        "id": term.id,
         "text": term.text or "",
         "textLC": term.text_lc or "",
         "originalText": term.original_text or "",

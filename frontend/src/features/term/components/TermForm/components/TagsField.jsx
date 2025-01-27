@@ -10,7 +10,7 @@ import {
   ScrollArea,
   Input,
 } from "@mantine/core";
-import { getTermSuggestionsQuery } from "../../../../api/query";
+import { getTermSuggestionsQuery } from "../../../api/query";
 import { buildSuggestionsList } from "@actions/utils";
 import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "@resources/constants";
 
@@ -128,7 +128,7 @@ function useInitializeTagsField(
     .filter((item) => !values.includes(item.value));
 
   function handleValueAdd(val) {
-    if (val && val !== " ") {
+    if (val && val !== " " && !values.includes(val)) {
       onSetValues([...values, val]);
     }
   }

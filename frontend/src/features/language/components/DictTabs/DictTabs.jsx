@@ -39,6 +39,9 @@ function DictTabs({
   const allDicts = language.dictionaries.term;
   const visibleDicts = allDicts.slice(0, MAX_VISIBLE_DICT_TABS);
   const dropdownDicts = allDicts.slice(MAX_VISIBLE_DICT_TABS);
+  // %E2%80%8B is the zero-width string.  The term is reparsed
+  // on the server, so this doesn't need to be sent.
+  const encodedTermText = encodeURIComponent(term).replaceAll("%E2%80%8B", "");
 
   function handleFocus() {
     setTimeout(() => {
@@ -105,7 +108,9 @@ function DictTabs({
             id="sentencesTab"
             value="sentencesTab"
             onMouseEnter={() =>
-              queryClient.prefetchQuery(getSentencesQuery(language.id, term))
+              queryClient.prefetchQuery(
+                getSentencesQuery(encodedTermText, language.id)
+              )
             }
             onClick={() => {
               setTabValue("sentencesTab");
@@ -162,7 +167,7 @@ function DictTabs({
         value="sentencesTab"
         key="sentencesTab">
         {tabValue === "sentencesTab" && (
-          <Sentences langId={language.id} termText={term} />
+          <Sentences langId={language.id} termText={encodedTermText} />
         )}
       </Tabs.Panel>
       <Tabs.Panel

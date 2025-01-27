@@ -1,5 +1,6 @@
 import { memo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import {
   Group,
   TextInput,
@@ -8,61 +9,64 @@ import {
   Checkbox,
   rem,
   Collapse,
-  ActionIcon,
-  Tooltip,
-  Popover,
-  UnstyledButton,
-  Image,
+  Text,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import {
-  IconLetterCaseLower,
-  IconNotes,
-  IconSpeakerphone,
-  IconVocabulary,
-} from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import StatusRadio from "../StatusRadio/StatusRadio";
-import TagsField from "./components/TagsField/TagsField";
+import TagsField from "./components/TagsField";
 import FormButtons from "@common/FormButtons/FormButtons";
+import LoadDictsButton from "./components/LoadDictsButton";
+import ToLowerCaseButton from "./components/ToLowerCaseButton";
+import PronunciationButton from "./components/PronunciationButton";
+import NotesButton from "./components/NotesButton";
+import TermImage from "./components/TermImage";
+import useTermForm from "./hooks/useTermForm";
 import { moveCursorToEnd } from "@actions/utils";
 import { getTagSuggestionsQuery } from "../../api/query";
+import { editTerm, createTerm, deleteTerm } from "../../api/api";
+import {
+  termCreated,
+  termUpdated,
+  termDeleted,
+} from "@term/resources/notifications";
 import classes from "./TermForm.module.css";
 
+const termBlank = {
+  id: null,
+  text: "",
+  textLC: "",
+  originalText: "",
+  status: "1",
+  translation: "",
+  romanization: "",
+  syncStatus: false,
+  termTags: [],
+  parents: [],
+  // "currentImg": term.current_image,
+};
+
+const languageBlank = { id: 0, isRightToLeft: false, showPronunciation: true };
+
 function TermForm({
-  term = null,
-  language = { id: 0, isRightToLeft: false, showPronunciation: true },
+  term = termBlank,
+  language = languageBlank,
   translationFieldRef = {},
-  onSetActiveTerm = null, // selected word from the page text
+  onSetActiveTerm = null, // selected word data from page text
   onSetTerm = null, // typed text in the term field
 }) {
+  const form = useTermForm(term, language);
   const { data: tags } = useQuery(getTagSuggestionsQuery);
+  const queryClient = useQueryClient();
+
+  const editMode = term.id !== null;
+  const blankMode = !term.text;
+  const { id: bookId } = useParams();
   const dir = language.isRightToLeft ? "rtl" : "ltr";
 
-  const form = useForm({
-    initialValues: term && {
-      ...term,
-      status: String(term.status),
-    },
-    enhanceGetInputProps: ({ form, field }) => {
-      if (!form.initialized) return;
-
-      if (field === "syncStatus") {
-        const parentsCount = form.getValues().parents.length;
-
-        if (!parentsCount || parentsCount > 1)
-          return {
-            disabled: true,
-            checked: false,
-          };
-
-        return { disabled: false, checked: form.getValues().syncStatus };
-      }
-    },
-  });
-
-  const [notesOpened, setNotesOpened] = useState(!term);
+  const [notesOpened, setNotesOpened] = useState(blankMode);
   const [pronunciationOpened, setPronunciationOpened] = useState(
-    term ? language.showPronunciation : true
+    !blankMode ? language.showPronunciation : true
   );
   const [parents, setParents] = useState(form.getValues().parents || []);
 
@@ -77,21 +81,108 @@ function TermForm({
     }
     form.setFieldValue("syncStatus", singleParent);
 
-    setParents(newParents);
+    handleSetParents(newParents);
+  }
+
+  function handleSetParents(parents) {
+    setParents(parents);
+    form.setFieldValue("parents", parents);
+  }
+
+  function handleKeydown(e) {
+    if (
+      e.key === "Enter" &&
+      e.target.type !== "textarea" &&
+      e.target.type !== "submit"
+    ) {
+      e.preventDefault();
+    }
+    if (e.key === "Enter" && e.ctrlKey && e.target.type !== "submit") {
+      e.currentTarget.requestSubmit();
+    }
+  }
+
+  function handleSubmit(data) {
+    if (!editMode) {
+      createTermMutation.mutate(data);
+    } else {
+      editTermMutation.mutate({ ...data, id: term.id });
+    }
+  }
+
+  function handleDelete() {
+    deleteTermMutation.mutate(term.id);
+  }
+
+  function handleToLowerCase() {
+    form.setFieldValue("text", form.getValues().text.toLowerCase());
+  }
+
+  function handleTogglePronunciation() {
+    setPronunciationOpened((v) => !v);
+  }
+
+  function handleToggleNotes() {
+    setNotesOpened((v) => !v);
+  }
+
+  const createTermMutation = useMutation({
+    mutationFn: createTerm,
+    onSuccess: () => {
+      notifications.show(editMode ? termUpdated : termCreated);
+      blankMode && form.reset();
+      !blankMode && bookId && onSetActiveTerm({ data: null });
+      !blankMode && bookId && queryClient.invalidateQueries(["page", bookId]);
+    },
+  });
+
+  const editTermMutation = useMutation({
+    mutationFn: editTerm,
+    onSuccess: () => {
+      notifications.show(termUpdated);
+      bookId && onSetActiveTerm({ data: null });
+      bookId && queryClient.invalidateQueries(["page", bookId]);
+    },
+  });
+
+  const deleteTermMutation = useMutation({
+    mutationFn: deleteTerm,
+    onSuccess: () => {
+      notifications.show(termDeleted);
+      bookId && onSetActiveTerm({ data: null });
+      bookId && queryClient.invalidateQueries(["page", bookId]);
+    },
+  });
+
+  function openConfirmDeleteModal() {
+    modals.openConfirmModal({
+      title: "Delete term",
+      children: (
+        <Text size="sm">
+          Are you sure you want to delete{" "}
+          <Text component="span" fw="bold">
+            {`"${term.text}"`}
+          </Text>
+        </Text>
+      ),
+      labels: { confirm: "Delete", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      onConfirm: handleDelete,
+    });
   }
 
   return (
-    <form>
+    <form onSubmit={form.onSubmit(handleSubmit)} onKeyDown={handleKeydown}>
       <div className={classes.container}>
         <Group gap={4} flex={1}>
           <TextInput
-            readOnly={!!term}
+            readOnly={editMode}
             wrapperProps={{ dir: dir }}
             placeholder="Term"
             withAsterisk
             flex={1}
             rightSection={
-              !term && (
+              blankMode && (
                 <LoadDictsButton
                   enabled={form.getValues().text}
                   onClick={() => onSetTerm(form.getValues().text)}
@@ -102,30 +193,18 @@ function TermForm({
             key={form.key("text")}
             {...form.getInputProps("text")}
           />
-          {term && (
+          {!blankMode && (
             <>
-              <ToLowerCaseButton
-                onClick={() =>
-                  form.setFieldValue(
-                    "text",
-                    form.getValues().text.toLowerCase()
-                  )
-                }
-              />
-              <PronunciationButton
-                onToggle={() => setPronunciationOpened((v) => !v)}
-              />
-              <NotesButton onToggle={() => setNotesOpened((v) => !v)} />
+              <ToLowerCaseButton onClick={handleToLowerCase} />
+              <PronunciationButton onToggle={handleTogglePronunciation} />
+              <NotesButton onToggle={handleToggleNotes} />
             </>
           )}
         </Group>
         <TagsField
           termText={form.getValues().originalText}
           values={parents}
-          onSetValues={(values) => {
-            setParents(values);
-            form.setFieldValue("parents", values);
-          }}
+          onSetValues={handleSetParents}
           onSubmitParent={handleParentSubmit}
           onSetActiveTerm={onSetActiveTerm}
           languageId={language.id}
@@ -188,64 +267,13 @@ function TermForm({
           {...form.getInputProps("termTags")}
         />
 
-        <FormButtons discardLabel={term ? "Delete" : null} />
+        <FormButtons
+          okDisabled={!form.getValues().text}
+          discardLabel={editMode ? "Delete" : null}
+          discardCallback={openConfirmDeleteModal}
+        />
       </div>
     </form>
-  );
-}
-
-function LoadDictsButton({ enabled, onClick }) {
-  return (
-    <Tooltip label="Load dictionaries with the term">
-      <ActionIcon disabled={!enabled} variant="subtle" onClick={onClick}>
-        <IconVocabulary />
-      </ActionIcon>
-    </Tooltip>
-  );
-}
-
-function NotesButton({ onToggle }) {
-  return (
-    <Tooltip label="Show notes">
-      <ActionIcon size="md" variant="subtle" onClick={onToggle}>
-        <IconNotes />
-      </ActionIcon>
-    </Tooltip>
-  );
-}
-
-function PronunciationButton({ onToggle }) {
-  return (
-    <Tooltip label="Show pronunciation">
-      <ActionIcon size="md" variant="subtle" onClick={onToggle}>
-        <IconSpeakerphone />
-      </ActionIcon>
-    </Tooltip>
-  );
-}
-
-function ToLowerCaseButton({ onClick }) {
-  return (
-    <Tooltip label="Make lowercase">
-      <ActionIcon size="md" variant="subtle" onClick={onClick}>
-        <IconLetterCaseLower />
-      </ActionIcon>
-    </Tooltip>
-  );
-}
-
-function TermImage({ src }) {
-  return (
-    <Popover position="left">
-      <Popover.Target>
-        <UnstyledButton>
-          <Image radius={5} w={50} h={50} src={src} />
-        </UnstyledButton>
-      </Popover.Target>
-      <Popover.Dropdown p={0}>
-        <Image mah="200px" src={src} />
-      </Popover.Dropdown>
-    </Popover>
   );
 }
 

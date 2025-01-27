@@ -10,7 +10,7 @@ async function getTermPopup(id) {
 
 async function getTermSuggestions(searchText, langId) {
   const response = await fetch(
-    `http://localhost:5001/api/terms/${searchText}/${langId}`
+    `http://localhost:5001/api/terms/${searchText}/${langId}/suggestions`
   );
   return await response.json();
 }
@@ -34,6 +34,53 @@ async function getTagSuggestions() {
   return await response.json();
 }
 
+async function createTerm(data) {
+  const response = await fetch(`http://localhost:5001/api/terms`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const message = await response.json();
+    throw new Error(message);
+  }
+
+  return await response.json();
+}
+
+async function editTerm(data) {
+  const response = await fetch(`http://localhost:5001/api/terms/${data.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const message = await response.json();
+    throw new Error(message);
+  }
+
+  return await response.json();
+}
+
+async function deleteTerm(id) {
+  const response = await fetch(`http://localhost:5001/api/terms/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const message = await response.json();
+    throw new Error(message);
+  }
+
+  return await response.json();
+}
+
 export {
   getTerm,
   getTermPopup,
@@ -41,4 +88,7 @@ export {
   getSentences,
   getTags,
   getTagSuggestions,
+  createTerm,
+  editTerm,
+  deleteTerm,
 };

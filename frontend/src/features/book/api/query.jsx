@@ -23,7 +23,6 @@ const getPageQuery = (bookId, pageNum) => ({
   queryKey: keys.page(bookId, pageNum),
   queryFn: () => getPage(bookId, pageNum),
   refetchOnWindowFocus: false,
-  refetchOnMount: false,
 });
 
 export { getBooksQuery, getBookQuery, getBookStatsQuery, getPageQuery };

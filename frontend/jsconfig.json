@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@book/*": ["src/features/book/*"],
+      "@language/*": ["src/features/language/*"],
+      "@term/*": ["src/features/term/*"],
+      "@settings/*": ["src/features/settings/*"],
+      "@backup/*": ["src/features/backup/*"],
+      "@common/*": ["src/components/common/*"],
+      "@actions/*": ["src/actions/*"],
+      "@resources/*": ["src/resources/*"],
+      "@hooks/*": ["src/hooks/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

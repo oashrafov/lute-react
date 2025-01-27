@@ -5,10 +5,7 @@ import PageHeader from "./components/PageHeader/PageHeader";
 import Player from "./components/Player/Player";
 import Toolbar from "./components/Toolbar/Toolbar";
 import TheText from "./components/TheText/TheText";
-import {
-  handleClickOutside,
-  resetFocusActiveSentence,
-} from "@actions/interactions-desktop";
+import { handleClickOutside } from "@actions/interactions-desktop";
 import EditTheText from "./components/EditTheText/EditTheText";
 import EditHeader from "./components/EditHeader/EditHeader";
 import ContextMenu from "./components/ContextMenu/ContextMenu";
@@ -73,7 +70,6 @@ function ReadPane({
           const res = handleClickOutside(e);
           if (!res) return;
           onSetActiveTerm(res);
-          resetFocusActiveSentence();
         }}>
         <div
           dir={isRtl ? "rtl" : "ltr"}

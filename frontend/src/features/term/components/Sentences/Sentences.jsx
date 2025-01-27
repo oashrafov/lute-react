@@ -5,7 +5,7 @@ import classes from "./Sentences.module.css";
 
 function Sentences({ langId, termText }) {
   const { data, isSuccess, error } = useQuery(
-    getSentencesQuery(langId, termText)
+    getSentencesQuery(termText, langId)
   );
   if (error) return "An error has occurred: " + error.message;
 

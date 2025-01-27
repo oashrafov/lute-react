@@ -38,7 +38,7 @@ function NewEditTermPage() {
           <Box flex={0.3}>
             <TermForm
               key={term}
-              term={termId ? term : null}
+              term={termId ? term : undefined}
               language={language}
               onSetTerm={setNewTerm}
             />
@@ -51,30 +51,24 @@ function NewEditTermPage() {
                 term={termId ? term.text : newTerm}
               />
             ) : (
-              <Placeholder
-                label="Type term text and click the lookup button to load dictionaries"
-                height={600}
-              />
+              <Placeholder label="Type term text and click the lookup button to load dictionaries" />
             )}
           </Box>
         </Group>
       ) : (
         !termId && (
-          <Placeholder
-            label="Select a language to show the term form"
-            height={600}
-          />
+          <Placeholder label="Select a language to show the term form" />
         )
       )}
     </PageContainer>
   );
 }
 
-function Placeholder({ label, height }) {
+function Placeholder({ label }) {
   return (
     <Paper
       flex={0.3}
-      h={height}
+      h={600}
       shadow="xs"
       withBorder
       style={{
