@@ -1,52 +1,67 @@
+import { useMemo } from "react";
 import { Group, Radio, rem, Text } from "@mantine/core";
 import { IconCheck, IconMinus } from "@tabler/icons-react";
 import classes from "./StatusRadio.module.css";
 
-const radioIcon = (label, props) => (
-  <Text {...props} lh={1} ta="center">
+const radioIcon = (label, size, props) => (
+  <Text
+    {...props}
+    style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+    lh={1}
+    fw={500}
+    fz={size}>
     {label}
   </Text>
 );
 
-const radios = [
+const getRadios = (size) => [
   {
     value: "1",
-    icon: (props) => radioIcon(1, props),
+    icon: (props) => radioIcon(1, size, props),
   },
   {
     value: "2",
-    icon: (props) => radioIcon(2, props),
+    icon: (props) => radioIcon(2, size, props),
   },
   {
     value: "3",
-    icon: (props) => radioIcon(3, props),
+    icon: (props) => radioIcon(3, size, props),
   },
   {
     value: "4",
-    icon: (props) => radioIcon(4, props),
+    icon: (props) => radioIcon(4, size, props),
   },
   {
     value: "5",
-    icon: (props) => radioIcon(5, props),
+    icon: (props) => radioIcon(5, size, props),
   },
   {
     value: "99",
-    icon: IconCheck,
+    icon: (props) => radioIcon(<IconCheck />, size, props),
   },
   {
     value: "98",
-    icon: IconMinus,
+    icon: (props) => radioIcon(<IconMinus />, size, props),
   },
 ];
 
-function StatusRadio({ form, disabled = false }) {
+function StatusRadio({
+  form = null,
+  disabled = false,
+  size = "md",
+  value = "0",
+  onChange = null,
+}) {
   const statusColor = (id) => `var(--lute-color-highlight-status${id})`;
   const iconColor = (id) => `var(--lute-text-color-status${id})`;
+  const radios = useMemo(() => getRadios(size), [size]);
   return (
     <Radio.Group
       name="status"
-      key={form.key("status")}
-      {...form.getInputProps("status")}>
+      value={value}
+      onChange={onChange}
+      key={form?.key("status")}
+      {...form?.getInputProps("status")}>
       <Group justify="flex-start" gap={2} wrap="nowrap">
         {radios.map((radio) => (
           <Radio
@@ -59,7 +74,7 @@ function StatusRadio({ form, disabled = false }) {
                 border: "none",
               },
             }}
-            size="md"
+            size={size}
             disabled={disabled}
             value={disabled ? "" : radio.value}
             name={radio.value}

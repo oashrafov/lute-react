@@ -1,5 +1,7 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Badge, Image, Pill, PillGroup, Text } from "@mantine/core";
+import { Badge, Image, TagsInput, Text, Textarea } from "@mantine/core";
 import {
   IconCheck,
   IconMinus,
@@ -10,6 +12,11 @@ import {
   IconNumber4,
   IconNumber5,
 } from "@tabler/icons-react";
+import StatusRadio from "../StatusRadio/StatusRadio";
+import PillCell from "./components/PillCell";
+import { buildSuggestionsList } from "@actions/utils";
+import { getTermSuggestionsQuery } from "@term/api/query";
+import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "@resources/constants";
 
 const status = {
   0: { icon: IconNumber0, label: "Unknown" },
@@ -43,17 +50,60 @@ const columnDefinition = (languageChoices, tagChoices) => [
       <Link
         to={`/terms/term?termId=${row.original.id}&langId=${row.original.languageId}`}
         style={{ color: "inherit", textDecoration: "none" }}>
-        <Text size="sm" lineClamp={1}>
+        <Text
+          size="sm"
+          lineClamp={1}
+          ta={row.original.languageRtl ? "right" : "left"}>
           {row.original.text}
         </Text>
       </Link>
     ),
+    enableEditing: false,
   },
   {
     header: "PARENT",
-    accessorKey: "parentText",
+    accessorKey: "parentsString",
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     minSize: 200,
+    Cell: ({ row }) => {
+      const parentsList = row.original.parentsString
+        ? row.original.parentsString.split(",")
+        : [];
+      return <PillCell tagsList={parentsList} />;
+    },
+    Edit: ({ row, cell }) => {
+      const parentsList = row.original.parentsString
+        ? row.original.parentsString.split(",")
+        : [];
+
+      const [search, setSearch] = useState("");
+      const [value, setValue] = useState(parentsList);
+      const { data } = useQuery(
+        getTermSuggestionsQuery(search, row.original.languageId)
+      );
+
+      const suggestions = data
+        ? buildSuggestionsList(row.original.text, data).map(
+            (item) => item.suggestion
+          )
+        : [];
+
+      return (
+        <TagsInput
+          size="xs"
+          w={160}
+          searchValue={search}
+          onSearchChange={setSearch}
+          data={suggestions}
+          limit={MAX_PARENT_TAG_SUGGESTION_COUNT}
+          value={value}
+          onChange={(parents) => {
+            cell.row._valuesCache[cell.column.id] = parents.join(",");
+            setValue(parents);
+          }}
+        />
+      );
+    },
   },
   {
     header: "TRANSLATION",
@@ -72,6 +122,68 @@ const columnDefinition = (languageChoices, tagChoices) => [
             <Image src={`http://localhost:5001${img}`} h={150} w="auto" />
           )}
         </>
+      );
+    },
+    Edit: ({ row, cell }) => {
+      const [value, setValue] = useState(cell.getValue());
+      const img = row.original.image;
+      return (
+        <>
+          <Textarea
+            wrapperProps={{ dir: row.original.languageRtl ? "rtl" : "ltr" }}
+            value={value}
+            rows={1}
+            size="xs"
+            autosize
+            spellCheck={false}
+            autoCapitalize="off"
+            onChange={(e) => {
+              setValue(e.target.value);
+              cell.row._valuesCache[cell.column.id] = e.target.value;
+            }}
+          />
+          {img && (
+            <Image
+              mt={5}
+              src={`http://localhost:5001${img}`}
+              h={150}
+              w="auto"
+            />
+          )}
+        </>
+      );
+    },
+  },
+  {
+    header: "TAGS",
+    id: "tagsString",
+    mantineFilterSelectProps: {
+      data: tagChoices,
+    },
+    filterVariant: "select",
+    columnFilterModeOptions: false,
+    accessorKey: "tagsString",
+    Cell: ({ row }) => {
+      const tagsList = row.original.tagsString
+        ? row.original.tagsString.split(",")
+        : [];
+      return <PillCell tagsList={tagsList} />;
+    },
+    Edit: ({ cell }) => {
+      const tagsList = cell.getValue() ? cell.getValue().split(",") : [];
+      const [value, setValue] = useState(tagsList);
+
+      return (
+        <TagsInput
+          size="xs"
+          w={160}
+          data={tagChoices}
+          value={value}
+          onChange={(tags) => {
+            cell.row._valuesCache[cell.column.id] = tags.join(",");
+            setValue(tags);
+          }}
+        />
       );
     },
   },
@@ -119,6 +231,19 @@ const columnDefinition = (languageChoices, tagChoices) => [
       ],
       label: (value) => status[value].label,
     },
+    Edit: ({ row, cell }) => {
+      const [value, setValue] = useState(String(row.original.statusId));
+      return (
+        <StatusRadio
+          size="sm"
+          value={value}
+          onChange={(v) => {
+            cell.row._valuesCache[cell.column.id] = v;
+            setValue(v);
+          }}
+        />
+      );
+    },
   },
   {
     header: "LANGUAGE",
@@ -129,23 +254,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
       data: languageChoices.map((lang) => lang.name),
     },
     enableClickToCopy: false,
-  },
-  {
-    header: "TAGS",
-    id: "tags",
-    mantineFilterSelectProps: {
-      data: tagChoices,
-    },
-    filterVariant: "select",
-    columnFilterModeOptions: false,
-    accessorFn: (row) => (row.tags.length > 0 ? row.tags.join() : ""),
-    Cell: ({ row }) => (
-      <PillGroup gap={4}>
-        {row.original.tags.map((tag) => (
-          <Pill key={tag}>{tag}</Pill>
-        ))}
-      </PillGroup>
-    ),
+    enableEditing: false,
   },
   {
     header: "ADDED ON",
@@ -158,6 +267,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     mantineFilterDateInputProps: {
       miw: 100,
     },
+    enableEditing: false,
   },
 ];
 

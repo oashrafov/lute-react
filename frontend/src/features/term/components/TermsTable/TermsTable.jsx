@@ -33,6 +33,20 @@ function TermsTable({ languageChoices, tagChoices }) {
     [languageChoices, tagChoices]
   );
 
+  const handleSaveRow = async ({ table, values }) => {
+    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
+    // tableData[row.index] = values;
+    // const data = {
+    //   parentText: values.parentText,
+    //   translation: values.translation,
+    //   tags: values.tags,
+    //   status: values.status,
+    // };
+    console.log(values);
+    //send/receive api updates here
+    table.setEditingRow(null); //exit editing mode
+  };
+
   const [editModalOpened, setEditModalOpened] = useState(false);
 
   const [showParentsOnly, setShowParentsOnly] = useState(false);
@@ -43,7 +57,7 @@ function TermsTable({ languageChoices, tagChoices }) {
   const [columnFilterFns, setColumnFilterFns] = useState(COLUMN_FILTER_FNS);
 
   const [columnVisibility, setColumnVisibility] = useState({
-    tags: false,
+    // tags: false,
     createdOn: false,
     parentText: true,
   });
@@ -94,9 +108,21 @@ function TermsTable({ languageChoices, tagChoices }) {
       columnVisibility,
     },
 
+    displayColumnDefOptions: {
+      "mrt-row-actions": {
+        header: "",
+      },
+    },
+
+    mantineTableBodyCellProps: {
+      valign: "top",
+    },
+
     enableClickToCopy: true,
     enableRowSelection: true,
     enableColumnFilterModes: true,
+    enableEditing: true,
+    editDisplayMode: "row",
 
     manualFiltering: true,
     manualPagination: true,
@@ -107,6 +133,7 @@ function TermsTable({ languageChoices, tagChoices }) {
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
+    onEditingRowSave: handleSaveRow,
 
     getRowId: (originalRow) => originalRow.id,
 

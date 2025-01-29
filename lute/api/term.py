@@ -51,6 +51,7 @@ def get_all_terms(params):
                 SELECT w.WoID AS WoID,
                     LgName,
                     L.LgID AS LgID,
+                    L.LgRightToLeft as LgRightToLeft,
                     w.WoText AS WoText,
                     parents.parentlist AS ParentText,
                     w.WoTranslation,
@@ -104,12 +105,12 @@ def get_all_terms(params):
     # Mapping fields to their respective database columns
     field_mapping = {
         "text": "WoText",
-        "parentText": "ParentText",
+        "parentsString": "ParentText",
         "translation": "WoTranslation",
         "language": "LgName",
         "status": "StID",
         "createdOn": "WoCreated",
-        "tags": "TagList",
+        "tagsString": "TagList",
     }
     # Apply Filters
     for flt in params["filters"]:
@@ -175,7 +176,9 @@ def get_all_terms(params):
             # Check if the field is valid and append the corresponding sort clause
             if field in field_mapping:
                 sort_direction = "DESC" if desc_order else "ASC"
-                sort_clauses.append(f"{field_mapping[field]} {sort_direction}")
+                sort_clauses.append(
+                    f"{field_mapping[field]} {sort_direction} NULLS LAST"
+                )
 
     # Add the ORDER BY clause
     if sort_clauses:
@@ -196,14 +199,15 @@ def get_all_terms(params):
                 "id": row.WoID,
                 "language": row.LgName,
                 "languageId": row.LgID,
+                "languageRtl": row.LgRightToLeft == 1,
                 "text": row.WoText,
-                "parentText": row.ParentText,
+                "parentsString": row.ParentText,
                 "translation": row.WoTranslation,
                 "romanization": row.WoRomanization,
                 "statusId": row.StID,
                 "image": row.WiSource,
                 "createdOn": row.WoCreated,
-                "tags": row.TagList.split(",") if row.TagList else [],
+                "tagsString": row.TagList,
                 # "statusLabel": row.StText,
             }
         )

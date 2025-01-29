@@ -54,6 +54,7 @@ def get_books():
         SELECT
             books.BkID As BkID,
             LgName,
+            languages.LgRightToLeft as LgRightToLeft,
             BkLgID,
             BkSourceURI,
             BkTitle,
@@ -227,6 +228,7 @@ def get_books():
                 "id": row.BkID,
                 "language": row.LgName,
                 "languageId": row.BkLgID,
+                "languageRtl": row.LgRightToLeft == 1,
                 "source": row.BkSourceURI or "",
                 "audioName": row.BkAudioFilename or "",
                 "title": row.BkTitle,

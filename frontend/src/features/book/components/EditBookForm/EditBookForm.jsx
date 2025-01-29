@@ -18,12 +18,9 @@ import FormButtons from "@common/FormButtons/FormButtons";
 import { getFormDataFromObj } from "@actions/utils";
 import { useQuery } from "@tanstack/react-query";
 import { initialQuery } from "@settings/api/settings";
-import { definedLangInfoQuery } from "@language/api/language";
 
 function EditBookForm({ book, onSubmit, onCloseModal }) {
   const { data: initial } = useQuery(initialQuery);
-  const { data: language } = useQuery(definedLangInfoQuery(book.languageId));
-
   const [existingAudioName, setExistingAudioName] = useState(book.audioName);
 
   function handleClearAudio() {
@@ -50,15 +47,13 @@ function EditBookForm({ book, onSubmit, onCloseModal }) {
     }),
   });
 
-  if (!language) return;
-
   return (
     <form
       onSubmit={form.onSubmit((data) =>
         handleSubmit(getFormDataFromObj({ ...data, action: "edit" }))
       )}>
       <TextInput
-        wrapperProps={{ dir: language.isRightToLeft ? "rtl" : "ltr" }}
+        wrapperProps={{ dir: book.languageRtl ? "rtl" : "ltr" }}
         required
         withAsterisk
         label="Title"
