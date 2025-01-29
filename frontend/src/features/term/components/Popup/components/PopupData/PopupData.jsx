@@ -1,6 +1,6 @@
 // lute\templates\read\termpopup.html
-
-import { Group, Pill, PillGroup, Text, Tooltip } from "@mantine/core";
+import { Group, Text, Tooltip } from "@mantine/core";
+import TagsGroup from "@common/TagsGroup/TagsGroup";
 import classes from "./PopupData.module.css";
 
 function PopupData({ data }) {
@@ -9,13 +9,7 @@ function PopupData({ data }) {
       <div className={classes.container}>
         <Group gap={5} wrap="nowrap">
           <span className={classes.term}>{data.text}</span>
-          {data.tags.length > 0 && (
-            <PillGroup gap={4}>
-              {data.tags.map((tag) => (
-                <Pill key={tag}>{tag}</Pill>
-              ))}
-            </PillGroup>
-          )}
+          {data.tags.length > 0 && <TagsGroup tags={data.tags} />}
         </Group>
 
         {data.pronunciation && <em>{data.pronunciation}</em>}
@@ -64,13 +58,7 @@ function Section({ data }) {
           }}
         />
         {d.pronunciation && <em>({d.pronunciation})</em>}
-        {d.tags.length > 0 && (
-          <PillGroup gap={4}>
-            {d.tags.map((tag) => (
-              <Pill key={tag}>{tag}</Pill>
-            ))}
-          </PillGroup>
-        )}
+        {d.tags.length > 0 && <TagsGroup tags={d.tags} />}
       </Group>
       {d.translation && (
         <span

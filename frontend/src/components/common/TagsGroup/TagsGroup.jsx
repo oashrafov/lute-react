@@ -1,10 +1,10 @@
 import { Pill, PillGroup } from "@mantine/core";
-import classes from "../TermsTable.module.css";
+import classes from "./TagsGroup.module.css";
 
-function PillCell({ tagsList }) {
+function TagsGroup({ tags }) {
   return (
     <PillGroup gap={4}>
-      {tagsList.map((tag) => (
+      {tags.map((tag) => (
         <Pill
           key={tag}
           classNames={{
@@ -17,4 +17,4 @@ function PillCell({ tagsList }) {
   );
 }
 
-export default PillCell;
+export default TagsGroup;

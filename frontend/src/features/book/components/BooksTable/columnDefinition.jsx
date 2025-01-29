@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Group, Pill, PillGroup, Text, ThemeIcon } from "@mantine/core";
+import { Group, Text, ThemeIcon } from "@mantine/core";
 import {
   IconArchiveFilled,
   IconCircleCheckFilled,
   IconHeadphonesFilled,
 } from "@tabler/icons-react";
+import TagsGroup from "@common/TagsGroup/TagsGroup";
 import StatsBar from "../StatsBar/StatsBar";
 import { getBookStatsQuery } from "../../api/query";
 import dayjs from "dayjs";
@@ -104,13 +105,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     filterVariant: "select",
     columnFilterModeOptions: false,
     accessorFn: (row) => (row.tags.length > 0 ? row.tags.join() : ""),
-    Cell: ({ row }) => (
-      <PillGroup gap={4}>
-        {row.original.tags.map((tag) => (
-          <Pill key={tag}>{tag}</Pill>
-        ))}
-      </PillGroup>
-    ),
+    Cell: ({ row }) => <TagsGroup tags={row.original.tags} />,
   },
   {
     header: "LAST READ",

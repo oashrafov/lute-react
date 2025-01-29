@@ -13,7 +13,7 @@ import {
   IconNumber5,
 } from "@tabler/icons-react";
 import StatusRadio from "../StatusRadio/StatusRadio";
-import PillCell from "./components/PillCell";
+import TagsGroup from "@common/TagsGroup/TagsGroup";
 import TermImage from "../TermImage/TermImage";
 import { buildSuggestionsList } from "@actions/utils";
 import { getTermSuggestionsQuery } from "@term/api/query";
@@ -69,7 +69,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
       const parentsList = row.original.parentsString
         ? row.original.parentsString.split(",")
         : [];
-      return <PillCell tagsList={parentsList} />;
+      return <TagsGroup tags={parentsList} />;
     },
     Edit: ({ row, cell }) => {
       const parentsList = row.original.parentsString
@@ -168,7 +168,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
       const tagsList = row.original.tagsString
         ? row.original.tagsString.split(",")
         : [];
-      return <PillCell tagsList={tagsList} />;
+      return <TagsGroup tags={tagsList} />;
     },
     Edit: ({ cell }) => {
       const tagsList = cell.getValue() ? cell.getValue().split(",") : [];
