@@ -20,7 +20,7 @@ import LoadDictsButton from "./components/LoadDictsButton";
 import ToLowerCaseButton from "./components/ToLowerCaseButton";
 import PronunciationButton from "./components/PronunciationButton";
 import NotesButton from "./components/NotesButton";
-import TermImage from "./components/TermImage";
+import TermImage from "../TermImage/TermImage";
 import useTermForm from "./hooks/useTermForm";
 import { moveCursorToEnd } from "@actions/utils";
 import { getTagSuggestionsQuery } from "../../api/query";

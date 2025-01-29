@@ -14,6 +14,7 @@ import {
 } from "@tabler/icons-react";
 import StatusRadio from "../StatusRadio/StatusRadio";
 import PillCell from "./components/PillCell";
+import TermImage from "../TermImage/TermImage";
 import { buildSuggestionsList } from "@actions/utils";
 import { getTermSuggestionsQuery } from "@term/api/query";
 import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "@resources/constants";
@@ -45,7 +46,6 @@ const columnDefinition = (languageChoices, tagChoices) => [
     accessorKey: "text",
     minSize: 300,
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
-    enableClickToCopy: false,
     Cell: ({ row }) => (
       <Link
         to={`/terms/term?termId=${row.original.id}&langId=${row.original.languageId}`}
@@ -119,24 +119,24 @@ const columnDefinition = (languageChoices, tagChoices) => [
             {row.original.translation}
           </Text>
           {img && (
-            <Image src={`http://localhost:5001${img}`} h={150} w="auto" />
+            <TermImage position="right" src={`http://localhost:5001${img}`} />
           )}
         </>
       );
     },
     Edit: ({ row, cell }) => {
-      const [value, setValue] = useState(cell.getValue());
+      const [value, setValue] = useState(cell.getValue() ?? "");
       const img = row.original.image;
       return (
         <>
           <Textarea
             wrapperProps={{ dir: row.original.languageRtl ? "rtl" : "ltr" }}
-            value={value}
             rows={1}
             size="xs"
             autosize
             spellCheck={false}
             autoCapitalize="off"
+            value={value}
             onChange={(e) => {
               setValue(e.target.value);
               cell.row._valuesCache[cell.column.id] = e.target.value;
@@ -146,8 +146,9 @@ const columnDefinition = (languageChoices, tagChoices) => [
             <Image
               mt={5}
               src={`http://localhost:5001${img}`}
-              h={150}
-              w="auto"
+              radius={5}
+              h={50}
+              w={50}
             />
           )}
         </>
@@ -192,7 +193,6 @@ const columnDefinition = (languageChoices, tagChoices) => [
     id: "status",
     filterVariant: "range-slider",
     enableColumnFilterModes: false,
-    enableClickToCopy: false,
     size: 210,
     accessorFn: (row) => {
       let id = row.statusId;
@@ -253,7 +253,6 @@ const columnDefinition = (languageChoices, tagChoices) => [
     mantineFilterSelectProps: {
       data: languageChoices.map((lang) => lang.name),
     },
-    enableClickToCopy: false,
     enableEditing: false,
   },
   {
@@ -262,7 +261,6 @@ const columnDefinition = (languageChoices, tagChoices) => [
     filterVariant: "date-range",
     accessorFn: (originalRow) => new Date(originalRow.createdOn),
     columnFilterModeOptions: false,
-    enableClickToCopy: false,
     Cell: ({ cell }) => dateFormatter.format(cell.getValue()),
     mantineFilterDateInputProps: {
       miw: 100,

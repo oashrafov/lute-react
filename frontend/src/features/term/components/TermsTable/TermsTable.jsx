@@ -118,7 +118,6 @@ function TermsTable({ languageChoices, tagChoices }) {
       valign: "top",
     },
 
-    enableClickToCopy: true,
     enableRowSelection: true,
     enableColumnFilterModes: true,
     enableEditing: true,
