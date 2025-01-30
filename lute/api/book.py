@@ -24,57 +24,12 @@ from lute.api.sql.book import sql as base_sql
 bp = Blueprint("api_books", __name__, url_prefix="/api/books")
 
 
-def parse_url_params():
-    """
-    parse table url params
-    """
-    # Pagination
-    start = int(request.args.get("start", 0))  # Starting index
-    size = int(request.args.get("size", 10))  # Page size
-    # Filters
-    global_filter = request.args.get("globalFilter", "").strip()
-    # [{"id": "title", "value": "Book"}]
-    filters = json.loads(request.args.get("filters", "[]"))
-    # {"title": "contains"}
-    filter_modes = json.loads(request.args.get("filterModes", "{}"))
-    # Sorting [{"id": "WordCount", "desc": True}]
-    sorting = json.loads(request.args.get("sorting", "[]"))
-
-    return start, size, filters, filter_modes, global_filter, sorting
-
-
-def get_filter(typ, item, value, num=False):
-    """
-    map filter type to sql condition
-    """
-    if num:
-        value = int(value)
-
-    flt = {
-        "contains": f" AND {item} LIKE '%{value}%'",
-        "startsWith": f" AND {item} LIKE '{value}%'",
-        "endsWith": f" AND {item} LIKE '%{value}'",
-        "equalsStr": f" AND {item} = '{value}'",
-        "equalsNum": f" AND {item} = {value}",
-        "greaterThan": f" AND {item} > {value}",
-        "lessThan": f" AND {item} < {value}",
-        "notEquals": f" AND {item} != {value}",
-    }
-
-    if typ == "equals" and num:
-        typ = "equalsNum"
-    if typ == "equals" and not num:
-        typ = "equalsStr"
-
-    return flt[typ]
-
-
 @bp.route("/", methods=["GET"])
 def get_books():
     "Get all books applying filters and sorting"
 
     shelf = request.args.get("shelf", "active")
-    start, size, filters, filter_modes, global_filter, sorting = parse_url_params()
+    start, size, filters, filter_modes, global_filter, sorting = _parse_url_params()
 
     where = [f"WHERE LgParserType in ({ supported_parser_type_criteria() })"]
     if shelf == "active":
@@ -98,7 +53,7 @@ def get_books():
         mode = filter_modes.get(field, "contains")
 
         where.append(
-            get_filter(mode, fields[field]["column"], value, fields[field]["num"])
+            _get_filter(mode, fields[field]["column"], value, fields[field]["num"])
         )
 
     # Apply Global Filter
@@ -427,7 +382,7 @@ def commit_page(bookid, pagenum):
 
 
 @bp.route("<int:bookid>/audio", methods=["GET"])
-def stream(bookid):
+def get_audio(bookid):
     "Serve the audio, no caching."
     dirname = current_app.env_config.useraudiopath
     br = BookRepository(db.session)
@@ -437,7 +392,7 @@ def stream(bookid):
 
 
 @bp.route("/<int:bookid>/stats", methods=["GET"])
-def book_stats(bookid):
+def get_stats(bookid):
     "Calc stats for the book using the status distribution."
     book = _find_book(bookid)
     svc = StatsService(db.session)
@@ -519,3 +474,48 @@ def _paragraphs_to_dict_array(paragraphs):
         ]
         for paragraph in paragraphs
     ]
+
+
+def _parse_url_params():
+    """
+    parse table url params
+    """
+    # Pagination
+    start = int(request.args.get("start", 0))  # Starting index
+    size = int(request.args.get("size", 10))  # Page size
+    # Filters
+    global_filter = request.args.get("globalFilter", "").strip()
+    # [{"id": "title", "value": "Book"}]
+    filters = json.loads(request.args.get("filters", "[]"))
+    # {"title": "contains"}
+    filter_modes = json.loads(request.args.get("filterModes", "{}"))
+    # Sorting [{"id": "WordCount", "desc": True}]
+    sorting = json.loads(request.args.get("sorting", "[]"))
+
+    return start, size, filters, filter_modes, global_filter, sorting
+
+
+def _get_filter(typ, item, value, num=False):
+    """
+    map filter type to sql condition
+    """
+    if num:
+        value = int(value)
+
+    flt = {
+        "contains": f" AND {item} LIKE '%{value}%'",
+        "startsWith": f" AND {item} LIKE '{value}%'",
+        "endsWith": f" AND {item} LIKE '%{value}'",
+        "equalsStr": f" AND {item} = '{value}'",
+        "equalsNum": f" AND {item} = {value}",
+        "greaterThan": f" AND {item} > {value}",
+        "lessThan": f" AND {item} < {value}",
+        "notEquals": f" AND {item} != {value}",
+    }
+
+    if typ == "equals" and num:
+        typ = "equalsNum"
+    if typ == "equals" and not num:
+        typ = "equalsStr"
+
+    return flt[typ]
