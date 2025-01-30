@@ -22,12 +22,13 @@ import { editBook, deleteBook } from "../../api/api";
 import { bookDeleted, bookUpdated } from "../../resources/notifications";
 import { keys } from "../../api/keys";
 import { getFormDataFromObj } from "@actions/utils";
+import { DEFAULT_TABLE_ROW_COUNT } from "@resources/constants";
 
 const defaultOptions = getDefaultTableOptions();
 
 const PAGINATION = {
   pageIndex: 0,
-  pageSize: 10,
+  pageSize: DEFAULT_TABLE_ROW_COUNT,
 };
 
 const COLUMN_FILTER_FNS = {
@@ -122,7 +123,7 @@ function BooksTable({ languageChoices, tagChoices }) {
 
     columns: columns,
     data: books?.data || [],
-    rowCount: books?.total,
+    rowCount: books?.filteredCount,
 
     initialState: {
       ...defaultOptions.initialState,
