@@ -10,6 +10,7 @@ import PageSpinner from "@common/PageSpinner/PageSpinner";
 import useNavigationProgress from "@hooks/useNavigationProgress";
 import useDocumentTitle from "@hooks/useDocumentTitle";
 import TranslationPane from "../TranslationPane/TranslationPane";
+import FloatingTermForm from "@term/components/FloatingTermForm/FloatingTermForm";
 import ReadPane from "../ReadPane/ReadPane";
 import { getBookQuery } from "../../api/query";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
@@ -75,69 +76,78 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   }
 
   return (
-    <PanelGroup
-      style={{ height: "100vh" }}
-      className="readpage"
-      autoSaveId="Lute.horizontalSize"
-      direction="horizontal"
-      storage={paneResizeStorage}>
-      <Panel
-        order={1}
-        defaultSize={50}
-        minSize={30}
-        className={classes.paneLeft}>
-        <ReadPane
-          book={book}
-          isRtl={language.isRightToLeft}
-          state={state}
-          dispatch={dispatch}
-          activeTerm={activeTerm}
-          onSetActiveTerm={setActiveTerm}
-          onDrawerOpen={onDrawerOpen}
-        />
-      </Panel>
+    <>
+      <FloatingTermForm
+        term={term}
+        language={language}
+        onSetActiveTerm={setActiveTerm}
+        show={state.focusMode && showTranslationPane}
+      />
 
-      {!state.focusMode && (
-        <>
-          <PanelResizeHandle
-            hitAreaMargins={{ coarse: 10, fine: 10 }}
-            className={classes.resizeHandle}
-            onDoubleClick={onDblClickResize}
+      <PanelGroup
+        style={{ height: "100vh" }}
+        className="readpage"
+        autoSaveId="Lute.horizontalSize"
+        direction="horizontal"
+        storage={paneResizeStorage}>
+        <Panel
+          order={1}
+          defaultSize={50}
+          minSize={30}
+          className={classes.paneLeft}>
+          <ReadPane
+            book={book}
+            isRtl={language.isRightToLeft}
+            state={state}
+            dispatch={dispatch}
+            activeTerm={activeTerm}
+            onSetActiveTerm={setActiveTerm}
+            onDrawerOpen={onDrawerOpen}
           />
+        </Panel>
 
-          <Panel
-            ref={paneRightRef}
-            defaultSize={50}
-            order={2}
-            collapsible={true}
-            minSize={5}>
-            {showTranslationPane && (
-              <TranslationPane
-                term={term}
-                language={language}
-                activeTab={activeTab}
-                onSetActiveTab={setActiveTab}
-                onSetActiveTerm={setActiveTerm}
-              />
-            )}
-            {showBulkTermForm && (
-              <Box p={20} h="100%">
-                <Suspense fallback={<PageSpinner />}>
-                  <BulkTermForm terms={activeTerm.data} />
-                </Suspense>
-              </Box>
-            )}
-            {showThemeForm && (
-              <Box p={20} h="100%">
-                <Suspense fallback={<PageSpinner />}>
-                  <ThemeForm onClose={() => onThemeFormOpen(false)} />
-                </Suspense>
-              </Box>
-            )}
-          </Panel>
-        </>
-      )}
-    </PanelGroup>
+        {!state.focusMode && (
+          <>
+            <PanelResizeHandle
+              hitAreaMargins={{ coarse: 10, fine: 10 }}
+              className={classes.resizeHandle}
+              onDoubleClick={onDblClickResize}
+            />
+
+            <Panel
+              ref={paneRightRef}
+              defaultSize={50}
+              order={2}
+              collapsible={true}
+              minSize={5}>
+              {showTranslationPane && (
+                <TranslationPane
+                  term={term}
+                  language={language}
+                  activeTab={activeTab}
+                  onSetActiveTab={setActiveTab}
+                  onSetActiveTerm={setActiveTerm}
+                />
+              )}
+              {showBulkTermForm && (
+                <Box p={20} h="100%">
+                  <Suspense fallback={<PageSpinner />}>
+                    <BulkTermForm terms={activeTerm.data} />
+                  </Suspense>
+                </Box>
+              )}
+              {showThemeForm && (
+                <Box p={20} h="100%">
+                  <Suspense fallback={<PageSpinner />}>
+                    <ThemeForm onClose={() => onThemeFormOpen(false)} />
+                  </Suspense>
+                </Box>
+              )}
+            </Panel>
+          </>
+        )}
+      </PanelGroup>
+    </>
   );
 }
 
