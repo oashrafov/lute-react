@@ -1,11 +1,12 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Box, Center, Group, Loader } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { definedLangInfoQuery } from "@language/api/language";
 import { getTermQuery } from "@term/api/query";
 import { paneResizeStorage } from "@actions/utils";
+import PageSpinner from "@common/PageSpinner/PageSpinner";
 import useNavigationProgress from "@hooks/useNavigationProgress";
 import useDocumentTitle from "@hooks/useDocumentTitle";
 import TranslationPane from "../TranslationPane/TranslationPane";
@@ -120,23 +121,18 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
               />
             )}
             {showBulkTermForm && (
-              <Box p={20}>
-                <Suspense
-                  fallback={
-                    <Center>
-                      <Loader />
-                    </Center>
-                  }>
+              <Box p={20} h="100%">
+                <Suspense fallback={<PageSpinner />}>
                   <BulkTermForm terms={activeTerm.data} />
                 </Suspense>
               </Box>
             )}
             {showThemeForm && (
-              <Group justify="center" align="center" h="100%" p={10}>
-                <Suspense fallback={<Loader />}>
+              <Box p={20} h="100%">
+                <Suspense fallback={<PageSpinner />}>
                   <ThemeForm onClose={() => onThemeFormOpen(false)} />
                 </Suspense>
-              </Group>
+              </Box>
             )}
           </Panel>
         </>
