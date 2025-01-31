@@ -1,21 +1,20 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Box, Center, Group, Loader } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { definedLangInfoQuery } from "@language/api/language";
 import { getTermQuery } from "@term/api/query";
-import { paneResizeStorage, getFormDataFromObj } from "@actions/utils";
+import { paneResizeStorage } from "@actions/utils";
 import useNavigationProgress from "@hooks/useNavigationProgress";
 import useDocumentTitle from "@hooks/useDocumentTitle";
 import TranslationPane from "../TranslationPane/TranslationPane";
 import ReadPane from "../ReadPane/ReadPane";
 import { getBookQuery } from "../../api/query";
-import { editBook } from "../../api/api";
-import { keys } from "../../api/keys";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
 import useBookState from "../../hooks/useBookState";
 import usePrefetchPages from "@book/hooks/usePrefetchPages";
+import useMarkAsStale from "@book/hooks/useMarkAsStale";
 import {
   resetFocusActiveSentence,
   startHoverMode,
@@ -30,8 +29,6 @@ const BulkTermForm = lazy(
 );
 
 function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
-  const queryClient = useQueryClient();
-
   const { id, page: pageNum } = useParams();
   const [params] = useSearchParams();
   const editMode = params.get("edit") === "true";
@@ -55,6 +52,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   useNavigationProgress();
   useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen);
   usePrefetchPages(id, pageNum, book.pageCount);
+  useMarkAsStale(id);
 
   const showTranslationPane =
     activeTerm.data && activeTerm.type !== "shift" && term && !themeFormOpen;
@@ -62,19 +60,6 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const showThemeForm = themeFormOpen && !editMode;
 
   const paneRightRef = useRef(null);
-
-  const { mutate: markAsStaleMutate } = useMutation({
-    mutationFn: editBook,
-    onSuccess: (response) =>
-      queryClient.invalidateQueries(keys.stats(response.id)),
-  });
-
-  useEffect(() => {
-    markAsStaleMutate({
-      id,
-      data: getFormDataFromObj({ action: "markAsStale" }),
-    });
-  }, [id, markAsStaleMutate]);
 
   useEffect(() => {
     if (!activeTerm.data) {
