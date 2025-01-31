@@ -3,7 +3,6 @@ import {
   Button,
   Group,
   Paper,
-  rem,
   Stack,
   Text,
   Tooltip,
@@ -31,7 +30,7 @@ function EditHeader({ book, page, onSetEdit }) {
       shadow="sm"
       style={{ padding: "1rem 2rem" }}
       classNames={{ root: "readpage" }}>
-      <Group justify="space-between" wrap="nowrap" mb={rem(10)}>
+      <Group justify="space-between" wrap="nowrap" mb={10}>
         <span>
           Editing:{" "}
           <Text
@@ -43,7 +42,7 @@ function EditHeader({ book, page, onSetEdit }) {
             {book.title}
           </Text>
         </span>
-        <Group gap={rem(2)} wrap="nowrap">
+        <Group gap={2} wrap="nowrap">
           <Text
             component="span"
             fw={500}
@@ -69,8 +68,8 @@ function EditHeader({ book, page, onSetEdit }) {
           leftSection={<IconFileArrowLeft />}>
           Add page before
         </Button>
-        <Stack gap={rem(5)}>
-          <Group gap={rem(5)} justify="center" wrap="nowrap">
+        <Stack gap={5}>
+          <Group gap={5} justify="center" wrap="nowrap">
             <Button
               color="green"
               onClick={handleSave}

@@ -18,21 +18,23 @@ import {
   removeAllContainingClassWithTimeout,
 } from "@actions/utils";
 
-function ContextMenu({ forwardedRef }) {
+function ContextMenu({ contextMenuAreaRef, show }) {
   const [coords, setCoords] = useState({ clientX: null, clientY: null });
   const selectedTextItemRef = useRef();
 
   const menuRef = useClickOutside(() => {
     setCoords({ clientX: null, clientY: null });
-    forwardedRef.current.removeEventListener("wheel", disableScroll);
+    contextMenuAreaRef.current.removeEventListener("wheel", disableScroll);
   });
 
   const validCoords = coords.clientX !== null && coords.clientY !== null;
 
   useEffect(() => {
-    const ref = forwardedRef.current;
+    const ref = contextMenuAreaRef.current;
 
     function handleContextMenu(e) {
+      if (!show) return;
+
       e.preventDefault();
       const { clientX, clientY } = e;
       setCoords({ clientX, clientY });

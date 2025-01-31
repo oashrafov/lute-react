@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ScrollArea, Title } from "@mantine/core";
 import PageHeader from "./components/PageHeader/PageHeader";
@@ -8,8 +8,6 @@ import TheText from "./components/TheText/TheText";
 import { handleClickOutside } from "@actions/interactions-desktop";
 import EditTheText from "./components/EditTheText/EditTheText";
 import EditHeader from "./components/EditHeader/EditHeader";
-import ContextMenu from "./components/ContextMenu/ContextMenu";
-import { useQuery } from "@tanstack/react-query";
 import { getPageQuery } from "../../api/query";
 import classes from "../Book/Book.module.css";
 
@@ -21,11 +19,11 @@ function ReadPane({
   onSetActiveTerm,
   onDrawerOpen,
   isRtl,
+  contextMenuAreaRef,
 }) {
   const { id, page: pageNum } = useParams();
   const { data: page } = useQuery(getPageQuery(id, pageNum));
   const [params, setParams] = useSearchParams();
-  const contextMenuAreaRef = useRef(null);
 
   const editMode = params.get("edit") === "true";
 
@@ -43,11 +41,8 @@ function ReadPane({
 
   return (
     <>
-      {!editMode && <ContextMenu forwardedRef={contextMenuAreaRef} />}
       <div style={{ position: "relative" }}>
-        {editMode ? (
-          <EditHeader book={book} page={pageNum} onSetEdit={setParams} />
-        ) : (
+        {!editMode && (
           <>
             <PageHeader
               book={book}
@@ -60,6 +55,9 @@ function ReadPane({
             {book.audio && <Player book={book} />}
             <Toolbar state={state} dispatch={dispatch} />
           </>
+        )}
+        {editMode && (
+          <EditHeader book={book} page={pageNum} onSetEdit={setParams} />
         )}
       </div>
       <ScrollArea
@@ -75,9 +73,7 @@ function ReadPane({
           dir={isRtl ? "rtl" : "ltr"}
           className={textContainerClass.replace(/\s+/g, " ")}
           style={textContainerStyle}>
-          {editMode ? (
-            <EditTheText text={page.text} />
-          ) : (
+          {!editMode && (
             <>
               {Number(pageNum) === 1 && (
                 <Title className={classes.title}>{book.title}</Title>
@@ -88,6 +84,7 @@ function ReadPane({
               />
             </>
           )}
+          {editMode && <EditTheText text={page.text} />}
         </div>
       </ScrollArea>
     </>

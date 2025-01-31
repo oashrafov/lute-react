@@ -12,6 +12,7 @@ import useDocumentTitle from "@hooks/useDocumentTitle";
 import TranslationPane from "../TranslationPane/TranslationPane";
 import FloatingTermForm from "@term/components/FloatingTermForm/FloatingTermForm";
 import ReadPane from "../ReadPane/ReadPane";
+import ContextMenu from "../ContextMenu/ContextMenu";
 import { getBookQuery } from "../../api/query";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
 import useBookState from "../../hooks/useBookState";
@@ -62,6 +63,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const showThemeForm = themeFormOpen && !editMode;
 
   const paneRightRef = useRef(null);
+  const contextMenuAreaRef = useRef(null);
 
   useEffect(() => {
     if (!activeTerm.data) {
@@ -84,6 +86,8 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
         show={state.focusMode && showTranslationPane}
       />
 
+      <ContextMenu contextMenuAreaRef={contextMenuAreaRef} show={!editMode} />
+
       <PanelGroup
         style={{ height: "100vh" }}
         className="readpage"
@@ -103,6 +107,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
             activeTerm={activeTerm}
             onSetActiveTerm={setActiveTerm}
             onDrawerOpen={onDrawerOpen}
+            contextMenuAreaRef={contextMenuAreaRef}
           />
         </Panel>
 
