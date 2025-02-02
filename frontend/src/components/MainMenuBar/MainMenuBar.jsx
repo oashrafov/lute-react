@@ -4,7 +4,6 @@ import {
   Menu,
   Group,
   Burger,
-  rem,
   UnstyledButton,
   Center,
   Divider,
@@ -25,7 +24,7 @@ function MainMenuBar({ settings }) {
   return (
     <header className={classes.header}>
       <Group wrap="nowrap">
-        <HomeImageLink size={rem(54)} />
+        <HomeImageLink size={54} />
         <h1 className={classes.heading}>Lute</h1>
       </Group>
       <Group component="nav" gap={5} visibleFrom="sm" wrap="nowrap" ml="auto">
@@ -83,7 +82,7 @@ function MainMenuBar({ settings }) {
           </Menu.Item>
         </MenuSection>
       </Group>
-      <SchemeToggleButton colors={settings.highlights} />
+      <SchemeToggleButton />
       <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
     </header>
   );

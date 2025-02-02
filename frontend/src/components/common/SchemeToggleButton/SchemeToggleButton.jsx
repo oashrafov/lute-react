@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   ActionIcon,
   useComputedColorScheme,
@@ -5,8 +6,10 @@ import {
 } from "@mantine/core";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 import { applyLuteHighlights } from "@actions/general";
+import { settingsQuery } from "@settings/api/settings";
 
-function SchemeToggleButton({ colors, onCloseDrawer = null }) {
+function SchemeToggleButton({ onCloseDrawer = null }) {
+  const { data: settings } = useQuery(settingsQuery);
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
   const Icon = colorScheme === "dark" ? IconSun : IconMoon;
@@ -14,8 +17,8 @@ function SchemeToggleButton({ colors, onCloseDrawer = null }) {
   function handleToggleScheme() {
     const newScheme = computedColorScheme === "dark" ? "light" : "dark";
     setColorScheme(newScheme);
-    applyLuteHighlights(colors.status, newScheme);
-    applyLuteHighlights(colors.general, newScheme);
+    applyLuteHighlights(settings.highlights.status, newScheme);
+    applyLuteHighlights(settings.highlights.general, newScheme);
   }
 
   return (

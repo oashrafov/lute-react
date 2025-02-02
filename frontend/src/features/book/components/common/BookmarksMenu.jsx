@@ -3,7 +3,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { Accordion, Divider, Menu, Stack, Text } from "@mantine/core";
 import { scrollSentenceIntoView } from "@actions/utils";
 import BookmarksButton from "./BookmarksButton";
-import BookmarkButton from "./BookmarkButton";
+import BookmarkButton from "../ReadPane/components/ReadHeader/components/BookmarkButton";
 
 function BookmarksMenu({ data }) {
   const params = useParams();

@@ -18,7 +18,7 @@ import {
   removeAllContainingClassWithTimeout,
 } from "@actions/utils";
 
-function ContextMenu({ contextMenuAreaRef, show }) {
+function ContextMenu({ contextMenuAreaRef }) {
   const [coords, setCoords] = useState({ clientX: null, clientY: null });
   const selectedTextItemRef = useRef();
 
@@ -33,8 +33,6 @@ function ContextMenu({ contextMenuAreaRef, show }) {
     const ref = contextMenuAreaRef.current;
 
     function handleContextMenu(e) {
-      if (!show) return;
-
       e.preventDefault();
       const { clientX, clientY } = e;
       setCoords({ clientX, clientY });

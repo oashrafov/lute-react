@@ -10,8 +10,9 @@ import PageSpinner from "@common/PageSpinner/PageSpinner";
 import useNavigationProgress from "@hooks/useNavigationProgress";
 import useDocumentTitle from "@hooks/useDocumentTitle";
 import TranslationPane from "../TranslationPane/TranslationPane";
-import FloatingTermForm from "@term/components/FloatingTermForm/FloatingTermForm";
 import ReadPane from "../ReadPane/ReadPane";
+import EditPane from "../EditPane/EditPane";
+import FocusPane from "../FocusPane/FocusPane";
 import ContextMenu from "../ContextMenu/ContextMenu";
 import { getBookQuery } from "../../api/query";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
@@ -38,6 +39,8 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
 
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
   const [activeTab, setActiveTab] = useState("0");
+  const paneRightRef = useRef(null);
+  const contextMenuAreaRef = useRef(null);
 
   const key =
     activeTerm &&
@@ -62,9 +65,6 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const showBulkTermForm = activeTerm.type === "shift" && !themeFormOpen;
   const showThemeForm = themeFormOpen && !editMode;
 
-  const paneRightRef = useRef(null);
-  const contextMenuAreaRef = useRef(null);
-
   useEffect(() => {
     if (!activeTerm.data) {
       resetFocusActiveSentence();
@@ -79,79 +79,90 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
 
   return (
     <>
-      <FloatingTermForm
-        term={term}
+      {!editMode && <ContextMenu contextMenuAreaRef={contextMenuAreaRef} />}
+
+      {editMode && <EditPane book={book} isRtl={language.isRightToLeft} />}
+
+      <FocusPane
+        book={book}
         language={language}
+        term={term}
+        state={state}
+        dispatch={dispatch}
         onSetActiveTerm={setActiveTerm}
-        show={state.focusMode && showTranslationPane}
+        showTranslationPane={showTranslationPane}
+        activeTab={activeTab}
+        onSetActiveTab={setActiveTab}
       />
 
-      <ContextMenu contextMenuAreaRef={contextMenuAreaRef} show={!editMode} />
-
-      <PanelGroup
-        style={{ height: "100vh" }}
-        className="readpage"
-        autoSaveId="Lute.horizontalSize"
-        direction="horizontal"
-        storage={paneResizeStorage}>
-        <Panel
-          order={1}
-          defaultSize={50}
-          minSize={30}
-          className={classes.paneLeft}>
-          <ReadPane
-            book={book}
-            isRtl={language.isRightToLeft}
-            state={state}
-            dispatch={dispatch}
-            activeTerm={activeTerm}
-            onSetActiveTerm={setActiveTerm}
-            onDrawerOpen={onDrawerOpen}
-            contextMenuAreaRef={contextMenuAreaRef}
-          />
-        </Panel>
-
-        {!state.focusMode && (
-          <>
-            <PanelResizeHandle
-              hitAreaMargins={{ coarse: 10, fine: 10 }}
-              className={classes.resizeHandle}
-              onDoubleClick={onDblClickResize}
+      {!editMode && (
+        <PanelGroup
+          style={{ height: "100vh" }}
+          className="readpage"
+          autoSaveId="Lute.horizontalSize"
+          direction="horizontal"
+          storage={paneResizeStorage}>
+          <Panel
+            order={1}
+            defaultSize={50}
+            minSize={30}
+            className={classes.paneLeft}>
+            <ReadPane
+              book={book}
+              isRtl={language.isRightToLeft}
+              state={state}
+              dispatch={dispatch}
+              activeTerm={activeTerm}
+              onSetActiveTerm={setActiveTerm}
+              onDrawerOpen={onDrawerOpen}
+              contextMenuAreaRef={contextMenuAreaRef}
             />
+          </Panel>
 
-            <Panel
-              ref={paneRightRef}
-              defaultSize={50}
-              order={2}
-              collapsible={true}
-              minSize={5}>
-              {showTranslationPane && (
-                <TranslationPane
-                  term={term}
-                  language={language}
-                  activeTab={activeTab}
-                  onSetActiveTab={setActiveTab}
-                  onSetActiveTerm={setActiveTerm}
-                />
-              )}
-              {showBulkTermForm && (
-                <Box p={20} h="100%">
-                  <Suspense fallback={<PageSpinner />}>
-                    <BulkTermForm terms={activeTerm.data} />
-                  </Suspense>
-                </Box>
-              )}
-              {showThemeForm && (
-                <Box p={20} h="100%">
-                  <Suspense fallback={<PageSpinner />}>
-                    <ThemeForm onClose={() => onThemeFormOpen(false)} />
-                  </Suspense>
-                </Box>
-              )}
-            </Panel>
-          </>
-        )}
-      </PanelGroup>
+          {!state.focusMode && (
+            <>
+              <PanelResizeHandle
+                hitAreaMargins={{ coarse: 10, fine: 10 }}
+                className={classes.resizeHandle}
+                onDoubleClick={onDblClickResize}
+              />
+
+              <Panel
+                ref={paneRightRef}
+                defaultSize={50}
+                order={2}
+                collapsible={true}
+                minSize={5}>
+                {showTranslationPane && (
+                  <TranslationPane
+                    term={term}
+                    language={language}
+                    activeTab={activeTab}
+                    onSetActiveTab={setActiveTab}
+                    onSetActiveTerm={setActiveTerm}
+                  />
+                )}
+
+                {showBulkTermForm && (
+                  <Box p={20} h="100%">
+                    <Suspense fallback={<PageSpinner />}>
+                      <BulkTermForm terms={activeTerm.data} />
+                    </Suspense>
+                  </Box>
+                )}
+
+                {showThemeForm && (
+                  <Box p={20} h="100%">
+                    <Suspense fallback={<PageSpinner />}>
+                      <ThemeForm onClose={() => onThemeFormOpen(false)} />
+                    </Suspense>
+                  </Box>
+                )}
+              </Panel>
+            </>
+          )}
+        </PanelGroup>
+      )}
     </>
   );
 }

@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import {
   ActionIcon,
   Box,
@@ -21,12 +20,9 @@ import {
 } from "@tabler/icons-react";
 import DrawerLinks from "./DrawerLinks";
 import SchemeToggleButton from "@common/SchemeToggleButton/SchemeToggleButton";
-import { settingsQuery } from "@settings/api/settings";
 import classes from "./DrawerMenu.module.css";
 
 function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
-  const { data: settings } = useQuery(settingsQuery);
-
   return (
     <Drawer.Root
       classNames={{ content: classes.drawer }}
@@ -55,10 +51,7 @@ function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
         <Drawer.Body p={0} className={classes.drawer}>
           <Center p={10}>
             <Group gap={5}>
-              <SchemeToggleButton
-                colors={settings.highlights}
-                onCloseDrawer={onClose}
-              />
+              <SchemeToggleButton onCloseDrawer={onClose} />
               <ActionIcon
                 onClick={() => {
                   onThemeFormOpen((v) => !v);

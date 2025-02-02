@@ -4,22 +4,19 @@ import { getSentencesQuery } from "../../api/query";
 import classes from "./Sentences.module.css";
 
 function Sentences({ langId, termText }) {
-  const { data, isSuccess, error } = useQuery(
-    getSentencesQuery(termText, langId)
-  );
-  if (error) return "An error has occurred: " + error.message;
+  const { data } = useQuery(getSentencesQuery(termText, langId));
 
   return (
     <div className={classes.container}>
-      {!isSuccess ? (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
-      ) : data.variations.length === 0 ? (
-        <NoSentences text={data.text} />
-      ) : (
+      <LoadingOverlay
+        visible={!data}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
+
+      {data?.variations.length === 0 && <NoSentences text={data.text} />}
+
+      {data?.variations.length > 0 && (
         <ul className={classes.mainList}>
           {data.variations.map(
             ({ term, references }) =>

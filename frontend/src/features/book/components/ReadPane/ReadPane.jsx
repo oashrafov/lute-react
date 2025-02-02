@@ -1,13 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "react-router-dom";
-import { ScrollArea, Title } from "@mantine/core";
-import PageHeader from "./components/PageHeader/PageHeader";
-import Player from "./components/Player/Player";
-import Toolbar from "./components/Toolbar/Toolbar";
+import { useParams } from "react-router-dom";
+import { ScrollArea, Title, Transition } from "@mantine/core";
+import ReadHeader from "./components/ReadHeader/ReadHeader";
 import TheText from "./components/TheText/TheText";
 import { handleClickOutside } from "@actions/interactions-desktop";
-import EditTheText from "./components/EditTheText/EditTheText";
-import EditHeader from "./components/EditHeader/EditHeader";
 import { getPageQuery } from "../../api/query";
 import classes from "../Book/Book.module.css";
 
@@ -23,9 +19,11 @@ function ReadPane({
 }) {
   const { id, page: pageNum } = useParams();
   const { data: page } = useQuery(getPageQuery(id, pageNum));
-  const [params, setParams] = useSearchParams();
 
-  const editMode = params.get("edit") === "true";
+  const showTitle =
+    state.focusMode || (!state.focusMode && Number(pageNum) === 1);
+  let headerHeight = state.focusMode ? 30 : 85;
+  if (book.audio) headerHeight += 35;
 
   const textContainerClass = `textcontainer
                               ${state.highlights ? "highlight" : ""}
@@ -41,25 +39,24 @@ function ReadPane({
 
   return (
     <>
-      <div style={{ position: "relative" }}>
-        {!editMode && (
-          <>
-            <PageHeader
-              book={book}
-              onDrawerOpen={onDrawerOpen}
-              focusMode={state.focusMode}
-              highlights={state.highlights}
-              onSetActiveTerm={onSetActiveTerm}
-              dispatch={dispatch}
-            />
-            {book.audio && <Player book={book} />}
-            <Toolbar state={state} dispatch={dispatch} />
-          </>
-        )}
-        {editMode && (
-          <EditHeader book={book} page={pageNum} onSetEdit={setParams} />
-        )}
+      <div style={{ height: `${headerHeight}px` }}>
+        <Transition transition="slide-down" mounted={!state.focusMode}>
+          {(styles) => (
+            <div style={styles}>
+              <ReadHeader
+                book={book}
+                onDrawerOpen={onDrawerOpen}
+                focusMode={state.focusMode}
+                highlights={state.highlights}
+                onSetActiveTerm={onSetActiveTerm}
+                state={state}
+                dispatch={dispatch}
+              />
+            </div>
+          )}
+        </Transition>
       </div>
+
       <ScrollArea
         type="scroll"
         ref={contextMenuAreaRef}
@@ -73,18 +70,11 @@ function ReadPane({
           dir={isRtl ? "rtl" : "ltr"}
           className={textContainerClass.replace(/\s+/g, " ")}
           style={textContainerStyle}>
-          {!editMode && (
-            <>
-              {Number(pageNum) === 1 && (
-                <Title className={classes.title}>{book.title}</Title>
-              )}
-              <TheText
-                paragraphs={page.paragraphs}
-                onSetActiveTerm={onSetActiveTerm}
-              />
-            </>
-          )}
-          {editMode && <EditTheText text={page.text} />}
+          {showTitle && <Title className={classes.title}>{book.title}</Title>}
+          <TheText
+            paragraphs={page.paragraphs}
+            onSetActiveTerm={onSetActiveTerm}
+          />
         </div>
       </ScrollArea>
     </>

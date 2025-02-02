@@ -1,16 +1,16 @@
 import { Link } from "react-router-dom";
-import { Image } from "@mantine/core";
+import { ActionIcon, Image } from "@mantine/core";
 
 function HomeImageLink({ size }) {
   return (
-    <Link to="/">
+    <ActionIcon component={Link} to="/" variant="transparent" size={size}>
       <Image
         w={size}
         h={size}
         src="/images/logo.png"
         style={{ objectFit: "contain" }}
       />
-    </Link>
+    </ActionIcon>
   );
 }
 
