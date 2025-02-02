@@ -53,7 +53,7 @@ function TranslationPane({
           collapsedSize={0}
           className={classes.dictTabsContainer}>
           <DictTabs
-            term={term.text}
+            termText={term.text}
             language={language}
             translationFieldRef={translationFieldRef}
             onSetActiveTab={onSetActiveTab}

@@ -17,7 +17,7 @@ function FocusDictTabs({
               {termText && (
                 <DictTabs
                   language={language}
-                  term={termText}
+                  termText={termText}
                   activeTab={activeTab}
                   onSetActiveTab={onSetActiveTab}
                 />

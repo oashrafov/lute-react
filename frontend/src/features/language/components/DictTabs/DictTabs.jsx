@@ -23,7 +23,7 @@ import classes from "./DictTabs.module.css";
 
 function DictTabs({
   language,
-  term,
+  termText,
   activeTab,
   onSetActiveTab,
   translationFieldRef = {},
@@ -41,7 +41,10 @@ function DictTabs({
   const dropdownDicts = allDicts.slice(MAX_VISIBLE_DICT_TABS);
   // %E2%80%8B is the zero-width string.  The term is reparsed
   // on the server, so this doesn't need to be sent.
-  const encodedTermText = encodeURIComponent(term).replaceAll("%E2%80%8B", "");
+  const encodedTermText = encodeURIComponent(termText).replaceAll(
+    "%E2%80%8B",
+    ""
+  );
 
   function handleFocus() {
     setTimeout(() => {
@@ -74,7 +77,11 @@ function DictTabs({
               openDelay={150}
               refProp="innerRef">
               {dict.isExternal ? (
-                <DictTabExternal dict={dict} term={term} component={Button} />
+                <DictTabExternal
+                  dict={dict}
+                  termText={termText}
+                  component={Button}
+                />
               ) : (
                 <DictTabEmbedded
                   dict={dict}
@@ -92,7 +99,7 @@ function DictTabs({
 
         {dropdownDicts.length > 0 && (
           <DictDropdown
-            term={term}
+            termText={termText}
             dicts={dropdownDicts}
             onClick={(url) => {
               setTabValue("dropdownTab");
@@ -143,7 +150,7 @@ function DictTabs({
               id={String(index)}
               value={String(index)}>
               <Iframe
-                src={getLookupURL(dict.url, term)}
+                src={getLookupURL(dict.url, termText)}
                 onHandleFocus={handleFocus}
               />
             </Tabs.Panel>
@@ -157,7 +164,7 @@ function DictTabs({
         id="dropdownTab"
         value="dropdownTab">
         <Iframe
-          src={getLookupURL(activeDropdownUrl, term)}
+          src={getLookupURL(activeDropdownUrl, termText)}
           onHandleFocus={handleFocus}
         />
       </Tabs.Panel>
@@ -203,7 +210,7 @@ function DictTabEmbedded({
   );
 }
 
-function DictTabExternal({ dict, term, innerRef, component: Component }) {
+function DictTabExternal({ dict, termText, innerRef, component: Component }) {
   return (
     <Component
       ref={innerRef}
@@ -213,13 +220,13 @@ function DictTabExternal({ dict, term, innerRef, component: Component }) {
       ml={2}
       leftSection={<DictFavicon hostname={dict.hostname} />}
       rightSection={<IconExternalLink size={16} stroke={1.6} />}
-      onClick={() => handleExternalUrl(getLookupURL(dict.url, term))}>
+      onClick={() => handleExternalUrl(getLookupURL(dict.url, termText))}>
       {dict.label}
     </Component>
   );
 }
 
-function DictDropdown({ term, dicts, onClick }) {
+function DictDropdown({ termText, dicts, onClick }) {
   return (
     <Menu>
       <Menu.Target>
@@ -237,7 +244,7 @@ function DictDropdown({ term, dicts, onClick }) {
             <DictTabExternal
               key={dict.label}
               dict={dict}
-              term={term}
+              termText={termText}
               component={Menu.Item}
             />
           ) : (

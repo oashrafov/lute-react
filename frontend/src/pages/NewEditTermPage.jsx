@@ -48,7 +48,7 @@ function NewEditTermPage() {
               <DictTabs
                 key={termId ? term.text : newTerm}
                 language={language}
-                term={termId ? term.text : newTerm}
+                termText={termId ? term.text : newTerm}
               />
             ) : (
               <Placeholder label="Type term text and click the lookup button to load dictionaries" />
