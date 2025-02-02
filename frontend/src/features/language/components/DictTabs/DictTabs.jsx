@@ -1,24 +1,16 @@
 import { memo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  ActionIcon,
-  Button,
-  Image,
-  Menu,
-  Tabs,
-  Text,
-  Tooltip,
-} from "@mantine/core";
+import { Button, Tabs, Text, Tooltip } from "@mantine/core";
 import { useUncontrolled } from "@mantine/hooks";
-import {
-  IconChevronDown,
-  IconExternalLink,
-  IconPhoto,
-} from "@tabler/icons-react";
-import Sentences from "@term/components/Sentences/Sentences";
+import { IconPhoto } from "@tabler/icons-react";
 import { getSentencesQuery } from "@term/api/query";
-import { getLookupURL, handleExternalUrl } from "@actions/utils";
+import { getLookupURL } from "@actions/utils";
 import { MAX_VISIBLE_DICT_TABS } from "@resources/constants";
+import Sentences from "@term/components/Sentences/Sentences";
+import Iframe from "./components/common/Iframe";
+import DictTabExternal from "./components/DictTabExternal";
+import DictTabEmbedded from "./components/DictTabEmbedded";
+import DictDropdown from "./components/DictDropdown";
 import classes from "./DictTabs.module.css";
 
 function DictTabs({
@@ -127,6 +119,7 @@ function DictTabs({
               Sentences
             </Text>
           </Tabs.Tab>
+
           <Tabs.Tab
             className={classes.flex}
             styles={{ tabLabel: { minWidth: 0 } }}
@@ -168,6 +161,7 @@ function DictTabs({
           onHandleFocus={handleFocus}
         />
       </Tabs.Panel>
+
       <Tabs.Panel
         style={{ overflowY: "auto", flexGrow: 1 }}
         id="sentencesTab"
@@ -177,6 +171,7 @@ function DictTabs({
           <Sentences langId={language.id} termText={encodedTermText} />
         )}
       </Tabs.Panel>
+
       <Tabs.Panel
         style={{ height: "100%" }}
         id="imagesTab"
@@ -185,103 +180,6 @@ function DictTabs({
         IMAGES
       </Tabs.Panel>
     </Tabs>
-  );
-}
-
-function DictTabEmbedded({
-  dict,
-  value,
-  innerRef,
-  onClick,
-  component: Component,
-}) {
-  return (
-    <Component
-      className={classes.flex}
-      ref={innerRef}
-      id={value}
-      value={value}
-      onClick={onClick}
-      leftSection={<DictFavicon hostname={dict.hostname} />}>
-      <Text size="sm" style={{ overflow: "hidden" }}>
-        {dict.label}
-      </Text>
-    </Component>
-  );
-}
-
-function DictTabExternal({ dict, termText, innerRef, component: Component }) {
-  return (
-    <Component
-      ref={innerRef}
-      component="a"
-      variant="default"
-      fw="normal"
-      ml={2}
-      leftSection={<DictFavicon hostname={dict.hostname} />}
-      rightSection={<IconExternalLink size={16} stroke={1.6} />}
-      onClick={() => handleExternalUrl(getLookupURL(dict.url, termText))}>
-      {dict.label}
-    </Component>
-  );
-}
-
-function DictDropdown({ termText, dicts, onClick }) {
-  return (
-    <Menu>
-      <Menu.Target>
-        <ActionIcon
-          variant="transparent"
-          mr="auto"
-          ml="xs"
-          style={{ alignSelf: "center" }}>
-          <IconChevronDown />
-        </ActionIcon>
-      </Menu.Target>
-      <Menu.Dropdown>
-        {dicts.map((dict) =>
-          dict.isExternal ? (
-            <DictTabExternal
-              key={dict.label}
-              dict={dict}
-              termText={termText}
-              component={Menu.Item}
-            />
-          ) : (
-            <DictTabEmbedded
-              key={dict.label}
-              dict={dict}
-              value={String("dropdownTab")}
-              onClick={() => onClick(dict.url)}
-              component={Menu.Item}
-            />
-          )
-        )}
-      </Menu.Dropdown>
-    </Menu>
-  );
-}
-
-function Iframe({ src, onHandleFocus }) {
-  // lazy loading makes sure dict loads only on tab open. if not set all dicts load at the same time
-  return (
-    <iframe
-      onLoad={onHandleFocus}
-      style={{ border: "none" }}
-      width="100%"
-      height="100%"
-      src={src}
-      loading="lazy"></iframe>
-  );
-}
-
-function DictFavicon({ hostname }) {
-  return (
-    <Image
-      h={16}
-      w={16}
-      src={`http://www.google.com/s2/favicons?domain=${hostname}`}
-    />
   );
 }
 
