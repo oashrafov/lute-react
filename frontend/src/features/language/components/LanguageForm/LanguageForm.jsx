@@ -3,16 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
-import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import {
-  ActionIcon,
   Box,
   Checkbox,
   Divider,
   Fieldset,
   Group,
   LoadingOverlay,
-  ScrollArea,
   Select,
   TextInput,
 } from "@mantine/core";
@@ -21,13 +18,13 @@ import {
   IconAlt,
   IconAnalyzeFilled,
   IconCut,
-  IconSquareRoundedPlusFilled,
 } from "@tabler/icons-react";
-import LanguageSelect from "./LanguageSelect";
-import DictionaryBar from "./components/DictionaryBar/DictionaryBar";
-import LanguageCards from "../LanguageCards/LanguageCards";
 import FormButtons from "@common/FormButtons/FormButtons";
+import LanguageSelect from "./LanguageSelect";
+import LanguageCards from "../LanguageCards/LanguageCards";
+import DictionaryBars from "./components/DictionaryBars";
 import LanguageRadioLabel from "./components/LanguageRadioLabel";
+import InsertDictionaryButton from "./components/InsertDictionaryButton";
 import {
   parsersQuery,
   predefinedListQuery,
@@ -117,58 +114,23 @@ function LanguageForm() {
             legend: { fontWeight: 500 },
           }}>
           <div className={classes.flex}>
-            <ActionIcon
-              variant="transparent"
-              color="green.6"
-              onClick={() =>
-                form.insertListItem("dictionaries", {
-                  for: "terms",
-                  type: "embedded",
-                  url: "",
-                  active: false,
-                  key: randomId(),
-                })
-              }>
-              <IconSquareRoundedPlusFilled />
-            </ActionIcon>
-
-            <ScrollArea.Autosize mah={300} offsetScrollbars="y" flex={1}>
-              <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="dnd-list" direction="vertical">
-                  {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {form.getValues().dictionaries.map((dict, index) => (
-                        <Draggable
-                          index={index}
-                          draggableId={dict.key}
-                          key={dict.key}>
-                          {(provided) => (
-                            <DictionaryBar
-                              form={form}
-                              index={index}
-                              dndProvided={provided}
-                            />
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
-            </ScrollArea.Autosize>
+            <InsertDictionaryButton form={form} />
+            <DictionaryBars form={form} />
           </div>
         </Fieldset>
+
         <Checkbox
           label="Show pronunciation field"
           key={form.key("show_romanization")}
           {...form.getInputProps("show_romanization", { type: "checkbox" })}
         />
+
         <Checkbox
           label="Is right-to-left"
           key={form.key("right_to_left")}
           {...form.getInputProps("right_to_left", { type: "checkbox" })}
         />
+
         <Select
           w="fit-content"
           label="Parse as"
@@ -180,12 +142,14 @@ function LanguageForm() {
           key={form.key("parser_type")}
           {...form.getInputProps("parser_type")}
         />
+
         <TextInput
           label="Character substitutions"
           leftSection={<IconAlt />}
           key={form.key("character_substitutions")}
           {...form.getInputProps("character_substitutions")}
         />
+
         <Group align="flex-end">
           <TextInput
             flex={1}
@@ -202,6 +166,7 @@ function LanguageForm() {
             {...form.getInputProps("split_sentence_exceptions")}
           />
         </Group>
+
         <TextInput
           label="Word characters"
           description="default: all Unicode letters and marks"
@@ -221,32 +186,6 @@ function LanguageForm() {
     const dicts = dictionaries.map((dict) => ({ ...dict, key: randomId() }));
     form.setFieldValue("dictionaries", dicts);
   }
-
-  function onDragEnd(result) {
-    if (!result.destination) {
-      return;
-    }
-
-    if (result.destination.index === result.source.index) {
-      return;
-    }
-
-    const reordered = reorderList(
-      form.getValues().dictionaries,
-      result.source.index,
-      result.destination.index
-    );
-
-    form.setFieldValue("dictionaries", reordered);
-  }
-}
-
-function reorderList(list, startIndex, endIndex) {
-  const result = list;
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
 }
 
 export default LanguageForm;
