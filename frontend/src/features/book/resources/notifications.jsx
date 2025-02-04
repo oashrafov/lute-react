@@ -32,4 +32,16 @@ const bookUpdated = (message) => ({
   color: "green.6",
 });
 
-export { bookDeleted, bookUpdated };
+const sampleBooksAdded = (message) => ({
+  ...notificationsDefault,
+  title: "Book(s) added",
+  message: (
+    <Text component="p" lineClamp={2} fz="xs">
+      {message}
+    </Text>
+  ),
+  icon: <IconPencilCheck />,
+  color: "green.6",
+});
+
+export { bookDeleted, bookUpdated, sampleBooksAdded };

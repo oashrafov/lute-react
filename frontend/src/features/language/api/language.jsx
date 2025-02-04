@@ -1,14 +1,4 @@
-const keys = {
-  allDefined: ["definedLanguages"],
-  allPredefined: ["predefinedLanguages"],
-  defined: (id) => ["definedLanguage", id],
-
-  definedFormSettings: (id) => ["definedLanguageFormSettings", id],
-  predefinedFormSettings: (name) => ["predefinedLanguageFormSettings", name],
-
-  parsers: ["languageParsers"],
-  samples: (langName) => ["sampleStories", langName],
-};
+import { keys } from "./keys";
 
 const definedLangInfoQuery = (id) => ({
   queryKey: keys.defined(id),
@@ -43,10 +33,10 @@ const predefFormSettingsQuery = (langName) => ({
 });
 
 const predefinedListQuery = {
-  queryKey: keys.allPredefined,
+  queryKey: keys.predefined,
   queryFn: async () => {
     const response = await fetch(
-      `http://localhost:5001/api/languages/?type=predefined`
+      `http://localhost:5001/api/languages/predefined`
     );
     return await response.json();
   },
@@ -54,9 +44,9 @@ const predefinedListQuery = {
 };
 
 const definedListQuery = {
-  queryKey: keys.allDefined,
+  queryKey: keys.user,
   queryFn: async () => {
-    const response = await fetch(`http://localhost:5001/api/languages`);
+    const response = await fetch(`http://localhost:5001/api/languages/user`);
     return await response.json();
   },
 };
@@ -70,16 +60,6 @@ const parsersQuery = {
   staleTime: Infinity,
 };
 
-const loadSampleStoriesQuery = (langName) => ({
-  queryKey: keys.samples(langName),
-  queryFn: async () => {
-    const res = await fetch(
-      `http://localhost:5001/api/languages/${langName}/sample`
-    );
-    return await res.text();
-  },
-});
-
 export {
   definedListQuery,
   predefinedListQuery,
@@ -87,5 +67,4 @@ export {
   definedLangInfoQuery,
   defFormSettingsQuery,
   predefFormSettingsQuery,
-  loadSampleStoriesQuery,
 };

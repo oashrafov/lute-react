@@ -20,7 +20,7 @@ from lute.backup.service import Service as BackupService
 bp = Blueprint("api", __name__, url_prefix="/api")
 
 
-@bp.route("/wipe-database")
+@bp.route("/settings/db", methods=["DELETE"])
 def wipe_db():
     """
     wipe demo database
@@ -37,7 +37,7 @@ def wipe_db():
     return jsonify(response), 200
 
 
-@bp.route("/deactivate-demo")
+@bp.route("/settings/db", methods=["PATCH"])
 def deactivate_demo():
     """
     deactivate demo mode

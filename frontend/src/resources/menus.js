@@ -16,7 +16,7 @@ const menu = {
   },
 
   book: {
-    label: "New Book",
+    label: "Add Book",
     icon: IconBooks,
     action: "/books/new",
   },

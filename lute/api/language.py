@@ -11,22 +11,16 @@ from lute.parse.registry import supported_parsers
 from lute.db import db
 from lute.models.language import Language as LanguageModel
 from lute.language.service import Service as LangService
-from lute.models.repositories import LanguageRepository, UserSettingRepository
+from lute.models.repositories import LanguageRepository
 
 bp = Blueprint("api_languages", __name__, url_prefix="/api/languages")
 
 
-@bp.route("/")
-def get_languages_list():
-    """
-    List all languages, with book and term counts.
-    """
+@bp.route("/user", methods=["GET"])
+def get_user_languages():
+    "get user defined languages"
 
-    lang_type = request.args.get("type")
-
-    if not lang_type or lang_type == "defined":
-        # Using plain sql, easier to get bulk quantities.
-        sql = """
+    sql = """
         select LgID, LgName, book_count, term_count from languages
         left outer join (
         select BkLgID, count(BkLgID) as book_count from books
@@ -39,27 +33,47 @@ def get_languages_list():
         ) tc on tc.WoLgID = LgID
         order by LgName
         """
-        result = db.session.execute(SQLText(sql)).all()
-        languages = [
-            {
-                "id": row[0],
-                "name": row[1],
-                "bookCount": row[2] or 0,
-                "termCount": row[3] or 0,
-            }
-            for row in result
-        ]
 
-        return jsonify(languages)
+    result = db.session.execute(SQLText(sql)).all()
+    languages = [
+        {
+            "id": row[0],
+            "name": row[1],
+            "bookCount": row[2] or 0,
+            "termCount": row[3] or 0,
+        }
+        for row in result
+    ]
 
-    if lang_type == "predefined":
+    return jsonify(languages), 200
+
+
+@bp.route("/predefined", methods=["GET"])
+def get_predefined_languages():
+    "get predefined language names only"
+
+    service = LangService(db.session)
+    all_predefined = service.supported_predefined_languages()
+    existing_langs = db.session.query(LanguageModel).all()
+    existing_names = [l.name for l in existing_langs]
+    filtered = [p for p in all_predefined if p.name not in existing_names]
+
+    return jsonify([language.name for language in filtered])
+
+
+@bp.route("/", methods=["POST"])
+def create_language():
+    "Create a predefined language and its stories."
+
+    data = request.get_json()
+
+    if data["loadStories"]:
         service = LangService(db.session)
-        # !TODO this function gets all info for languages. but we need only the name here
-        predefined = service.supported_predefined_languages()
+        lang_id = service.load_language_def(data["name"])
 
-        return jsonify([language.name for language in predefined])
+        return jsonify({"id": lang_id}), 200
 
-    return jsonify("")
+    return jsonify(None)
 
 
 @bp.route("/new/", defaults={"langname": None}, methods=["GET"])
@@ -123,18 +137,6 @@ def get_existing_lang_info(langid):
 @bp.route("/parsers", methods=["GET"])
 def get_parsers():
     return jsonify([{"value": a[0], "label": a[1].name()} for a in supported_parsers()])
-
-
-@bp.route("/<langname>/sample", methods=["GET"])
-def load_predefined_stories(langname):
-    "Load a predefined language and its stories."
-    service = LangService(db.session)
-    lang_id = service.load_language_def(langname)
-    repo = UserSettingRepository(db.session)
-    repo.set_value("current_language_id", lang_id)
-    db.session.commit()
-
-    return f"Loaded {langname} and sample book(s)"
 
 
 def _get_dict_info(dictURL, dictID, langid):

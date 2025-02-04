@@ -1,4 +1,5 @@
 import { getBooksQuery } from "@book/api/query";
+import { predefinedListQuery } from "@language/api/language";
 import {
   initialQuery,
   settingsQuery,
@@ -12,12 +13,15 @@ function loader(queryClient) {
     const settingsData = await queryClient.ensureQueryData(settingsQuery);
     const allBooksData = await queryClient.ensureQueryData(getBooksQuery);
     const initialData = await queryClient.ensureQueryData(initialQuery);
+    const predefLangListData =
+      await queryClient.ensureQueryData(predefinedListQuery);
 
     return {
       settingsData,
       allBooksData,
       initialData,
       softwareInfoData,
+      predefLangListData,
     };
   };
 }

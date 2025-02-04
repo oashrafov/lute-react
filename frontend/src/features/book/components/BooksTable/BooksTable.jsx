@@ -5,7 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { Box, Menu, Modal, SegmentedControl } from "@mantine/core";
+import { Menu, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import {
@@ -16,6 +16,8 @@ import {
 } from "@tabler/icons-react";
 import EmptyRow from "@common/EmptyRow/EmptyRow";
 import EditBookForm from "../EditBookForm/EditBookForm";
+import ShelfSwitch from "./components/ShelfSwitch";
+import BookActions from "./components/BookActions/BookActions";
 import getDefaultTableOptions from "@resources/table-options-default";
 import columnDefinition from "./columnDefinition";
 import { editBook, deleteBook } from "../../api/api";
@@ -206,64 +208,30 @@ function BooksTable({ languageChoices, tagChoices }) {
       <ShelfSwitch
         shelf={shelf}
         onSetShelf={setShelf}
-        archivedCount={books.archivedCount}
+        showActiveOnly={books.archivedCount === 0 ? true : false}
       />
     ),
+
+    renderTopToolbarCustomActions: ({ table }) => <BookActions table={table} />,
   });
 
   return (
     <>
       {books && <MantineReactTable table={table} />}
-      <EditModal
-        row={editedRow}
+      <Modal
+        opened={editedRow}
         onClose={() => setEditedRow(null)}
-        editBookMutation={editBookMutation}
-      />
+        title="Edit book"
+        styles={{ title: { fontSize: "1.1rem", fontWeight: 600 } }}>
+        {editedRow && (
+          <EditBookForm
+            book={editedRow.original}
+            onSubmit={editBookMutation.mutate}
+            onCloseModal={() => setEditedRow(null)}
+          />
+        )}
+      </Modal>
     </>
-  );
-}
-
-function EditModal({ row, onClose, editBookMutation }) {
-  return (
-    <Modal
-      opened={row ? true : false}
-      onClose={onClose}
-      title="Edit book"
-      styles={{ title: { fontSize: "1.1rem", fontWeight: 600 } }}>
-      {row && (
-        <EditBookForm
-          book={row.original}
-          onSubmit={editBookMutation.mutate}
-          onCloseModal={onClose}
-        />
-      )}
-    </Modal>
-  );
-}
-
-function ShelfSwitch({ shelf, onSetShelf, archivedCount }) {
-  const showActiveOnly = archivedCount === 0 ? true : false;
-  return (
-    <Box pl={5}>
-      <SegmentedControl
-        size="sm"
-        value={shelf}
-        onChange={onSetShelf}
-        data={[
-          { label: "Active", value: "active" },
-          {
-            label: "All",
-            value: "all",
-            disabled: showActiveOnly,
-          },
-          {
-            label: "Archived",
-            value: "archived",
-            disabled: showActiveOnly,
-          },
-        ]}
-      />
-    </Box>
   );
 }
 
