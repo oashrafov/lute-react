@@ -19,9 +19,10 @@ function BookActions({ table }) {
   return (
     <Group gap={0} wrap="nowrap">
       <Button
+        size="xs"
         component={Link}
         to="/books/new"
-        leftSection={<IconPlus />}
+        leftSection={<IconPlus size={22} />}
         className={classes.button}>
         Add book
       </Button>
@@ -29,7 +30,7 @@ function BookActions({ table }) {
         <Popover.Target>
           <ActionIcon
             onClick={() => setOpened((v) => !v)}
-            size={36}
+            size={30}
             className={classes.menu}>
             <IconChevronDown stroke={1.5} size={20} />
           </ActionIcon>
