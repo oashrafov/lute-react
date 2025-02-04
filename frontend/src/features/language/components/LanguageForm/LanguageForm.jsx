@@ -24,9 +24,10 @@ import {
   IconSquareRoundedPlusFilled,
 } from "@tabler/icons-react";
 import LanguageSelect from "./LanguageSelect";
-import DictionaryBar from "../DictionaryBar/DictionaryBar";
+import DictionaryBar from "./components/DictionaryBar/DictionaryBar";
 import LanguageCards from "../LanguageCards/LanguageCards";
 import FormButtons from "@common/FormButtons/FormButtons";
+import LanguageRadioLabel from "./components/LanguageRadioLabel";
 import {
   parsersQuery,
   predefinedListQuery,
@@ -94,7 +95,7 @@ function LanguageForm() {
     <form>
       {openedFromLanguages && initial.haveLanguages && (
         <LanguageCards
-          label="My languages"
+          label={<LanguageRadioLabel langId={langId} />}
           description="Edit existing language"
         />
       )}
