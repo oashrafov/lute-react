@@ -1,11 +1,4 @@
-const keys = {
-  settings: ["settings"],
-  shortcuts: ["shortcuts"],
-  version: ["version"],
-  initial: ["initial"],
-  wipeDB: ["wipeDB"],
-  deactivateDemo: ["deactivateDemo"],
-};
+import { keys } from "./keys";
 
 const settingsQuery = {
   queryKey: keys.settings,
@@ -41,27 +34,4 @@ const initialQuery = {
   staleTime: Infinity,
 };
 
-const wipeDemoDBQuery = {
-  queryKey: keys.wipeDB,
-  queryFn: async () => {
-    const res = await fetch(`http://localhost:5001/api/wipe-database`);
-    return await res.text();
-  },
-};
-
-const deactivateDemoQuery = {
-  queryKey: keys.deactivateDemo,
-  queryFn: async () => {
-    const res = await fetch(`http://localhost:5001/api/deactivate-demo`);
-    return await res.text();
-  },
-};
-
-export {
-  settingsQuery,
-  shortcutsQuery,
-  softwareInfoQuery,
-  initialQuery,
-  wipeDemoDBQuery,
-  deactivateDemoQuery,
-};
+export { settingsQuery, shortcutsQuery, softwareInfoQuery, initialQuery };

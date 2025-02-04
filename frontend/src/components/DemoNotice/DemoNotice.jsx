@@ -1,36 +1,32 @@
 import { Link } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert, Button, rem, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { databaseCleaned, demoDeactivated } from "@resources/notifications";
-import { wipeDemoDBQuery, deactivateDemoQuery } from "@settings/api/settings";
+import { keys as bookKeys } from "@book/api/keys";
+import { keys as settingsKeys } from "@settings/api/keys";
+import { deactivateDemoMode, wipeDemoDatabase } from "@settings/api/api";
 
 function DemoNotice({ tutorialBookId }) {
   const queryClient = useQueryClient();
 
-  async function handleWipeDemoDb() {
-    try {
-      await queryClient.fetchQuery(wipeDemoDBQuery);
-
+  const wipeDbMutation = useMutation({
+    mutationFn: wipeDemoDatabase,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: bookKeys.books });
+      queryClient.invalidateQueries({ queryKey: settingsKeys.initial });
       notifications.show(databaseCleaned);
-      queryClient.invalidateQueries({ queryKey: ["allBooks"] });
-      queryClient.invalidateQueries({ queryKey: ["initialQuery"] });
-    } catch (err) {
-      console.error("Failed to wipe database:", err);
-    }
-  }
+    },
+  });
 
-  async function handleDismiss() {
-    try {
-      await queryClient.fetchQuery(deactivateDemoQuery);
-
-      queryClient.invalidateQueries({ queryKey: ["initialQuery"] });
+  const deactivateDemoMutation = useMutation({
+    mutationFn: deactivateDemoMode,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: settingsKeys.initial });
       notifications.show(demoDeactivated);
-    } catch (err) {
-      console.error("Failed to deactivate demo mode:", err);
-    }
-  }
+    },
+  });
 
   return (
     <Alert
@@ -47,7 +43,7 @@ function DemoNotice({ tutorialBookId }) {
         <Button
           p={0}
           styles={{ root: { verticalAlign: "unset" } }}
-          onClick={handleWipeDemoDb}
+          onClick={wipeDbMutation.mutate}
           size="compact-sm"
           variant="transparent"
           fw="normal">
@@ -57,7 +53,7 @@ function DemoNotice({ tutorialBookId }) {
         <Button
           p={0}
           styles={{ root: { verticalAlign: "unset" } }}
-          onClick={handleDismiss}
+          onClick={deactivateDemoMutation.mutate}
           size="compact-sm"
           variant="transparent"
           fw="normal">
