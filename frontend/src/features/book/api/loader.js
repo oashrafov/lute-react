@@ -1,5 +1,5 @@
 import { getBookQuery, getPageQuery } from "./query";
-import { definedLangInfoQuery } from "@language/api/language";
+import { userLanguageQuery } from "@language/api/query";
 import { settingsQuery } from "@settings/api/settings";
 import { softwareInfoQuery } from "@settings/api/settings";
 
@@ -12,7 +12,7 @@ function loader(queryClient) {
 
     const settingsData = await queryClient.ensureQueryData(settingsQuery);
     const languageData = await queryClient.ensureQueryData(
-      definedLangInfoQuery(bookData?.languageId)
+      userLanguageQuery(bookData?.languageId)
     );
     const softwareInfoData =
       await queryClient.ensureQueryData(softwareInfoQuery);

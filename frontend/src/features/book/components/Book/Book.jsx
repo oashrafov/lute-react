@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Box } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { definedLangInfoQuery } from "@language/api/language";
+import { userLanguageQuery } from "@language/api/query";
 import { getTermQuery } from "@term/api/query";
 import { paneResizeStorage } from "@actions/utils";
 import PageSpinner from "@common/PageSpinner/PageSpinner";
@@ -50,7 +50,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
       : activeTerm.data);
 
   const { data: book } = useQuery(getBookQuery(id));
-  const { data: language } = useQuery(definedLangInfoQuery(book.languageId));
+  const { data: language } = useQuery(userLanguageQuery(book.languageId));
   const { data: term } = useQuery(getTermQuery(key));
 
   const [state, dispatch] = useBookState();
@@ -81,7 +81,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
     <>
       {!editMode && <ContextMenu contextMenuAreaRef={contextMenuAreaRef} />}
 
-      {editMode && <EditPane book={book} isRtl={language.isRightToLeft} />}
+      {editMode && <EditPane book={book} isRtl={language.right_to_left} />}
 
       <FocusPane
         book={book}
@@ -109,7 +109,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
             className={classes.paneLeft}>
             <ReadPane
               book={book}
-              isRtl={language.isRightToLeft}
+              isRtl={language.right_to_left}
               state={state}
               dispatch={dispatch}
               activeTerm={activeTerm}

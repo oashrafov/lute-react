@@ -27,10 +27,10 @@ import LanguageRadioLabel from "./components/LanguageRadioLabel";
 import InsertDictionaryButton from "./components/InsertDictionaryButton";
 import {
   parsersQuery,
-  predefinedListQuery,
-  defFormSettingsQuery,
-  predefFormSettingsQuery,
-} from "../../api/language";
+  predefinedLanguagesQuery,
+  userLanguageQuery,
+  predefinedLanguageQuery,
+} from "../../api/query";
 import { initialQuery } from "@settings/api/settings";
 import classes from "./LanguageForm.module.css";
 
@@ -41,17 +41,23 @@ function LanguageForm() {
   const langId = params.get("langId");
   const predefinedSelected = langId === "0";
   const predefSettingsQuery = useQuery(
-    predefFormSettingsQuery(params.get("name", null))
+    predefinedLanguageQuery(params.get("name", null))
   );
-  const defSettingsQuery = useQuery(defFormSettingsQuery(langId));
-  const { data: predefined } = useQuery(predefinedListQuery);
+  const defSettingsQuery = useQuery(userLanguageQuery(langId));
+  const { data: predefined } = useQuery(predefinedLanguagesQuery);
   const { data: parsers } = useQuery(parsersQuery);
   const { data: initial } = useQuery(initialQuery);
 
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      ...predefSettingsQuery.data,
+      character_substitutions: "´='|`='|’='|‘='|...=…|..=‥",
+      split_sentences: ".!?",
+      split_sentence_exceptions: "Mr.|Mrs.|Dr.|[A-Z].|Vd.|Vds.",
+      word_chars: "a-zA-ZÀ-ÖØ-öø-ȳáéíóúÁÉÍÓÚñÑ",
+      right_to_left: false,
+      show_romanization: false,
+      parser_type: "spacedel",
       // minimum dictionaries should be defined on backend with other settings
       dictionaries: [
         {
@@ -87,6 +93,13 @@ function LanguageForm() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defSettingsQuery.data, defSettingsQuery.isSuccess]);
+
+  useEffect(() => {
+    if (!langId) {
+      form.reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [langId]);
 
   return (
     <form>

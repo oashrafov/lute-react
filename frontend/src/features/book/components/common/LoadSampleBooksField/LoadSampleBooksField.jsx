@@ -3,7 +3,7 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { ActionIcon, Select } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
-import { predefinedListQuery } from "@language/api/language";
+import { predefinedLanguagesQuery } from "@language/api/query";
 import { keys as bookKeys } from "@book/api/keys";
 import { keys as settingsKeys } from "@settings/api/keys";
 import { keys as languageKeys } from "@language/api/keys";
@@ -19,7 +19,7 @@ function LoadSampleBooksField({
   onConfirm,
 }) {
   const queryClient = useQueryClient();
-  const { data: predefined } = useQuery(predefinedListQuery);
+  const { data: predefined } = useQuery(predefinedLanguagesQuery);
   const [langName, setLangName] = useState("");
 
   const loadSampleStoriesMutation = useMutation({
@@ -28,8 +28,10 @@ function LoadSampleBooksField({
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: bookKeys.books }),
         queryClient.invalidateQueries({ queryKey: settingsKeys.initial }),
-        queryClient.invalidateQueries({ queryKey: languageKeys.user }),
-        queryClient.invalidateQueries({ queryKey: languageKeys.predefined }),
+        queryClient.invalidateQueries({ queryKey: languageKeys.userLanguages }),
+        queryClient.invalidateQueries({
+          queryKey: languageKeys.predefinedLanguages,
+        }),
       ]);
       notifications.show(
         sampleBooksAdded(`Sample book(s) for "${langName}" added`)

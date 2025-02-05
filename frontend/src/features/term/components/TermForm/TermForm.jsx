@@ -46,7 +46,7 @@ const termBlank = {
   // "currentImg": term.current_image,
 };
 
-const languageBlank = { id: 0, isRightToLeft: false, showPronunciation: true };
+const languageBlank = { id: 0, right_to_left: false, show_romanization: true };
 
 function TermForm({
   term = termBlank,
@@ -62,11 +62,11 @@ function TermForm({
   const editMode = term.id !== null;
   const blankMode = !term.text;
   const { id: bookId } = useParams();
-  const dir = language.isRightToLeft ? "rtl" : "ltr";
+  const dir = language.right_to_left ? "rtl" : "ltr";
 
   const [notesOpened, setNotesOpened] = useState(blankMode);
   const [pronunciationOpened, setPronunciationOpened] = useState(
-    !blankMode ? language.showPronunciation : true
+    !blankMode ? language.show_romanization : true
   );
   const [parents, setParents] = useState(form.getValues().parents || []);
 

@@ -1,19 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { Group, Radio, rem, ScrollArea, Stack, Text } from "@mantine/core";
-import { definedListQuery } from "../../api/language";
+import { userLanguagesQuery } from "../../api/query";
 import classes from "./LanguageCards.module.css";
 
 function LanguageCards({ label, description }) {
-  const { data: languages } = useQuery(definedListQuery);
+  const { data: languages } = useQuery(userLanguagesQuery);
   const [params, setParams] = useSearchParams();
   const currentId = params.get("langId");
 
   function handleLanguageChange(id) {
-    if (id === currentId) {
-      return;
+    if (id === params.get("langId")) {
+      params.delete("langId");
+    } else {
+      params.set("langId", id);
     }
-    setParams({ langId: id });
+
+    setParams(params);
   }
 
   return (
@@ -27,7 +30,7 @@ function LanguageCards({ label, description }) {
       <ScrollArea type="scroll" offsetScrollbars="x">
         <Group gap={2} wrap="nowrap" align="stretch">
           {languages
-            .toSorted((a, b) => a.id > b.id)
+            .toSorted((a, b) => b.id - a.id)
             .map((data) => (
               <Radio.Card
                 key={data.id}

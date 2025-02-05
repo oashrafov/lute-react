@@ -2,7 +2,7 @@
 Languages endpoints
 """
 
-from urllib.parse import urlparse, quote
+from urllib.parse import urlparse
 from flask import Blueprint, jsonify, request
 
 from sqlalchemy import text as SQLText
@@ -11,7 +11,6 @@ from lute.parse.registry import supported_parsers
 from lute.db import db
 from lute.models.language import Language as LanguageModel
 from lute.language.service import Service as LangService
-from lute.models.repositories import LanguageRepository
 
 bp = Blueprint("api_languages", __name__, url_prefix="/api/languages")
 
@@ -76,24 +75,26 @@ def create_language():
     return jsonify(None)
 
 
-@bp.route("/new/", defaults={"langname": None}, methods=["GET"])
-@bp.route("/new/<string:langname>", methods=["GET"])
-def new_language(langname=None):
-    "get language"
+@bp.route("/predefined/<string:langname>", methods=["GET"])
+def get_predefined_language(langname):
+    "get predefined language form data"
 
-    language = LanguageModel()
-    if langname is not None:
-        service = LangService(db.session)
-        predefined = service.supported_predefined_languages()
-        candidates = [lang for lang in predefined if lang.name == langname]
-        if len(candidates) == 1:
-            language = candidates[0]
+    if langname is None:
+        return jsonify(None)
 
-    return jsonify(language.to_dict())
+    service = LangService(db.session)
+    predefined = service.supported_predefined_languages()
+    candidates = [lang for lang in predefined if lang.name == langname]
+    if len(candidates) == 1:
+        language = candidates[0]
+    else:
+        return jsonify(None)
+
+    return jsonify(_lang_to_dict(language))
 
 
-@bp.route("/<int:langid>/settings", methods=["GET"])
-def get_existing_lang_settings(langid):
+@bp.route("/user/<int:langid>", methods=["GET"])
+def get_user_languag(langid):
     """
     get existing language form data
     """
@@ -102,36 +103,8 @@ def get_existing_lang_settings(langid):
         return jsonify("Language does not exist")
 
     language = db.session.get(LanguageModel, langid)
-    return jsonify(language.to_dict())
 
-
-@bp.route("/<int:langid>", methods=["GET"])
-def get_existing_lang_info(langid):
-    """
-    get existing language data
-    to create dict tabs, book view and term form
-    """
-
-    language = db.session.get(LanguageModel, langid)
-    lang_repo = LanguageRepository(db.session)
-    term_dicts = lang_repo.all_dictionaries()[langid]["term"]
-    sentence_dicts = lang_repo.all_dictionaries()[langid]["sentence"]
-
-    term_dicts = [
-        _get_dict_info(dict, index, langid) for index, dict in enumerate(term_dicts)
-    ]
-    sentence_dicts = [
-        _get_dict_info(dict, index, langid) for index, dict in enumerate(sentence_dicts)
-    ]
-
-    return jsonify(
-        {
-            "id": langid,
-            "isRightToLeft": language.right_to_left,
-            "showPronunciation": language.show_romanization,
-            "dictionaries": {"term": term_dicts, "sentence": sentence_dicts},
-        }
-    )
+    return jsonify(_lang_to_dict(language))
 
 
 @bp.route("/parsers", methods=["GET"])
@@ -139,22 +112,31 @@ def get_parsers():
     return jsonify([{"value": a[0], "label": a[1].name()} for a in supported_parsers()])
 
 
-def _get_dict_info(dictURL, dictID, langid):
-    url = dictURL.replace("*", "")
-    # label = url if len(url) <= 10 else f"{url[:10]}..."
-    hostname = urlparse(url).hostname
-    label = hostname.split("www.")[-1] if hostname.startswith("www.") else hostname
+def _lang_to_dict(language):
+    ret = {}
+    ret["id"] = language.id
+    ret["name"] = language.name
+    ret["show_romanization"] = language.show_romanization
+    ret["right_to_left"] = language.right_to_left
+    ret["parser_type"] = language.parser_type
+    ret["character_substitutions"] = language.character_substitutions
+    ret["split_sentences"] = language.regexp_split_sentences
+    ret["split_sentence_exceptions"] = language.exceptions_split_sentences
+    ret["word_chars"] = language.word_characters
+    ret["dictionaries"] = []
+    for d in language.dictionaries:
+        url = d.dicturi
+        hostname = urlparse(url).hostname
+        dictionary = {
+            "for": d.usefor,
+            "type": d.dicttype.replace("html", ""),
+            "url": url,
+            "active": d.is_active,
+            "hostname": hostname,
+            "label": (
+                hostname.split("www.")[-1] if hostname.startswith("www.") else hostname
+            ),
+        }
+        ret["dictionaries"].append(dictionary)
 
-    if "www.bing.com" in url:
-        bing_hash = url.replace("https://www.bing.com/images/search?", "")
-        url = "http://localhost:5001/bing/search/{}/###/{}".format(
-            langid, quote(bing_hash, safe="()*!.'")
-        )
-
-    return {
-        "id": dictID,
-        "url": url,
-        "label": label,
-        "isExternal": dictURL[0] == "*",
-        "hostname": hostname,
-    }
+    return ret

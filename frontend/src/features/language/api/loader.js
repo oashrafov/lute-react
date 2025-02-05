@@ -1,28 +1,24 @@
 import { initialQuery } from "@settings/api/settings";
 import {
-  definedListQuery,
+  userLanguagesQuery,
   parsersQuery,
-  predefFormSettingsQuery,
-  predefinedListQuery,
-} from "./language";
+  predefinedLanguagesQuery,
+} from "./query";
 
 function loader(queryClient) {
   return async () => {
-    const predefListData =
-      await queryClient.ensureQueryData(predefinedListQuery);
-    const defListData = await queryClient.ensureQueryData(definedListQuery);
+    const predefListData = await queryClient.ensureQueryData(
+      predefinedLanguagesQuery
+    );
+    const defListData = await queryClient.ensureQueryData(userLanguagesQuery);
     const parsersData = await queryClient.ensureQueryData(parsersQuery);
     const initialData = await queryClient.ensureQueryData(initialQuery);
-    const predefinedSettingsData = await queryClient.ensureQueryData(
-      predefFormSettingsQuery(null)
-    );
 
     return {
       predefListData,
       defListData,
       parsersData,
       initialData,
-      predefinedSettingsData,
     };
   };
 }

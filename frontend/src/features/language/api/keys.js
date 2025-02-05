@@ -1,12 +1,7 @@
 export const keys = {
-  user: ["userLanguages"],
-  predefined: ["predefinedLanguages"],
-
-  defined: (id) => ["definedLanguage", id],
-
-  definedFormSettings: (id) => ["definedLanguageFormSettings", id],
-  predefinedFormSettings: (name) => ["predefinedLanguageFormSettings", name],
-
+  userLanguages: ["userLanguages"],
+  predefinedLanguages: ["predefinedLanguages"],
+  userLanguage: (id) => ["definedLanguage", id],
+  predefinedLanguage: (name) => ["predefinedLanguage", name],
   parsers: ["languageParsers"],
-  samples: (langName) => ["sampleStories", langName],
 };

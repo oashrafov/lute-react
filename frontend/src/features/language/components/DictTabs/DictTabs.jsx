@@ -28,9 +28,11 @@ function DictTabs({
     onChange: onSetActiveTab,
   });
 
-  const allDicts = language.dictionaries.term;
-  const visibleDicts = allDicts.slice(0, MAX_VISIBLE_DICT_TABS);
-  const dropdownDicts = allDicts.slice(MAX_VISIBLE_DICT_TABS);
+  const termDicts = language.dictionaries.filter(
+    (dict) => dict.for === "terms"
+  );
+  const visibleDicts = termDicts.slice(0, MAX_VISIBLE_DICT_TABS);
+  const dropdownDicts = termDicts.slice(MAX_VISIBLE_DICT_TABS);
   // %E2%80%8B is the zero-width string.  The term is reparsed
   // on the server, so this doesn't need to be sent.
   const encodedTermText = encodeURIComponent(termText).replaceAll(
@@ -68,7 +70,7 @@ function DictTabs({
               label={dict.label}
               openDelay={150}
               refProp="innerRef">
-              {dict.isExternal ? (
+              {dict.type === "popup" ? (
                 <DictTabExternal
                   dict={dict}
                   termText={termText}
@@ -136,7 +138,7 @@ function DictTabs({
 
       {visibleDicts.map((dict, index) => {
         return (
-          !dict.isExternal && (
+          dict.type === "embedded" && (
             <Tabs.Panel
               style={{ height: "100%" }}
               key={dict.label}

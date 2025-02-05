@@ -7,7 +7,7 @@ import PageTitle from "@common/PageTitle/PageTitle";
 import LanguageCards from "@language/components/LanguageCards/LanguageCards";
 import DictTabs from "@language/components/DictTabs/DictTabs";
 import TermForm from "@term/components/TermForm/TermForm";
-import { definedLangInfoQuery } from "@language/api/language";
+import { userLanguageQuery } from "@language/api/query";
 import { getTermQuery } from "@term/api/query";
 
 function NewEditTermPage() {
@@ -15,7 +15,7 @@ function NewEditTermPage() {
   const [params] = useSearchParams();
   const langId = params.get("langId");
   const termId = params.get("termId");
-  const { data: language } = useQuery(definedLangInfoQuery(langId));
+  const { data: language } = useQuery(userLanguageQuery(langId));
   const { data: term } = useQuery(getTermQuery(termId));
 
   const editMode = termId && language && term;
@@ -34,7 +34,7 @@ function NewEditTermPage() {
         <Group
           justify="center"
           align="flex-start"
-          dir={language.isRightToLeft ? "rtl" : "ltr"}>
+          dir={language.right_to_left ? "rtl" : "ltr"}>
           <Box flex={0.3}>
             <TermForm
               key={term}

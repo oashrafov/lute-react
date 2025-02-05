@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
 
-function LanguageSelect({ form, languages }) {
+function LanguageSelect({ languages }) {
   const [params, setParams] = useSearchParams();
   const { pathname } = useLocation();
 
@@ -30,7 +30,6 @@ function LanguageSelect({ form, languages }) {
   function handleClearField() {
     setSearch("");
     setValue(null);
-    form.reset();
     params.delete("name");
     params.delete("langId");
     setParams(params);

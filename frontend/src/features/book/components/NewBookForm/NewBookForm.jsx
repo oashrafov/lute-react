@@ -33,7 +33,7 @@ import {
 } from "@tabler/icons-react";
 import LanguageCards from "@language/components/LanguageCards/LanguageCards";
 import FormButtons from "@common/FormButtons/FormButtons";
-import { defFormSettingsQuery } from "@language/api/language";
+import { userLanguageQuery } from "@language/api/query";
 import { initialQuery } from "@settings/api/settings";
 import { errorMessage } from "@resources/notifications";
 import { createBook, getBookDataFromUrl } from "../../api/api";
@@ -45,9 +45,9 @@ function NewBookForm({ openDrawer }) {
   const [params] = useSearchParams();
   const langId = params.get("langId");
   const isLangSelected = langId && langId !== "0";
-  const { data } = useQuery(defFormSettingsQuery(langId));
+  const { data: language } = useQuery(userLanguageQuery(langId));
   const { data: initial } = useQuery(initialQuery);
-  const dir = data?.right_to_left ? "rtl" : "ltr";
+  const dir = language?.right_to_left ? "rtl" : "ltr";
 
   const form = useForm({
     initialValues: {

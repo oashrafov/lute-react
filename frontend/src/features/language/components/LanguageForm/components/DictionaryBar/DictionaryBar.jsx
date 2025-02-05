@@ -8,12 +8,17 @@ import {
   Tooltip,
 } from "@mantine/core";
 import {
-  IconExternalLink,
   IconGripVertical,
   IconSquareRoundedMinusFilled,
 } from "@tabler/icons-react";
+import TestDictionaryButton from "./components/TestDictionaryButton";
 
 function DictionaryBar({ form, index, dndProvided }) {
+  const testUrl = form
+    .getValues()
+    .dictionaries[index]?.url.replace("###", "test")
+    .replace("[LUTE]", "test");
+
   return (
     <Group
       mb={5}
@@ -32,7 +37,7 @@ function DictionaryBar({ form, index, dndProvided }) {
       <Tooltip label="Is active?" openDelay={300} withinPortal={false}>
         <Checkbox
           size="xs"
-          disabled={form.getValues().dictionaries.length > 2 ? false : true}
+          disabled={form.getValues().dictionaries.length <= 2}
           key={form.key(`dictionaries.${index}.active`)}
           {...form.getInputProps(`dictionaries.${index}.active`, {
             type: "checkbox",
@@ -46,11 +51,7 @@ function DictionaryBar({ form, index, dndProvided }) {
         placeholder="Dictionary URL"
         rightSection={
           form.getValues().dictionaries[index]?.url.length > 0 ? (
-            <Tooltip label="Test dictionary" openDelay={300}>
-              <ActionIcon variant="transparent" size="sm">
-                <IconExternalLink />
-              </ActionIcon>
-            </Tooltip>
+            <TestDictionaryButton src={testUrl} />
           ) : null
         }
         key={form.key(`dictionaries.${index}.url`)}
