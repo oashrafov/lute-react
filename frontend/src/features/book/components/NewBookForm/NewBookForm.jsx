@@ -1,21 +1,15 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import {
-  ActionIcon,
   Button,
   Fieldset,
   FileInput,
   Group,
   NumberInput,
-  Paper,
-  Popover,
-  rem,
   Select,
   Stack,
   TagsInput,
-  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
@@ -26,21 +20,19 @@ import {
   IconHeading,
   IconHeadphones,
   IconLink,
-  IconQuestionMark,
-  IconSquareRoundedPlusFilled,
   IconTags,
   IconWorldWww,
 } from "@tabler/icons-react";
-import LanguageCards from "@language/components/LanguageCards/LanguageCards";
 import FormButtons from "@common/FormButtons/FormButtons";
 import { userLanguageQuery } from "@language/api/query";
 import { initialQuery } from "@settings/api/settings";
 import { errorMessage } from "@resources/notifications";
 import { createBook, getBookDataFromUrl } from "../../api/api";
-import { getFormDataFromObj } from "@actions/utils";
+import useNewBookForm from "@book/hooks/useNewBookForm";
+import ImportURLInfoPopup from "./components/ImportURLInfoPopup";
 import classes from "./NewBookForm.module.css";
 
-function NewBookForm({ openDrawer }) {
+function NewBookForm() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const langId = params.get("langId");
@@ -49,43 +41,7 @@ function NewBookForm({ openDrawer }) {
   const { data: initial } = useQuery(initialQuery);
   const dir = language?.right_to_left ? "rtl" : "ltr";
 
-  const form = useForm({
-    initialValues: {
-      language_id: "",
-      title: "",
-      text: "",
-      importurl: "",
-      text_file: undefined,
-      audio_file: undefined,
-      threshold_page_tokens: 250,
-      split_by: "paragraphs",
-      source_uri: "",
-      book_tags: [],
-    },
-    transformValues: (values) => {
-      const data = {
-        ...values,
-        language_id: Number(langId),
-      };
-
-      return getFormDataFromObj(data);
-    },
-  });
-
-  const cardsRadioLabel = (
-    <Group wrap="nowrap" gap={5} align="center">
-      <Text component="span" fw={500} fz="sm">
-        Language
-      </Text>
-      <ActionIcon
-        variant="transparent"
-        color="green.6"
-        onClick={openDrawer}
-        size="sm">
-        <IconSquareRoundedPlusFilled />
-      </ActionIcon>
-    </Group>
-  );
+  const form = useNewBookForm(langId);
 
   const createBookMutation = useMutation({
     mutationFn: createBook,
@@ -108,14 +64,6 @@ function NewBookForm({ openDrawer }) {
     <form
       className={classes.container}
       onSubmit={form.onSubmit(createBookMutation.mutate)}>
-      {initial.haveLanguages ? (
-        <LanguageCards
-          label={cardsRadioLabel}
-          description="Choose language for your book or create new"
-        />
-      ) : (
-        cardsRadioLabel
-      )}
       <TextInput
         wrapperProps={{ dir: dir }}
         disabled={isLangSelected ? false : true}
@@ -182,7 +130,7 @@ function NewBookForm({ openDrawer }) {
               flex={1}
               label="Import from URL"
               leftSection={<IconWorldWww />}
-              rightSection={<ImportURLInfo />}
+              rightSection={<ImportURLInfoPopup />}
               key={form.key("importurl")}
               {...form.getInputProps("importurl")}
             />
@@ -251,30 +199,6 @@ function NewBookForm({ openDrawer }) {
         okLoading={createBookMutation.isPending}
       />
     </form>
-  );
-}
-
-function ImportURLInfo() {
-  return (
-    <Popover position="top" withArrow shadow="sm">
-      <Popover.Target>
-        <ActionIcon variant="transparent">
-          <IconQuestionMark />
-        </ActionIcon>
-      </Popover.Target>
-      <Popover.Dropdown>
-        <Paper maw={500} fz="sm">
-          <p style={{ marginBottom: rem(5) }}>
-            This import is very primitive -- it grabs <em>all</em> the headings
-            and text from an HTML page.
-          </p>
-          <p>
-            This will likely include stuff you don&apos;t want. You are able to
-            edit the resulting text
-          </p>
-        </Paper>
-      </Popover.Dropdown>
-    </Popover>
   );
 }
 

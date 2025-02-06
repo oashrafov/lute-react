@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useSearchParams } from "react-router-dom";
-import { useForm } from "@mantine/form";
+import { useSearchParams } from "react-router-dom";
 import { randomId } from "@mantine/hooks";
 import {
   Box,
@@ -21,76 +20,28 @@ import {
 } from "@tabler/icons-react";
 import FormButtons from "@common/FormButtons/FormButtons";
 import LanguageSelect from "./LanguageSelect";
-import LanguageCards from "../LanguageCards/LanguageCards";
 import DictionaryBars from "./components/DictionaryBars";
-import LanguageRadioLabel from "./components/LanguageRadioLabel";
 import InsertDictionaryButton from "./components/InsertDictionaryButton";
-import {
-  parsersQuery,
-  userLanguageQuery,
-  predefinedLanguageQuery,
-} from "../../api/query";
-import { initialQuery } from "@settings/api/settings";
+import useSelectedLanguage from "@language/hooks/useSelectedLanguage";
+import useLanguageForm from "@language/hooks/useLanguageForm";
+import { parsersQuery } from "../../api/query";
 import classes from "./LanguageForm.module.css";
 
 function LanguageForm() {
-  const { pathname } = useLocation();
   const [params] = useSearchParams();
-  const openedFromLanguages = pathname === "/languages";
   const langId = params.get("langId");
-  const predefinedSelected = langId === "0";
-  const predefSettingsQuery = useQuery(
-    predefinedLanguageQuery(params.get("name", null))
-  );
-  const defSettingsQuery = useQuery(userLanguageQuery(langId));
   const { data: parsers } = useQuery(parsersQuery);
-  const { data: initial } = useQuery(initialQuery);
+  const { language, isSuccess } = useSelectedLanguage();
 
-  const form = useForm({
-    mode: "uncontrolled",
-    initialValues: {
-      character_substitutions: "´='|`='|’='|‘='|...=…|..=‥",
-      split_sentences: ".!?",
-      split_sentence_exceptions: "Mr.|Mrs.|Dr.|[A-Z].|Vd.|Vds.",
-      word_chars: "a-zA-ZÀ-ÖØ-öø-ȳáéíóúÁÉÍÓÚñÑ",
-      right_to_left: false,
-      show_romanization: false,
-      parser_type: "spacedel",
-      // minimum dictionaries should be defined on backend with other settings
-      dictionaries: [
-        {
-          for: "terms",
-          type: "embedded",
-          url: "",
-          active: true,
-          key: randomId(),
-        },
-        {
-          for: "sentences",
-          type: "popup",
-          url: "",
-          active: true,
-          key: randomId(),
-        },
-      ],
-    },
-  });
+  const form = useLanguageForm();
 
   useEffect(() => {
-    if (predefSettingsQuery.isSuccess && params.get("name", null)) {
-      const { dictionaries, ...rest } = predefSettingsQuery.data;
+    if (isSuccess && language) {
+      const { dictionaries, ...rest } = language;
       setFormValues(rest, dictionaries);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [predefSettingsQuery.data, predefSettingsQuery.isSuccess]);
-
-  useEffect(() => {
-    if (defSettingsQuery.isSuccess && openedFromLanguages) {
-      const { dictionaries, ...rest } = defSettingsQuery.data;
-      setFormValues(rest, dictionaries);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defSettingsQuery.data, defSettingsQuery.isSuccess]);
+  }, [language, isSuccess]);
 
   useEffect(() => {
     if (!langId) {
@@ -101,19 +52,13 @@ function LanguageForm() {
 
   return (
     <form>
-      {openedFromLanguages && initial.haveLanguages && (
-        <LanguageCards
-          label={<LanguageRadioLabel langId={langId} />}
-          description="Edit existing language"
-        />
-      )}
       <LanguageSelect form={form} />
 
       <Divider mt="md" mb="xs" />
 
       <Box pos="relative" className={classes.container}>
         <LoadingOverlay
-          visible={predefinedSelected ? !predefSettingsQuery.isSuccess : false}
+          visible={!isSuccess && langId}
           zIndex={1000}
           overlayProps={{ radius: "sm", blur: 2 }}
         />
