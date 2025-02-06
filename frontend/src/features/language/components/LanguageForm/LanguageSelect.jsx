@@ -1,4 +1,5 @@
 import { useState, useEffect, memo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 import {
   Combobox,
@@ -8,10 +9,12 @@ import {
   useCombobox,
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
+import { predefinedLanguagesQuery } from "@language/api/query";
 
-function LanguageSelect({ languages }) {
+function LanguageSelect() {
   const [params, setParams] = useSearchParams();
   const { pathname } = useLocation();
+  const { data: languages } = useQuery(predefinedLanguagesQuery);
 
   const [value, setValue] = useState(null);
   const [search, setSearch] = useState("");

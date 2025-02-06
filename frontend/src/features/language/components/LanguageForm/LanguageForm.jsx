@@ -27,7 +27,6 @@ import LanguageRadioLabel from "./components/LanguageRadioLabel";
 import InsertDictionaryButton from "./components/InsertDictionaryButton";
 import {
   parsersQuery,
-  predefinedLanguagesQuery,
   userLanguageQuery,
   predefinedLanguageQuery,
 } from "../../api/query";
@@ -44,7 +43,6 @@ function LanguageForm() {
     predefinedLanguageQuery(params.get("name", null))
   );
   const defSettingsQuery = useQuery(userLanguageQuery(langId));
-  const { data: predefined } = useQuery(predefinedLanguagesQuery);
   const { data: parsers } = useQuery(parsersQuery);
   const { data: initial } = useQuery(initialQuery);
 
@@ -109,7 +107,7 @@ function LanguageForm() {
           description="Edit existing language"
         />
       )}
-      <LanguageSelect form={form} languages={predefined} />
+      <LanguageSelect form={form} />
 
       <Divider mt="md" mb="xs" />
 

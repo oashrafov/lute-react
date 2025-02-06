@@ -16,6 +16,7 @@ function LanguageCards({ label, description }) {
       params.set("langId", id);
     }
 
+    params.delete("name");
     setParams(params);
   }
 

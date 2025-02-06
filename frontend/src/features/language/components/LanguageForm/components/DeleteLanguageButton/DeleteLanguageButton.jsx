@@ -3,8 +3,11 @@ import { ActionIcon, Paper, Text, Tooltip } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { initialQuery } from "@settings/api/settings";
 import { IconSquareRoundedMinusFilled } from "@tabler/icons-react";
+import { useSearchParams } from "react-router-dom";
 
-function DeleteLanguageButton({ langId }) {
+function DeleteLanguageButton() {
+  const [params] = useSearchParams();
+  const langId = params.get("langId");
   const { data: initial } = useQuery(initialQuery);
   const selectedLangName = initial.languageChoices.filter(
     (lang) => lang.id === Number(langId)
