@@ -90,7 +90,9 @@ def get_books():
             order_by = " ORDER BY " + ", ".join(sort_clauses)
 
     # Apply Pagination
-    limit = f" LIMIT {size} OFFSET {start}"
+    limit = ""
+    if size != -1:
+        limit = f" LIMIT {size} OFFSET {start}"
 
     realbase = f"({base_sql}) realbase".replace("\n", " ")
     filtered = f"SELECT COUNT(*) FROM {realbase} {" ".join(where)}"
@@ -128,9 +130,9 @@ def get_books():
                 "pageCount": row.PageCount,
                 "currentPage": row.PageNum,
                 "tags": row.TagList.split(",") if row.TagList else [],
-                "isCompleted": row.IsCompleted,
+                "isCompleted": row.IsCompleted == 1,
                 "unknownPercent": row.UnknownPercent,
-                "isArchived": row.BkArchived,
+                "isArchived": row.BkArchived == 1,
                 "lastRead": row.LastOpenedDate,
             }
         )
@@ -482,7 +484,7 @@ def _parse_url_params():
     """
     # Pagination
     start = int(request.args.get("start", 0))  # Starting index
-    size = int(request.args.get("size", 10))  # Page size
+    size = int(request.args.get("size", -1))  # Page size
     # Filters
     global_filter = request.args.get("globalFilter", "").strip()
     # [{"id": "title", "value": "Book"}]

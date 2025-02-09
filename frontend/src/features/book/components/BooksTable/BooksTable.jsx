@@ -1,12 +1,7 @@
 import { memo, useMemo, useState } from "react";
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { Menu, Modal } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { Box, Menu, Modal } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import {
   IconArchive,
@@ -19,11 +14,10 @@ import EditBookForm from "../EditBookForm/EditBookForm";
 import ShelfSwitch from "./components/ShelfSwitch";
 import BookActions from "./components/BookActions/BookActions";
 import getDefaultTableOptions from "@resources/table-options-default";
-import columnDefinition from "./columnDefinition";
-import { editBook, deleteBook } from "../../api/api";
-import { bookDeleted, bookUpdated } from "../../resources/notifications";
-import { keys } from "../../api/keys";
+import { deleteBookConfirm } from "@resources/modals";
+import { useDeleteBook, useEditBook } from "@book/api/mutation";
 import { getFormDataFromObj } from "@actions/utils";
+import columnDefinition from "./columnDefinition";
 import { DEFAULT_TABLE_ROW_COUNT } from "@resources/constants";
 
 const defaultOptions = getDefaultTableOptions();
@@ -44,9 +38,25 @@ const COLUMN_FILTER_FNS = {
 const fetchURL = new URL("/api/books", "http://localhost:5001");
 
 function BooksTable({ languageChoices, tagChoices }) {
-  const queryClient = useQueryClient();
-
   const [editedRow, setEditedRow] = useState(null);
+  const deleteBookMutation = useDeleteBook();
+  const editBookMutation = useEditBook();
+
+  function handleEdit(id, data) {
+    editBookMutation.mutate(
+      {
+        id: id,
+        data: getFormDataFromObj(data),
+      },
+      {
+        onSuccess: (response) => {
+          if (response.archivedCount === 0) {
+            setShelf("active");
+          }
+        },
+      }
+    );
+  }
 
   const columns = useMemo(
     () => columnDefinition(languageChoices, tagChoices),
@@ -83,42 +93,6 @@ function BooksTable({ languageChoices, tagChoices }) {
     placeholderData: keepPreviousData,
     staleTime: 30_000,
   });
-
-  const deleteBookMutation = useMutation({
-    mutationFn: deleteBook,
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: keys.books });
-      notifications.show(bookDeleted(response.title));
-    },
-  });
-
-  const editBookMutation = useMutation({
-    mutationFn: editBook,
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: keys.books });
-      notifications.show(bookUpdated(response.title));
-    },
-  });
-
-  function handleDelete(id) {
-    deleteBookMutation.mutate(id);
-  }
-
-  function handleEdit(id, data) {
-    editBookMutation.mutate(
-      {
-        id: id,
-        data: getFormDataFromObj(data),
-      },
-      {
-        onSuccess: (response) => {
-          if (response.archivedCount === 0) {
-            setShelf("active");
-          }
-        },
-      }
-    );
-  }
 
   const table = useMantineReactTable({
     ...defaultOptions,
@@ -199,25 +173,35 @@ function BooksTable({ languageChoices, tagChoices }) {
       <Menu.Item
         leftSection={<IconTrash />}
         key="delete"
-        onClick={() => handleDelete(row.original.id)}>
+        onClick={() =>
+          modals.openConfirmModal(
+            deleteBookConfirm(row.original.title, () =>
+              deleteBookMutation.mutate(row.original.id)
+            )
+          )
+        }>
         Delete
       </Menu.Item>,
     ],
 
     renderBottomToolbarCustomActions: () => (
-      <ShelfSwitch
-        shelf={shelf}
-        onSetShelf={setShelf}
-        showActiveOnly={books.archivedCount === 0 ? true : false}
-      />
+      <Box pl={5}>
+        <ShelfSwitch
+          shelf={shelf}
+          onSetShelf={setShelf}
+          showActiveOnly={books.archivedCount === 0 ? true : false}
+        />
+      </Box>
     ),
 
     renderTopToolbarCustomActions: ({ table }) => <BookActions table={table} />,
   });
 
+  if (!books) return;
+
   return (
     <>
-      {books && <MantineReactTable table={table} />}
+      <MantineReactTable table={table} />
       <Modal
         opened={editedRow}
         onClose={() => setEditedRow(null)}

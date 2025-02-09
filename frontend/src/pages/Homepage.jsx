@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Modal, useComputedColorScheme } from "@mantine/core";
 import BooksTable from "@book/components/BooksTable/BooksTable";
+import BooksGrid from "@book/components/BooksGrid/BooksGrid";
 import PageContainer from "@common/PageContainer/PageContainer";
-import { settingsQuery, initialQuery } from "@settings/api/settings";
-import { applyLuteHighlights } from "@actions/general";
 import DemoNotice from "../components/DemoNotice/DemoNotice";
 import Welcome from "../components/Modals/Welcome";
+import { settingsQuery, initialQuery } from "@settings/api/settings";
+import { applyLuteHighlights } from "@actions/general";
 
 function HomePage() {
   const colorScheme = useComputedColorScheme();
@@ -38,12 +39,20 @@ function HomePage() {
         <Welcome />
       </Modal>
 
-      <PageContainer>
-        <BooksTable
-          languageChoices={initial.languageChoices}
-          tagChoices={initial.bookTags}
-        />
-      </PageContainer>
+      <Box visibleFrom="md">
+        <PageContainer>
+          <BooksTable
+            languageChoices={initial.languageChoices}
+            tagChoices={initial.bookTags}
+          />
+        </PageContainer>
+      </Box>
+
+      <Box hiddenFrom="md">
+        <PageContainer>
+          <BooksGrid />
+        </PageContainer>
+      </Box>
     </>
   );
 }

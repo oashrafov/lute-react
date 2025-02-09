@@ -1,4 +1,4 @@
-import { rem } from "@mantine/core";
+import { rem, Text } from "@mantine/core";
 
 const softwareInfo = {
   modal: "about",
@@ -10,4 +10,19 @@ const softwareInfo = {
   },
 };
 
-export { softwareInfo };
+const deleteBookConfirm = (name, onConfirm) => ({
+  title: "Delete term",
+  children: (
+    <Text size="sm">
+      Are you sure you want to delete{" "}
+      <Text component="span" fw="bold">
+        {`"${name}"`}
+      </Text>
+    </Text>
+  ),
+  labels: { confirm: "Delete", cancel: "Cancel" },
+  confirmProps: { color: "red" },
+  onConfirm: onConfirm,
+});
+
+export { softwareInfo, deleteBookConfirm };
