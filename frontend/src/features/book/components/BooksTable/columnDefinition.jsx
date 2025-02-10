@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Group, Text, ThemeIcon } from "@mantine/core";
+import { Button, Group, Text, ThemeIcon } from "@mantine/core";
 import {
   IconArchiveFilled,
   IconCircleCheckFilled,
@@ -35,13 +35,16 @@ const columnDefinition = (languageChoices, tagChoices) => [
             variant="transparent">
             <IconCircleCheckFilled />
           </ThemeIcon>
-          <Link
+          <Button
+            variant="subtle"
+            size="compact-sm"
+            component={Link}
             to={`/books/${id}/pages/${currentPage}`}
             style={{ color: "inherit", textDecoration: "none" }}>
             <Text size="sm" lineClamp={1}>
               {title}
             </Text>
-          </Link>
+          </Button>
           {currentPage > 1 && currentPage !== pageCount && (
             <Text component="span" size="xs" c="dimmed">
               ({currentPage}/{pageCount})

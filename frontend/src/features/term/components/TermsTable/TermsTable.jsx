@@ -114,9 +114,9 @@ function TermsTable({ languageChoices, tagChoices }) {
       },
     },
 
-    mantineTableBodyCellProps: {
-      valign: "top",
-    },
+    // mantineTableBodyCellProps: {
+    //   valign: "top",
+    // },
 
     enableRowSelection: true,
     enableColumnFilterModes: true,

@@ -45,6 +45,7 @@ const getDefaultTableOptions = () => ({
   mantinePaperProps: {
     withBorder: false,
     shadow: false,
+    style: { "--mrt-base-background-color": "initial" }, // fixes borders not visible bug in firefox
   },
 
   mantineSearchTextInputProps: {
@@ -62,8 +63,9 @@ const getDefaultTableOptions = () => ({
   },
 
   mantineTableProps: {
-    striped: true,
+    verticalSpacing: 4,
     withColumnBorders: true,
+    highlightOnHover: false,
   },
 
   mantineFilterTextInputProps: {
