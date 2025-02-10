@@ -25,4 +25,19 @@ const deleteBookConfirm = (name, onConfirm) => ({
   onConfirm: onConfirm,
 });
 
-export { softwareInfo, deleteBookConfirm };
+const deleteTermConfirm = (name, onConfirm) => ({
+  title: "Delete term",
+  children: (
+    <Text size="sm">
+      Are you sure you want to delete{" "}
+      <Text component="span" fw="bold">
+        {`"${name}"`}
+      </Text>
+    </Text>
+  ),
+  labels: { confirm: "Delete", cancel: "Cancel" },
+  confirmProps: { color: "red" },
+  onConfirm: onConfirm,
+});
+
+export { softwareInfo, deleteBookConfirm, deleteTermConfirm };

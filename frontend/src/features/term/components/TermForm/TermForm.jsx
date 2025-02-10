@@ -9,7 +9,6 @@ import {
   Checkbox,
   rem,
   Collapse,
-  Text,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
@@ -25,6 +24,7 @@ import useTermForm from "./hooks/useTermForm";
 import { moveCursorToEnd } from "@actions/utils";
 import { getTagSuggestionsQuery } from "../../api/query";
 import { editTerm, createTerm, deleteTerm } from "../../api/api";
+import { deleteTermConfirm } from "@resources/modals";
 import {
   termCreated,
   termUpdated,
@@ -68,36 +68,30 @@ function TermForm({
   const [pronunciationOpened, setPronunciationOpened] = useState(
     !blankMode ? language.show_romanization : true
   );
-  const [parents, setParents] = useState(form.getValues().parents || []);
 
   function handleParentSubmit(val) {
     const obj = JSON.parse(val);
 
-    const newParents = [...parents, obj.value];
-    const singleParent = newParents.length === 1;
+    const parents = [...form.getValues().parents, obj.value];
+    const hasSingleParent = parents.length === 1;
 
-    if (singleParent) {
+    if (hasSingleParent) {
       form.setFieldValue("status", String(obj.status));
     }
-    form.setFieldValue("syncStatus", singleParent);
-
-    handleSetParents(newParents);
-  }
-
-  function handleSetParents(parents) {
-    setParents(parents);
+    form.setFieldValue("syncStatus", hasSingleParent);
     form.setFieldValue("parents", parents);
   }
 
   function handleKeydown(e) {
-    if (
-      e.key === "Enter" &&
-      e.target.type !== "textarea" &&
-      e.target.type !== "submit"
-    ) {
+    const isTextarea = e.target.type === "textarea";
+    const isSubmitButton = e.target.type === "submit";
+    const enterPressed = e.key === "Enter";
+    const ctrlPressed = e.ctrlKey;
+
+    if (enterPressed && !isTextarea && !isSubmitButton) {
       e.preventDefault();
     }
-    if (e.key === "Enter" && e.ctrlKey && e.target.type !== "submit") {
+    if (enterPressed && ctrlPressed && !isSubmitButton) {
       e.currentTarget.requestSubmit();
     }
   }
@@ -110,20 +104,8 @@ function TermForm({
     }
   }
 
-  function handleDelete() {
-    deleteTermMutation.mutate(term.id);
-  }
-
   function handleToLowerCase() {
     form.setFieldValue("text", form.getValues().text.toLowerCase());
-  }
-
-  function handleTogglePronunciation() {
-    setPronunciationOpened((v) => !v);
-  }
-
-  function handleToggleNotes() {
-    setNotesOpened((v) => !v);
   }
 
   const createTermMutation = useMutation({
@@ -154,23 +136,6 @@ function TermForm({
     },
   });
 
-  function openConfirmDeleteModal() {
-    modals.openConfirmModal({
-      title: "Delete term",
-      children: (
-        <Text size="sm">
-          Are you sure you want to delete{" "}
-          <Text component="span" fw="bold">
-            {`"${term.text}"`}
-          </Text>
-        </Text>
-      ),
-      labels: { confirm: "Delete", cancel: "Cancel" },
-      confirmProps: { color: "red" },
-      onConfirm: handleDelete,
-    });
-  }
-
   return (
     <form onSubmit={form.onSubmit(handleSubmit)} onKeyDown={handleKeydown}>
       <div className={classes.container}>
@@ -196,15 +161,17 @@ function TermForm({
           {!blankMode && (
             <>
               <ToLowerCaseButton onClick={handleToLowerCase} />
-              <PronunciationButton onToggle={handleTogglePronunciation} />
-              <NotesButton onToggle={handleToggleNotes} />
+              <PronunciationButton
+                onToggle={() => setPronunciationOpened((v) => !v)}
+              />
+              <NotesButton onToggle={() => setNotesOpened((v) => !v)} />
             </>
           )}
         </Group>
         <TagsField
           termText={form.getValues().originalText}
-          values={parents}
-          onSetValues={handleSetParents}
+          values={form.getValues().parents || []}
+          onSetValues={(parents) => form.setFieldValue("parents", parents)}
           onSubmitParent={handleParentSubmit}
           onSetActiveTerm={onSetActiveTerm}
           languageId={language.id}
@@ -270,7 +237,13 @@ function TermForm({
         <FormButtons
           okDisabled={!form.getValues().text}
           discardLabel={editMode ? "Delete" : null}
-          discardCallback={openConfirmDeleteModal}
+          discardCallback={() =>
+            modals.openConfirmModal(
+              deleteTermConfirm(term.text, () =>
+                deleteTermMutation.mutate(term.id)
+              )
+            )
+          }
         />
       </div>
     </form>
