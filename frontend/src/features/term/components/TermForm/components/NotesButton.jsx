@@ -1,11 +1,14 @@
 import { ActionIcon, Tooltip } from "@mantine/core";
-import { IconNotes } from "@tabler/icons-react";
+import { IconNote } from "@tabler/icons-react";
 
-function NotesButton({ onToggle }) {
+function NotesButton({ onToggle, active }) {
   return (
     <Tooltip label="Show notes">
-      <ActionIcon size="md" variant="subtle" onClick={onToggle}>
-        <IconNotes />
+      <ActionIcon
+        size="md"
+        variant={active ? "light" : "subtle"}
+        onClick={onToggle}>
+        <IconNote />
       </ActionIcon>
     </Tooltip>
   );

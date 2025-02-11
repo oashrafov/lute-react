@@ -12,8 +12,16 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
+import {
+  IconBubbleText,
+  IconLanguage,
+  IconNote,
+  IconSitemap,
+  IconSpeakerphone,
+  IconTags,
+} from "@tabler/icons-react";
 import StatusRadio from "../StatusRadio/StatusRadio";
-import TagsField from "./components/TagsField";
+import TagsField from "./components/TagsField/TagsField";
 import FormButtons from "@common/FormButtons/FormButtons";
 import LoadDictsButton from "./components/LoadDictsButton";
 import ToLowerCaseButton from "./components/ToLowerCaseButton";
@@ -138,114 +146,134 @@ function TermForm({
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)} onKeyDown={handleKeydown}>
-      <div className={classes.container}>
-        <Group gap={4} flex={1}>
-          <TextInput
-            readOnly={editMode}
-            wrapperProps={{ dir: dir }}
-            placeholder="Term"
-            withAsterisk
-            flex={1}
-            rightSection={
-              blankMode && (
-                <LoadDictsButton
-                  enabled={form.getValues().text}
-                  onClick={() => onSetTerm(form.getValues().text)}
-                />
-              )
-            }
-            rightSectionWidth={50}
-            key={form.key("text")}
-            {...form.getInputProps("text")}
-          />
-          {!blankMode && (
-            <>
-              <ToLowerCaseButton onClick={handleToLowerCase} />
-              <PronunciationButton
-                onToggle={() => setPronunciationOpened((v) => !v)}
-              />
-              <NotesButton onToggle={() => setNotesOpened((v) => !v)} />
-            </>
-          )}
-        </Group>
-        <TagsField
-          termText={form.getValues().originalText}
-          values={form.getValues().parents || []}
-          onSetValues={(parents) => form.setFieldValue("parents", parents)}
-          onSubmitParent={handleParentSubmit}
-          onSetActiveTerm={onSetActiveTerm}
-          languageId={language.id}
-        />
-        <Collapse in={pronunciationOpened}>
-          <TextInput
-            placeholder="Pronunciation"
-            key={form.key("romanization")}
-            {...form.getInputProps("romanization")}
-          />
-        </Collapse>
-        <div className={classes.flex}>
-          <Textarea
-            wrapperProps={{ dir: dir }}
-            placeholder="Translation"
-            resize="vertical"
-            flex={1}
-            ref={translationFieldRef}
-            onFocusCapture={moveCursorToEnd}
-            minRows={2}
-            autosize
-            spellCheck={false}
-            autoCapitalize="off"
-            autoFocus
-            key={form.key("translation")}
-            {...form.getInputProps("translation")}
-          />
-          {form.getValues().currentImg && (
-            <TermImage
-              src={`http://localhost:5001${form.getValues().currentImg}`}
+      <div className={`${classes.termBox} ${classes.fieldBox}`}>
+        <TextInput
+          readOnly={editMode}
+          variant={editMode ? "filled" : "default"}
+          wrapperProps={{ dir: dir }}
+          placeholder="Term"
+          flex={1}
+          rightSection={
+            <ToLowerCaseButton
+              enabled={form.getValues().text}
+              onClick={handleToLowerCase}
             />
-          )}
-        </div>
-        <Collapse in={notesOpened}>
-          <Textarea
-            resize="vertical"
-            placeholder="Notes"
-            autosize
-            spellCheck={false}
-            autoCapitalize="off"
-            minRows={3}
-          />
-        </Collapse>
-        <Group dir="ltr" gap="md" style={{ rowGap: rem(7) }}>
-          <StatusRadio form={form} />
-          <Checkbox
-            styles={{ label: { paddingInlineStart: rem(5) } }}
-            size="xs"
-            label="Link to parent"
-            key={form.key("syncStatus")}
-            {...form.getInputProps("syncStatus", { type: "checkbox" })}
-          />
-        </Group>
-        <TagsInput
-          clearable
-          data={tags || []}
-          placeholder="Tags"
-          maxDropdownHeight={200}
-          key={form.key("termTags")}
-          {...form.getInputProps("termTags")}
-        />
-
-        <FormButtons
-          okDisabled={!form.getValues().text}
-          discardLabel={editMode ? "Delete" : null}
-          discardCallback={() =>
-            modals.openConfirmModal(
-              deleteTermConfirm(term.text, () =>
-                deleteTermMutation.mutate(term.id)
-              )
-            )
           }
+          leftSection={<IconBubbleText size={20} />}
+          leftSectionProps={{ className: classes.leftSection }}
+          key={form.key("text")}
+          {...form.getInputProps("text")}
         />
+        {blankMode && (
+          <LoadDictsButton
+            enabled={form.getValues().text}
+            onClick={() => onSetTerm(form.getValues().text)}
+          />
+        )}
+        {!blankMode && (
+          <>
+            <PronunciationButton
+              onToggle={() => setPronunciationOpened((v) => !v)}
+              active={pronunciationOpened}
+            />
+            <NotesButton
+              onToggle={() => setNotesOpened((v) => !v)}
+              active={notesOpened}
+            />
+          </>
+        )}
       </div>
+      <TagsField
+        termText={form.getValues().originalText}
+        values={form.getValues().parents || []}
+        onSetValues={(parents) => form.setFieldValue("parents", parents)}
+        onSubmitParent={handleParentSubmit}
+        onSetActiveTerm={onSetActiveTerm}
+        languageId={language.id}
+        leftSection={<IconSitemap size={20} />}
+        leftSectionProps={{ className: classes.leftSection }}
+        mb={5}
+      />
+      <Collapse in={pronunciationOpened}>
+        <TextInput
+          mb={5}
+          placeholder="Pronunciation"
+          leftSection={<IconSpeakerphone size={20} />}
+          leftSectionProps={{ className: classes.leftSection }}
+          key={form.key("romanization")}
+          {...form.getInputProps("romanization")}
+        />
+      </Collapse>
+      <div className={`${classes.translationBox} ${classes.fieldBox}`}>
+        <Textarea
+          wrapperProps={{ dir: dir }}
+          placeholder="Translation"
+          resize="vertical"
+          flex={1}
+          ref={translationFieldRef}
+          onFocusCapture={moveCursorToEnd}
+          minRows={2}
+          autosize
+          spellCheck={false}
+          autoCapitalize="off"
+          autoFocus
+          leftSection={<IconLanguage size={20} />}
+          leftSectionProps={{ className: classes.leftSection }}
+          key={form.key("translation")}
+          {...form.getInputProps("translation")}
+        />
+        {form.getValues().currentImg && (
+          <TermImage
+            src={`http://localhost:5001${form.getValues().currentImg}`}
+          />
+        )}
+      </div>
+      <Collapse in={notesOpened}>
+        <Textarea
+          resize="vertical"
+          placeholder="Notes"
+          autosize
+          spellCheck={false}
+          autoCapitalize="off"
+          minRows={3}
+          mb={5}
+          leftSection={<IconNote size={20} />}
+          leftSectionProps={{ className: classes.leftSection }}
+        />
+      </Collapse>
+      <Group dir="ltr" gap="md" style={{ rowGap: rem(7) }} mb={5}>
+        <StatusRadio form={form} />
+        <Checkbox
+          styles={{ label: { paddingInlineStart: rem(5) } }}
+          size="xs"
+          label="Link to parent"
+          key={form.key("syncStatus")}
+          {...form.getInputProps("syncStatus", { type: "checkbox" })}
+        />
+      </Group>
+      <TagsInput
+        clearable
+        data={tags || []}
+        placeholder="Tags"
+        maxDropdownHeight={200}
+        mb={5}
+        leftSection={<IconTags size={20} />}
+        leftSectionProps={{ className: classes.leftSection }}
+        key={form.key("termTags")}
+        {...form.getInputProps("termTags")}
+      />
+
+      <FormButtons
+        okDisabled={!form.getValues().text}
+        discardLabel={editMode ? "Delete" : null}
+        discardCallback={() =>
+          modals.openConfirmModal(
+            deleteTermConfirm(term.text, () =>
+              deleteTermMutation.mutate(term.id)
+            )
+          )
+        }
+      />
     </form>
   );
 }

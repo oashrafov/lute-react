@@ -4,9 +4,22 @@
   gap: 0.4rem;
 }
 
-.flex {
+.fieldBox {
   display: flex;
-  align-items: flex-start;
-  gap: 5px;
+  gap: 0.3125rem;
   flex-wrap: nowrap;
+  margin-bottom: 0.3125rem;
+}
+
+.translationBox {
+  align-items: flex-start;
+}
+
+.termBox {
+  align-items: center;
+}
+
+.leftSection {
+  align-items: flex-start;
+  top: 7px;
 }
