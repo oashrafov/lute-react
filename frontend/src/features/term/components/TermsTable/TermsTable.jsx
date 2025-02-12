@@ -114,10 +114,6 @@ function TermsTable({ languageChoices, tagChoices }) {
       },
     },
 
-    // mantineTableBodyCellProps: {
-    //   valign: "top",
-    // },
-
     enableRowSelection: true,
     enableColumnFilterModes: true,
     enableEditing: true,
@@ -135,6 +131,21 @@ function TermsTable({ languageChoices, tagChoices }) {
     onEditingRowSave: handleSaveRow,
 
     getRowId: (originalRow) => originalRow.id,
+
+    mantineTableBodyCellProps: ({ cell }) => {
+      const termCell = cell.column.id === "text";
+      const isRtl = cell.row.original.languageRtl;
+      return {
+        style: isRtl && termCell ? { textAlign: "right" } : {},
+      };
+    },
+
+    mantineTableBodyRowProps: ({ row }) => {
+      const isEditing = table.getState().editingRow?.id === row.id;
+      return {
+        style: isEditing ? { verticalAlign: "top" } : {},
+      };
+    },
 
     renderEmptyRowsFallback: ({ table }) => {
       const language = table.getColumn("language").getFilterValue();

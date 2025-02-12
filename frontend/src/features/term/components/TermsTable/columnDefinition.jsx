@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Badge, Image, TagsInput, Text, Textarea } from "@mantine/core";
+import { Badge, Button, Image, TagsInput, Text, Textarea } from "@mantine/core";
 import {
   IconCheck,
   IconMinus,
@@ -47,16 +47,16 @@ const columnDefinition = (languageChoices, tagChoices) => [
     minSize: 300,
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     Cell: ({ row }) => (
-      <Link
+      <Button
+        variant="subtle"
+        size="compact-sm"
+        component={Link}
         to={`/terms/term?termId=${row.original.id}&langId=${row.original.languageId}`}
         style={{ color: "inherit", textDecoration: "none" }}>
-        <Text
-          size="sm"
-          lineClamp={1}
-          ta={row.original.languageRtl ? "right" : "left"}>
+        <Text size="sm" lineClamp={1}>
           {row.original.text}
         </Text>
-      </Link>
+      </Button>
     ),
     enableEditing: false,
   },
