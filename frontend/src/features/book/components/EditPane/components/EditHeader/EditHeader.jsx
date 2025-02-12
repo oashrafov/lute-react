@@ -11,9 +11,9 @@ import {
   IconFileArrowLeft,
   IconFileArrowRight,
   IconFileCheck,
-  IconFileOff,
   IconFileXFilled,
 } from "@tabler/icons-react";
+import PageCounter from "@book/components/ReadPane/components/ReadHeader/components/PageCounter";
 
 function EditHeader({ book, page, onSetEdit }) {
   function handleAddBefore() {}
@@ -42,14 +42,8 @@ function EditHeader({ book, page, onSetEdit }) {
             {book.title}
           </Text>
         </span>
-        <Group gap={2} wrap="nowrap">
-          <Text
-            component="span"
-            fw={500}
-            fz="inherit"
-            style={{ whiteSpace: "nowrap" }}>
-            page: {page}
-          </Text>
+        <Group gap={2} wrap="nowrap" align="center">
+          <PageCounter counter={`${page} / ${book.pageCount}`} />
           <Tooltip label="Delete this page" position="right">
             <ActionIcon
               size="sm"
@@ -78,9 +72,9 @@ function EditHeader({ book, page, onSetEdit }) {
               Save
             </Button>
             <Button
+              variant="subtle"
               onClick={() => onSetEdit({ edit: "false" })}
-              size="xs"
-              leftSection={<IconFileOff />}>
+              size="xs">
               Cancel
             </Button>
           </Group>
