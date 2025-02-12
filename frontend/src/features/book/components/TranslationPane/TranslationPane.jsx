@@ -1,5 +1,5 @@
 import { memo, useRef } from "react";
-import { Box, Stack } from "@mantine/core";
+import { Box, ScrollAreaAutosize, Stack } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import DictTabs from "@language/components/DictTabs/DictTabs";
 import TermForm from "@term/components/TermForm/TermForm";
@@ -24,15 +24,17 @@ function TranslationPane({
         storage={paneResizeStorage}>
         <Panel order={1} defaultSize={40} ref={termPanelRef}>
           {/* need key to recreate the form */}
-          <Box p={20}>
-            <TermForm
-              key={term.text}
-              term={term}
-              language={language}
-              translationFieldRef={translationFieldRef}
-              onSetActiveTerm={onSetActiveTerm}
-            />
-          </Box>
+          <ScrollAreaAutosize mah="100%">
+            <Box p={20}>
+              <TermForm
+                key={term.text}
+                term={term}
+                language={language}
+                translationFieldRef={translationFieldRef}
+                onSetActiveTerm={onSetActiveTerm}
+              />
+            </Box>
+          </ScrollAreaAutosize>
         </Panel>
 
         <PanelResizeHandle
