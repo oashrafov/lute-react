@@ -51,7 +51,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
 
   const { data: book } = useQuery(getBookQuery(id));
   const { data: language } = useQuery(userLanguageQuery(book.languageId));
-  const { data: term } = useQuery(getTermQuery(key));
+  const { data: term, isFetching } = useQuery(getTermQuery(key));
 
   const [state, dispatch] = useBookState();
   useDocumentTitle(`Reading "${book.title}"`);
@@ -64,6 +64,8 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
     activeTerm.data && activeTerm.type !== "shift" && term && !themeFormOpen;
   const showBulkTermForm = activeTerm.type === "shift" && !themeFormOpen;
   const showThemeForm = themeFormOpen && !editMode;
+  const translationPaneLoading =
+    isFetching && !(showBulkTermForm || showThemeForm);
 
   useEffect(() => {
     if (!activeTerm.data) {
@@ -133,14 +135,18 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
                 order={2}
                 collapsible={true}
                 minSize={5}>
-                {showTranslationPane && (
-                  <TranslationPane
-                    term={term}
-                    language={language}
-                    activeTab={activeTab}
-                    onSetActiveTab={setActiveTab}
-                    onSetActiveTerm={setActiveTerm}
-                  />
+                {translationPaneLoading ? (
+                  <PageSpinner />
+                ) : (
+                  showTranslationPane && (
+                    <TranslationPane
+                      term={term}
+                      language={language}
+                      activeTab={activeTab}
+                      onSetActiveTab={setActiveTab}
+                      onSetActiveTerm={setActiveTerm}
+                    />
+                  )
                 )}
 
                 {showBulkTermForm && (
