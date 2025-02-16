@@ -1,12 +1,17 @@
 import { memo, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Checkbox, Modal } from "@mantine/core";
+import { Group, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import ActionsMenu from "./components/ActionsMenu";
 import BulkTermForm from "../BulkTermForm/BulkTermForm";
+import ShowParentsOnlyChip from "./components/ShowParentsOnlyChip";
 import EmptyRow from "@common/EmptyRow/EmptyRow";
+import TableTopToolbarDefaultItems from "@common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
+import TableTopToolbar from "@common/TableTopToolbar/TableTopToolbar";
 import getDefaultTableOptions from "@resources/table-options-default";
 import columnDefinition from "./columnDefinition";
+import { initialQuery } from "@settings/api/settings";
+import { getTagSuggestionsQuery } from "@term/api/query";
 
 const defaultOptions = getDefaultTableOptions();
 
@@ -17,7 +22,7 @@ const PAGINATION = {
 
 const COLUMN_FILTER_FNS = {
   text: "contains",
-  parentText: "contains",
+  parentsString: "contains",
   translation: "contains",
   language: "contains",
 };
@@ -27,26 +32,9 @@ const COLUMN_FILTERS = [{ id: "status", value: [0, 6] }];
 //build the URL (start=0&size=10&filters=[]&globalFilter=&sorting=[])
 const url = new URL("/api/terms", "http://localhost:5001");
 
-function TermsTable({ languageChoices, tagChoices }) {
-  const columns = useMemo(
-    () => columnDefinition(languageChoices, tagChoices),
-    [languageChoices, tagChoices]
-  );
-
-  const handleSaveRow = async ({ table, values }) => {
-    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
-    // tableData[row.index] = values;
-    // const data = {
-    //   parentText: values.parentText,
-    //   translation: values.translation,
-    //   tags: values.tags,
-    //   status: values.status,
-    // };
-    console.log(values);
-    //send/receive api updates here
-    table.setEditingRow(null); //exit editing mode
-  };
-
+function TermsTable() {
+  const { data: initial } = useQuery(initialQuery);
+  const { data: termTags } = useQuery(getTagSuggestionsQuery);
   const [editModalOpened, setEditModalOpened] = useState(false);
 
   const [showParentsOnly, setShowParentsOnly] = useState(false);
@@ -58,9 +46,15 @@ function TermsTable({ languageChoices, tagChoices }) {
 
   const [columnVisibility, setColumnVisibility] = useState({
     // tags: false,
-    createdOn: false,
-    parentText: true,
+    "createdOn": false,
+    "parentsString": true,
+    "mrt-row-actions": false,
   });
+
+  const columns = useMemo(
+    () => columnDefinition(initial.languageChoices, termTags, setColumnFilters),
+    [initial.languageChoices, termTags]
+  );
 
   url.searchParams.set("parentsOnly", showParentsOnly);
   url.searchParams.set(
@@ -74,7 +68,7 @@ function TermsTable({ languageChoices, tagChoices }) {
   url.searchParams.set("sorting", JSON.stringify(sorting ?? []));
 
   const response = useQuery({
-    queryKey: ["allTerms", url.href],
+    queryKey: ["terms", url.href],
     queryFn: async () => {
       const response = await fetch(url.href);
       return await response.json();
@@ -82,6 +76,20 @@ function TermsTable({ languageChoices, tagChoices }) {
     placeholderData: keepPreviousData,
     staleTime: 30_000,
   });
+
+  const handleSaveRow = async ({ table, values }) => {
+    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
+    // tableData[row.index] = values;
+    // const data = {
+    //   parentsString: values.parentsString,
+    //   translation: values.translation,
+    //   tags: values.tags,
+    //   status: values.status,
+    // };
+    console.log(values);
+    //send/receive api updates here
+    table.setEditingRow(null); //exit editing mode
+  };
 
   const data = response.data;
   const table = useMantineReactTable({
@@ -106,12 +114,6 @@ function TermsTable({ languageChoices, tagChoices }) {
       pagination,
       sorting,
       columnVisibility,
-    },
-
-    displayColumnDefOptions: {
-      "mrt-row-actions": {
-        header: "",
-      },
     },
 
     enableRowSelection: true,
@@ -142,8 +144,14 @@ function TermsTable({ languageChoices, tagChoices }) {
 
     mantineTableBodyRowProps: ({ row }) => {
       const isEditing = table.getState().editingRow?.id === row.id;
+      const isSelected = row.getIsSelected();
+
+      const style = {};
+      if (isSelected) style.backgroundColor = "initial";
+      if (isEditing) style.verticalAlign = "top";
+
       return {
-        style: isEditing ? { verticalAlign: "top" } : {},
+        style: style,
       };
     },
 
@@ -151,29 +159,22 @@ function TermsTable({ languageChoices, tagChoices }) {
       const language = table.getColumn("language").getFilterValue();
       const isLanguageFiltered = language?.length > 0;
       return isLanguageFiltered ? (
-        <EmptyRow
-          tableName="terms"
-          language={language}
-          languageChoices={languageChoices}
-        />
+        <EmptyRow tableName="terms" language={language} />
       ) : null;
     },
-    renderTopToolbarCustomActions: ({ table }) => (
-      <>
+
+    renderTopToolbar: ({ table }) => (
+      <TableTopToolbar>
         <ActionsMenu table={table} onSetEditModalOpened={setEditModalOpened} />
-        <Checkbox
-          checked={showParentsOnly}
-          onChange={(e) => {
-            setColumnVisibility((v) => ({ ...v, parentText: !v.parentText }));
-            setShowParentsOnly(e.currentTarget.checked);
-          }}
-          label="Parent terms only"
-          size="sm"
-          ml="auto"
-          mr="xs"
-          style={{ alignSelf: "center" }}
-        />
-      </>
+        <Group wrap="nowrap">
+          <ShowParentsOnlyChip
+            show={showParentsOnly}
+            onShow={setShowParentsOnly}
+            onSetColumnVisibility={setColumnVisibility}
+          />
+          <TableTopToolbarDefaultItems table={table} />
+        </Group>
+      </TableTopToolbar>
     ),
   });
 
@@ -184,6 +185,7 @@ function TermsTable({ languageChoices, tagChoices }) {
         trapFocus
         opened={editModalOpened}
         onClose={() => setEditModalOpened(false)}
+        styles={{ title: { fontWeight: 700 } }}
         title="Edit term(s)"
         withCloseButton>
         <BulkTermForm terms={table.getSelectedRowModel().rows} />

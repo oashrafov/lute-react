@@ -15,9 +15,11 @@ import {
 import StatusRadio from "../StatusRadio/StatusRadio";
 import TagsGroup from "@common/TagsGroup/TagsGroup";
 import TermImage from "../TermImage/TermImage";
+import LanguageCell from "@common/LanguageCell/LanguageCell";
 import { buildSuggestionsList } from "@actions/utils";
 import { getTermSuggestionsQuery } from "@term/api/query";
 import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "@resources/constants";
+import EditButtonsCell from "@common/EditButtonsCell/EditButtonsCell";
 
 const status = {
   0: { icon: IconNumber0, label: "Unknown" },
@@ -40,31 +42,33 @@ const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
   day: "2-digit",
 });
 
-const columnDefinition = (languageChoices, tagChoices) => [
+const columnDefinition = (languageChoices, tagChoices, setColumnFilters) => [
   {
     header: "TERM",
     accessorKey: "text",
     minSize: 300,
+    enableEditing: false,
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     Cell: ({ row }) => (
       <Button
+        maw={290}
         variant="subtle"
         size="compact-sm"
         component={Link}
         to={`/terms/term?termId=${row.original.id}&langId=${row.original.languageId}`}
         style={{ color: "inherit", textDecoration: "none" }}>
-        <Text size="sm" lineClamp={1}>
+        <Text size="sm" lineClamp={1} truncate>
           {row.original.text}
         </Text>
       </Button>
     ),
-    enableEditing: false,
   },
   {
     header: "PARENT",
     accessorKey: "parentsString",
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     minSize: 200,
+    enableEditing: true,
     Cell: ({ row }) => {
       const parentsList = row.original.parentsString
         ? row.original.parentsString.split(",")
@@ -111,6 +115,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     minSize: 300,
     size: 400,
+    enableEditing: true,
     Cell: ({ row }) => {
       const img = row.original.image;
       return (
@@ -158,12 +163,13 @@ const columnDefinition = (languageChoices, tagChoices) => [
   {
     header: "TAGS",
     id: "tagsString",
+    accessorKey: "tagsString",
     mantineFilterSelectProps: {
       data: tagChoices,
     },
+    enableEditing: true,
     filterVariant: "select",
     columnFilterModeOptions: false,
-    accessorKey: "tagsString",
     Cell: ({ row }) => {
       const tagsList = row.original.tagsString
         ? row.original.tagsString.split(",")
@@ -194,23 +200,59 @@ const columnDefinition = (languageChoices, tagChoices) => [
     filterVariant: "range-slider",
     enableColumnFilterModes: false,
     size: 210,
+    enableEditing: true,
     accessorFn: (row) => {
-      let id = row.statusId;
-      if (row.statusId == 99) id = 6;
-      if (row.statusId == 98) id = 7;
-      return id;
+      const statusId = row.statusId;
+      return statusId === 98 ? 7 : statusId === 99 ? 6 : statusId;
     },
     Cell: ({ row }) => {
-      const id = row.original.statusId;
-      const label = id === 98 ? "−" : id === 99 ? "✓" : id;
+      const statusId = row.original.statusId;
+      const label =
+        statusId === 98 ? (
+          <IconMinus size={16} />
+        ) : statusId === 99 ? (
+          <IconCheck size={16} />
+        ) : (
+          String(statusId)
+        );
+      const id = statusId === 98 ? 7 : statusId === 99 ? 6 : statusId;
+      const statusFilter = {
+        id: "status",
+        value: [id, id],
+      };
+      const defaultFilter = { id: "status", value: [0, 6] };
+
+      function handleSetFilter() {
+        setColumnFilters((filters) => {
+          const otherFilters = filters.filter(
+            (filter) => filter.id !== "status"
+          );
+          const statusFilters = filters.filter(
+            (filter) => filter.id === "status"
+          );
+          const sameFilter =
+            statusFilters[0]?.value[0] === id &&
+            statusFilters[0]?.value[1] === id;
+
+          if (sameFilter) {
+            return [...otherFilters, defaultFilter];
+          } else {
+            return [...otherFilters, statusFilter];
+          }
+        });
+      }
+
       return (
         <Badge
           fw={600}
+          fullWidth
           size="md"
-          leftSection={String(label)}
-          c={`var(--lute-text-color-status${id})`}
-          bg={`var(--lute-color-highlight-status${id}`}>
-          {status[id].label}
+          onClick={handleSetFilter}
+          leftSection={label}
+          style={{ cursor: "pointer" }}
+          c={`var(--lute-text-color-status${statusId})`}
+          bg={`var(--lute-color-highlight-status${statusId}`}>
+          {status[statusId].label}
         </Badge>
       );
     },
@@ -250,10 +292,16 @@ const columnDefinition = (languageChoices, tagChoices) => [
     accessorKey: "language",
     filterVariant: "select",
     columnFilterModeOptions: false,
+    enableEditing: false,
     mantineFilterSelectProps: {
       data: languageChoices.map((lang) => lang.name),
     },
-    enableEditing: false,
+    Cell: ({ row }) => (
+      <LanguageCell
+        language={row.original.language}
+        onSetColumnFilters={setColumnFilters}
+      />
+    ),
   },
   {
     header: "ADDED ON",
@@ -261,11 +309,18 @@ const columnDefinition = (languageChoices, tagChoices) => [
     filterVariant: "date-range",
     accessorFn: (originalRow) => new Date(originalRow.createdOn),
     columnFilterModeOptions: false,
-    Cell: ({ cell }) => dateFormatter.format(cell.getValue()),
-    mantineFilterDateInputProps: {
-      miw: 100,
-    },
     enableEditing: false,
+    Cell: ({ cell }) => <span>{dateFormatter.format(cell.getValue())}</span>,
+  },
+  {
+    id: "actions",
+    header: "",
+    columnDefType: "display",
+    size: "min-content",
+    Cell: ({ row, table }) => {
+      const isEditing = table.getState().editingRow?.id === row.id;
+      return <EditButtonsCell row={row} table={table} isEditing={isEditing} />;
+    },
   },
 ];
 

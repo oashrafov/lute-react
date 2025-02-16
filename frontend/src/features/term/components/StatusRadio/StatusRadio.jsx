@@ -60,6 +60,7 @@ function StatusRadio({
       name="status"
       value={value}
       onChange={onChange}
+      style={{ display: "flex", justifyContent: "center" }}
       key={form?.key("status")}
       {...form?.getInputProps("status")}>
       <Group justify="flex-start" gap={2} wrap="nowrap">

@@ -1,24 +1,17 @@
 import { memo, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Box, Menu, Modal } from "@mantine/core";
-import { modals } from "@mantine/modals";
+import { Box, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import {
-  IconArchive,
-  IconArchiveOff,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons-react";
 import EmptyRow from "@common/EmptyRow/EmptyRow";
 import EditBookForm from "../EditBookForm/EditBookForm";
 import ShelfSwitch from "./components/ShelfSwitch";
 import BookActions from "./components/BookActions/BookActions";
+import TableTopToolbar from "@common/TableTopToolbar/TableTopToolbar";
 import getDefaultTableOptions from "@resources/table-options-default";
-import { deleteBookConfirm } from "@resources/modals";
-import { useDeleteBook, useEditBook } from "@book/api/mutation";
-import { getFormDataFromObj } from "@actions/utils";
 import columnDefinition from "./columnDefinition";
+import { initialQuery } from "@settings/api/settings";
 import { DEFAULT_TABLE_ROW_COUNT } from "@resources/constants";
+import TableTopToolbarDefaultItems from "@common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
 
 const defaultOptions = getDefaultTableOptions();
 
@@ -37,31 +30,9 @@ const COLUMN_FILTER_FNS = {
 //build the URL (start=0&size=10&filters=[]&globalFilter=&sorting=[])
 const fetchURL = new URL("/api/books", "http://localhost:5001");
 
-function BooksTable({ languageChoices, tagChoices }) {
+function BooksTable() {
+  const { data: initial } = useQuery(initialQuery);
   const [editedRow, setEditedRow] = useState(null);
-  const deleteBookMutation = useDeleteBook();
-  const editBookMutation = useEditBook();
-
-  function handleEdit(id, data) {
-    editBookMutation.mutate(
-      {
-        id: id,
-        data: getFormDataFromObj(data),
-      },
-      {
-        onSuccess: (response) => {
-          if (response.archivedCount === 0) {
-            setShelf("active");
-          }
-        },
-      }
-    );
-  }
-
-  const columns = useMemo(
-    () => columnDefinition(languageChoices, tagChoices),
-    [languageChoices, tagChoices]
-  );
 
   const [shelf, setShelf] = useState("active");
   const [sorting, setSorting] = useState([]);
@@ -69,6 +40,18 @@ function BooksTable({ languageChoices, tagChoices }) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnFilterFns, setColumnFilterFns] = useState(COLUMN_FILTER_FNS);
+
+  const columns = useMemo(
+    () =>
+      columnDefinition(
+        initial.languageChoices,
+        initial.bookTags,
+        setColumnFilters,
+        setEditedRow,
+        setShelf
+      ),
+    [initial.languageChoices, initial.bookTags]
+  );
 
   fetchURL.searchParams.set("shelf", shelf);
   fetchURL.searchParams.set(
@@ -116,7 +99,6 @@ function BooksTable({ languageChoices, tagChoices }) {
       sorting,
     },
 
-    enableRowActions: true,
     enableColumnFilterModes: true,
 
     manualFiltering: true,
@@ -128,61 +110,13 @@ function BooksTable({ languageChoices, tagChoices }) {
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
 
-    displayColumnDefOptions: {
-      "mrt-row-actions": {
-        header: "",
-      },
-    },
-
     renderEmptyRowsFallback: ({ table }) => {
       const language = table.getColumn("language").getFilterValue();
       const isLanguageFiltered = language?.length > 0;
       return isLanguageFiltered ? (
-        <EmptyRow
-          tableName="books"
-          language={language}
-          languageChoices={languageChoices}
-        />
+        <EmptyRow tableName="books" language={language} />
       ) : null;
     },
-
-    renderRowActionMenuItems: ({ row }) => [
-      <Menu.Item
-        leftSection={<IconEdit />}
-        key="edit"
-        onClick={() => setEditedRow(row)}>
-        Edit
-      </Menu.Item>,
-
-      row.original.isArchived ? (
-        <Menu.Item
-          leftSection={<IconArchiveOff />}
-          key="unarchive"
-          onClick={() => handleEdit(row.original.id, { action: "unarchive" })}>
-          Unarchive
-        </Menu.Item>
-      ) : (
-        <Menu.Item
-          leftSection={<IconArchive />}
-          key="archive"
-          onClick={() => handleEdit(row.original.id, { action: "archive" })}>
-          Archive
-        </Menu.Item>
-      ),
-
-      <Menu.Item
-        leftSection={<IconTrash />}
-        key="delete"
-        onClick={() =>
-          modals.openConfirmModal(
-            deleteBookConfirm(row.original.title, () =>
-              deleteBookMutation.mutate(row.original.id)
-            )
-          )
-        }>
-        Delete
-      </Menu.Item>,
-    ],
 
     renderBottomToolbarCustomActions: () => (
       <Box pl={5}>
@@ -194,7 +128,12 @@ function BooksTable({ languageChoices, tagChoices }) {
       </Box>
     ),
 
-    renderTopToolbarCustomActions: ({ table }) => <BookActions table={table} />,
+    renderTopToolbar: ({ table }) => (
+      <TableTopToolbar table={table}>
+        <BookActions table={table} />
+        <TableTopToolbarDefaultItems table={table} />
+      </TableTopToolbar>
+    ),
   });
 
   if (!books) return;
@@ -210,7 +149,6 @@ function BooksTable({ languageChoices, tagChoices }) {
         {editedRow && (
           <EditBookForm
             book={editedRow.original}
-            onSubmit={editBookMutation.mutate}
             onCloseModal={() => setEditedRow(null)}
           />
         )}

@@ -39,20 +39,14 @@ function HomePage() {
         <Welcome />
       </Modal>
 
-      <Box visibleFrom="md">
-        <PageContainer>
-          <BooksTable
-            languageChoices={initial.languageChoices}
-            tagChoices={initial.bookTags}
-          />
-        </PageContainer>
-      </Box>
-
-      <Box hiddenFrom="md">
-        <PageContainer>
+      <PageContainer>
+        <Box visibleFrom="md">
+          <BooksTable />
+        </Box>
+        <Box hiddenFrom="md">
           <BooksGrid />
-        </PageContainer>
-      </Box>
+        </Box>
+      </PageContainer>
     </>
   );
 }

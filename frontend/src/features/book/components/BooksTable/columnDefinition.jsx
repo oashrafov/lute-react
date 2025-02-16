@@ -1,23 +1,48 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Button, Group, Text, ThemeIcon } from "@mantine/core";
 import {
+  ActionIcon,
+  Button,
+  Group,
+  Menu,
+  Text,
+  ThemeIcon,
+} from "@mantine/core";
+import { modals } from "@mantine/modals";
+import {
+  IconArchive,
   IconArchiveFilled,
+  IconArchiveOff,
   IconCircleCheckFilled,
+  IconDots,
+  IconEdit,
   IconHeadphonesFilled,
+  IconTrash,
 } from "@tabler/icons-react";
-import TagsGroup from "@common/TagsGroup/TagsGroup";
-import StatsBar from "../StatsBar/StatsBar";
-import { getBookStatsQuery } from "../../api/query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
+import TagsGroup from "@common/TagsGroup/TagsGroup";
+import StatsBar from "../StatsBar/StatsBar";
+import LanguageCell from "@common/LanguageCell/LanguageCell";
+import { getBookStatsQuery } from "../../api/query";
+import { getFormDataFromObj } from "@actions/utils";
+import { useDeleteBook, useEditBook } from "@book/api/mutation";
+import { deleteBookConfirm } from "@resources/modals";
 
-const columnDefinition = (languageChoices, tagChoices) => [
+const columnDefinition = (
+  languageChoices,
+  tagChoices,
+  onSetColumnFilters,
+  setEditedRow,
+  setShelf
+) => [
   {
     header: "TITLE",
     accessorKey: "title",
-    minSize: 600,
+    maxSize: 300,
+    size: 300,
+    minSize: 300,
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     Cell: ({ row }) => {
       const id = row.original.id;
@@ -36,14 +61,14 @@ const columnDefinition = (languageChoices, tagChoices) => [
             <IconCircleCheckFilled />
           </ThemeIcon>
           <Button
+            c="inherit"
+            fw="normal"
+            td="none"
             variant="subtle"
             size="compact-sm"
             component={Link}
-            to={`/books/${id}/pages/${currentPage}`}
-            style={{ color: "inherit", textDecoration: "none" }}>
-            <Text size="sm" lineClamp={1}>
-              {title}
-            </Text>
+            to={`/books/${id}/pages/${currentPage}`}>
+            {title}
           </Button>
           {currentPage > 1 && currentPage !== pageCount && (
             <Text component="span" size="xs" c="dimmed">
@@ -80,6 +105,12 @@ const columnDefinition = (languageChoices, tagChoices) => [
     mantineFilterSelectProps: {
       data: languageChoices.map((lang) => lang.name),
     },
+    Cell: ({ row }) => (
+      <LanguageCell
+        language={row.original.language}
+        onSetColumnFilters={onSetColumnFilters}
+      />
+    ),
   },
   {
     header: "WORD COUNT",
@@ -120,6 +151,82 @@ const columnDefinition = (languageChoices, tagChoices) => [
       row.original.lastRead && (
         <span>{dayjs(row.original.lastRead).fromNow()}</span>
       ),
+  },
+  {
+    id: "actions",
+    header: "",
+    columnDefType: "display",
+    size: "min-content",
+    Cell: ({ row }) => {
+      const editBookMutation = useEditBook();
+      const deleteBookMutation = useDeleteBook();
+
+      function handleEdit(id, data) {
+        editBookMutation.mutate(
+          {
+            id: id,
+            data: getFormDataFromObj(data),
+          },
+          {
+            onSuccess: (response) => {
+              if (response.archivedCount === 0) {
+                setShelf("active");
+              }
+            },
+          }
+        );
+      }
+
+      return (
+        <Menu shadow="sm">
+          <Menu.Target>
+            <ActionIcon size="sm" variant="subtle" display="block">
+              <IconDots color="var(--mantine-color-dimmed)" />
+            </ActionIcon>
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Item
+              color="blue"
+              leftSection={<IconEdit size={20} />}
+              onClick={() => setEditedRow(row)}>
+              Edit
+            </Menu.Item>
+            {row.original.isArchived ? (
+              <Menu.Item
+                color="orange"
+                leftSection={<IconArchiveOff size={20} />}
+                onClick={() =>
+                  handleEdit(row.original.id, { action: "unarchive" })
+                }>
+                Unarchive
+              </Menu.Item>
+            ) : (
+              <Menu.Item
+                color="orange"
+                leftSection={<IconArchive size={20} />}
+                onClick={() =>
+                  handleEdit(row.original.id, { action: "archive" })
+                }>
+                Archive
+              </Menu.Item>
+            )}
+            <Menu.Item
+              color="red"
+              leftSection={<IconTrash size={20} />}
+              onClick={() =>
+                modals.openConfirmModal(
+                  deleteBookConfirm(row.original.title, () =>
+                    deleteBookMutation.mutate(row.original.id)
+                  )
+                )
+              }>
+              Delete
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+      );
+    },
   },
 ];
 

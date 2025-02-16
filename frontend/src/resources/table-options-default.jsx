@@ -1,10 +1,8 @@
-import { MRT_ShowHideColumnsButton } from "mantine-react-table";
-
 // just an object instead of factory function results in weird bugs
 // e.g actions column appears first, or flashes in the first column briefly
 const getDefaultTableOptions = () => ({
   initialState: {
-    density: 6,
+    density: "xs",
     showGlobalFilter: true,
     showColumnFilters: true,
   },
@@ -19,15 +17,27 @@ const getDefaultTableOptions = () => ({
 
   displayColumnDefOptions: {
     "mrt-row-select": {
-      size: 10,
+      size: "min-content",
       grow: false,
     },
   },
 
-  mantineTopToolbarProps: {
-    style: {
-      alignItems: "center",
+  mantineSearchTextInputProps: {
+    w: 200,
+    size: "xs",
+    leftSectionProps: {
+      style: {
+        padding: "5px",
+      },
     },
+  },
+
+  mantineTableHeadProps: {
+    style: { opacity: 1 },
+  },
+
+  mantineTableHeadRowProps: {
+    style: { backgroundColor: "var(--mantine-color-body)" },
   },
 
   mantineCopyButtonProps: {
@@ -46,16 +56,6 @@ const getDefaultTableOptions = () => ({
     withBorder: false,
     shadow: false,
     style: { "--mrt-base-background-color": "initial" }, // fixes borders not visible bug in firefox
-  },
-
-  mantineSearchTextInputProps: {
-    w: 200,
-    size: "xs",
-    leftSectionProps: {
-      style: {
-        padding: "5px",
-      },
-    },
   },
 
   mantineTableContainerProps: {
@@ -78,11 +78,9 @@ const getDefaultTableOptions = () => ({
 
   mantineFilterDateInputProps: {
     size: "xs",
+    miw: 100,
+    styles: { input: { height: "var(--input-height-xs)" } },
   },
-
-  renderToolbarInternalActions: ({ table }) => (
-    <MRT_ShowHideColumnsButton table={table} />
-  ),
 });
 
 export default getDefaultTableOptions;

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   FileInput,
   InputClearButton,
@@ -16,22 +17,13 @@ import {
 } from "@tabler/icons-react";
 import FormButtons from "@common/FormButtons/FormButtons";
 import { getFormDataFromObj } from "@actions/utils";
-import { useQuery } from "@tanstack/react-query";
 import { initialQuery } from "@settings/api/settings";
+import { useEditBook } from "@book/api/mutation";
 
-function EditBookForm({ book, onSubmit, onCloseModal }) {
+function EditBookForm({ book, onCloseModal }) {
   const { data: initial } = useQuery(initialQuery);
+  const editBookMutation = useEditBook();
   const [existingAudioName, setExistingAudioName] = useState(book.audioName);
-
-  function handleClearAudio() {
-    setExistingAudioName("");
-    form.setFieldValue("audio_file", undefined);
-  }
-
-  function handleSubmit(data) {
-    onSubmit({ id: book.id, data: data });
-    onCloseModal();
-  }
 
   const form = useForm({
     mode: "controlled",
@@ -46,6 +38,16 @@ function EditBookForm({ book, onSubmit, onCloseModal }) {
       audio_filename: existingAudioName,
     }),
   });
+
+  function handleClearAudio() {
+    setExistingAudioName("");
+    form.setFieldValue("audio_file", undefined);
+  }
+
+  function handleSubmit(data) {
+    editBookMutation.mutate({ id: book.id, data: data });
+    onCloseModal();
+  }
 
   return (
     <form

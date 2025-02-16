@@ -14,7 +14,7 @@ function ActionsMenu({ table, onSetEditModalOpened }) {
     <>
       <Menu shadow="md" width={200} position="right-start" withArrow>
         <Menu.Target>
-          <Button>Actions</Button>
+          <Button size="xs">Actions</Button>
         </Menu.Target>
         <Menu.Dropdown>
           <Menu.Label>Edit</Menu.Label>
