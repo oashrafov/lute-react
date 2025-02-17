@@ -62,7 +62,7 @@ function BooksGridTopToolbar({
     );
 
   return (
-    <Group justify="space-between" align="center" mb={10} wrap="nowrap">
+    <Group justify="space-between" align="center" wrap="nowrap">
       <Stack gap={5} flex={1} align="flex-start" maw={240}>
         <Select
           value={shelf}

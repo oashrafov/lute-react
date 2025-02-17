@@ -7,6 +7,7 @@ import {
   UnstyledButton,
   Center,
   Divider,
+  Box,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronDown } from "@tabler/icons-react";
@@ -27,7 +28,7 @@ function MainMenuBar({ settings }) {
         <HomeImageLink size={54} />
         <h1 className={classes.heading}>Lute</h1>
       </Group>
-      <Group component="nav" gap={5} visibleFrom="sm" wrap="nowrap" ml="auto">
+      <Group component="nav" gap={5} visibleFrom="md" wrap="nowrap" ml="auto">
         {[menu.home, menu.book, menu.languages].map((menu) => (
           <NavLink key={menu.label} to={menu.action} className={classes.link}>
             {menu.label}
@@ -82,8 +83,10 @@ function MainMenuBar({ settings }) {
           </Menu.Item>
         </MenuSection>
       </Group>
-      <SchemeToggleButton />
-      <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
+      <Box visibleFrom="md">
+        <SchemeToggleButton />
+      </Box>
+      <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="md" />
     </header>
   );
 }

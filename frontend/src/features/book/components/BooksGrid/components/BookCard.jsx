@@ -18,7 +18,7 @@ import {
   IconChevronDown,
   IconCircleCheckFilled,
   IconHeadphonesFilled,
-  IconTrash,
+  IconTrashFilled,
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -56,7 +56,11 @@ function BookCard({ book, onEditSuccess }) {
         align="flex-start"
         wrap="nowrap"
         style={{ overflow: "hidden" }}>
-        <Group gap={5} wrap="nowrap" align="flex-start">
+        <Group
+          gap={5}
+          wrap="nowrap"
+          align="flex-start"
+          style={{ overflow: "hidden" }}>
           <ThemeIcon
             style={{ alignItems: "flex-end" }}
             size="sm"
@@ -127,19 +131,22 @@ function BookCard({ book, onEditSuccess }) {
           <Menu.Dropdown>
             {book.isArchived ? (
               <Menu.Item
+                color="orange"
                 leftSection={<IconArchiveOff />}
                 onClick={() => handleEdit(book.id, { action: "unarchive" })}>
                 Unarchive
               </Menu.Item>
             ) : (
               <Menu.Item
+                color="orange"
                 leftSection={<IconArchiveFilled />}
                 onClick={() => handleEdit(book.id, { action: "archive" })}>
                 Archive
               </Menu.Item>
             )}
             <Menu.Item
-              leftSection={<IconTrash />}
+              color="red"
+              leftSection={<IconTrashFilled />}
               onClick={() =>
                 modals.openConfirmModal(
                   deleteBookConfirm(book.title, () =>

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Button, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import { IconPlus } from "@tabler/icons-react";
 import NewTagForm from "./components/NewTagForm";
 import TableTopToolbar from "@common/TableTopToolbar/TableTopToolbar";
 import TableTopToolbarDefaultItems from "@common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
@@ -39,8 +40,12 @@ function TagsTable({ data }) {
 
     renderTopToolbar: ({ table }) => (
       <TableTopToolbar>
-        <Button size="xs" onClick={() => setOpenCreateTagModal(true)}>
-          Create new
+        <Button
+          color="green"
+          size="xs"
+          onClick={() => setOpenCreateTagModal(true)}
+          leftSection={<IconPlus size={22} />}>
+          New
         </Button>
         <TableTopToolbarDefaultItems table={table} />
       </TableTopToolbar>

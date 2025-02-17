@@ -14,6 +14,7 @@ from lute.book.service import (
     Service as BookService,
     BookImportException,
 )
+from lute.read.service import Service as ReadService
 from lute.read.render.service import Service as RenderService
 from lute.book.stats import Service as StatsService
 from lute.utils.data_tables import supported_parser_type_criteria
@@ -367,6 +368,10 @@ def commit_page(bookid, pagenum):
 
     should_track = request.get_json().get("shouldTrack", True)
     _commit_session(book, text, should_track)
+
+    _, paragraphs = _load_page_content(book, pagenum)
+    read_service = ReadService(db.session)
+    read_service._save_new_status_0_terms(paragraphs)
 
     return jsonify({"id": book.id}), 200
 

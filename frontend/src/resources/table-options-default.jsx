@@ -68,6 +68,12 @@ const getDefaultTableOptions = () => ({
     highlightOnHover: false,
   },
 
+  mantinePaginationProps: {
+    styles: {
+      control: { width: "36px", height: "36px" },
+    },
+  },
+
   mantineFilterTextInputProps: {
     size: "xs",
   },

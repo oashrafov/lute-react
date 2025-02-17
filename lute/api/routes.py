@@ -10,6 +10,7 @@ from lute.db import db
 # import lute.utils.formutils
 
 from lute.settings.current import current_settings
+from lute.models.book import Book
 from lute.models.language import Language
 from lute.models.setting import UserSetting
 from lute.models.repositories import UserSettingRepository
@@ -61,22 +62,20 @@ def initialize():
     """
     book_repo = BookRepository(db.session)
     demosvc = DemoService(db.session)
+
     tutorial_book_id = demosvc.tutorial_book_id()
     have_languages = len(db.session.query(Language).all()) > 0
-    # language_choices = lute.utils.formutils.language_choices(
-    #     db.session, "(all languages)"
-    # )
-    # current_language_id = lute.utils.formutils.valid_current_language_id(db.session)
+    have_books = len(db.session.query(Book).all()) > 0
 
     return {
         "haveLanguages": have_languages,
+        "haveBooks": have_books,
         "tutorialBookId": tutorial_book_id,
         "languageChoices": [
             {"name": language.name, "id": language.id}
             for language in db.session.query(Language).all()
         ],
         "bookTags": book_repo.get_book_tags(),
-        # "currentLanguageId": current_language_id,
     }
 
 

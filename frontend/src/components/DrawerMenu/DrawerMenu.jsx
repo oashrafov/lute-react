@@ -52,15 +52,17 @@ function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
           <Center p={10}>
             <Group gap={5}>
               <SchemeToggleButton onCloseDrawer={onClose} />
-              <ActionIcon
-                onClick={() => {
-                  onThemeFormOpen((v) => !v);
-                  onClose();
-                }}
-                size="lg"
-                variant="subtle">
-                <IconPalette size="90%" />
-              </ActionIcon>
+              {onThemeFormOpen && (
+                <ActionIcon
+                  onClick={() => {
+                    onThemeFormOpen((v) => !v);
+                    onClose();
+                  }}
+                  size="lg"
+                  variant="subtle">
+                  <IconPalette size="90%" />
+                </ActionIcon>
+              )}
             </Group>
           </Center>
 

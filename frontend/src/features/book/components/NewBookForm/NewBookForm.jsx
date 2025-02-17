@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import {
@@ -27,27 +27,22 @@ import FormButtons from "@common/FormButtons/FormButtons";
 import { userLanguageQuery } from "@language/api/query";
 import { initialQuery } from "@settings/api/settings";
 import { errorMessage } from "@resources/notifications";
-import { createBook, getBookDataFromUrl } from "../../api/api";
+import { getBookDataFromUrl } from "../../api/api";
+import { useCreateBook } from "@book/api/mutation";
 import useNewBookForm from "@book/hooks/useNewBookForm";
 import ImportURLInfoPopup from "./components/ImportURLInfoPopup";
 import classes from "./NewBookForm.module.css";
 
 function NewBookForm() {
-  const navigate = useNavigate();
   const [params] = useSearchParams();
   const langId = params.get("langId");
-  const isLangSelected = langId && langId !== "0";
   const { data: language } = useQuery(userLanguageQuery(langId));
   const { data: initial } = useQuery(initialQuery);
   const dir = language?.right_to_left ? "rtl" : "ltr";
 
   const form = useNewBookForm(langId);
 
-  const createBookMutation = useMutation({
-    mutationFn: createBook,
-    onSuccess: (response) => navigate(`/books/${response.id}/pages/1`),
-    onError: (error) => notifications.show(errorMessage(error.message)),
-  });
+  const createBookMutation = useCreateBook();
 
   const getBookDataFromUrlMutation = useMutation({
     mutationFn: getBookDataFromUrl,
@@ -66,7 +61,7 @@ function NewBookForm() {
       onSubmit={form.onSubmit(createBookMutation.mutate)}>
       <TextInput
         wrapperProps={{ dir: dir }}
-        disabled={isLangSelected ? false : true}
+        disabled={language ? false : true}
         required
         withAsterisk
         label="Title"
@@ -75,7 +70,7 @@ function NewBookForm() {
         {...form.getInputProps("title")}
       />
       <Fieldset
-        disabled={isLangSelected ? false : true}
+        disabled={language ? false : true}
         variant="filled"
         legend="Content"
         flex={1}
@@ -195,7 +190,7 @@ function NewBookForm() {
       />
 
       <FormButtons
-        okDisabled={!isLangSelected}
+        okDisabled={!language}
         okLoading={createBookMutation.isPending}
       />
     </form>

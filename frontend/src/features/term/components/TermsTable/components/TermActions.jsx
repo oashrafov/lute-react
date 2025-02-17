@@ -8,11 +8,11 @@ import {
   IconUpload,
 } from "@tabler/icons-react";
 
-function ActionsMenu({ table, onSetEditModalOpened }) {
+function TermActions({ table, onSetEditModalOpened }) {
   const iconSize = { width: rem(16), height: rem(16) };
   return (
     <>
-      <Menu shadow="md" width={200} position="right-start" withArrow>
+      <Menu shadow="md">
         <Menu.Target>
           <Button size="xs">Actions</Button>
         </Menu.Target>
@@ -75,4 +75,4 @@ function ActionsMenu({ table, onSetEditModalOpened }) {
   );
 }
 
-export default ActionsMenu;
+export default TermActions;

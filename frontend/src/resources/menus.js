@@ -16,7 +16,7 @@ const menu = {
   },
 
   book: {
-    label: "Add Book",
+    label: "New Book",
     icon: IconBooks,
     action: "/books/new",
   },
@@ -34,11 +34,11 @@ const menu = {
 
     children: [
       {
-        label: "All Terms",
+        label: "Terms",
         action: "/terms",
       },
       {
-        label: "Create New",
+        label: "New Term",
         action: "/terms/term",
       },
       {

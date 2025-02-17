@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Button, Text, Tooltip } from "@mantine/core";
 import { Link } from "react-router-dom";
+import { IconPlus } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import TableTopToolbar from "@common/TableTopToolbar/TableTopToolbar";
 import getDefaultTableOptions from "@resources/table-options-default";
 import { backupsQuery } from "@backup/api/backup";
-import TableTopToolbar from "@common/TableTopToolbar/TableTopToolbar";
 
 const defaultOptions = getDefaultTableOptions();
 
@@ -51,10 +52,12 @@ function BackupsTable() {
     renderTopToolbar: () => (
       <TableTopToolbar>
         <Button
+          color="green"
           size="xs"
           component={Link}
-          to="http://localhost:5001/backup/backup?type=manual">
-          Create New
+          to="http://localhost:5001/backup/backup?type=manual"
+          leftSection={<IconPlus size={22} />}>
+          New
         </Button>
         <Text
           component="p"

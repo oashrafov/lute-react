@@ -23,6 +23,7 @@ function SchemeToggleButton({ onCloseDrawer = null }) {
 
   return (
     <ActionIcon
+      display="block"
       variant="subtle"
       size="lg"
       onClick={() => {

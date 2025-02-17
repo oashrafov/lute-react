@@ -1,5 +1,5 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert, Button, rem, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconInfoCircle } from "@tabler/icons-react";
@@ -7,9 +7,11 @@ import { databaseCleaned, demoDeactivated } from "@resources/notifications";
 import { keys as bookKeys } from "@book/api/keys";
 import { keys as settingsKeys } from "@settings/api/keys";
 import { deactivateDemoMode, wipeDemoDatabase } from "@settings/api/api";
+import { initialQuery } from "@settings/api/settings";
 
-function DemoNotice({ tutorialBookId }) {
+function DemoNotice() {
   const queryClient = useQueryClient();
+  const { data: initial } = useQuery(initialQuery);
 
   const wipeDbMutation = useMutation({
     mutationFn: wipeDemoDatabase,
@@ -37,9 +39,17 @@ function DemoNotice({ tutorialBookId }) {
       icon={<IconInfoCircle />}>
       <Text size="sm">
         The Lute database has been loaded with a{" "}
-        <Link to={`/books/${tutorialBookId}/pages/1`}>brief tutorial</Link>,
-        some languages and short texts for you to try out. When you&apos;re done
-        trying out the demo,{" "}
+        <Button
+          component={Link}
+          fw="normal"
+          td="none"
+          variant="light"
+          size="compact-sm"
+          to={`/books/${initial.tutorialBookId}/pages/1`}>
+          brief tutorial
+        </Button>
+        , some languages and short texts for you to try out. When you&apos;re
+        done trying out the demo,{" "}
         <Button
           p={0}
           styles={{ root: { verticalAlign: "unset" } }}

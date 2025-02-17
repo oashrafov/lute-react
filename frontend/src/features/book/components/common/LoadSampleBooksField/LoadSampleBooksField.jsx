@@ -4,6 +4,7 @@ import { ActionIcon, Select } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
 import { predefinedLanguagesQuery } from "@language/api/query";
+import { initialQuery } from "@settings/api/settings";
 import { keys as bookKeys } from "@book/api/keys";
 import { keys as settingsKeys } from "@settings/api/keys";
 import { keys as languageKeys } from "@language/api/keys";
@@ -19,6 +20,7 @@ function LoadSampleBooksField({
   onConfirm,
 }) {
   const queryClient = useQueryClient();
+  const { data: initial } = useQuery(initialQuery);
   const { data: predefined } = useQuery(predefinedLanguagesQuery);
   const [langName, setLangName] = useState("");
 
@@ -52,8 +54,9 @@ function LoadSampleBooksField({
       allowDeselect={false}
       withCheckIcon={false}
       searchable={true}
+      value={langName}
       onChange={setLangName}
-      comboboxProps={{ withinPortal: false }}
+      comboboxProps={{ withinPortal: !initial.haveLanguages }}
       rightSection={
         langName ? (
           <ActionIcon

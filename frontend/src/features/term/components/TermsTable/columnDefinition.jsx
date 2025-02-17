@@ -16,10 +16,10 @@ import StatusRadio from "../StatusRadio/StatusRadio";
 import TagsGroup from "@common/TagsGroup/TagsGroup";
 import TermImage from "../TermImage/TermImage";
 import LanguageCell from "@common/LanguageCell/LanguageCell";
+import EditButtonsCell from "@common/EditButtonsCell/EditButtonsCell";
 import { buildSuggestionsList } from "@actions/utils";
 import { getTermSuggestionsQuery } from "@term/api/query";
 import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "@resources/constants";
-import EditButtonsCell from "@common/EditButtonsCell/EditButtonsCell";
 
 const status = {
   0: { icon: IconNumber0, label: "Unknown" },
@@ -120,7 +120,7 @@ const columnDefinition = (languageChoices, tagChoices, setColumnFilters) => [
       const img = row.original.image;
       return (
         <>
-          <Text size="sm" component="span">
+          <Text size="sm" component="span" style={{ whiteSpace: "pre" }}>
             {row.original.translation}
           </Text>
           {img && (

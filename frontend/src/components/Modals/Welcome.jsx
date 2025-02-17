@@ -18,6 +18,7 @@ function Welcome() {
         <Button component={Link} leftSection={<IconBook2 />} to="/books/new">
           Create a New Book
         </Button>
+        <span>with your language</span>
       </Group>
     </Box>
   );

@@ -5,13 +5,13 @@ import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import EmptyRow from "@common/EmptyRow/EmptyRow";
 import EditBookForm from "../EditBookForm/EditBookForm";
 import ShelfSwitch from "./components/ShelfSwitch";
-import BookActions from "./components/BookActions/BookActions";
+import BookActions from "./components/BookActions";
 import TableTopToolbar from "@common/TableTopToolbar/TableTopToolbar";
+import TableTopToolbarDefaultItems from "@common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
 import getDefaultTableOptions from "@resources/table-options-default";
 import columnDefinition from "./columnDefinition";
 import { initialQuery } from "@settings/api/settings";
 import { DEFAULT_TABLE_ROW_COUNT } from "@resources/constants";
-import TableTopToolbarDefaultItems from "@common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
 
 const defaultOptions = getDefaultTableOptions();
 

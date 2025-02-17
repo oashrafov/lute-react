@@ -122,3 +122,13 @@
   color: var(--mantine-color-dark-7);
   border-radius: 0;
 }
+
+/* MRT styles */
+.mantine-Pagination-root > .mantine-Group-root,
+.mrt-table-pagination > .mantine-Group-root {
+  flex-wrap: nowrap;
+}
+
+#rpp-label {
+  white-space: pre;
+}
