@@ -1,7 +1,6 @@
 "Book endpoints"
 
 import os
-import json
 from datetime import datetime
 
 from flask import Blueprint, jsonify, send_file, current_app, request
@@ -18,6 +17,7 @@ from lute.book.service import (
 from lute.read.render.service import Service as RenderService
 from lute.book.stats import Service as StatsService
 from lute.utils.data_tables import supported_parser_type_criteria
+from lute.api.utils.utils import get_filter, parse_url_params
 from lute.api.sql.book import sql as base_sql
 
 
@@ -28,10 +28,12 @@ bp = Blueprint("api_books", __name__, url_prefix="/api/books")
 def get_books():
     "Get all books applying filters and sorting"
 
-    shelf = request.args.get("shelf", "active")
-    start, size, filters, filter_modes, global_filter, sorting = _parse_url_params()
+    start, size, filters, filter_modes, global_filter, sorting = parse_url_params(
+        request
+    )
 
     where = [f"WHERE LgParserType in ({ supported_parser_type_criteria() })"]
+    shelf = request.args.get("shelf", "active")
     if shelf == "active":
         where.append(" AND BkArchived != TRUE")
     elif shelf == "archived":
@@ -53,7 +55,7 @@ def get_books():
         mode = filter_modes.get(field, "contains")
 
         where.append(
-            _get_filter(mode, fields[field]["column"], value, fields[field]["num"])
+            get_filter(mode, fields[field]["column"], value, fields[field]["num"])
         )
 
     # Apply Global Filter
@@ -66,7 +68,7 @@ def get_books():
                             UnknownPercent = {global_filter}
                         )"""
             )
-        else:  # String value
+        else:
             where.append(
                 f""" AND (
                             BkTitle LIKE '%{global_filter}%' OR
@@ -102,7 +104,7 @@ def get_books():
                 WHERE BkArchived = 1
                 """
     total = """
-            SELECT COUNT(*) AS ArchivedBookCount
+            SELECT COUNT(*) AS TotalBookCount
             FROM books
             """
 
@@ -265,39 +267,19 @@ def edit_book(bookid):
     data = {k: None if v == "undefined" else v for k, v in data.items()}
 
     action = data.get("action")
-    if action == "archive":
+    if action in ("archive", "unarchive"):
         book = _find_book(bookid)
-        book.archived = True
+        book.archived = action == "archive"
 
         db.session.add(book)
         db.session.commit()
-        archived_count = len(
-            db.session.query(BookModel).filter(BookModel.archived == 1).all()
+        archived_count = (
+            db.session.query(BookModel).filter(BookModel.archived == 1).count()
         )
 
-        return (
-            jsonify(
-                {"id": book.id, "title": book.title, "archivedCount": archived_count}
-            ),
-            200,
-        )
-
-    if action == "unarchive":
-        book = _find_book(bookid)
-        book.archived = False
-
-        db.session.add(book)
-        db.session.commit()
-        archived_count = len(
-            db.session.query(BookModel).filter(BookModel.archived == 1).all()
-        )
-
-        return (
-            jsonify(
-                {"id": book.id, "title": book.title, "archivedCount": archived_count}
-            ),
-            200,
-        )
+        response = {"id": book.id, "title": book.title}
+        response["archivedCount"] = archived_count
+        return jsonify(response), 200
 
     if action == "edit":
         files_dict = request.files.to_dict()
@@ -316,6 +298,9 @@ def edit_book(bookid):
         svc = BookService()
         svc.import_book(book, db.session)
 
+        response = {"id": book.id, "title": book.title}
+        return jsonify(response), 200
+
     if action == "markAsStale":
         book = _find_book(bookid)
         if book is None:
@@ -323,7 +308,10 @@ def edit_book(bookid):
 
         _mark_book_as_stale(book)
 
-    return jsonify({"id": book.id, "title": book.title}), 200
+        response = {"id": book.id, "title": book.title}
+        return jsonify(response), 200
+
+    return jsonify(None), 400
 
 
 @bp.route("/<int:bookid>", methods=["DELETE"])
@@ -476,48 +464,3 @@ def _paragraphs_to_dict_array(paragraphs):
         ]
         for paragraph in paragraphs
     ]
-
-
-def _parse_url_params():
-    """
-    parse table url params
-    """
-    # Pagination
-    start = int(request.args.get("start", 0))  # Starting index
-    size = int(request.args.get("size", -1))  # Page size
-    # Filters
-    global_filter = request.args.get("globalFilter", "").strip()
-    # [{"id": "title", "value": "Book"}]
-    filters = json.loads(request.args.get("filters", "[]"))
-    # {"title": "contains"}
-    filter_modes = json.loads(request.args.get("filterModes", "{}"))
-    # Sorting [{"id": "WordCount", "desc": True}]
-    sorting = json.loads(request.args.get("sorting", "[]"))
-
-    return start, size, filters, filter_modes, global_filter, sorting
-
-
-def _get_filter(typ, item, value, num=False):
-    """
-    map filter type to sql condition
-    """
-    if num:
-        value = int(value)
-
-    flt = {
-        "contains": f" AND {item} LIKE '%{value}%'",
-        "startsWith": f" AND {item} LIKE '{value}%'",
-        "endsWith": f" AND {item} LIKE '%{value}'",
-        "equalsStr": f" AND {item} = '{value}'",
-        "equalsNum": f" AND {item} = {value}",
-        "greaterThan": f" AND {item} > {value}",
-        "lessThan": f" AND {item} < {value}",
-        "notEquals": f" AND {item} != {value}",
-    }
-
-    if typ == "equals" and num:
-        typ = "equalsNum"
-    if typ == "equals" and not num:
-        typ = "equalsStr"
-
-    return flt[typ]

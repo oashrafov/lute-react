@@ -1,8 +1,10 @@
 import { memo, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Group, Modal } from "@mantine/core";
+import { Link } from "react-router-dom";
+import { Button, Group, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import ActionsMenu from "./components/ActionsMenu";
+import { IconPlus } from "@tabler/icons-react";
+import TermActions from "./components/TermActions";
 import BulkTermForm from "../BulkTermForm/BulkTermForm";
 import ShowParentsOnlyChip from "./components/ShowParentsOnlyChip";
 import EmptyRow from "@common/EmptyRow/EmptyRow";
@@ -17,7 +19,7 @@ const defaultOptions = getDefaultTableOptions();
 
 const PAGINATION = {
   pageIndex: 0,
-  pageSize: 10,
+  pageSize: 25,
 };
 
 const COLUMN_FILTER_FNS = {
@@ -74,7 +76,7 @@ function TermsTable() {
       return await response.json();
     },
     placeholderData: keepPreviousData,
-    staleTime: 30_000,
+    staleTime: Infinity,
   });
 
   const handleSaveRow = async ({ table, values }) => {
@@ -97,7 +99,7 @@ function TermsTable() {
 
     columns: columns,
     data: data?.data || [],
-    rowCount: data?.total,
+    rowCount: data?.filteredCount,
     localization: {
       min: "From",
       max: "To",
@@ -165,7 +167,20 @@ function TermsTable() {
 
     renderTopToolbar: ({ table }) => (
       <TableTopToolbar>
-        <ActionsMenu table={table} onSetEditModalOpened={setEditModalOpened} />
+        <Group gap={5} wrap="nowrap">
+          <Button
+            color="green"
+            size="xs"
+            component={Link}
+            to="/terms/term"
+            leftSection={<IconPlus size={22} />}>
+            New
+          </Button>
+          <TermActions
+            table={table}
+            onSetEditModalOpened={setEditModalOpened}
+          />
+        </Group>
         <Group wrap="nowrap">
           <ShowParentsOnlyChip
             show={showParentsOnly}
