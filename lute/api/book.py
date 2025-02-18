@@ -371,7 +371,7 @@ def commit_page(bookid, pagenum):
 
     _, paragraphs = _load_page_content(book, pagenum)
     read_service = ReadService(db.session)
-    read_service._save_new_status_0_terms(paragraphs)
+    read_service._save_new_status_0_terms(paragraphs)  # pylint: disable=W0212
 
     return jsonify({"id": book.id}), 200
 

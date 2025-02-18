@@ -72,6 +72,7 @@ function ReadPane({
           style={textContainerStyle}>
           {showTitle && <Title className={classes.title}>{book.title}</Title>}
           <TheText
+            key={pageNum}
             paragraphs={page.paragraphs}
             onSetActiveTerm={onSetActiveTerm}
           />

@@ -1,8 +1,13 @@
 // lute\templates\read\page_content.html
-import { memo, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { Text, useComputedColorScheme } from "@mantine/core";
+import {
+  Box,
+  LoadingOverlay,
+  Text,
+  useComputedColorScheme,
+} from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconClipboardCheck } from "@tabler/icons-react";
 import TextItem from "./components/TextItem";
@@ -18,14 +23,15 @@ import {
 } from "@actions/interactions-desktop";
 import { applyLuteHighlights } from "@actions/general";
 import { copyToClipboard } from "@actions/utils";
-import { commitPage } from "../../../../api/api";
-import { keys } from "../../../../api/keys";
+import { commitPage } from "@book/api/api";
+import { keys } from "@book/api/keys";
 
 function TheText({ paragraphs, onSetActiveTerm }) {
+  const queryClient = useQueryClient();
+  const colorScheme = useComputedColorScheme();
   const { id, page } = useParams();
   const { data: settings } = useQuery(settingsQuery);
-  const colorScheme = useComputedColorScheme();
-  const queryClient = useQueryClient();
+  const [pageProcessed, setPageProcessed] = useState(false);
 
   useEffect(() => {
     startHoverMode();
@@ -45,7 +51,10 @@ function TheText({ paragraphs, onSetActiveTerm }) {
 
   const { mutate } = useMutation({
     mutationFn: commitPage,
-    onSuccess: () => queryClient.invalidateQueries(keys.books),
+    onSuccess: () => {
+      queryClient.invalidateQueries(keys.books);
+      setPageProcessed(true);
+    },
   });
 
   useEffect(() => {
@@ -70,36 +79,39 @@ function TheText({ paragraphs, onSetActiveTerm }) {
   }
 
   return (
-    <div className="thetext">
-      {paragraphs.map((paragraph, index) => (
-        <p key={index} className="textparagraph">
-          {paragraph.map((sentence, index) => (
-            <span
-              key={`sent_${index + 1}`}
-              id={`sent_${index + 1}`}
-              className="textsentence">
-              {sentence.map((textitem) =>
-                textitem.isWord ? (
-                  <Popup id={textitem.wid} key={textitem.id}>
-                    <TextItem
-                      data={textitem}
-                      onMouseDown={handleSelectStart}
-                      onMouseUp={handleSelectEnd}
-                      onMouseOver={handleMouseOver}
-                      onMouseOut={hoverOut}
-                    />
-                  </Popup>
-                ) : (
-                  // non-word spans
-                  <TextItem data={textitem} key={textitem.id} />
-                )
-              )}
-            </span>
-          ))}
-          <span className="textitem">{"\u200B"}</span>
-        </p>
-      ))}
-    </div>
+    <Box pos="relative">
+      <LoadingOverlay visible={!pageProcessed} zIndex={1000} />
+      <div className="thetext">
+        {paragraphs.map((paragraph, index) => (
+          <p key={index} className="textparagraph">
+            {paragraph.map((sentence, index) => (
+              <span
+                key={`sent_${index + 1}`}
+                id={`sent_${index + 1}`}
+                className="textsentence">
+                {sentence.map((textitem) =>
+                  textitem.isWord ? (
+                    <Popup id={textitem.wid} key={textitem.id}>
+                      <TextItem
+                        data={textitem}
+                        onMouseDown={handleSelectStart}
+                        onMouseUp={handleSelectEnd}
+                        onMouseOver={handleMouseOver}
+                        onMouseOut={hoverOut}
+                      />
+                    </Popup>
+                  ) : (
+                    // non-word spans
+                    <TextItem data={textitem} key={textitem.id} />
+                  )
+                )}
+              </span>
+            ))}
+            <span className="textitem">{"\u200B"}</span>
+          </p>
+        ))}
+      </div>
+    </Box>
   );
 }
 

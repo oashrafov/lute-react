@@ -39,11 +39,15 @@ function applyLuteHighlights(colors, scheme) {
       colors[value][scheme]
     );
 
-    document.querySelectorAll(`.${value}`).forEach((textitem) => {
-      textitem.dataset.highlightType = colors[value].type;
-    });
-
     setTextColor(value, colors[value][scheme], root);
+
+    if (colors[value].type) {
+      document
+        .querySelectorAll(`.${value}`)
+        .forEach(
+          (textitem) => (textitem.dataset.highlightType = colors[value].type)
+        );
+    }
   });
 }
 

@@ -125,10 +125,16 @@ def user_settings():
                 "status99": {"light": "#51cf66", "dark": "#51cf66", "type": "none"},
             },
             "general": {
-                "kwordmarked": {"light": "#228be6", "dark": "#228be6", "type": "solid"},
-                "wordhover": {"light": "#f56767", "dark": "#f56767", "type": "solid"},
-                "multiterm": {"light": "#ffe066", "dark": "#ffe066", "type": "bg"},
-                "flash": {"light": "#ff6868", "dark": "#ff6868", "type": "bg"},
+                "kwordmarked": {
+                    "light": "#228be6",
+                    "dark": "#228be6",
+                },
+                "wordhover": {
+                    "light": "#f56767",
+                    "dark": "#f56767",
+                },
+                "multiterm": {"light": "#ffe066", "dark": "#ffe066"},
+                "flash": {"light": "#ff6868", "dark": "#ff6868"},
             },
         }
     }
