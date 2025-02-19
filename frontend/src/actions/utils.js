@@ -1,7 +1,7 @@
 function getFromLocalStorage(item, defaultVal) {
   const storageVal = JSON.parse(localStorage.getItem(item));
 
-  if (storageVal === null || isNaN(storageVal)) {
+  if (storageVal === null || Object.is(storageVal, NaN)) {
     return defaultVal;
   } else {
     return storageVal;

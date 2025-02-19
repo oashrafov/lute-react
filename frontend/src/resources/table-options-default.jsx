@@ -17,8 +17,11 @@ const getDefaultTableOptions = () => ({
 
   displayColumnDefOptions: {
     "mrt-row-select": {
-      size: "min-content",
-      grow: false,
+      size: 1,
+    },
+    "mrt-row-pin": {
+      size: 1,
+      header: "",
     },
   },
 
@@ -38,6 +41,10 @@ const getDefaultTableOptions = () => ({
 
   mantineTableHeadRowProps: {
     style: { backgroundColor: "var(--mantine-color-body)" },
+  },
+
+  mantineTableBodyRowProps: {
+    style: { opacity: 1 },
   },
 
   mantineCopyButtonProps: {

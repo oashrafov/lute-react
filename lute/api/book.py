@@ -1,6 +1,7 @@
 "Book endpoints"
 
 import os
+import json
 from datetime import datetime
 
 from flask import Blueprint, jsonify, send_file, current_app, request
@@ -117,32 +118,19 @@ def get_books():
     final_query = f"{base_sql} {" ".join(where)} {order_by} {limit}"
     results = db.session.execute(SQLText(final_query)).fetchall()
 
-    # Prepare Output
-    response = []
+    books = []
     for row in results:
-        response.append(
-            {
-                "id": row.BkID,
-                "language": row.LgName,
-                "languageId": row.BkLgID,
-                "languageRtl": row.LgRightToLeft == 1,
-                "source": row.BkSourceURI or "",
-                "audioName": row.BkAudioFilename or "",
-                "title": row.BkTitle,
-                "wordCount": row.WordCount,
-                "pageCount": row.PageCount,
-                "currentPage": row.PageNum,
-                "tags": row.TagList.split(",") if row.TagList else [],
-                "isCompleted": row.IsCompleted == 1,
-                "unknownPercent": row.UnknownPercent,
-                "isArchived": row.BkArchived == 1,
-                "lastRead": row.LastOpenedDate,
-            }
-        )
+        books.append(_book_row_to_dict(row))
+
+    pinned = json.loads(request.args.get("pinned", '{"top": [], "bottom": []}'))
+    pinned_ids = pinned["top"] + pinned["bottom"]
+    pinned_books = _get_pinned_books(pinned_ids)
+
+    books.extend(pinned_books)
 
     return jsonify(
         {
-            "data": response,
+            "data": books,
             "totalCount": total_count,
             "filteredCount": filtered_count,
             "activeCount": active_count,
@@ -444,6 +432,39 @@ def _load_page_content(dbbook, pagenum):
     paragraphs = rs.get_paragraphs(text.text, lang)
 
     return text, paragraphs
+
+
+def _get_pinned_books(ids):
+    books = []
+    if ids:
+        ids_tuple = tuple(ids) if len(ids) > 1 else tuple([ids[0], ids[0]])
+        query = f"{base_sql} WHERE books.BkID IN {ids_tuple}"
+        result = db.session.execute(SQLText(query)).fetchall()
+
+        for row in result:
+            books.append(_book_row_to_dict(row))
+
+    return books
+
+
+def _book_row_to_dict(row):
+    return {
+        "id": row.BkID,
+        "language": row.LgName,
+        "languageId": row.BkLgID,
+        "languageRtl": row.LgRightToLeft == 1,
+        "source": row.BkSourceURI or "",
+        "audioName": row.BkAudioFilename or "",
+        "title": row.BkTitle,
+        "wordCount": row.WordCount,
+        "pageCount": row.PageCount,
+        "currentPage": row.PageNum,
+        "tags": row.TagList.split(",") if row.TagList else [],
+        "isCompleted": row.IsCompleted == 1,
+        "unknownPercent": row.UnknownPercent,
+        "isArchived": row.BkArchived == 1,
+        "lastRead": row.LastOpenedDate,
+    }
 
 
 def _paragraphs_to_dict_array(paragraphs):

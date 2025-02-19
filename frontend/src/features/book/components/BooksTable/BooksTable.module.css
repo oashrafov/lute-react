@@ -9,3 +9,15 @@
   border: none;
   border-left: 1px solid var(--mantine-color-body);
 }
+
+:root[data-mantine-color-scheme="light"] {
+  --mrt-pinned-row-background-color: var(--mantine-color-blue-0);
+}
+
+:root[data-mantine-color-scheme="dark"] {
+  --mrt-pinned-row-background-color: #273036;
+}
+
+:global(.mantine-ActionIcon-root[aria-label="Pin"]) {
+  display: block;
+}

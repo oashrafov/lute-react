@@ -2,6 +2,7 @@ import { memo, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Box, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import { IconPin, IconPinnedOff } from "@tabler/icons-react";
 import EmptyRow from "@common/EmptyRow/EmptyRow";
 import EditBookForm from "../EditBookForm/EditBookForm";
 import ShelfSwitch from "./components/ShelfSwitch";
@@ -11,7 +12,13 @@ import TableTopToolbarDefaultItems from "@common/TableTopToolbarDefaultItems/Tab
 import getDefaultTableOptions from "@resources/table-options-default";
 import columnDefinition from "./columnDefinition";
 import { initialQuery } from "@settings/api/settings";
+import { getFromLocalStorage } from "@actions/utils";
 import { DEFAULT_TABLE_ROW_COUNT } from "@resources/constants";
+
+const icons = {
+  IconPinned: () => <IconPin />,
+  IconX: () => <IconPinnedOff />,
+};
 
 const defaultOptions = getDefaultTableOptions();
 
@@ -27,12 +34,25 @@ const COLUMN_FILTER_FNS = {
   status: "greaterThan",
 };
 
-//build the URL (start=0&size=10&filters=[]&globalFilter=&sorting=[])
-const fetchURL = new URL("/api/books", "http://localhost:5001");
+const ROW_PINNING = { top: [], bottom: [] };
+
+// start=0&size=10&filters=[]&globalFilter=&sorting=[]
+const url = new URL("/api/books", "http://localhost:5001");
 
 function BooksTable() {
   const { data: initial } = useQuery(initialQuery);
   const [editedRow, setEditedRow] = useState(null);
+  const [rowPinning, setRowPinning] = useState(() =>
+    getFromLocalStorage("Lute.booksTable.pinnedRows", ROW_PINNING)
+  );
+
+  function handleRowPinning(updater) {
+    setRowPinning((prev) => {
+      const res = updater(prev);
+      localStorage.setItem("Lute.booksTable.pinnedRows", JSON.stringify(res));
+      return res;
+    });
+  }
 
   const [shelf, setShelf] = useState("active");
   const [sorting, setSorting] = useState([]);
@@ -53,24 +73,22 @@ function BooksTable() {
     [initial.languageChoices, initial.bookTags]
   );
 
-  fetchURL.searchParams.set("shelf", shelf);
-  fetchURL.searchParams.set(
+  url.searchParams.set("shelf", shelf);
+  url.searchParams.set("pinned", JSON.stringify(rowPinning));
+  url.searchParams.set(
     "start",
     `${pagination.pageIndex * pagination.pageSize}`
   );
-  fetchURL.searchParams.set("size", `${pagination.pageSize}`);
-  fetchURL.searchParams.set("filters", JSON.stringify(columnFilters ?? []));
-  fetchURL.searchParams.set(
-    "filterModes",
-    JSON.stringify(columnFilterFns ?? {})
-  );
-  fetchURL.searchParams.set("globalFilter", globalFilter ?? "");
-  fetchURL.searchParams.set("sorting", JSON.stringify(sorting ?? []));
+  url.searchParams.set("size", `${pagination.pageSize}`);
+  url.searchParams.set("filters", JSON.stringify(columnFilters ?? []));
+  url.searchParams.set("filterModes", JSON.stringify(columnFilterFns ?? {}));
+  url.searchParams.set("globalFilter", globalFilter ?? "");
+  url.searchParams.set("sorting", JSON.stringify(sorting ?? []));
 
   const { data: books } = useQuery({
-    queryKey: ["books", fetchURL.href],
+    queryKey: ["books", url.href],
     queryFn: async () => {
-      const response = await fetch(fetchURL.href);
+      const response = await fetch(url.href);
       return await response.json();
     },
     placeholderData: keepPreviousData,
@@ -97,9 +115,14 @@ function BooksTable() {
       globalFilter,
       pagination,
       sorting,
+      rowPinning,
     },
 
+    icons,
+
     enableColumnFilterModes: true,
+    enableRowPinning: true,
+    rowPinningDisplayMode: "top",
 
     manualFiltering: true,
     manualPagination: true,
@@ -109,6 +132,9 @@ function BooksTable() {
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    onRowPinningChange: handleRowPinning,
+
+    getRowId: (row) => row.id,
 
     renderEmptyRowsFallback: ({ table }) => {
       const language = table.getColumn("language").getFilterValue();

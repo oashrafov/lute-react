@@ -40,9 +40,7 @@ const columnDefinition = (
   {
     header: "TITLE",
     accessorKey: "title",
-    maxSize: 300,
-    size: 300,
-    minSize: 300,
+    size: 500,
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     Cell: ({ row }) => {
       const id = row.original.id;
@@ -53,7 +51,7 @@ const columnDefinition = (
       const isArchived = row.original.isArchived;
       const hasAudio = row.original.audioName;
       return (
-        <Group gap={5} align="center" wrap="nowrap">
+        <Group gap={5} align="center" wrap="nowrap" maw={400}>
           <ThemeIcon
             size="sm"
             color={isCompleted ? "green.6" : "dark.1"}
@@ -121,6 +119,7 @@ const columnDefinition = (
     header: "STATUS",
     id: "status",
     accessorKey: "unknownPercent",
+    size: 200,
     Cell: ({ row }) => {
       const { data } = useQuery(getBookStatsQuery(row.original.id));
       return <StatsBar data={data} />;
@@ -138,6 +137,7 @@ const columnDefinition = (
     },
     filterVariant: "select",
     columnFilterModeOptions: false,
+    size: 200,
     accessorFn: (row) => (row.tags.length > 0 ? row.tags.join() : ""),
     Cell: ({ row }) => <TagsGroup tags={row.original.tags} />,
   },
@@ -156,7 +156,7 @@ const columnDefinition = (
     id: "actions",
     header: "",
     columnDefType: "display",
-    size: "min-content",
+    size: 0,
     Cell: ({ row }) => {
       const editBookMutation = useEditBook();
       const deleteBookMutation = useDeleteBook();
