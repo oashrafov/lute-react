@@ -6,9 +6,10 @@ function FormButtons({
   okDisabled = false,
   okLoading = false,
   discardCallback = () => {},
+  marginTop = "xs",
 }) {
   return (
-    <Group justify="flex-end" mt="sm" gap="xs">
+    <Group justify="flex-end" mt={marginTop} gap="xs">
       <Button type="submit" disabled={okDisabled} loading={okLoading}>
         {okLabel}
       </Button>

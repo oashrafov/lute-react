@@ -1,4 +1,5 @@
-import { Button, FileButton, Menu, rem } from "@mantine/core";
+import { useState } from "react";
+import { Button, Menu, Modal, rem } from "@mantine/core";
 import {
   IconDownload,
   IconEdit,
@@ -7,8 +8,10 @@ import {
   IconTrashFilled,
   IconUpload,
 } from "@tabler/icons-react";
+import TermImportForm from "./TermImportForm";
 
 function TermActions({ table, onSetEditModalOpened }) {
+  const [importOpen, setImportOpen] = useState(false);
   const iconSize = { width: rem(16), height: rem(16) };
   return (
     <>
@@ -33,13 +36,14 @@ function TermActions({ table, onSetEditModalOpened }) {
             leftSection={<IconTrashFilled style={iconSize} />}>
             Delete selected
           </Menu.Item>
+
           <Menu.Label>Export</Menu.Label>
           {/* //export all data that is currently in the table (ignore pagination, */}
           {/* sorting, filtering, etc.) */}
           <Menu.Item
             component="a"
             href="http://localhost:5001/api/terms/export"
-            leftSection={<IconDownload style={iconSize} />}>
+            leftSection={<IconUpload style={iconSize} />}>
             All
           </Menu.Item>
           {/* //export all rows as seen on the screen (respects pagination, sorting, */}
@@ -59,18 +63,19 @@ function TermActions({ table, onSetEditModalOpened }) {
             leftSection={<IconListCheck style={iconSize} />}>
             Selected
           </Menu.Item>
+
           <Menu.Label>Import</Menu.Label>
-          <FileButton accept="text/csv">
-            {(props) => (
-              <Menu.Item
-                {...props}
-                leftSection={<IconUpload style={iconSize} />}>
-                Import terms (CSV)
-              </Menu.Item>
-            )}
-          </FileButton>
+          <Menu.Item
+            onClick={() => setImportOpen(true)}
+            leftSection={<IconDownload style={iconSize} />}>
+            Import terms (CSV)
+          </Menu.Item>
         </Menu.Dropdown>
       </Menu>
+
+      <Modal opened={importOpen} onClose={setImportOpen} title="Import terms">
+        <TermImportForm />
+      </Modal>
     </>
   );
 }
