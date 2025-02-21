@@ -1,5 +1,5 @@
 terms = """
-      SELECT w.WoID AS WoID,
+      SELECT w.WoID AS WordID,
           LgName,
           L.LgID AS LgID,
           L.LgRightToLeft as LgRightToLeft,

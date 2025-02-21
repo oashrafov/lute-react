@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigation, useParams, useSearchParams } from "react-router-dom";
 import {
   ActionIcon,
@@ -9,8 +10,13 @@ import {
   Paper,
   rem,
   Stack,
+  Tooltip,
 } from "@mantine/core";
-import { IconMenu2, IconTypography } from "@tabler/icons-react";
+import {
+  IconBracketsContain,
+  IconMenu2,
+  IconTypography,
+} from "@tabler/icons-react";
 import HomeImageLink from "@common/HomeImageLink/HomeImageLink";
 import PageSlider from "./components/PageSlider";
 import BookmarksButton from "../../../common/BookmarksButton";
@@ -25,6 +31,7 @@ import FocusSwitch from "../../../common/FocusSwitch/FocusSwitch";
 import HighlightsSwitch from "../../../common/HighlightSwitch/HighlightSwitch";
 import MarkRestAsKnownButton from "../../../common/MarkRestAsKnownButton/MarkRestAsKnownButton";
 import { resetFocusActiveSentence } from "@actions/interactions-desktop";
+import loader from "@term/api/loader";
 import classes from "./ReadHeader.module.css";
 
 function ReadHeader({
@@ -36,6 +43,7 @@ function ReadHeader({
   dispatch,
   onSetActiveTerm,
 }) {
+  const queryClient = useQueryClient();
   const params = useParams();
   const page = Number(params.page);
   const navigation = useNavigation();
@@ -47,6 +55,11 @@ function ReadHeader({
     resetFocusActiveSentence();
     setSearchParams({ edit: "true" });
   }
+
+  const termIds = () =>
+    Array.from(document.querySelectorAll(".word")).map(
+      (word) => word.dataset.wid
+    );
 
   return (
     <>
@@ -80,9 +93,22 @@ function ReadHeader({
 
           <Divider orientation="vertical" />
 
-          <ActionIcon variant="light">
-            <IconTypography />
-          </ActionIcon>
+          <Stack gap={2}>
+            <ActionIcon size="sm" variant="subtle">
+              <IconTypography />
+            </ActionIcon>
+            <Tooltip label="Open table with current page terms">
+              <ActionIcon
+                size="sm"
+                variant="subtle"
+                onClick={async () => {
+                  await loader(queryClient)();
+                  setSearchParams({ ids: JSON.stringify(termIds()) });
+                }}>
+                <IconBracketsContain />
+              </ActionIcon>
+            </Tooltip>
+          </Stack>
 
           <Divider orientation="vertical" />
 

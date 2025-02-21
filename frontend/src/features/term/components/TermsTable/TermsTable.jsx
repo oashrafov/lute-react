@@ -1,6 +1,6 @@
 import { memo, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Button, Group, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { IconPlus } from "@tabler/icons-react";
@@ -35,6 +35,9 @@ const COLUMN_FILTERS = [{ id: "status", value: [0, 6] }];
 const url = new URL("/api/terms", "http://localhost:5001");
 
 function TermsTable() {
+  const [params] = useSearchParams();
+  const termIds = params.get("ids");
+
   const { data: initial } = useQuery(initialQuery);
   const { data: termTags } = useQuery(getTagSuggestionsQuery);
   const [editModalOpened, setEditModalOpened] = useState(false);
@@ -58,6 +61,7 @@ function TermsTable() {
     [initial.languageChoices, termTags]
   );
 
+  url.searchParams.set("ids", termIds);
   url.searchParams.set("parentsOnly", showParentsOnly);
   url.searchParams.set(
     "start",
@@ -144,7 +148,7 @@ function TermsTable() {
       };
     },
 
-    mantineTableBodyRowProps: ({ row }) => {
+    mantineTableBodyRowProps: ({ row, table }) => {
       const isEditing = table.getState().editingRow?.id === row.id;
       const isSelected = row.getIsSelected();
 
@@ -168,14 +172,16 @@ function TermsTable() {
     renderTopToolbar: ({ table }) => (
       <TableTopToolbar>
         <Group gap={5} wrap="nowrap">
-          <Button
-            color="green"
-            size="xs"
-            component={Link}
-            to="/terms/term"
-            leftSection={<IconPlus size={22} />}>
-            New
-          </Button>
+          {!termIds && (
+            <Button
+              color="green"
+              size="xs"
+              component={Link}
+              to="/terms/term"
+              leftSection={<IconPlus size={22} />}>
+              New
+            </Button>
+          )}
           <TermActions
             table={table}
             onSetEditModalOpened={setEditModalOpened}

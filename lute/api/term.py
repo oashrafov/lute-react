@@ -2,6 +2,7 @@
 
 import os
 import csv
+import json
 
 from flask import Blueprint, jsonify, send_file, current_app, request
 from sqlalchemy import text as SQLText
@@ -27,8 +28,15 @@ def get_terms():
     )
 
     where = [f"WHERE LgParserType in ({ supported_parser_type_criteria() })"]
+
     if request.args.get("parentsOnly", "false") == "true":
         where.append("AND ParentText IS NULL")
+
+    ids = json.loads(request.args.get("ids", "[]"))
+    if ids:
+        ids_str = ", ".join(map(str, ids))
+        parentsql = f"select WpParentWoID from wordparents where WpWoID in ({ids_str})"  # FIX - parent terms don't get filtered (for status specifically)
+        where.append(f" AND (WordID IN ({ids_str})) OR (WordID IN ({parentsql}))")
 
     fields = {
         "text": "WoText",
@@ -58,7 +66,7 @@ def get_terms():
                 continue
 
             status_range = statuses[value0 : value1 + 1]
-            where.append(f" AND StID IN {(tuple(status_range))}")
+            where.append(f" AND StID IN ({', '.join(map(str, status_range))})")
 
         elif field == "createdOn":
             value0 = value[0]
@@ -106,23 +114,23 @@ def get_terms():
         limit = f" LIMIT {size} OFFSET {start}"
 
     realbase = f"({terms_base_sql}) realbase".replace("\n", " ")
-    filtered = f"SELECT COUNT(*) FROM {realbase} {" ".join(where)}"
     total = """
             SELECT COUNT(*) AS TotalTermCount
             FROM words
             """
 
+    filtered = f"SELECT COUNT(*) FROM {realbase} {" ".join(where)}"
+    final_query = f"{terms_base_sql} {" ".join(where)} {order_by} {limit}"
+
     filtered_count = db.session.execute(SQLText(filtered)).scalar()
     total_count = db.session.execute(SQLText(total)).scalar()
-
-    final_query = f"{terms_base_sql} {" ".join(where)} {order_by} {limit}"
     results = db.session.execute(SQLText(final_query)).fetchall()
 
     response = []
     for row in results:
         response.append(
             {
-                "id": row.WoID,
+                "id": row.WordID,
                 "language": row.LgName,
                 "languageId": row.LgID,
                 "languageRtl": row.LgRightToLeft == 1,
