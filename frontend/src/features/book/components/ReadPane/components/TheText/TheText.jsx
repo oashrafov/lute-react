@@ -80,7 +80,8 @@ function TheText({ paragraphs, onSetActiveTerm }) {
 
   return (
     <Box pos="relative">
-      <LoadingOverlay visible={!pageProcessed} zIndex={1000} />
+      {/* zIndex less than drawer */}
+      <LoadingOverlay visible={!pageProcessed} zIndex={199} />
       <div className="thetext">
         {paragraphs.map((paragraph, index) => (
           <p key={index} className="textparagraph">

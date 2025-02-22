@@ -12,7 +12,7 @@ import {
 import { IconChevronDown } from "@tabler/icons-react";
 import { menu } from "@resources/menus";
 import { softwareInfo } from "@resources/modals";
-import classes from "./DrawerMenu.module.css";
+import classes from "../DrawerMenu.module.css";
 
 function DrawerLinks() {
   return (

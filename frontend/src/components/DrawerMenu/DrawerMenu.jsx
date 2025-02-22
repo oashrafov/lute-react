@@ -1,8 +1,7 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ActionIcon,
-  Box,
   Center,
   Divider,
   Drawer,
@@ -12,34 +11,27 @@ import {
   SegmentedControl,
   Text,
 } from "@mantine/core";
-import {
-  IconCircleLetterAFilled,
-  IconDeviceDesktop,
-  IconDeviceMobile,
-  IconPalette,
-} from "@tabler/icons-react";
-import DrawerLinks from "./DrawerLinks";
+import { IconPalette } from "@tabler/icons-react";
+import DrawerLinks from "./components/DrawerLinks";
 import SchemeToggleButton from "@common/SchemeToggleButton/SchemeToggleButton";
+import MenuBookList from "./components/MenuBookList";
+import DrawerFooter from "./components/DrawerFooter";
 import classes from "./DrawerMenu.module.css";
 
 function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
+  const [section, setSection] = useState("navigation");
   return (
     <Drawer.Root
       classNames={{ content: classes.drawer }}
       opened={drawerOpen}
       onClose={onClose}
-      size="250"
-      transitionProps={{
-        duration: 100,
-        timingFunction: "cubic-bezier(0.77,0.2,0.05,1.0)",
-        transition: "slide-right",
-      }}>
+      size="250">
       <Drawer.Overlay />
       <Drawer.Content>
         <Drawer.Header>
           <Group justify="space-between" align="center">
             <Link to="/">
-              <Image w="auto" h="2rem" src="/images/logo.png" />
+              <Image w="auto" h={32} src="/images/logo.png" />
             </Link>
             <Text>Lute 3</Text>
           </Group>
@@ -66,11 +58,24 @@ function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
             </Group>
           </Center>
 
-          <Divider />
+          <SegmentedControl
+            value={section}
+            onChange={(value) => setSection(value)}
+            transitionTimingFunction="ease"
+            fullWidth
+            data={[
+              { label: "Navigation", value: "navigation" },
+              { label: "Books", value: "books" },
+            ]}
+          />
 
-          <ScrollArea className={classes.scroll}>
-            <DrawerLinks />
-          </ScrollArea>
+          {section === "navigation" ? (
+            <ScrollArea className={classes.scroll} type="never">
+              <DrawerLinks />
+            </ScrollArea>
+          ) : (
+            <MenuBookList onDrawerClose={onClose} />
+          )}
 
           <Divider />
 
@@ -78,34 +83,6 @@ function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>
-  );
-}
-
-function DrawerFooter() {
-  return (
-    <Box className={classes.footer}>
-      <SegmentedControl
-        fullWidth
-        styles={{
-          label: { padding: "0.2rem" },
-          innerLabel: { lineHeight: 0, display: "block" },
-        }}
-        size="xs"
-        withItemsBorders
-        color="blue"
-        data={[
-          {
-            value: "desktop",
-            label: <IconDeviceDesktop />,
-          },
-          { value: "mobile", label: <IconDeviceMobile /> },
-          {
-            value: "auto",
-            label: <IconCircleLetterAFilled />,
-          },
-        ]}
-      />
-    </Box>
   );
 }
 
