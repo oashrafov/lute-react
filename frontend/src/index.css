@@ -6,6 +6,43 @@
   box-sizing: border-box;
 }
 
+.ag-cell-label-container {
+  flex-direction: row;
+}
+
+.ag-cell-inline-editing {
+  border-radius: 0;
+  border-right: var(--ag-column-border) !important;
+}
+
+.ag-header-row:where(:not(:first-child)) {
+  :where(
+      .ag-header-cell:not(
+          .ag-header-span-height.ag-header-span-total,
+          .ag-header-parent-hidden
+        ),
+      .ag-header-group-cell.ag-header-group-cell-with-group
+    ) {
+    border-top: none;
+  }
+}
+
+.ag-floating-filter-body {
+  align-items: center;
+}
+
+.ag-header-cell-label {
+  padding: 0;
+  align-self: center;
+  line-height: 1;
+  flex-grow: 0;
+}
+
+.ag-header-cell,
+.ag-floating-filter-full-body {
+  overflow: unset;
+}
+
 :root {
   --lute-text-color-status0: var(--mantine-color-dark-7);
   --lute-text-color-status1: var(--mantine-color-dark-7);
@@ -15,6 +52,8 @@
   --lute-text-color-status5: var(--mantine-color-dark-7);
   --lute-text-color-status98: var(--mantine-color-dark-7);
   --lute-text-color-status99: var(--mantine-color-dark-7);
+
+  /* --ag-spacing: 6px; */
 }
 
 [data-mantine-color-scheme="light"] {
@@ -33,6 +72,9 @@
   --lute-color-highlight-flash: #ff6868;
 
   --lute-color-read: var(--mantine-color-body);
+
+  --ag-border-color: var(--mantine-color-gray-4);
+  --ag-checkbox-unchecked-border-color: var(--mantine-color-gray-4);
 }
 
 [data-mantine-color-scheme="dark"] {
@@ -51,6 +93,9 @@
   --lute-color-highlight-flash: #ff6868;
 
   --lute-color-read: var(--mantine-color-body);
+
+  --ag-border-color: var(--mantine-color-dark-4);
+  --ag-checkbox-unchecked-border-color: var(--mantine-color-dark-4);
 }
 
 .readpage {
