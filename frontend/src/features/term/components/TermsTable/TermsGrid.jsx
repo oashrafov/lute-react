@@ -16,6 +16,7 @@ import {
   InputClearButton,
   RangeSlider,
   Select,
+  TagsInput,
   Text,
   Textarea,
   TextInput,
@@ -154,6 +155,7 @@ function TermsGrid() {
           </div>
         );
       },
+      cellEditor: TagsEditField,
       floatingFilterComponent: FloatingTextFilter,
       floatingFilter: true,
       // valueGetter: (v) => v + v, (works like accessorFn)
@@ -172,9 +174,12 @@ function TermsGrid() {
       resizable: true,
       autoHeight: true,
       minWidth: 200,
-      // suppressKeyboardEvent: (p) => {
-      //   p.node.setRowHeight(p.event.target.scrollHeight);
-      // },
+      suppressKeyboardEvent: (p) => {
+        // console.log(p.event.target.style.height);
+        p.node.setRowHeight(parseInt(p.event.target.style.height));
+        p.api.onRowHeightChanged();
+        return p.event.key === "Enter";
+      },
     },
     {
       field: "tagsString",
@@ -184,6 +189,7 @@ function TermsGrid() {
         const tagsList = p.value ? p.value.split(",") : [];
         return <TagsGroup tags={tagsList} />;
       },
+      cellEditor: TagsEditField,
     },
     {
       field: "language",
@@ -257,6 +263,7 @@ function TermsGrid() {
         suppressClickEdit={true}
         onRowEditingStopped={handleRowEditingStopped}
         onRowEditingStarted={handleRowEditingStopped}
+        suppressRowVirtualisation={true} // or edited row gets reset
       />
     </div>
   );
@@ -361,6 +368,9 @@ function EditActionsCell(params) {
             rowIndex: params.node.rowIndex,
             colKey: "translation",
           });
+
+          params.node.setRowHeight(200);
+          params.api.onRowHeightChanged();
           // setEditing(true);
         }}>
         <IconEdit />
@@ -387,6 +397,10 @@ function EditActionsCell(params) {
         variant="subtle"
         onClick={() => {
           params.api.stopEditing();
+          params.node.setRowHeight(null);
+          // console.log(params.api);
+          params.api.onRowHeightChanged();
+          // params.api.refreshCells({ force: true });
           // setEditing(false);
         }}>
         <IconX />
@@ -458,8 +472,20 @@ function FloatingTextFilter() {
   );
 }
 
-function TranslationEditField() {
-  return <Textarea minRows={2} />;
+function TranslationEditField(p) {
+  return (
+    <Textarea
+      minRows={2}
+      autosize
+      defaultValue={p.value}
+      // mah={200}
+      maxRows={6}
+    />
+  );
+}
+
+function TagsEditField(p) {
+  return <TagsInput defaultValue={p.value?.split(",")} />;
 }
 
 function FloatingSelectFilter() {
