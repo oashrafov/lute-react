@@ -135,7 +135,7 @@ def get_terms():
                 "languageId": row.LgID,
                 "languageRtl": row.LgRightToLeft == 1,
                 "text": row.WoText,
-                "parentsString": row.ParentText,
+                "parentsString": row.ParentText or "",
                 "translation": row.WoTranslation,
                 "romanization": row.WoRomanization,
                 "statusId": row.StID,
