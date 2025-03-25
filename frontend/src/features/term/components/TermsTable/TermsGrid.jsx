@@ -1,3 +1,6 @@
+import { useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import {
   AllCommunityModule,
@@ -5,8 +8,6 @@ import {
   ModuleRegistry,
   themeQuartz,
 } from "ag-grid-community";
-import { useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import {
   ActionIcon,
   ActionIconGroup,
@@ -21,6 +22,7 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import {
   IconCheck,
   IconDeviceFloppy,
@@ -38,43 +40,39 @@ import {
 } from "@tabler/icons-react";
 import StatusRadio from "../StatusRadio/StatusRadio";
 import TermImage from "../TermImage/TermImage";
-import { initialQuery } from "@settings/api/settings";
-// import { getTagSuggestionsQuery } from "@term/api/query";
-import { DatePickerInput } from "@mantine/dates";
 import TagsGroup from "@common/TagsGroup/TagsGroup";
-import { Link } from "react-router-dom";
-
+import { initialQuery } from "@settings/api/settings";
 ModuleRegistry.registerModules([AllCommunityModule]);
-const myTheme = themeQuartz.withPart(colorSchemeDark).withParams({
+
+const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
+  year: "numeric",
+  month: "short",
+  day: "2-digit",
+});
+
+const theme = themeQuartz.withPart(colorSchemeDark).withParams({
   fontFamily: "Poppins, sans-serif",
   accentColor: "var(--mantine-color-blue-6)",
   backgroundColor: "var(--mantine-color-body)",
+  headerFontWeight: 600,
   headerBackgroundColor: "var(--mantine-color-body)",
+  // headerCellHoverBackgroundColor: "var(--mantine-color-blue-0)",
+  // headerColumnBorder: true,
+  // headerRowBorder: true,
   textColor: "var(--mantine-color-text)",
   borderColor: "var(--mantine-color-dark-4)",
   spacing: 6,
   wrapperBorder: false,
   columnBorder: true,
   rowHoverColor: "var(--mantine-color-orange-0)",
-  // headerColumnBorder: true,
-  headerRowBorder: true,
-  headerHeight: 36,
-  headerFontWeight: 700,
-  headerCellHoverBackgroundColor: "var(--mantine-color-blue-0)",
   cellEditingBorder: false,
   cellEditingShadow: false,
-
+  focusShadow: "none",
   // cellTextColor: "var(--mantine-color-gray-8)",
   // headerTextColor: "var(--mantine-color-gray-8)",
 
   // headerFontFamily: 'Brush Script MT',
   // cellFontFamily: 'monospace',
-});
-
-const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
-  year: "numeric",
-  month: "short",
-  day: "2-digit",
 });
 
 const status = {
@@ -123,11 +121,7 @@ function TermsGrid() {
 
   // const { data: termTags } = useQuery(getTagSuggestionsQuery);
 
-  const gridRef = useRef(null);
-
-  const rowData = data?.data;
-
-  const [colDefs] = useState([
+  const [columnDefs] = useState([
     {
       field: "text",
       headerName: "TERM",
@@ -190,6 +184,8 @@ function TermsGrid() {
         return <TagsGroup tags={tagsList} />;
       },
       cellEditor: TagsEditField,
+      floatingFilterComponent: FloatingTextFilter,
+      floatingFilter: true,
     },
     {
       field: "language",
@@ -240,29 +236,33 @@ function TermsGrid() {
     },
   ]);
 
+  const gridRef = useRef(null);
+  const rowData = data?.data;
+
   return (
     <div style={{ height: 700 }}>
       <AgGridReact
-        ref={gridRef}
         // noRowsOverlayComponent={}
         // noRowsOverlayComponentParams={}
         // loadingOverlayComponent={}
         // loadingOverlayComponentParams={}
+        ref={gridRef}
+        theme={theme}
+        rowData={rowData}
         animateRows={false}
+        headerHeight={24}
         floatingFiltersHeight={48}
-        editType="fullRow"
         pagination="true"
         paginationPageSize={25}
         paginationPageSizeSelector={[10, 25, 50, 100]}
-        rowSelection={{ mode: "multiRow", checkboxLocation: "selectionColumn" }}
         defaultColDef={defaultColumnDef}
-        theme={myTheme}
-        rowData={rowData}
-        columnDefs={colDefs}
         selectionColumnDef={selectionColumnDef}
+        columnDefs={columnDefs}
+        editType="fullRow"
         suppressClickEdit={true}
         onRowEditingStopped={handleRowEditingStopped}
         onRowEditingStarted={handleRowEditingStopped}
+        rowSelection={{ mode: "multiRow", checkboxLocation: "selectionColumn" }}
         suppressRowVirtualisation={true} // or edited row gets reset
       />
     </div>
@@ -351,7 +351,7 @@ function EditActionsCell(params) {
   // const isEditing =
   //   c.api.getEditingCells()[0] &&
   //   c.api.getEditingCells()[0].rowIndex === c.node.rowIndex;
-  console.log(isCurrentRowEditing);
+  // console.log(isCurrentRowEditing);
   return !isCurrentRowEditing ? (
     <ActionIconGroup
       style={{
@@ -452,22 +452,21 @@ function FloatingTextFilter() {
   return (
     <TextInput
       // variant="unstyled"
-      // placeholder={`Filter by ${c.text}`}
-      // radius={0}
-      inputWrapperOrder={["label", "input", "description", "error"]}
-      // sty
+      placeholder={`Filter by`}
       // description="Filter Mode: Contains"
+      inputWrapperOrder={["label", "input", "description", "error"]}
       rightSection={value && <InputClearButton onClick={() => setValue("")} />}
       value={value}
       onChange={(e) => setValue(e.currentTarget.value)}
       size="xs"
+      fw={400}
       // styles={{ root: { display: "flex", alignItems: "center" } }}
-      styles={
-        {
-          // root: { marginBlock: "10px" },
-          // input: { borderBottom: "2px solid var(--mantine-color-gray-7)" },
-        }
-      }
+      // styles={
+      //   {
+      //     root: { marginBlock: "10px" },
+      //     input: { borderBottom: "2px solid var(--mantine-color-gray-7)" },
+      //   }
+      // }
     />
   );
 }
@@ -485,7 +484,7 @@ function TranslationEditField(p) {
 }
 
 function TagsEditField(p) {
-  return <TagsInput defaultValue={p.value?.split(",")} />;
+  return <TagsInput defaultValue={p.value ? p.value.split(",") : []} />;
 }
 
 function FloatingSelectFilter() {
@@ -501,9 +500,10 @@ function FloatingSelectFilter() {
   return (
     <Select
       size="xs"
+      fw={400}
       value={activeLang}
       onChange={setActiveLang}
-      // placeholder="All languages"
+      placeholder="All languages"
       allowDeselect={false}
       data={initial.languageChoices.map((language) => language.name)}
       rightSection={langFieldRSection}
@@ -515,23 +515,19 @@ function FloatingSelectFilter() {
 function FloatingDateFilter() {
   const [value, setValue] = useState([null, null]);
   return (
-    // <Tooltip
-    //   label={value
-    //     .map((v) => v.toDateString().split(" ").slice(1).join(" "))
-    //     .join(" - ")}>
     <DatePickerInput
       valueFormat="DD MMM YYYY"
       size="xs"
+      fw={400}
       styles={{ input: { overflow: "hidden", textOverflow: "ellipsis" } }}
       maw="100%"
       w={200}
       type="range"
-      // placeholder="Pick dates range"
+      placeholder="Pick date range"
       value={value}
       onChange={setValue}
       clearable
     />
-    // {/* </Tooltip> */}
   );
 }
 

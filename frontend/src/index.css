@@ -27,16 +27,22 @@
   }
 }
 
+.ag-cell-focus {
+  border: 1px solid transparent !important;
+  border-right: var(--ag-column-border) !important;
+}
+
 .ag-floating-filter-body {
   align-items: center;
 }
 
-.ag-header-cell-label {
+/* header hover area */
+/* .ag-header-cell-label {
   padding: 0;
   align-self: center;
   line-height: 1;
   flex-grow: 0;
-}
+} */
 
 .ag-header-cell,
 .ag-floating-filter-full-body {
