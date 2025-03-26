@@ -8,11 +8,11 @@ import {
   ModuleRegistry,
   themeQuartz,
 } from "ag-grid-community";
+ModuleRegistry.registerModules([AllCommunityModule]);
 import {
   ActionIcon,
   ActionIconGroup,
   Badge,
-  Box,
   Button,
   InputClearButton,
   RangeSlider,
@@ -42,7 +42,7 @@ import StatusRadio from "../StatusRadio/StatusRadio";
 import TermImage from "../TermImage/TermImage";
 import TagsGroup from "@common/TagsGroup/TagsGroup";
 import { initialQuery } from "@settings/api/settings";
-ModuleRegistry.registerModules([AllCommunityModule]);
+import { keys } from "@term/api/keys";
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
   year: "numeric",
@@ -56,6 +56,8 @@ const theme = themeQuartz.withPart(colorSchemeDark).withParams({
   backgroundColor: "var(--mantine-color-body)",
   headerFontWeight: 600,
   headerBackgroundColor: "var(--mantine-color-body)",
+  headerColumnResizeHandleHeight: 20,
+  headerColumnResizeHandleWidth: 4,
   // headerCellHoverBackgroundColor: "var(--mantine-color-blue-0)",
   // headerColumnBorder: true,
   // headerRowBorder: true,
@@ -64,7 +66,7 @@ const theme = themeQuartz.withPart(colorSchemeDark).withParams({
   spacing: 6,
   wrapperBorder: false,
   columnBorder: true,
-  rowHoverColor: "var(--mantine-color-orange-0)",
+  // rowHoverColor: "var(--mantine-color-orange-0)",
   cellEditingBorder: false,
   cellEditingShadow: false,
   focusShadow: "none",
@@ -110,7 +112,7 @@ const url = new URL("/api/terms", "http://localhost:5001");
 
 function TermsGrid() {
   const { data } = useQuery({
-    queryKey: ["terms", url.href],
+    queryKey: [keys.terms, url.href],
     queryFn: async () => {
       const response = await fetch(url.href);
       return await response.json();
@@ -250,8 +252,8 @@ function TermsGrid() {
         theme={theme}
         rowData={rowData}
         animateRows={false}
-        headerHeight={24}
-        floatingFiltersHeight={48}
+        headerHeight={28}
+        floatingFiltersHeight={56}
         pagination="true"
         paginationPageSize={25}
         paginationPageSizeSelector={[10, 25, 50, 100]}
@@ -270,15 +272,6 @@ function TermsGrid() {
 }
 
 export default TermsGrid;
-
-function StatusEditField(c) {
-  const [value, setValue] = useState(String(c.value));
-  return (
-    <Box>
-      <StatusRadio size="sm" value={value} onChange={setValue} />
-    </Box>
-  );
-}
 
 function TranslationCell(c) {
   const img = c.data.image;
@@ -354,12 +347,13 @@ function EditActionsCell(params) {
   // console.log(isCurrentRowEditing);
   return !isCurrentRowEditing ? (
     <ActionIconGroup
-      style={{
-        translate: "-50% -50%",
-        left: "50%",
-        top: "50%",
-        position: "relative",
-      }}>
+    // style={{
+    //   translate: "-50% -50%",
+    //   left: "50%",
+    //   top: "50%",
+    //   position: "relative",
+    // }}
+    >
       <ActionIcon
         size="sm"
         variant="subtle"
@@ -385,12 +379,13 @@ function EditActionsCell(params) {
     </ActionIconGroup>
   ) : (
     <ActionIconGroup
-      style={{
-        translate: "-50% -50%",
-        left: "50%",
-        top: "50%",
-        position: "relative",
-      }}>
+    // style={{
+    //   translate: "-50% -50%",
+    //   left: "50%",
+    //   top: "50%",
+    //   position: "relative",
+    // }}
+    >
       <ActionIcon
         // color="red"
         size="sm"
@@ -424,6 +419,7 @@ function EditActionsCell(params) {
 function FloatingRangeFilter() {
   return (
     <RangeSlider
+      size="sm"
       flex={1}
       minRange={0}
       min={0}
@@ -447,44 +443,32 @@ function FloatingRangeFilter() {
 }
 
 function FloatingTextFilter() {
-  // console.log(c);
   const [value, setValue] = useState("");
   return (
     <TextInput
-      // variant="unstyled"
-      placeholder={`Filter by`}
-      // description="Filter Mode: Contains"
+      variant="unstyled"
+      placeholder={`Filter by ...`}
+      description="Filter Mode: Contains"
       inputWrapperOrder={["label", "input", "description", "error"]}
       rightSection={value && <InputClearButton onClick={() => setValue("")} />}
       value={value}
       onChange={(e) => setValue(e.currentTarget.value)}
       size="xs"
       fw={400}
-      // styles={{ root: { display: "flex", alignItems: "center" } }}
-      // styles={
-      //   {
-      //     root: { marginBlock: "10px" },
-      //     input: { borderBottom: "2px solid var(--mantine-color-gray-7)" },
-      //   }
-      // }
+      radius={0}
+      styles={{
+        input: {
+          border: "none",
+          borderBottom: "1px solid var(--mantine-color-gray-7)",
+          borderColor: "var(--mantine-color-default-border)",
+          paddingInline: "0.5rem",
+        },
+        root: {
+          alignSelf: "flex-start",
+        },
+      }}
     />
   );
-}
-
-function TranslationEditField(p) {
-  return (
-    <Textarea
-      minRows={2}
-      autosize
-      defaultValue={p.value}
-      // mah={200}
-      maxRows={6}
-    />
-  );
-}
-
-function TagsEditField(p) {
-  return <TagsInput defaultValue={p.value ? p.value.split(",") : []} />;
 }
 
 function FloatingSelectFilter() {
@@ -499,6 +483,8 @@ function FloatingSelectFilter() {
 
   return (
     <Select
+      variant="unstyled"
+      radius={0}
       size="xs"
       fw={400}
       value={activeLang}
@@ -508,6 +494,17 @@ function FloatingSelectFilter() {
       data={initial.languageChoices.map((language) => language.name)}
       rightSection={langFieldRSection}
       rightSectionPointerEvents={activeLang ? "initial" : "none"}
+      styles={{
+        input: {
+          border: "none",
+          borderBottom: "1px solid var(--mantine-color-gray-7)",
+          borderColor: "var(--mantine-color-default-border)",
+          paddingInline: "0.5rem",
+        },
+        root: {
+          alignSelf: "flex-start",
+        },
+      }}
     />
   );
 }
@@ -516,10 +513,24 @@ function FloatingDateFilter() {
   const [value, setValue] = useState([null, null]);
   return (
     <DatePickerInput
-      valueFormat="DD MMM YYYY"
+      variant="unstyled"
       size="xs"
+      radius={0}
       fw={400}
-      styles={{ input: { overflow: "hidden", textOverflow: "ellipsis" } }}
+      valueFormat="DD MMM YYYY"
+      styles={{
+        input: {
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          border: "none",
+          borderBottom: "1px solid var(--mantine-color-gray-7)",
+          borderColor: "var(--mantine-color-default-border)",
+          paddingInline: "0.5rem",
+        },
+        root: {
+          alignSelf: "flex-start",
+        },
+      }}
       maw="100%"
       w={200}
       type="range"
@@ -531,18 +542,41 @@ function FloatingDateFilter() {
   );
 }
 
-function TermCell(c) {
+function TermCell(params) {
   return (
     <Button
       maw={290}
       variant="subtle"
       size="compact-sm"
       component={Link}
-      to={`/terms/term?termId=${c.data.id}&langId=${c.data.languageId}`}
+      to={`/terms/term?termId=${params.data.id}&langId=${params.data.languageId}`}
       style={{ color: "inherit", textDecoration: "none" }}>
       <Text size="sm" lineClamp={1} truncate>
-        {c.value}
+        {params.value}
       </Text>
     </Button>
   );
+}
+
+function TranslationEditField(params) {
+  return (
+    <Textarea
+      minRows={2}
+      autosize
+      defaultValue={params.value}
+      // mah={200}
+      maxRows={6}
+    />
+  );
+}
+
+function TagsEditField(params) {
+  return (
+    <TagsInput defaultValue={params.value ? params.value.split(",") : []} />
+  );
+}
+
+function StatusEditField(c) {
+  const [value, setValue] = useState(String(c.value));
+  return <StatusRadio size="sm" value={value} onChange={setValue} />;
 }

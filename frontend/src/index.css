@@ -81,6 +81,7 @@
 
   --ag-border-color: var(--mantine-color-gray-4);
   --ag-checkbox-unchecked-border-color: var(--mantine-color-gray-4);
+  /* --ag-row-hover-color: var(--mantine-color-orange-0); */
 }
 
 [data-mantine-color-scheme="dark"] {
@@ -102,6 +103,7 @@
 
   --ag-border-color: var(--mantine-color-dark-4);
   --ag-checkbox-unchecked-border-color: var(--mantine-color-dark-4);
+  /* --ag-row-hover-color: var(--mantine-color-yellow-8); */
 }
 
 .readpage {
