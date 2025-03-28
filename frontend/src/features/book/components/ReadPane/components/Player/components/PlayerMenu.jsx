@@ -1,35 +1,33 @@
-import { Divider, Menu, Select, Stack, Text } from "@mantine/core";
+import { Menu, Select } from "@mantine/core";
 import PlayerRateControls from "./PlayerRateControls";
 import PlayerBookmarkControls from "./PlayerBookmarkControls";
 
 function PlayerMenu({ children, audio, state, dispatch }) {
   return (
-    <Menu position="bottom" offset={0} shadow="md">
+    <Menu position="bottom" offset={0} shadow="md" closeOnItemClick={false}>
       <Menu.Target>{children}</Menu.Target>
 
-      <Menu.Dropdown p={10}>
-        <Stack gap={5} align="center">
-          <Text fz="xs">Playback rate</Text>
+      <Menu.Dropdown>
+        <Menu.Item>
           <PlayerRateControls audio={audio} state={state} dispatch={dispatch} />
+        </Menu.Item>
 
-          <Divider w="100%" />
-
-          <Text fz="xs">Bookmarks</Text>
+        <Menu.Item>
           <PlayerBookmarkControls
             audio={audio}
             state={state}
             dispatch={dispatch}
           />
+        </Menu.Item>
 
-          <Divider w="100%" />
-
-          <Text fz="xs">Skip amount</Text>
+        <Menu.Item>
           <Select
+            label="Skip amount"
             onChange={(_value, option) =>
               dispatch({ type: "skipAmount", payload: option.value })
             }
             allowDeselect={false}
-            styles={{ root: { width: "5rem" } }}
+            styles={{ root: { width: "5.5rem" } }}
             checkIconPosition="right"
             size="xs"
             value={state.skipAmount}
@@ -41,7 +39,7 @@ function PlayerMenu({ children, audio, state, dispatch }) {
               { value: "60", label: "60 sec" },
             ]}
           />
-        </Stack>
+        </Menu.Item>
       </Menu.Dropdown>
     </Menu>
   );

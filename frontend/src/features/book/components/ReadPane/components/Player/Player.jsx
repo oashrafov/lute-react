@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import { ActionIcon, Group, Slider, Text } from "@mantine/core";
 import {
   IconChevronDown,
@@ -8,7 +8,8 @@ import {
 } from "@tabler/icons-react";
 import PlayerMenu from "./components/PlayerMenu";
 import PlayerSeekControls from "./components/PlayerSeekControls";
-import usePlayer from "./hooks/usePlayer";
+import { usePlayer } from "./hooks/usePlayer";
+import { useActivateBookmark } from "./hooks/useActivateBookmark";
 import { convertSecsToDisplayString } from "@actions/utils";
 import classes from "./Player.module.css";
 
@@ -16,21 +17,7 @@ const audio = new Audio();
 
 function Player({ book }) {
   const [state, dispatch] = usePlayer(book, audio);
-
-  useEffect(() => {
-    function timeUpdateCallback() {
-      const rounded = parseFloat(audio.currentTime.toFixed(1));
-      state.bookmarks.map((bookmark) => bookmark.value).includes(rounded)
-        ? dispatch({ type: "bookmarkActive", payload: true })
-        : dispatch({ type: "bookmarkActive", payload: false });
-    }
-
-    audio.addEventListener("timeupdate", timeUpdateCallback);
-
-    return () => {
-      audio.removeEventListener("timeupdate", timeUpdateCallback);
-    };
-  }, [state.bookmarks, dispatch]);
+  useActivateBookmark(audio, state, dispatch);
 
   function handlePlayPause() {
     state.playing ? audio.pause() : audio.play();
@@ -75,12 +62,10 @@ function Player({ book }) {
           max={state.duration}
           step={0.1}
           onChange={(v) => (audio.currentTime = v)}
-          styles={{
-            mark: {
-              backgroundColor: "#ff6b6b",
-            },
-            root: { flex: 1 },
-            thumb: { borderWidth: "2px" },
+          classNames={{
+            root: classes.timeSlider,
+            mark: classes.mark,
+            thumb: classes.thumb,
           }}
           size="md"
           thumbSize={12}
@@ -97,7 +82,7 @@ function Player({ book }) {
         max={1}
         step={0.05}
         onChange={handleVolumeChange}
-        styles={{ thumb: { borderWidth: "2px" }, root: { flex: 0.12 } }}
+        classNames={{ root: classes.volumeSlider, thumb: classes.thumb }}
       />
 
       <PlayerMenu audio={audio} dispatch={dispatch} state={state}>

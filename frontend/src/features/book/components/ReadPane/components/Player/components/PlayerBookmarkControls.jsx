@@ -1,10 +1,11 @@
-import { ActionIcon, ActionIconGroup } from "@mantine/core";
+import { ActionIcon, ActionIconGroup, InputLabel, Stack } from "@mantine/core";
 import {
   IconBookmark,
   IconBookmarkFilled,
   IconChevronLeft,
   IconChevronRight,
 } from "@tabler/icons-react";
+import classes from "../Player.module.css";
 
 function PlayerBookmarkControls({ audio, state, dispatch }) {
   function handleSaveRemoveBookmark() {
@@ -35,32 +36,35 @@ function PlayerBookmarkControls({ audio, state, dispatch }) {
   }
 
   return (
-    <ActionIconGroup style={{ alignItems: "center", gap: "4px" }}>
-      <ActionIcon
-        size={24}
-        p={0}
-        variant="transparent"
-        onClick={handleSaveRemoveBookmark}
-        styles={{ root: { border: "none" } }}>
-        {state.bookmarkActive ? <IconBookmarkFilled /> : <IconBookmark />}
-      </ActionIcon>
-      <ActionIconGroup>
+    <Stack gap={0} align="center">
+      <InputLabel fz="xs">Bookmarks</InputLabel>
+      <ActionIconGroup className={classes.bookmarkControls}>
         <ActionIcon
-          disabled={state.bookmarks.length === 0}
-          onClick={() => handleSkipToBookmark("prev")}
-          radius="50%"
-          size="sm">
-          <IconChevronLeft />
+          size={24}
+          p={0}
+          variant="transparent"
+          onClick={handleSaveRemoveBookmark}
+          styles={{ root: { border: "none" } }}>
+          {state.bookmarkActive ? <IconBookmarkFilled /> : <IconBookmark />}
         </ActionIcon>
-        <ActionIcon
-          disabled={state.bookmarks.length === 0}
-          onClick={() => handleSkipToBookmark("next")}
-          radius="50%"
-          size="sm">
-          <IconChevronRight />
-        </ActionIcon>
+        <ActionIconGroup>
+          <ActionIcon
+            disabled={state.bookmarks.length === 0}
+            onClick={() => handleSkipToBookmark("prev")}
+            radius="50%"
+            size="sm">
+            <IconChevronLeft />
+          </ActionIcon>
+          <ActionIcon
+            disabled={state.bookmarks.length === 0}
+            onClick={() => handleSkipToBookmark("next")}
+            radius="50%"
+            size="sm">
+            <IconChevronRight />
+          </ActionIcon>
+        </ActionIconGroup>
       </ActionIconGroup>
-    </ActionIconGroup>
+    </Stack>
   );
 }
 

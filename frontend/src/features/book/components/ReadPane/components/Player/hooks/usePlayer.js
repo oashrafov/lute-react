@@ -95,4 +95,4 @@ const initialState = {
   skipAmount: "5",
 };
 
-export default usePlayer;
+export { usePlayer };

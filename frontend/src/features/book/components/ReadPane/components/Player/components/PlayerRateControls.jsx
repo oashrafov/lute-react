@@ -2,6 +2,8 @@ import {
   ActionIcon,
   ActionIconGroup,
   ActionIconGroupSection,
+  InputLabel,
+  Stack,
   Tooltip,
   UnstyledButton,
 } from "@mantine/core";
@@ -23,25 +25,28 @@ function PlayerRateControls({ audio, state, dispatch }) {
   }
 
   return (
-    <ActionIconGroup style={{ alignItems: "center" }}>
-      <ActionIcon onClick={() => handlePlaybackRateChange(-0.1)} size="xs">
-        <IconMinus size="80%" />
-      </ActionIcon>
-      <ActionIconGroupSection variant="transparent">
-        <Tooltip label="Click to reset" fz="xs">
-          <UnstyledButton
-            miw={20}
-            fz="sm"
-            ta="center"
-            onClick={handlePlaybackRateReset}>
-            {state.rate.toFixed(1)}
-          </UnstyledButton>
-        </Tooltip>
-      </ActionIconGroupSection>
-      <ActionIcon onClick={() => handlePlaybackRateChange(0.1)} size="xs">
-        <IconPlus size="80%" />
-      </ActionIcon>
-    </ActionIconGroup>
+    <Stack gap={0} align="center">
+      <InputLabel fz="xs">Playback rate</InputLabel>
+      <ActionIconGroup style={{ alignItems: "center" }}>
+        <ActionIcon onClick={() => handlePlaybackRateChange(-0.1)} size="xs">
+          <IconMinus size="80%" />
+        </ActionIcon>
+        <ActionIconGroupSection variant="transparent">
+          <Tooltip label="Click to reset" fz="xs">
+            <UnstyledButton
+              miw={20}
+              fz="sm"
+              ta="center"
+              onClick={handlePlaybackRateReset}>
+              {state.rate.toFixed(1)}
+            </UnstyledButton>
+          </Tooltip>
+        </ActionIconGroupSection>
+        <ActionIcon onClick={() => handlePlaybackRateChange(0.1)} size="xs">
+          <IconPlus size="80%" />
+        </ActionIcon>
+      </ActionIconGroup>
+    </Stack>
   );
 }
 
