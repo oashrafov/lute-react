@@ -7,9 +7,11 @@ import {
 } from "./utils";
 
 async function handleCopy(textitem, unit) {
-  const res = await _copyUnit(textitem, unit);
-  addClassToElements(res, "flash");
+  const [text, matched] = await _copyUnit(textitem, unit);
+  addClassToElements(matched, "flash");
   removeAllContainingClassWithTimeout("flash");
+
+  return text;
 }
 
 async function _copyUnit(textitem, unit) {
@@ -36,7 +38,7 @@ async function _copyUnit(textitem, unit) {
   const text = getTextItemsText(matched);
   await copyToClipboard(text);
 
-  return matched;
+  return [text, matched];
 }
 
 export { handleCopy };

@@ -1,43 +1,24 @@
 // lute\templates\read\page_content.html
-import { memo, useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import {
-  Box,
-  LoadingOverlay,
-  Text,
-  useComputedColorScheme,
-} from "@mantine/core";
+import { memo } from "react";
+import { Box, LoadingOverlay } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconClipboardCheck } from "@tabler/icons-react";
 import TextItem from "./components/TextItem";
 import Popup from "@term/components/Popup/Popup";
-import { settingsQuery } from "@settings/api/settings";
 import {
   focusActiveSentence,
   handleMouseDown,
   handleMouseOver,
   handleMouseUp,
   hoverOut,
-  startHoverMode,
 } from "@actions/interactions-desktop";
-import { applyLuteHighlights } from "@actions/general";
 import { copyToClipboard } from "@actions/utils";
-import { commitPage } from "@book/api/api";
-import { keys } from "@book/api/keys";
+import { useInitializePage } from "./hooks/useInitializePage";
+import { useProcessPage } from "./hooks/useProcessPage";
+import { textCopied } from "@book/resources/notifications";
 
 function TheText({ paragraphs, onSetActiveTerm }) {
-  const queryClient = useQueryClient();
-  const colorScheme = useComputedColorScheme();
-  const { id, page } = useParams();
-  const { data: settings } = useQuery(settingsQuery);
-  const [pageProcessed, setPageProcessed] = useState(false);
-
-  useEffect(() => {
-    startHoverMode();
-    applyLuteHighlights(settings.highlights.status, colorScheme);
-    applyLuteHighlights(settings.highlights.general, colorScheme);
-  });
+  useInitializePage();
+  const pageProcessed = useProcessPage();
 
   function handleSetTerm(termData) {
     // do nothing with the form
@@ -49,25 +30,13 @@ function TheText({ paragraphs, onSetActiveTerm }) {
       focusActiveSentence(termData.textitems);
   }
 
-  const { mutate } = useMutation({
-    mutationFn: commitPage,
-    onSuccess: () => {
-      queryClient.invalidateQueries(keys.books);
-      setPageProcessed(true);
-    },
-  });
-
-  useEffect(() => {
-    mutate({ id, page });
-  }, [id, mutate, page]);
-
   function handleSelectStart(e) {
     // trigger only with lmb
     if (e.button !== 0) return;
     handleMouseDown(e);
   }
 
-  function handleSelectEnd(e) {
+  async function handleSelectEnd(e) {
     if (e.button !== 0) return;
     const termData = handleMouseUp(e);
 
@@ -75,7 +44,8 @@ function TheText({ paragraphs, onSetActiveTerm }) {
     handleSetTerm(termData);
 
     if (termData.type !== "copy") return;
-    handleCopyText(termData);
+    const text = await copyToClipboard(termData.data);
+    text && notifications.show(textCopied(termData.data));
   }
 
   return (
@@ -114,25 +84,6 @@ function TheText({ paragraphs, onSetActiveTerm }) {
       </div>
     </Box>
   );
-}
-
-async function handleCopyText(termData) {
-  const text = await copyToClipboard(termData.data);
-  text &&
-    notifications.show({
-      title: "Selection copied to clipboard!",
-      message: (
-        <Text component="p" lineClamp={2} fz="xs">
-          {termData.data}
-        </Text>
-      ),
-      position: "bottom-center",
-      autoClose: 2000,
-      withCloseButton: false,
-      withBorder: true,
-      icon: <IconClipboardCheck />,
-      color: "green",
-    });
 }
 
 export default memo(TheText);

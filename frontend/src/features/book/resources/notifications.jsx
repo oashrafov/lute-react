@@ -1,11 +1,16 @@
 import { Text } from "@mantine/core";
-import { IconBookOff, IconPencilCheck } from "@tabler/icons-react";
+import {
+  IconBookOff,
+  IconClipboardCheck,
+  IconPencilCheck,
+} from "@tabler/icons-react";
 
 const notificationsDefault = {
   position: "bottom-right",
   autoClose: 3000,
   withCloseButton: false,
   withBorder: true,
+  color: "green",
 };
 
 const bookDeleted = (message) => ({
@@ -29,7 +34,6 @@ const bookUpdated = (message) => ({
     </Text>
   ),
   icon: <IconPencilCheck />,
-  color: "green.6",
 });
 
 const sampleBooksAdded = (message) => ({
@@ -41,7 +45,17 @@ const sampleBooksAdded = (message) => ({
     </Text>
   ),
   icon: <IconPencilCheck />,
-  color: "green.6",
 });
 
-export { bookDeleted, bookUpdated, sampleBooksAdded };
+const textCopied = (message) => ({
+  ...notificationsDefault,
+  title: "Selection copied to clipboard!",
+  message: (
+    <Text component="p" lineClamp={2} fz="xs">
+      {message}
+    </Text>
+  ),
+  icon: <IconClipboardCheck />,
+});
+
+export { bookDeleted, bookUpdated, sampleBooksAdded, textCopied };
