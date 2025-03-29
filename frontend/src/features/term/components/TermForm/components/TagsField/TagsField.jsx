@@ -10,10 +10,9 @@ import {
   ScrollArea,
   Input,
 } from "@mantine/core";
-import { getTermSuggestionsQuery } from "../../../../api/query";
+import { getTermSuggestionsQuery } from "@term/api/query";
 import { buildSuggestionsList } from "@actions/utils";
 import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "@resources/constants";
-import { createTagsFieldHandlers } from "./actions/general";
 
 function TagsField({
   termText,
@@ -50,29 +49,67 @@ function TagsField({
     isFetching && <Loader size="sm" />
   );
 
-  const {
-    handleKeydown,
-    handleInputChange,
-    handleTagClick,
-    handleOptionSubmit,
-    handleOnBlur,
-    handleValueRemove,
-  } = createTagsFieldHandlers(
-    languageId,
-    onSetActiveTerm,
-    values,
-    onSetValues,
-    onSubmitParent,
-    combobox,
-    search,
-    setSearch
-  );
+  function handleValueAdd(val) {
+    if (val && val !== " " && !values.includes(val)) {
+      onSetValues([...values, val]);
+    }
+  }
+
+  function handleValueRemove(val) {
+    const newValues = values.filter((v) => v !== val);
+    onSetValues(newValues);
+  }
+
+  function handleKeydown(event) {
+    if (event.key === "Backspace" && search.length === 0) {
+      event.preventDefault();
+      handleValueRemove(values[values.length - 1]);
+    }
+
+    if (event.key === "Enter") {
+      event.preventDefault();
+      // alert(combobox.getSelectedOptionIndex());
+      if (combobox.getSelectedOptionIndex() === -1) {
+        handleValueAdd(event.currentTarget.value);
+        combobox.closeDropdown();
+      } else {
+        // handleValueAdd(event.currentTarget.value);
+      }
+      setSearch("");
+    }
+  }
+
+  function handleInputChange(event) {
+    const val = event.currentTarget.value;
+    val ? combobox.openDropdown() : combobox.closeDropdown();
+    setSearch(val);
+    combobox.updateSelectedOptionIndex();
+  }
+
+  function handleTagClick(item) {
+    if (languageId) {
+      onSetActiveTerm({
+        data: item,
+        langID: languageId,
+        type: "multi",
+      });
+    }
+  }
+
+  function handleOptionSubmit(val) {
+    onSubmitParent(val);
+    setSearch("");
+    combobox.closeDropdown();
+  }
+
+  function handleOnBlur(event) {
+    handleValueAdd(event.currentTarget.value);
+    setSearch("");
+    combobox.closeDropdown();
+  }
 
   return (
-    <Combobox
-      withinPortal={false}
-      store={combobox}
-      onOptionSubmit={handleOptionSubmit}>
+    <Combobox offset={0} store={combobox} onOptionSubmit={handleOptionSubmit}>
       <Combobox.DropdownTarget>
         <PillsInput
           mb={mb}
@@ -106,7 +143,7 @@ function TagsField({
       {suggestions && options.length > 0 && (
         <Combobox.Dropdown tabIndex={0}>
           <Combobox.Options>
-            <ScrollArea.Autosize mah={200} type="scroll">
+            <ScrollArea.Autosize mah={250} type="scroll">
               {options.map((item) => (
                 <Combobox.Option
                   value={JSON.stringify(item)}
