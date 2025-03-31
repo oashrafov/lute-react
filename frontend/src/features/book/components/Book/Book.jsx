@@ -66,6 +66,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const showThemeForm = themeFormOpen && !editMode;
   const translationPaneLoading =
     isFetching && !(showBulkTermForm || showThemeForm);
+  const textDirection = language.right_to_left ? "rtl" : "ltr";
 
   useEffect(() => {
     if (!activeTerm.data) {
@@ -83,7 +84,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
     <>
       {!editMode && <ContextMenu contextMenuAreaRef={contextMenuAreaRef} />}
 
-      {editMode && <EditPane book={book} isRtl={language.right_to_left} />}
+      {editMode && <EditPane book={book} textDirection={textDirection} />}
 
       <FocusPane
         book={book}
@@ -111,7 +112,7 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
             className={classes.paneLeft}>
             <ReadPane
               book={book}
-              isRtl={language.right_to_left}
+              textDirection={textDirection}
               state={state}
               dispatch={dispatch}
               activeTerm={activeTerm}

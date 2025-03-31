@@ -21,16 +21,15 @@ function FocusPane({
   return (
     <>
       <FocusHeader
+        show={state.focusMode}
         book={book}
         state={state}
         dispatch={dispatch}
-        show={state.focusMode}
       />
 
       <FocusToolbar
+        show={state.focusMode}
         book={book}
-        focusMode={state.focusMode}
-        highlights={state.highlights}
         state={state}
         dispatch={dispatch}
         onShowDicts={setShowDicts}
@@ -38,23 +37,23 @@ function FocusPane({
       />
 
       <FocusTermForm
+        show={state.focusMode && showTranslationPane}
         term={term}
         language={language}
         onSetActiveTerm={onSetActiveTerm}
-        show={state.focusMode && showTranslationPane}
       />
 
       <FocusDictTabs
+        show={state.focusMode && showTranslationPane && showDicts}
         termText={term?.text}
         language={language}
         activeTab={activeTab}
         onSetActiveTab={onSetActiveTab}
-        show={state.focusMode && showTranslationPane && showDicts}
       />
 
       <FocusPageTurner
-        book={book}
         show={state.focusMode && !showTranslationPane}
+        book={book}
       />
     </>
   );

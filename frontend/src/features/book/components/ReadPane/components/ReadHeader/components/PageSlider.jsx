@@ -8,7 +8,7 @@ import {
 } from "@tabler/icons-react";
 import { clamp } from "@actions/utils";
 
-function ReadSlider({ book }) {
+function PageSlider({ book }) {
   const params = useParams();
   const page = Number(params.page);
   const navigate = useNavigate();
@@ -85,4 +85,4 @@ function ReadSlider({ book }) {
   );
 }
 
-export default ReadSlider;
+export default PageSlider;

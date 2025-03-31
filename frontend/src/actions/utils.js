@@ -152,6 +152,11 @@ function removeAllContainingClass(className) {
   elements.forEach((element) => element.classList.remove(`${className}`));
 }
 
+function removeAllMarkings() {
+  removeAllContainingClass("kwordmarked");
+  removeAllContainingClass("newmultiterm");
+}
+
 function convertSecsToDisplayString(secs) {
   const minutes = Math.floor(secs / 60);
   const seconds = (secs % 60).toFixed(1);
@@ -242,6 +247,7 @@ export {
   addClassToElements,
   removeAllContainingClassWithTimeout,
   removeAllContainingClass,
+  removeAllMarkings,
   convertSecsToDisplayString,
   getLookupURL,
   buildSuggestionsList,

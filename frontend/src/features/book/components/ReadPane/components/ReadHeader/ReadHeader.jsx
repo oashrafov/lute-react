@@ -8,7 +8,6 @@ import {
   Group,
   Loader,
   Paper,
-  rem,
   Stack,
   Tooltip,
 } from "@mantine/core";
@@ -19,17 +18,17 @@ import {
 } from "@tabler/icons-react";
 import HomeImageLink from "@common/HomeImageLink/HomeImageLink";
 import PageSlider from "./components/PageSlider";
-import BookmarksButton from "../../../common/BookmarksButton";
-import BookmarksMenu from "../../../common/BookmarksMenu";
+import BookmarksButton from "@book/components/common/BookmarksButton";
+import BookmarksMenu from "@book/components/common/BookmarksMenu";
 import EditButton from "./components/EditButton";
 import BookSourceButton from "./components/BookSourceButton";
 import PageCounter from "./components/PageCounter";
 import Title from "./components/Title";
 import Player from "../Player/Player";
 import Toolbar from "../Toolbar/Toolbar";
-import FocusSwitch from "../../../common/FocusSwitch/FocusSwitch";
-import HighlightsSwitch from "../../../common/HighlightSwitch/HighlightSwitch";
-import MarkRestAsKnownButton from "../../../common/MarkRestAsKnownButton/MarkRestAsKnownButton";
+import FocusSwitch from "@book/components/common/FocusSwitch/FocusSwitch";
+import HighlightsSwitch from "@book/components/common/HighlightSwitch/HighlightSwitch";
+import MarkRestAsKnownButton from "@book/components/common/MarkRestAsKnownButton/MarkRestAsKnownButton";
 import { resetFocusActiveSentence } from "@actions/interactions-desktop";
 import loader from "@term/api/loader";
 import classes from "./ReadHeader.module.css";
@@ -63,24 +62,13 @@ function ReadHeader({
 
   return (
     <>
-      <Paper
-        withBorder
-        classNames={{ root: "readpage" }}
-        h={80}
-        radius={0}
-        shadow="sm"
-        styles={{
-          root: { position: "relative", zIndex: 2, borderInline: "none" },
-        }}>
-        <Group gap={5} wrap="nowrap" align="center" className={classes.header}>
+      <Paper withBorder className={`${classes.header} readpage`} shadow="sm">
+        <Group className={classes.inner}>
           <ActionIcon onClick={onDrawerOpen} size="md" variant="subtle">
             <IconMenu2 />
           </ActionIcon>
 
-          <Center
-            w={48}
-            h={48}
-            styles={{ root: { flexShrink: 0, marginLeft: rem(16) } }}>
+          <Center className={classes.logoContainer}>
             {isLoading ? <Loader size="sm" /> : <HomeImageLink size={48} />}
           </Center>
 
@@ -136,23 +124,11 @@ function ReadHeader({
         </Group>
       </Paper>
       {book.audio && (
-        <Paper
-          withBorder
-          radius={0}
-          shadow="sm"
-          styles={{
-            root: {
-              position: "relative",
-              zIndex: 2,
-              borderInline: "none",
-              borderTop: "none",
-              padding: "0.3rem 2rem",
-            },
-          }}>
+        <Paper withBorder shadow="sm" className={classes.playerContainer}>
           <Player book={book} />
         </Paper>
       )}
-      <Toolbar state={state} dispatch={dispatch} />
+      {/* <Toolbar state={state} dispatch={dispatch} /> */}
     </>
   );
 }

@@ -8,7 +8,7 @@ import PageCounter from "@book/components/ReadPane/components/ReadHeader/compone
 import BookSourceButton from "@book/components/ReadPane/components/ReadHeader/components/BookSourceButton";
 import FocusSwitch from "@book/components/common/FocusSwitch/FocusSwitch";
 import HighlightsSwitch from "@book/components/common/HighlightSwitch/HighlightSwitch";
-import classes from "@book/components/ReadPane/components/ReadHeader/ReadHeader.module.css";
+import classes from "../../FocusPane.module.css";
 
 function FocusHeader({ book, state, dispatch, show }) {
   const params = useParams();
@@ -18,26 +18,7 @@ function FocusHeader({ book, state, dispatch, show }) {
       <Transition transition="slide-down" mounted={show} duration={300}>
         {(styles) => (
           <Box style={styles}>
-            <Paper
-              withBorder
-              radius={0}
-              shadow="sm"
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                paddingInline: "2rem",
-                paddingBlock: "0.7rem",
-                gap: "0.6rem",
-              }}
-              styles={{
-                root: {
-                  position: "relative",
-                  zIndex: 2,
-                  borderInline: "none",
-                },
-              }}>
+            <Paper withBorder radius={0} shadow="sm" className={classes.header}>
               <HomeImageLink size={48} />
 
               <Divider orientation="vertical" />
@@ -53,9 +34,7 @@ function FocusHeader({ book, state, dispatch, show }) {
               <Divider orientation="vertical" />
 
               <Stack flex={1} gap={8}>
-                <div
-                  className={classes.titleFlex}
-                  style={{ paddingInline: "1rem" }}>
+                <div className={classes.inner}>
                   <Title
                     title={book.title}
                     component={page === 1 ? "h2" : "h1"}

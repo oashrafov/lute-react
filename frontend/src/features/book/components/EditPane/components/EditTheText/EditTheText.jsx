@@ -1,11 +1,11 @@
 import { Textarea } from "@mantine/core";
 import { useField } from "@mantine/form";
 
-function EditTheText({ text, dir }) {
+function EditTheText({ text, textDirection }) {
   const field = useField({ initialValue: text });
   return (
     <Textarea
-      wrapperProps={{ dir: dir }}
+      wrapperProps={{ dir: textDirection }}
       size="lg"
       w="50%"
       ml="auto"

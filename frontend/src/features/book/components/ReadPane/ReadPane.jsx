@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import { ScrollArea, Title, Transition } from "@mantine/core";
 import ReadHeader from "./components/ReadHeader/ReadHeader";
 import TheText from "./components/TheText/TheText";
-import { handleClickOutside } from "@actions/interactions-desktop";
+import { hasClickedOutsideText } from "@actions/interactions-desktop";
+import { removeAllMarkings } from "@actions/utils";
 import { getPageQuery } from "../../api/query";
 import classes from "../Book/Book.module.css";
 
@@ -14,16 +15,14 @@ function ReadPane({
   activeTerm,
   onSetActiveTerm,
   onDrawerOpen,
-  isRtl,
+  textDirection,
   contextMenuAreaRef,
 }) {
   const { id, page: pageNum } = useParams();
   const { data: page } = useQuery(getPageQuery(id, pageNum));
 
-  const showTitle =
-    state.focusMode || (!state.focusMode && Number(pageNum) === 1);
-  let headerHeight = state.focusMode ? 30 : 85;
-  if (book.audio) headerHeight += 35;
+  let headerHeight = 80;
+  if (book.audio && !state.focusMode) headerHeight += 37;
 
   const textContainerClass = `textcontainer
                               ${state.highlights ? "highlight" : ""}
@@ -36,6 +35,14 @@ function ReadPane({
     "width": `${state.focusMode ? state.textWidth : 100}%`,
     "marginInline": state.focusMode && "auto",
   };
+
+  function handleClickOutside(e) {
+    const res = hasClickedOutsideText(e);
+    if (!res) return;
+
+    removeAllMarkings();
+    onSetActiveTerm({ data: null });
+  }
 
   return (
     <>
@@ -61,16 +68,14 @@ function ReadPane({
         type="scroll"
         ref={contextMenuAreaRef}
         flex={1}
-        onMouseDown={(e) => {
-          const res = handleClickOutside(e);
-          if (!res) return;
-          onSetActiveTerm(res);
-        }}>
+        onMouseDown={handleClickOutside}>
         <div
-          dir={isRtl ? "rtl" : "ltr"}
+          dir={textDirection}
           className={textContainerClass.replace(/\s+/g, " ")}
           style={textContainerStyle}>
-          {showTitle && <Title className={classes.title}>{book.title}</Title>}
+          {Number(pageNum) === 1 && (
+            <Title className={classes.title}>{book.title}</Title>
+          )}
           <TheText
             key={pageNum}
             paragraphs={page.paragraphs}

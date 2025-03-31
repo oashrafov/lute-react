@@ -138,15 +138,12 @@ function hoverOut() {
   removeAllContainingClass("wordhover");
 }
 
-function handleClickOutside(e) {
-  if (e.button !== 0) return;
-  if (!e.target.classList.contains("textitem")) {
-    removeAllContainingClass("kwordmarked");
-    removeAllContainingClass("newmultiterm");
-    return { data: null };
+function hasClickedOutsideText(e) {
+  if (!e.target.classList.contains("textitem") && e.button === 0) {
+    return true;
   }
 
-  return null;
+  return false;
 }
 
 function getSelectedInRange(startEl, endEl) {
@@ -257,7 +254,7 @@ export {
   handleMouseOver,
   handleMouseUp,
   hoverOut,
-  handleClickOutside,
+  hasClickedOutsideText,
   focusActiveSentence,
   resetFocusActiveSentence,
   handleMoveCursor,

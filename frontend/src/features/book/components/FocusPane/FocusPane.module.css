@@ -1,0 +1,36 @@
+.header {
+  height: 80px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: nowrap;
+  padding: 0.7rem 2rem;
+
+  position: relative;
+  z-index: 2;
+  border-inline: none;
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: nowrap;
+  min-width: 0;
+
+  font-size: 0.85rem;
+  flex: 1;
+  padding-inline: 1rem;
+}
+
+.toolbar {
+  display: grid;
+  justify-content: center;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(2, min-content);
+  grid-template-rows: repeat(2, min-content);
+  gap: 5px;
+}
