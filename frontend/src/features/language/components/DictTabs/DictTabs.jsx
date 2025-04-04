@@ -14,11 +14,11 @@ import DictDropdown from "./components/DictDropdown";
 import classes from "./DictTabs.module.css";
 
 function DictTabs({
-  language,
   termText,
+  language,
   activeTab,
   onSetActiveTab,
-  translationFieldRef = {},
+  onReturnFocusToForm = () => {},
 }) {
   const queryClient = useQueryClient();
   const [activeDropdownUrl, setActiveDropdownUrl] = useState("");
@@ -28,25 +28,34 @@ function DictTabs({
     onChange: onSetActiveTab,
   });
 
+  function handleTabClick(tab) {
+    setTabValue(tab);
+    onReturnFocusToForm();
+  }
+
   const termDicts = language.dictionaries.filter(
     (dict) => dict.for === "terms"
   );
   const visibleDicts = termDicts.slice(0, MAX_VISIBLE_DICT_TABS);
   const dropdownDicts = termDicts.slice(MAX_VISIBLE_DICT_TABS);
-  // %E2%80%8B is the zero-width string.  The term is reparsed
+  // %E2%80%8B is the zero-width string. The term is reparsed
   // on the server, so this doesn't need to be sent.
   const encodedTermText = encodeURIComponent(termText).replaceAll(
     "%E2%80%8B",
     ""
   );
 
-  function handleFocus() {
-    setTimeout(() => {
-      const input = translationFieldRef?.current;
-      input?.focus();
-      input?.setSelectionRange(input.value.length, input.value.length);
-    }, 0);
-  }
+  const tabs = {
+    dropdown: "dropdownTab",
+    sentences: "sentencesTab",
+    images: "imagesTab",
+  };
+
+  const tabsStyle = {
+    display: "grid",
+    alignItems: "center",
+    gridTemplateColumns: `repeat(${visibleDicts.length}, minmax(3rem, 8rem))`,
+  };
 
   return (
     <Tabs
@@ -58,12 +67,7 @@ function DictTabs({
         tabLabel: { minWidth: 0 },
       }}>
       <Tabs.List className={`${classes.flex} ${classes.tabList}`}>
-        <div
-          style={{
-            display: "grid",
-            alignItems: "center",
-            gridTemplateColumns: `repeat(${visibleDicts.length}, minmax(3rem, 8rem))`,
-          }}>
+        <div style={tabsStyle}>
           {visibleDicts.map((dict, index) => (
             <Tooltip
               key={dict.label}
@@ -80,10 +84,7 @@ function DictTabs({
                 <DictTabEmbedded
                   dict={dict}
                   value={String(index)}
-                  onClick={() => {
-                    setTabValue(String(index));
-                    handleFocus();
-                  }}
+                  onClick={() => handleTabClick(String(index))}
                   component={Tabs.Tab}
                 />
               )}
@@ -96,9 +97,8 @@ function DictTabs({
             termText={termText}
             dicts={dropdownDicts}
             onClick={(url) => {
-              setTabValue("dropdownTab");
+              handleTabClick(tabs.dropdown);
               setActiveDropdownUrl(url);
-              handleFocus();
             }}
           />
         )}
@@ -106,17 +106,13 @@ function DictTabs({
         <div style={{ display: "flex" }}>
           <Tabs.Tab
             className={classes.flex}
-            id="sentencesTab"
-            value="sentencesTab"
+            value={tabs.sentences}
             onMouseEnter={() =>
               queryClient.prefetchQuery(
                 getSentencesQuery(encodedTermText, language.id)
               )
             }
-            onClick={() => {
-              setTabValue("sentencesTab");
-              handleFocus();
-            }}>
+            onClick={() => handleTabClick(tabs.sentences)}>
             <Text size="sm" style={{ overflow: "hidden" }}>
               Sentences
             </Text>
@@ -125,12 +121,8 @@ function DictTabs({
           <Tabs.Tab
             className={classes.flex}
             styles={{ tabLabel: { minWidth: 0 } }}
-            id="imagesTab"
-            value="imagesTab"
-            onClick={() => {
-              setTabValue("imagesTab");
-              handleFocus();
-            }}>
+            value={tabs.images}
+            onClick={() => handleTabClick(tabs.images)}>
             <IconPhoto size={24} />
           </Tabs.Tab>
         </div>
@@ -142,43 +134,32 @@ function DictTabs({
             <Tabs.Panel
               style={{ height: "100%" }}
               key={dict.label}
-              id={String(index)}
               value={String(index)}>
               <Iframe
                 src={getLookupURL(dict.url, termText)}
-                onHandleFocus={handleFocus}
+                onHandleFocus={onReturnFocusToForm}
               />
             </Tabs.Panel>
           )
         );
       })}
 
-      <Tabs.Panel
-        style={{ height: "100%" }}
-        key="dropdownTab"
-        id="dropdownTab"
-        value="dropdownTab">
+      <Tabs.Panel h="100%" value={tabs.dropdown}>
         <Iframe
           src={getLookupURL(activeDropdownUrl, termText)}
-          onHandleFocus={handleFocus}
+          onHandleFocus={onReturnFocusToForm}
         />
       </Tabs.Panel>
 
       <Tabs.Panel
         style={{ overflowY: "auto", flexGrow: 1 }}
-        id="sentencesTab"
-        value="sentencesTab"
-        key="sentencesTab">
-        {tabValue === "sentencesTab" && (
+        value={tabs.sentences}>
+        {tabValue === tabs.sentences && (
           <Sentences langId={language.id} termText={encodedTermText} />
         )}
       </Tabs.Panel>
 
-      <Tabs.Panel
-        style={{ height: "100%" }}
-        id="imagesTab"
-        value="imagesTab"
-        key="imagesTab">
+      <Tabs.Panel h="100%" value={tabs.images}>
         IMAGES
       </Tabs.Panel>
     </Tabs>

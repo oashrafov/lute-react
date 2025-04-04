@@ -53,8 +53,6 @@ function ReadPane({
               <ReadHeader
                 book={book}
                 onDrawerOpen={onDrawerOpen}
-                focusMode={state.focusMode}
-                highlights={state.highlights}
                 onSetActiveTerm={onSetActiveTerm}
                 state={state}
                 dispatch={dispatch}

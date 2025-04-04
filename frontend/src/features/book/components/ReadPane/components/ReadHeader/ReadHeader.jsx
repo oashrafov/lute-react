@@ -25,7 +25,6 @@ import BookSourceButton from "./components/BookSourceButton";
 import PageCounter from "./components/PageCounter";
 import Title from "./components/Title";
 import Player from "../Player/Player";
-import Toolbar from "../Toolbar/Toolbar";
 import FocusSwitch from "@book/components/common/FocusSwitch/FocusSwitch";
 import HighlightsSwitch from "@book/components/common/HighlightSwitch/HighlightSwitch";
 import MarkRestAsKnownButton from "@book/components/common/MarkRestAsKnownButton/MarkRestAsKnownButton";
@@ -33,15 +32,7 @@ import { resetFocusActiveSentence } from "@actions/interactions-desktop";
 import loader from "@term/api/loader";
 import classes from "./ReadHeader.module.css";
 
-function ReadHeader({
-  onDrawerOpen,
-  book,
-  focusMode,
-  highlights,
-  state,
-  dispatch,
-  onSetActiveTerm,
-}) {
+function ReadHeader({ book, state, dispatch, onSetActiveTerm, onDrawerOpen }) {
   const queryClient = useQueryClient();
   const params = useParams();
   const page = Number(params.page);
@@ -55,10 +46,12 @@ function ReadHeader({
     setSearchParams({ edit: "true" });
   }
 
-  const termIds = () =>
-    Array.from(document.querySelectorAll(".word")).map(
-      (word) => word.dataset.wid
-    );
+  async function handleOpenTermsTable() {
+    const textItems = Array.from(document.querySelectorAll(".word"));
+    const termIds = textItems.map((word) => word.dataset.wid);
+    await loader(queryClient)();
+    setSearchParams({ ids: JSON.stringify(termIds) });
+  }
 
   return (
     <>
@@ -75,8 +68,8 @@ function ReadHeader({
           <Divider orientation="vertical" />
 
           <Stack gap={4}>
-            <FocusSwitch checked={focusMode} dispatch={dispatch} />
-            <HighlightsSwitch checked={highlights} dispatch={dispatch} />
+            <FocusSwitch checked={state.focusMode} dispatch={dispatch} />
+            <HighlightsSwitch checked={state.highlights} dispatch={dispatch} />
           </Stack>
 
           <Divider orientation="vertical" />
@@ -89,10 +82,7 @@ function ReadHeader({
               <ActionIcon
                 size="sm"
                 variant="subtle"
-                onClick={async () => {
-                  await loader(queryClient)();
-                  setSearchParams({ ids: JSON.stringify(termIds()) });
-                }}>
+                onClick={handleOpenTermsTable}>
                 <IconBracketsContain />
               </ActionIcon>
             </Tooltip>
@@ -128,7 +118,6 @@ function ReadHeader({
           <Player book={book} />
         </Paper>
       )}
-      {/* <Toolbar state={state} dispatch={dispatch} /> */}
     </>
   );
 }

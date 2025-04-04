@@ -16,6 +16,16 @@ function TranslationPane({
   const termPanelRef = useRef();
   const translationFieldRef = useRef();
 
+  function handleReturnFocusToForm() {
+    setTimeout(() => {
+      const input = translationFieldRef?.current;
+      if (input) {
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+    }, 0);
+  }
+
   return (
     <Stack gap={0} dir="column" className={classes.translationContainer}>
       <PanelGroup
@@ -57,7 +67,7 @@ function TranslationPane({
           <DictTabs
             termText={term.text}
             language={language}
-            translationFieldRef={translationFieldRef}
+            onReturnFocusToForm={handleReturnFocusToForm}
             onSetActiveTab={onSetActiveTab}
             activeTab={activeTab}
           />

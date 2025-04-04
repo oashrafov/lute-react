@@ -17,14 +17,15 @@ import {
 import { handleToggleFocusMode, handleToggleHighlights } from "@actions/page";
 
 function useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
   const { data: settings } = useQuery(settingsQuery);
 
   useEffect(() => {
     function ignoreKeydown(e) {
       const searchParams = new URLSearchParams(window.location.search);
       const inEditMode = searchParams.get("edit") === "true";
-      const isTyping = e.target.matches("input, textarea");
+      const isTyping =
+        e.target.matches("input, textarea") && e.key !== "Escape"; // Escape shortcut should still work even when typing
       return inEditMode || isTyping;
     }
 
@@ -39,8 +40,6 @@ function useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen) {
       // Map of shortcuts to lambdas:
       const map = {
         [settings.hotkey_StartHover]: () => {
-          searchParams.delete("edit");
-          setSearchParams(searchParams);
           startHoverMode();
           setActiveTerm({ data: null });
           resetFocusActiveSentence();
