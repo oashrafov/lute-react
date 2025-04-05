@@ -1,31 +1,17 @@
-import { rem, Switch, Tooltip } from "@mantine/core";
 import { IconFocus2 } from "@tabler/icons-react";
+import ModeSwitch from "../ModeSwitch/ModeSwitch";
 import { handleSetFocusMode } from "@actions/page";
 
 function FocusSwitch({ checked, dispatch }) {
   return (
-    <Tooltip
+    <ModeSwitch
       label="Focus mode"
-      position="left"
-      openDelay={800}
-      refProp="rootRef">
-      <Switch
-        checked={checked}
-        onChange={(e) => {
-          handleSetFocusMode(Boolean(e.currentTarget.checked), dispatch);
-        }}
-        size="sm"
-        onLabel="ON"
-        offLabel="OFF"
-        thumbIcon={
-          <IconFocus2
-            style={{ width: rem(12), height: rem(12) }}
-            color="teal"
-            stroke={2}
-          />
-        }
-      />
-    </Tooltip>
+      icon={IconFocus2}
+      checked={checked}
+      onChange={(e) =>
+        handleSetFocusMode(Boolean(e.currentTarget.checked), dispatch)
+      }
+    />
   );
 }
 
