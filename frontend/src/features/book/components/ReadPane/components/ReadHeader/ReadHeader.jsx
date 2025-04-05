@@ -32,7 +32,7 @@ import { resetFocusActiveSentence } from "@actions/interactions-desktop";
 import loader from "@term/api/loader";
 import classes from "./ReadHeader.module.css";
 
-function ReadHeader({ book, state, dispatch, onSetActiveTerm, onDrawerOpen }) {
+function ReadHeader({ book, onSetActiveTerm, onDrawerOpen }) {
   const queryClient = useQueryClient();
   const params = useParams();
   const page = Number(params.page);
@@ -68,8 +68,8 @@ function ReadHeader({ book, state, dispatch, onSetActiveTerm, onDrawerOpen }) {
           <Divider orientation="vertical" />
 
           <Stack gap={4}>
-            <FocusSwitch checked={state.focusMode} dispatch={dispatch} />
-            <HighlightsSwitch checked={state.highlights} dispatch={dispatch} />
+            <FocusSwitch />
+            <HighlightsSwitch />
           </Stack>
 
           <Divider orientation="vertical" />

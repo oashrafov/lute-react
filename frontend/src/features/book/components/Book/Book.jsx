@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, useContext } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Box } from "@mantine/core";
@@ -16,13 +16,13 @@ import FocusPane from "../FocusPane/FocusPane";
 import ContextMenu from "../ContextMenu/ContextMenu";
 import { getBookQuery } from "../../api/query";
 import useSetupShortcuts from "../../hooks/useSetupShortcuts";
-import useBookState from "../../hooks/useBookState";
 import usePrefetchPages from "@book/hooks/usePrefetchPages";
 import useMarkAsStale from "@book/hooks/useMarkAsStale";
 import {
   resetFocusActiveSentence,
   startHoverMode,
 } from "@actions/interactions-desktop";
+import { BookContext } from "@book/store/bookContext";
 import classes from "./Book.module.css";
 
 const ThemeForm = lazy(
@@ -33,6 +33,7 @@ const BulkTermForm = lazy(
 );
 
 function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
+  const { state, dispatch } = useContext(BookContext);
   const { id, page: pageNum } = useParams();
   const [params] = useSearchParams();
   const editMode = params.get("edit") === "true";
@@ -53,7 +54,6 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const { data: language } = useQuery(userLanguageQuery(book.languageId));
   const { data: term, isFetching } = useQuery(getTermQuery(key));
 
-  const [state, dispatch] = useBookState();
   useDocumentTitle(`Reading "${book.title}"`);
   useNavigationProgress();
   useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen);
@@ -90,8 +90,6 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
         book={book}
         language={language}
         term={term}
-        state={state}
-        dispatch={dispatch}
         onSetActiveTerm={setActiveTerm}
         showTranslationPane={showTranslationPane}
         activeTab={activeTab}
@@ -113,8 +111,6 @@ function Book({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
             <ReadPane
               book={book}
               textDirection={textDirection}
-              state={state}
-              dispatch={dispatch}
               activeTerm={activeTerm}
               onSetActiveTerm={setActiveTerm}
               onDrawerOpen={onDrawerOpen}

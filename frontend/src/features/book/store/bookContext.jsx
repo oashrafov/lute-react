@@ -1,6 +1,8 @@
-import { useReducer } from "react";
+import { createContext, useReducer } from "react";
 import { getFromLocalStorage } from "@actions/utils";
 import { DEFAULT_TEXT_SETTINGS } from "@resources/constants";
+
+const BookContext = createContext();
 
 function reducer(state, action) {
   switch (action.type) {
@@ -25,7 +27,7 @@ function reducer(state, action) {
   }
 }
 
-function useBookState() {
+function BookContextProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, {
     fontSize: getFromLocalStorage(
       "Lute.fontSize",
@@ -53,7 +55,11 @@ function useBookState() {
     ),
   });
 
-  return [state, dispatch];
+  return (
+    <BookContext.Provider value={{ state, dispatch }}>
+      {children}
+    </BookContext.Provider>
+  );
 }
 
-export default useBookState;
+export { BookContextProvider, BookContext };

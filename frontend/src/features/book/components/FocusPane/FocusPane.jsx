@@ -1,37 +1,30 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import FocusTermForm from "./components/FocusTermForm/FocusTermForm";
 import FocusPageTurner from "./components/FocusPageTurner/FocusPageTurner";
 import FocusToolbar from "./components/FocusToolbar/FocusToolbar";
 import FocusHeader from "./components/FocusHeader/FocusHeader";
 import FocusDictTabs from "./components/FocusDictTabs/FocusDictTabs";
+import { BookContext } from "@book/store/bookContext";
 
 function FocusPane({
   book,
   language,
   term,
-  state,
-  dispatch,
   onSetActiveTerm,
   showTranslationPane,
   activeTab,
   onSetActiveTab,
 }) {
+  const { state } = useContext(BookContext);
   const [showDicts, setShowDicts] = useState(false);
 
   return (
     <>
-      <FocusHeader
-        show={state.focusMode}
-        book={book}
-        state={state}
-        dispatch={dispatch}
-      />
+      <FocusHeader show={state.focusMode} book={book} />
 
       <FocusToolbar
         show={state.focusMode}
         book={book}
-        state={state}
-        dispatch={dispatch}
         onShowDicts={setShowDicts}
         showDicts={showDicts}
       />

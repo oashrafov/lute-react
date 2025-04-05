@@ -1,8 +1,10 @@
+import { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { ScrollArea, Title, Transition } from "@mantine/core";
 import ReadHeader from "./components/ReadHeader/ReadHeader";
 import TheText from "./components/TheText/TheText";
+import { BookContext } from "@book/store/bookContext";
 import { hasClickedOutsideText } from "@actions/interactions-desktop";
 import { removeAllMarkings } from "@actions/utils";
 import { getPageQuery } from "../../api/query";
@@ -10,14 +12,13 @@ import classes from "../Book/Book.module.css";
 
 function ReadPane({
   book,
-  state,
-  dispatch,
   activeTerm,
   onSetActiveTerm,
   onDrawerOpen,
   textDirection,
   contextMenuAreaRef,
 }) {
+  const { state } = useContext(BookContext);
   const { id, page: pageNum } = useParams();
   const { data: page } = useQuery(getPageQuery(id, pageNum));
 
@@ -54,8 +55,6 @@ function ReadPane({
                 book={book}
                 onDrawerOpen={onDrawerOpen}
                 onSetActiveTerm={onSetActiveTerm}
-                state={state}
-                dispatch={dispatch}
               />
             </div>
           )}

@@ -4,6 +4,7 @@ import { Drawer } from "@mantine/core";
 import Book from "@book/components/Book/Book";
 import DrawerMenu from "../components/DrawerMenu/DrawerMenu";
 import TermsTable from "@term/components/TermsTable/TermsTable";
+import { BookContextProvider } from "@book/store/bookContext";
 
 function BookPage() {
   const { page } = useParams();
@@ -20,11 +21,13 @@ function BookPage() {
         onThemeFormOpen={setThemeFormOpen}
       />
 
-      <Book
-        themeFormOpen={themeFormOpen}
-        onDrawerOpen={() => setDrawerOpen(true)}
-        onThemeFormOpen={setThemeFormOpen}
-      />
+      <BookContextProvider>
+        <Book
+          themeFormOpen={themeFormOpen}
+          onDrawerOpen={() => setDrawerOpen(true)}
+          onThemeFormOpen={setThemeFormOpen}
+        />
+      </BookContextProvider>
 
       <Drawer
         size="100%"

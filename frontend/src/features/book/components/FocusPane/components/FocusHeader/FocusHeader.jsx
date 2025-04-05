@@ -10,7 +10,7 @@ import FocusSwitch from "@book/components/common/FocusSwitch/FocusSwitch";
 import HighlightsSwitch from "@book/components/common/HighlightSwitch/HighlightSwitch";
 import classes from "../../FocusPane.module.css";
 
-function FocusHeader({ book, state, dispatch, show }) {
+function FocusHeader({ book, show }) {
   const params = useParams();
   const page = Number(params.page);
   return (
@@ -24,11 +24,8 @@ function FocusHeader({ book, state, dispatch, show }) {
               <Divider orientation="vertical" />
 
               <Stack gap={4} p={5}>
-                <FocusSwitch checked={state.focusMode} dispatch={dispatch} />
-                <HighlightsSwitch
-                  checked={state.highlights}
-                  dispatch={dispatch}
-                />
+                <FocusSwitch />
+                <HighlightsSwitch />
               </Stack>
 
               <Divider orientation="vertical" />

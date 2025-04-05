@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   ActionIcon,
   Affix,
@@ -12,10 +13,12 @@ import {
 import BookmarksMenu from "@book/components/common/BookmarksMenu";
 import BookmarksButton from "@book/components/common/BookmarksButton";
 import MarkRestAsKnownButton from "@book/components/common/MarkRestAsKnownButton/MarkRestAsKnownButton";
+import { BookContext } from "@book/store/bookContext";
 import getToolbarButtons from "@book/components/ReadPane/components/Toolbar/toolbarButtons";
 import classes from "../../FocusPane.module.css";
 
-function FocusToolbar({ book, show, state, dispatch, showDicts, onShowDicts }) {
+function FocusToolbar({ book, show, showDicts, onShowDicts }) {
+  const { state, dispatch } = useContext(BookContext);
   return (
     <Affix position={{ top: 100, left: 20 }} zIndex={199}>
       <Transition transition="slide-right" mounted={show}>
