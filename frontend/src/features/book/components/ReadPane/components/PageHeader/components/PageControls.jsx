@@ -23,7 +23,7 @@ import HighlightsSwitch from "@book/components/common/HighlightSwitch/HighlightS
 import { resetFocusActiveSentence } from "@actions/interactions-desktop";
 import { clamp } from "@actions/utils";
 import loader from "@term/api/loader";
-import classes from "./PageHeader/ReadHeader.module.css";
+import classes from "../PageHeader.module.css";
 
 function PageControls({ book, onSetActiveTerm }) {
   const queryClient = useQueryClient();
