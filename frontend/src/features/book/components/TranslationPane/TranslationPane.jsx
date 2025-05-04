@@ -1,9 +1,8 @@
 import { memo, useRef } from "react";
-import { Box, ScrollAreaAutosize, Stack } from "@mantine/core";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Box, ScrollAreaAutosize } from "@mantine/core";
+import VerticalPanels from "../VerticalPanels";
 import DictTabs from "@language/components/DictTabs/DictTabs";
 import TermForm from "@term/components/TermForm/TermForm";
-import { paneResizeStorage } from "@actions/utils";
 import classes from "../Book/Book.module.css";
 
 function TranslationPane({
@@ -13,7 +12,6 @@ function TranslationPane({
   onSetActiveTab,
   activeTab,
 }) {
-  const termPanelRef = useRef();
   const translationFieldRef = useRef();
 
   function handleReturnFocusToForm() {
@@ -27,13 +25,9 @@ function TranslationPane({
   }
 
   return (
-    <Stack gap={0} dir="column" className={classes.translationContainer}>
-      <PanelGroup
-        direction="vertical"
-        autoSaveId="Lute.verticalSize"
-        storage={paneResizeStorage}>
-        <Panel order={1} defaultSize={40} ref={termPanelRef}>
-          {/* need key to recreate the form */}
+    <div className={classes.translationContainer}>
+      <VerticalPanels
+        leftPanel={
           <ScrollAreaAutosize mah="100%">
             <Box p={20}>
               <TermForm
@@ -45,25 +39,8 @@ function TranslationPane({
               />
             </Box>
           </ScrollAreaAutosize>
-        </Panel>
-
-        <PanelResizeHandle
-          hitAreaMargins={{ coarse: 10, fine: 10 }}
-          className={classes.resizeHandle}
-          onDoubleClick={() => {
-            const panel = termPanelRef.current;
-            if (panel) {
-              panel.getSize() < 15 ? panel.resize(40) : panel.resize(5);
-            }
-          }}
-        />
-        <Panel
-          order={1}
-          defaultSize={60}
-          minSize={20}
-          collapsible
-          collapsedSize={0}
-          className={classes.dictTabsContainer}>
+        }
+        rightPanel={
           <DictTabs
             termText={term.text}
             language={language}
@@ -71,9 +48,9 @@ function TranslationPane({
             onSetActiveTab={onSetActiveTab}
             activeTab={activeTab}
           />
-        </Panel>
-      </PanelGroup>
-    </Stack>
+        }
+      />
+    </div>
   );
 }
 
