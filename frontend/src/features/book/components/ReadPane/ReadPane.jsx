@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { ScrollArea, Title, Transition } from "@mantine/core";
-import ReadHeader from "./components/ReadHeader/ReadHeader";
+import ReadHeader from "./components/PageHeader/PageHeader";
 import TheText from "./components/TheText/TheText";
 import { BookContext } from "@book/store/bookContext";
 import { hasClickedOutsideText } from "@actions/interactions-desktop";

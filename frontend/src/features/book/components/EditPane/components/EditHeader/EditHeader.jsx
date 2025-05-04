@@ -13,7 +13,7 @@ import {
   IconFileCheck,
   IconFileXFilled,
 } from "@tabler/icons-react";
-import PageCounter from "@book/components/ReadPane/components/ReadHeader/components/PageCounter";
+import PageCounter from "@book/components/ReadPane/components/PageHeader/components/PageCounter";
 
 function EditHeader({ book, page, onSetEdit }) {
   function handleAddBefore() {}

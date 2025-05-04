@@ -1,19 +1,17 @@
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 5px;
+  padding: 1rem 2rem;
+  overflow: hidden;
+
   height: 5rem;
   position: relative;
   z-index: 2;
   border-radius: 0;
   border-inline: none;
-}
-
-.inner {
-  gap: 5px;
-  flex-wrap: nowrap;
-  align-items: center;
-  padding-block: 1rem;
-  padding-right: 2rem;
-  padding-left: 2rem;
-  overflow: hidden;
 }
 
 .titleFlex {
