@@ -1,4 +1,3 @@
-import { memo } from "react";
 import {
   ActionIcon,
   Checkbox,
@@ -11,9 +10,9 @@ import {
   IconGripVertical,
   IconSquareRoundedMinusFilled,
 } from "@tabler/icons-react";
-import TestDictionaryButton from "./components/TestDictionaryButton";
+import { TestDictionaryButton } from "./components/TestDictionaryButton";
 
-function DictionaryBar({ form, index, dndProvided }) {
+export function DictionaryBar({ form, index, dndProvided }) {
   const testUrl = form
     .getValues()
     .dictionaries[index]?.url.replace("###", "test")
@@ -50,9 +49,9 @@ function DictionaryBar({ form, index, dndProvided }) {
         size="xs"
         placeholder="Dictionary URL"
         rightSection={
-          form.getValues().dictionaries[index]?.url.length > 0 ? (
+          form.getValues().dictionaries[index]?.url.length > 0 && (
             <TestDictionaryButton src={testUrl} />
-          ) : null
+          )
         }
         key={form.key(`dictionaries.${index}.url`)}
         {...form.getInputProps(`dictionaries.${index}.url`)}
@@ -101,5 +100,3 @@ function DictionaryBar({ form, index, dndProvided }) {
     </Group>
   );
 }
-
-export default memo(DictionaryBar);

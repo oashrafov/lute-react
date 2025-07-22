@@ -6,7 +6,7 @@ import {
 } from "@tabler/icons-react";
 import classes from "../DrawerMenu.module.css";
 
-function DrawerFooter() {
+export function DrawerFooter() {
   return (
     <Box className={classes.footer}>
       <SegmentedControl
@@ -33,5 +33,3 @@ function DrawerFooter() {
     </Box>
   );
 }
-
-export default DrawerFooter;

@@ -11,15 +11,8 @@ function handleToggleHighlights(dispatch) {
   localStorage.setItem("Lute.highlights", JSON.stringify(!state));
 }
 
-function handleSetFocusMode(checked, dispatch) {
-  dispatch({ type: "setFocusMode", payload: checked });
-  localStorage.setItem("Lute.focusMode", JSON.stringify(checked));
-}
-
-function handleToggleFocusMode(dispatch) {
-  dispatch({ type: "toggleFocusMode" });
-  const state = getFromLocalStorage("Lute.focusMode", false);
-  localStorage.setItem("Lute.focusMode", JSON.stringify(!state));
+function handleSetView(view) {
+  localStorage.setItem("Lute.view", JSON.stringify(view));
 }
 
 function handleSetColumnCount(count, dispatch) {
@@ -50,10 +43,9 @@ function handleSetTextWidth(width, dispatch) {
 export {
   handleToggleHighlights,
   handleSetHighlights,
-  handleSetFocusMode,
+  handleSetView,
   handleSetColumnCount,
   handleSetLineHeight,
   handleSetFontSize,
   handleSetTextWidth,
-  handleToggleFocusMode,
 };

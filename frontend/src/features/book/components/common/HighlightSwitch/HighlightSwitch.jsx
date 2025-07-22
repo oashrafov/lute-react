@@ -1,11 +1,10 @@
-import { useContext } from "react";
 import { IconHighlight } from "@tabler/icons-react";
-import ModeSwitch from "../ModeSwitch/ModeSwitch";
-import { BookContext } from "@book/store/bookContext";
+import { ModeSwitch } from "../ModeSwitch/ModeSwitch";
 import { handleSetHighlights } from "@actions/page";
+import { usePageContext } from "@book/hooks/usePageContext";
 
-function HighlightsSwitch() {
-  const { state, dispatch } = useContext(BookContext);
+export function HighlightsSwitch() {
+  const { state, dispatch } = usePageContext();
   return (
     <ModeSwitch
       label="Highlights"
@@ -17,5 +16,3 @@ function HighlightsSwitch() {
     />
   );
 }
-
-export default HighlightsSwitch;

@@ -13,11 +13,11 @@ import {
 import { getTermSuggestionsQuery } from "@term/api/query";
 import { buildSuggestionsList } from "@actions/utils";
 import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "@resources/constants";
+import { useActiveTermContext } from "@book/hooks/useActiveTermContext";
 
 function TagsField({
   termText,
   languageId,
-  onSetActiveTerm,
   values,
   onSetValues,
   onSubmitParent,
@@ -25,6 +25,7 @@ function TagsField({
   leftSectionProps,
   mb,
 }) {
+  const { setActiveTerm } = useActiveTermContext();
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
@@ -88,7 +89,7 @@ function TagsField({
 
   function handleTagClick(item) {
     if (languageId) {
-      onSetActiveTerm({
+      setActiveTerm({
         data: item,
         langID: languageId,
         type: "multi",

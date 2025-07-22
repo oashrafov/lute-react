@@ -9,14 +9,6 @@
   padding: 1rem;
 }
 
-.scroll {
-  flex: 1;
-}
-
-.scroll > :global(.mantine-ScrollArea-viewport > div) {
-  display: initial !important;
-}
-
 .nav {
   padding-top: 3rem;
   padding-bottom: var(--mantine-spacing-xl);

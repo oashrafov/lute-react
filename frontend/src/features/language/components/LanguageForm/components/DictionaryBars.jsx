@@ -1,16 +1,8 @@
 import { ScrollArea } from "@mantine/core";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import DictionaryBar from "./DictionaryBar/DictionaryBar";
+import { DictionaryBar } from "./DictionaryBar/DictionaryBar";
 
-function DictionaryBars({ form }) {
-  function reorderList(list, startIndex, endIndex) {
-    const result = list;
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-  }
-
+export function DictionaryBars({ form }) {
   function onDragEnd(result) {
     if (!result.destination) {
       return;
@@ -55,4 +47,10 @@ function DictionaryBars({ form }) {
   );
 }
 
-export default DictionaryBars;
+function reorderList(list, startIndex, endIndex) {
+  const result = list;
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+}

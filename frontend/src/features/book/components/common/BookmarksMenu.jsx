@@ -1,11 +1,11 @@
-import { memo, useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Accordion, Divider, Menu, Stack, Text } from "@mantine/core";
 import { scrollSentenceIntoView } from "@actions/utils";
-import BookmarksButton from "./BookmarksButton";
-import BookmarkButton from "../ReadPane/components/PageHeader/components/BookmarkButton";
+import { BookmarksButton } from "./BookmarksButton";
+import BookmarkButton from "../DefaultView/components/DefaultHeader/components/BookmarkButton";
 
-function BookmarksMenu({ data }) {
+export function BookmarksMenu({ data }) {
   const params = useParams();
   const location = useLocation();
   const currentPage = Number(params.page);
@@ -30,10 +30,9 @@ function BookmarksMenu({ data }) {
       </Menu.Target>
 
       <Menu.Dropdown p={0}>
-        <Text
-          p="xs"
-          fz="sm"
-          ta="center">{`${bookmarkCount} bookmarks in ${pageCount} page(s)`}</Text>
+        <Text p="xs" fz="sm" ta="center">
+          {bookmarkCount} bookmarks in {pageCount} page(s)
+        </Text>
         <Divider />
         <Accordion
           variant="filled"
@@ -42,7 +41,7 @@ function BookmarksMenu({ data }) {
           disableChevronRotation>
           {Object.entries(data).map(([bookmarkPage, bookmarks]) => (
             <Accordion.Item key={bookmarkPage} value={String(bookmarkPage)}>
-              <Accordion.Control fz="xs">{`Page ${bookmarkPage}`}</Accordion.Control>
+              <Accordion.Control fz="xs">Page {bookmarkPage}</Accordion.Control>
               <Accordion.Panel>
                 <Stack gap={5} align="center">
                   {bookmarks.map((bookmark) => (
@@ -62,5 +61,3 @@ function BookmarksMenu({ data }) {
     </Menu>
   );
 }
-
-export default memo(BookmarksMenu);

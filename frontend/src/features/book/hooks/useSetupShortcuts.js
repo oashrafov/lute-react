@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
 import { getPressedKeysAsString } from "@actions/utils";
 import { settingsQuery } from "@settings/api/settings";
 import {
@@ -14,16 +13,24 @@ import {
   incrementStatusForMarked,
   updateStatusForMarked,
 } from "@actions/status";
-import { handleToggleFocusMode, handleToggleHighlights } from "@actions/page";
+import { handleSetView, handleToggleHighlights } from "@actions/page";
+import { usePageContext } from "./usePageContext";
+import { useBookContext } from "./useBookContext";
+import { useViewContext } from "./useViewContext";
+import { useBook } from "./useBook";
+import { useActiveTermContext } from "./useActiveTermContext";
 
-function useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen) {
-  const [, setSearchParams] = useSearchParams();
+export function useSetupShortcuts() {
+  const { themeForm } = useBookContext();
+  const { view, setView } = useViewContext();
+  const { dispatch } = usePageContext();
+  const { setActiveTerm } = useActiveTermContext();
   const { data: settings } = useQuery(settingsQuery);
+  const { language } = useBook();
 
   useEffect(() => {
     function ignoreKeydown(e) {
-      const searchParams = new URLSearchParams(window.location.search);
-      const inEditMode = searchParams.get("edit") === "true";
+      const inEditMode = view === "edit";
       const isTyping =
         e.target.matches("input, textarea") && e.key !== "Escape"; // Escape shortcut should still work even when typing
       return inEditMode || isTyping;
@@ -43,7 +50,7 @@ function useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen) {
           startHoverMode();
           setActiveTerm({ data: null });
           resetFocusActiveSentence();
-          onThemeFormOpen(false);
+          themeForm.close();
         },
 
         [settings.hotkey_PrevWord]: () => handleMoveCursor(".word", prev),
@@ -81,17 +88,23 @@ function useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen) {
         [settings.hotkey_EditPage]: () => {
           setActiveTerm({ data: null });
           resetFocusActiveSentence();
-          setSearchParams({ edit: "true" });
+          setView("edit");
         },
 
         [settings.hotkey_NextTheme]: () => {
-          onThemeFormOpen((v) => !v);
+          themeForm.toggle();
           setActiveTerm({ data: null });
           resetFocusActiveSentence();
         },
         [settings.hotkey_ToggleHighlight]: () =>
           handleToggleHighlights(dispatch),
-        [settings.hotkey_ToggleFocus]: () => handleToggleFocusMode(dispatch),
+        [settings.hotkey_ToggleFocus]: () => {
+          setView((prev) => {
+            const newView = prev === "focus" ? "default" : "focus";
+            handleSetView(newView);
+            return newView;
+          });
+        },
       };
 
       const key = getPressedKeysAsString(e);
@@ -110,7 +123,5 @@ function useSetupShortcuts(dispatch, language, setActiveTerm, onThemeFormOpen) {
       document.removeEventListener("keydown", setupKeydownEvents);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings]);
+  }, []);
 }
-
-export default useSetupShortcuts;

@@ -19,21 +19,28 @@ import {
   IconCut,
 } from "@tabler/icons-react";
 import FormButtons from "@common/FormButtons/FormButtons";
-import LanguageSelect from "./LanguageSelect";
-import DictionaryBars from "./components/DictionaryBars";
+import LanguageSelect from "./components/LanguageSelect";
+import { DictionaryBars } from "./components/DictionaryBars";
 import InsertDictionaryButton from "./components/InsertDictionaryButton";
 import useSelectedLanguage from "@language/hooks/useSelectedLanguage";
 import useLanguageForm from "@language/hooks/useLanguageForm";
 import { parsersQuery } from "../../api/query";
 import classes from "./LanguageForm.module.css";
 
-function LanguageForm() {
+export function LanguageForm() {
   const [params] = useSearchParams();
   const langId = params.get("langId");
   const { data: parsers } = useQuery(parsersQuery);
   const { language, isSuccess } = useSelectedLanguage();
 
   const form = useLanguageForm();
+
+  function setFormValues(rest, dictionaries) {
+    form.setValues(rest);
+    // for defined, there shouldn't be a need for key. we can save the key when saving dicts
+    const dicts = dictionaries.map((dict) => ({ ...dict, key: randomId() }));
+    form.setFieldValue("dictionaries", dicts);
+  }
 
   useEffect(() => {
     if (isSuccess && language) {
@@ -52,7 +59,7 @@ function LanguageForm() {
 
   return (
     <form>
-      <LanguageSelect form={form} />
+      <LanguageSelect />
 
       <Divider mt="md" mb="xs" />
 
@@ -135,13 +142,4 @@ function LanguageForm() {
       </Box>
     </form>
   );
-
-  function setFormValues(rest, dictionaries) {
-    form.setValues(rest);
-    // for defined, there shouldn't be a need for key. we can save the key when saving dicts
-    const dicts = dictionaries.map((dict) => ({ ...dict, key: randomId() }));
-    form.setFieldValue("dictionaries", dicts);
-  }
 }
-
-export default LanguageForm;

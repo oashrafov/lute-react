@@ -2,7 +2,12 @@ import { IconExternalLink } from "@tabler/icons-react";
 import DictFavicon from "./common/DictFavicon";
 import { getLookupURL, handleExternalUrl } from "@actions/utils";
 
-function DictTabExternal({ dict, termText, innerRef, component: Component }) {
+export function DictTabExternal({
+  dict,
+  termText,
+  innerRef,
+  component: Component,
+}) {
   return (
     <Component
       ref={innerRef}
@@ -17,5 +22,3 @@ function DictTabExternal({ dict, termText, innerRef, component: Component }) {
     </Component>
   );
 }
-
-export default DictTabExternal;

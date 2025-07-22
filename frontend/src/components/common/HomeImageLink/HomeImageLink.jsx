@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ActionIcon, Image } from "@mantine/core";
 
-function HomeImageLink({ size }) {
+export function HomeImageLink({ size }) {
   return (
     <ActionIcon component={Link} to="/" variant="transparent" size={size}>
       <Image
@@ -13,5 +13,3 @@ function HomeImageLink({ size }) {
     </ActionIcon>
   );
 }
-
-export default HomeImageLink;

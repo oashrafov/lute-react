@@ -1,11 +1,11 @@
-import { LoadingOverlay } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
+import { LoadingOverlay } from "@mantine/core";
 import { getSentencesQuery } from "../../api/query";
+import { NoSentences } from "../NoSentences/NoSentences";
 import classes from "./Sentences.module.css";
 
-function Sentences({ langId, termText }) {
+export function Sentences({ langId, termText }) {
   const { data } = useQuery(getSentencesQuery(termText, langId));
-
   return (
     <div className={classes.container}>
       <LoadingOverlay
@@ -48,28 +48,3 @@ function Sentences({ langId, termText }) {
     </div>
   );
 }
-
-function NoSentences({ text }) {
-  return (
-    <div>
-      <p>No references found for &quot;{text}&quot;:</p>
-      <ul>
-        <li>This may be a new term.</li>
-        <li>
-          The page containing this word may not be marked as &quot;read&quot;
-          (see{" "}
-          <a
-            href="https://luteorg.github.io/lute-manual/faq/terms/sentences-only-shown-when-page-is-read.html"
-            target="_blank"
-            rel="noopener noreferrer">
-            the manual
-          </a>
-          ).
-        </li>
-        <li>Books containing this term may have been deleted.</li>
-      </ul>
-    </div>
-  );
-}
-
-export default Sentences;

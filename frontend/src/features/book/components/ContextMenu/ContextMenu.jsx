@@ -1,25 +1,26 @@
-import { Fragment, memo, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Affix, Divider, Menu, Text } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import items from "./resources/menu";
-
 import {
   addClassToElements,
   removeAllContainingClassWithTimeout,
 } from "@actions/utils";
 
-function ContextMenu({ contextMenuAreaRef }) {
+export function ContextMenu({ areaRef }) {
   const [coords, setCoords] = useState({ clientX: null, clientY: null });
   const selectedTextItemRef = useRef();
   const validCoords = coords.clientX !== null && coords.clientY !== null;
 
   const menuRef = useClickOutside(() => {
     setCoords({ clientX: null, clientY: null });
-    contextMenuAreaRef.current.removeEventListener("wheel", disableScroll);
+    areaRef?.current.removeEventListener("wheel", disableScroll);
   });
 
   useEffect(() => {
-    const ref = contextMenuAreaRef.current;
+    const ref = areaRef?.current;
+
+    if (!ref) return;
 
     function handleContextMenu(e) {
       e.preventDefault();
@@ -72,35 +73,31 @@ function ContextMenu({ contextMenuAreaRef }) {
             <div />
           </Menu.Target>
           <Menu.Dropdown>
-            {items.map((section) => {
-              return (
-                <Fragment key={section.label}>
-                  <Menu.Label>
-                    <Divider label={section.label} labelPosition="left" />
-                  </Menu.Label>
-                  {section.items.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <Menu.Item
-                        pt={4}
-                        pb={4}
-                        onClick={() => handleRightClick(item)}
-                        key={item.label}
-                        leftSection={<Icon size="1rem" />}>
-                        <Text span fz="xs">
-                          {item.label}
-                        </Text>
-                      </Menu.Item>
-                    );
-                  })}
-                </Fragment>
-              );
-            })}
+            {items.map((section) => (
+              <Fragment key={section.label}>
+                <Menu.Label>
+                  <Divider label={section.label} labelPosition="left" />
+                </Menu.Label>
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Menu.Item
+                      pt={4}
+                      pb={4}
+                      onClick={() => handleRightClick(item)}
+                      key={item.label}
+                      leftSection={<Icon size="1rem" />}>
+                      <Text span fz="xs">
+                        {item.label}
+                      </Text>
+                    </Menu.Item>
+                  );
+                })}
+              </Fragment>
+            ))}
           </Menu.Dropdown>
         </div>
       </Menu>
     </Affix>
   );
 }
-
-export default memo(ContextMenu);

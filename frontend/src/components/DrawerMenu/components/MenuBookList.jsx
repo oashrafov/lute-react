@@ -11,12 +11,14 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { IconCircleCheckFilled, IconSearch } from "@tabler/icons-react";
+import { useBookContext } from "@book/hooks/useBookContext";
 import classes from "../DrawerMenu.module.css";
 
 const url = new URL("/api/books", "http://localhost:5001");
 url.searchParams.set("shelf", "active");
 
-function MenuBookList({ onDrawerClose }) {
+export function MenuBookList() {
+  const { drawer } = useBookContext();
   const { data } = useQuery({
     queryKey: ["books", url.href],
     queryFn: async () => {
@@ -37,12 +39,7 @@ function MenuBookList({ onDrawerClose }) {
           autoCorrect="off"
         />
       </Box>
-      <ScrollArea
-        className={classes.scroll}
-        pl={16}
-        pr={16}
-        pb={16}
-        type="never">
+      <ScrollArea className={classes.scroll} px={16} pb={16} type="never">
         <ul style={{ listStyle: "none" }}>
           {data?.data.map((book) => (
             <li key={book.id}>
@@ -53,7 +50,7 @@ function MenuBookList({ onDrawerClose }) {
                   variant="subtle"
                   component={Link}
                   size="compact-sm"
-                  onClick={onDrawerClose}
+                  onClick={drawer.close}
                   styles={{ inner: { justifyContent: "flex-start" } }}
                   style={{ textDecoration: "none", color: "inherit" }}
                   to={`/books/${book.id}/pages/${book.currentPage}`}>
@@ -77,5 +74,3 @@ function MenuBookList({ onDrawerClose }) {
     </>
   );
 }
-
-export default MenuBookList;

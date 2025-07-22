@@ -4,9 +4,9 @@ import { useSearchParams } from "react-router-dom";
 import { Box, Group, Paper, Text } from "@mantine/core";
 import PageContainer from "@common/PageContainer/PageContainer";
 import PageTitle from "@common/PageTitle/PageTitle";
-import LanguageCards from "@language/components/LanguageCards/LanguageCards";
-import DictTabs from "@language/components/DictTabs/DictTabs";
-import TermForm from "@term/components/TermForm/TermForm";
+import { LanguageCards } from "@language/components/LanguageCards/LanguageCards";
+import { DictTabs } from "@language/components/DictTabs/DictTabs";
+import { TermForm } from "@term/components/TermForm/TermForm";
 import { userLanguageQuery } from "@language/api/query";
 import { getTermQuery } from "@term/api/query";
 

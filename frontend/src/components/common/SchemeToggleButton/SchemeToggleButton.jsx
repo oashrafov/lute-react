@@ -8,7 +8,7 @@ import { IconMoon, IconSun } from "@tabler/icons-react";
 import { applyLuteHighlights } from "@actions/general";
 import { settingsQuery } from "@settings/api/settings";
 
-function SchemeToggleButton({ onCloseDrawer = null }) {
+export function SchemeToggleButton({ onClick = null }) {
   const { data: settings } = useQuery(settingsQuery);
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -28,11 +28,9 @@ function SchemeToggleButton({ onCloseDrawer = null }) {
       size="lg"
       onClick={() => {
         handleToggleScheme();
-        onCloseDrawer && onCloseDrawer();
+        onClick && onClick();
       }}>
       <Icon size="90%" />
     </ActionIcon>
   );
 }
-
-export default SchemeToggleButton;

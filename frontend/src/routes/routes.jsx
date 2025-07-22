@@ -7,7 +7,7 @@ import termsLoader from "@term/api/loader";
 import settingsLoader from "@settings/api/loaders/general";
 import shortcutsLoader from "@settings/api/loaders/shortcuts";
 import backupsLoader from "@backup/api/loader";
-import PageSpinner from "@common/PageSpinner/PageSpinner";
+import { PageSpinner } from "@common/PageSpinner/PageSpinner";
 
 const routes = (queryClient) =>
   createBrowserRouter([

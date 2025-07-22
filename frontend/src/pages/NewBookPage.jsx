@@ -9,8 +9,8 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { IconSquareRoundedPlusFilled } from "@tabler/icons-react";
 import NewBookForm from "@book/components/NewBookForm/NewBookForm";
-import LanguageForm from "@language/components/LanguageForm/LanguageForm";
-import LanguageCards from "@language/components/LanguageCards/LanguageCards";
+import { LanguageForm } from "@language/components/LanguageForm/LanguageForm";
+import { LanguageCards } from "@language/components/LanguageCards/LanguageCards";
 import PageContainer from "@common/PageContainer/PageContainer";
 import PageTitle from "@common/PageTitle/PageTitle";
 import { initialQuery } from "@settings/api/settings";

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import LanguageForm from "@language/components/LanguageForm/LanguageForm";
+import { LanguageForm } from "@language/components/LanguageForm/LanguageForm";
 import PageContainer from "@common/PageContainer/PageContainer";
 import PageTitle from "@common/PageTitle/PageTitle";
-import LanguageCards from "@language/components/LanguageCards/LanguageCards";
-import LanguageRadioLabel from "@language/components/LanguageForm/components/LanguageRadioLabel";
+import { LanguageCards } from "@language/components/LanguageCards/LanguageCards";
+import { LanguageRadioLabel } from "@language/components/LanguageForm/components/LanguageRadioLabel";
 import { initialQuery } from "@settings/api/settings";
 
 function LanguagesPage() {

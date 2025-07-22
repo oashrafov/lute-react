@@ -22,6 +22,7 @@ import {
   removeAllContainingClassWithTimeout,
 } from "@actions/utils";
 import { setTextColor } from "@actions/general";
+import { useBookContext } from "@book/hooks/useBookContext";
 
 const labels = {
   status: {
@@ -56,7 +57,8 @@ function getRootElement(scheme) {
   return document.querySelector(`:root[data-mantine-color-scheme="${scheme}"]`);
 }
 
-function ThemeForm({ onClose }) {
+function ThemeForm() {
+  const { themeForm } = useBookContext();
   const { colorScheme } = useMantineColorScheme();
   const { data: settings } = useQuery(settingsQuery);
   const root = getRootElement(colorScheme);
@@ -102,7 +104,7 @@ function ThemeForm({ onClose }) {
         <Text component="h2" fw={600}>
           Theme Customizer
         </Text>
-        <CloseButton onClick={onClose} />
+        <CloseButton onClick={themeForm.close} />
       </Group>
       <form>
         <Box>

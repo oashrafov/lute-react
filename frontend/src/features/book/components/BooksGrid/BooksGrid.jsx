@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
-  em,
   Group,
   InputLabel,
   Pagination,
   Select,
   SimpleGrid,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
 import { IconChevronLeftPipe, IconChevronRightPipe } from "@tabler/icons-react";
-import BooksGridTopToolbar from "./components/BooksGridTopToolbar";
-import BookCards from "./components/BookCards";
+import { BooksGridTopToolbar } from "./components/BooksGridTopToolbar";
+import { BookCards } from "./components/BookCards";
 import { DEFAULT_TABLE_ROW_COUNT } from "@resources/constants";
+import { useMediaQuery } from "@hooks/useMediaQuery";
 
 const PAGINATION = {
   pageIndex: 0,
@@ -21,8 +20,8 @@ const PAGINATION = {
 
 const url = new URL("/api/books", "http://localhost:5001");
 
-function BooksGrid() {
-  const isMobile = useMediaQuery(`(max-width: ${em(576)})`);
+export function BooksGrid() {
+  const media = useMediaQuery();
 
   const [shelf, setShelf] = useState("active");
   const [activePage, setPage] = useState(1);
@@ -94,7 +93,7 @@ function BooksGrid() {
           firstIcon={IconChevronLeftPipe}
           lastIcon={IconChevronRightPipe}
           withEdges={true}
-          withPages={isMobile ? false : true}
+          withPages={media !== "mobile"}
           styles={{
             root: { display: "flex", justifyContent: "flex-end" },
             control: { width: "36px", height: "36px" },
@@ -107,5 +106,3 @@ function BooksGrid() {
     </>
   );
 }
-
-export default BooksGrid;

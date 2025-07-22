@@ -8,7 +8,7 @@ import TermActions from "./components/TermActions";
 import BulkTermForm from "../BulkTermForm/BulkTermForm";
 import ShowParentsOnlyChip from "./components/ShowParentsOnlyChip";
 import EmptyRow from "@common/EmptyRow/EmptyRow";
-import TableTopToolbarDefaultItems from "@common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
+import { TableTopToolbarDefaultItems } from "@common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
 import TableTopToolbar from "@common/TableTopToolbar/TableTopToolbar";
 import getDefaultTableOptions from "@resources/table-options-default";
 import columnDefinition from "./columnDefinition";

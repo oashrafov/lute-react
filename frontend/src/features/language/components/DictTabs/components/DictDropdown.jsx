@@ -1,9 +1,9 @@
 import { ActionIcon, Menu } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import DictTabExternal from "./DictTabExternal";
-import DictTabEmbedded from "./DictTabEmbedded";
+import { DictTabExternal } from "./DictTabExternal";
+import { DictTabEmbedded } from "./DictTabEmbedded";
 
-function DictDropdown({ termText, dicts, onClick }) {
+export function DictDropdown({ termText, dicts, onClick }) {
   return (
     <Menu>
       <Menu.Target>
@@ -38,5 +38,3 @@ function DictDropdown({ termText, dicts, onClick }) {
     </Menu>
   );
 }
-
-export default DictDropdown;

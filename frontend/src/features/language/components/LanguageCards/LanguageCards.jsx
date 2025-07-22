@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import { Group, Radio, rem, ScrollArea, Stack, Text } from "@mantine/core";
+import { Group, Radio, rem, ScrollArea } from "@mantine/core";
 import { userLanguagesQuery } from "../../api/query";
+import { LanguageCard } from "../LanguageCard/LanguageCard";
 import classes from "./LanguageCards.module.css";
 
-function LanguageCards({ label, description }) {
+export function LanguageCards({ label, description }) {
   const { data: languages } = useQuery(userLanguagesQuery);
   const [params, setParams] = useSearchParams();
   const currentId = params.get("langId");
@@ -48,33 +49,3 @@ function LanguageCards({ label, description }) {
     </Radio.Group>
   );
 }
-
-function LanguageCard({ data }) {
-  return (
-    <Stack gap="xs">
-      <Text fz="sm" className={classes.label} lh={1.4} fw={500} lineClamp={1}>
-        {data.name}
-      </Text>
-      <Group wrap="nowrap">
-        <div>
-          <Text fz="xs" fw={500} className={classes.label}>
-            {data.bookCount}
-          </Text>
-          <Text size="xs" fw={500} className={classes.stat}>
-            Books
-          </Text>
-        </div>
-        <div>
-          <Text fz="xs" fw={500} className={classes.label}>
-            {data.termCount}
-          </Text>
-          <Text size="xs" fw={500} className={classes.stat}>
-            Terms
-          </Text>
-        </div>
-      </Group>
-    </Stack>
-  );
-}
-
-export default LanguageCards;

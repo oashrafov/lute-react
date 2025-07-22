@@ -1,47 +1,46 @@
-import { useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
-import { Drawer } from "@mantine/core";
-import Book from "@book/components/Book/Book";
-import DrawerMenu from "../components/DrawerMenu/DrawerMenu";
-import TermsTable from "@term/components/TermsTable/TermsTable";
+import { lazy, Suspense } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import { BookContextProvider } from "@book/store/bookContext";
+import { useDocumentTitle } from "@hooks/useDocumentTitle";
+import { useMarkAsStale } from "@book/hooks/useMarkAsStale";
+import { useNavigationProgress } from "@hooks/useNavigationProgress";
+import { getBookQuery } from "@book/api/query";
+import { SideMenu } from "@book/components/SideMenu/SideMenu";
+import { PageContextProvider } from "@book/store/pageContext";
+import { ActiveTermContextProvider } from "@book/store/activeTermContext";
+import { Book } from "@book/components/Book/Book";
+import { ViewProvider } from "@book/store/viewContext";
+import { ActiveDictTabProvider } from "@book/store/activeDictTabContext";
+
+const PageTermsDrawer = lazy(
+  () => import("@book/components/PageTermsDrawer/PageTermsDrawer")
+);
 
 function BookPage() {
-  const { page } = useParams();
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [themeFormOpen, setThemeFormOpen] = useState(false);
-  const [params, setParams] = useSearchParams();
-  const termIds = params.get("ids");
+  const { id } = useParams();
+  const { data: book } = useQuery(getBookQuery(id));
+  useDocumentTitle(`Reading "${book.title}"`);
+  useMarkAsStale();
+  useNavigationProgress();
 
   return (
-    <>
-      <DrawerMenu
-        drawerOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onThemeFormOpen={setThemeFormOpen}
-      />
+    <BookContextProvider>
+      <SideMenu />
+      <Suspense>
+        <PageTermsDrawer />
+      </Suspense>
 
-      <BookContextProvider>
-        <Book
-          themeFormOpen={themeFormOpen}
-          onDrawerOpen={() => setDrawerOpen(true)}
-          onThemeFormOpen={setThemeFormOpen}
-        />
-      </BookContextProvider>
-
-      <Drawer
-        size="100%"
-        opened={!!termIds}
-        onClose={() => {
-          params.delete("ids");
-          setParams(params);
-        }}
-        title={`Terms for page ${page}`}
-        styles={{ title: { fontWeight: 500 } }}
-        position="bottom">
-        <TermsTable />
-      </Drawer>
-    </>
+      <PageContextProvider>
+        <ActiveTermContextProvider>
+          <ActiveDictTabProvider>
+            <ViewProvider>
+              <Book />
+            </ViewProvider>
+          </ActiveDictTabProvider>
+        </ActiveTermContextProvider>
+      </PageContextProvider>
+    </BookContextProvider>
   );
 }
 

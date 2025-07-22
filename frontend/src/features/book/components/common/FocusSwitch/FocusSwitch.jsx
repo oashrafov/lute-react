@@ -1,21 +1,25 @@
-import { useContext } from "react";
 import { IconFocus2 } from "@tabler/icons-react";
-import ModeSwitch from "../ModeSwitch/ModeSwitch";
-import { BookContext } from "@book/store/bookContext";
-import { handleSetFocusMode } from "@actions/page";
+import { ModeSwitch } from "../ModeSwitch/ModeSwitch";
+import { handleSetView } from "@actions/page";
+import { useViewContext } from "@book/hooks/useViewContext";
 
-function FocusSwitch() {
-  const { state, dispatch } = useContext(BookContext);
+export function FocusSwitch() {
+  const { view, setView } = useViewContext();
+
+  function handleToggleFocus() {
+    setView((prev) => {
+      const newView = prev === "focus" ? "default" : "focus";
+      handleSetView(newView);
+      return newView;
+    });
+  }
+
   return (
     <ModeSwitch
       label="Focus mode"
       icon={IconFocus2}
-      checked={state.focusMode}
-      onChange={(e) =>
-        handleSetFocusMode(Boolean(e.currentTarget.checked), dispatch)
-      }
+      checked={view === "focus"}
+      onChange={handleToggleFocus}
     />
   );
 }
-
-export default FocusSwitch;

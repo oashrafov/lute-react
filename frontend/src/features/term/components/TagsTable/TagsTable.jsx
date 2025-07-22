@@ -4,7 +4,7 @@ import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { IconPlus } from "@tabler/icons-react";
 import NewTagForm from "./components/NewTagForm";
 import TableTopToolbar from "@common/TableTopToolbar/TableTopToolbar";
-import TableTopToolbarDefaultItems from "@common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
+import { TableTopToolbarDefaultItems } from "@common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
 import getDefaultTableOptions from "@resources/table-options-default";
 import columnDefinition from "./columnDefinition";
 

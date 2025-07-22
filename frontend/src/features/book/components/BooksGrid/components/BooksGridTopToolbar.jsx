@@ -16,7 +16,7 @@ import {
 } from "@tabler/icons-react";
 import { initialQuery } from "@settings/api/settings";
 
-function BooksGridTopToolbar({
+export function BooksGridTopToolbar({
   activeLang,
   setActiveLang,
   shelf,
@@ -140,5 +140,3 @@ function BooksGridTopToolbar({
     </Group>
   );
 }
-
-export default BooksGridTopToolbar;

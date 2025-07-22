@@ -1,6 +1,6 @@
 import { Tooltip, Switch } from "@mantine/core";
 
-function ModeSwitch({ checked, onChange, icon: Icon, label }) {
+export function ModeSwitch({ checked, onChange, icon: Icon, label }) {
   return (
     <Tooltip label={label} position="left" openDelay={800} refProp="rootRef">
       <Switch
@@ -14,5 +14,3 @@ function ModeSwitch({ checked, onChange, icon: Icon, label }) {
     </Tooltip>
   );
 }
-
-export default ModeSwitch;

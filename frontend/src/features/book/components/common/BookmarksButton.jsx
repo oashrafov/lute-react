@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import { ActionIcon } from "@mantine/core";
 import { IconBookmarksFilled } from "@tabler/icons-react";
 
-const BookmarksButton = forwardRef(function BookmarksButton(props, ref) {
+export const BookmarksButton = forwardRef(function BookmarksButton(props, ref) {
   return (
     <ActionIcon
       {...props}
@@ -17,5 +17,3 @@ const BookmarksButton = forwardRef(function BookmarksButton(props, ref) {
     </ActionIcon>
   );
 });
-
-export default BookmarksButton;

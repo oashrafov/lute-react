@@ -1,9 +1,11 @@
 import { getPageQuery } from "@book/api/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-function usePrefetchPages(bookId, pageNum, pageCount) {
+export function usePrefetchPages(pageCount) {
   const queryClient = useQueryClient();
+  const { id: bookId, page: pageNum } = useParams();
 
   useEffect(() => {
     const nextPage = Number(pageNum) + 1;
@@ -17,5 +19,3 @@ function usePrefetchPages(bookId, pageNum, pageCount) {
     }
   }, [pageCount, bookId, pageNum, queryClient]);
 }
-
-export default usePrefetchPages;

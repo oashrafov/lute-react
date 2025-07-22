@@ -1,7 +1,7 @@
 import { ActionIcon, Tooltip } from "@mantine/core";
 import { IconRosetteDiscountCheckFilled } from "@tabler/icons-react";
 
-function MarkRestAsKnownButton() {
+export function MarkRestAsKnownButton() {
   return (
     <Tooltip label="Mark rest as known" position="right">
       <ActionIcon
@@ -16,5 +16,3 @@ function MarkRestAsKnownButton() {
     </Tooltip>
   );
 }
-
-export default MarkRestAsKnownButton;

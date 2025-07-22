@@ -5,7 +5,7 @@ import { initialQuery } from "@settings/api/settings";
 import { IconSquareRoundedMinusFilled } from "@tabler/icons-react";
 import { useSearchParams } from "react-router-dom";
 
-function DeleteLanguageButton() {
+export function DeleteLanguageButton() {
   const [params] = useSearchParams();
   const langId = params.get("langId");
   const { data: initial } = useQuery(initialQuery);
@@ -51,5 +51,3 @@ function DeleteLanguageButton() {
     </Tooltip>
   );
 }
-
-export default DeleteLanguageButton;

@@ -1,18 +1,11 @@
-const MAX_VISIBLE_DICT_TABS = 5;
-const MAX_PARENT_TAG_SUGGESTION_COUNT = 15;
-const DEFAULT_TEXT_SETTINGS = {
+export const MAX_VISIBLE_DICT_TABS = 5;
+export const MAX_PARENT_TAG_SUGGESTION_COUNT = 15;
+export const DEFAULT_TEXT_SETTINGS = {
   fontSize: 1,
   lineHeight: 1,
   columnCount: 1,
   highlights: true,
-  focusMode: false,
   textWidth: 50,
 };
-const DEFAULT_TABLE_ROW_COUNT = 10;
-
-export {
-  MAX_PARENT_TAG_SUGGESTION_COUNT,
-  MAX_VISIBLE_DICT_TABS,
-  DEFAULT_TEXT_SETTINGS,
-  DEFAULT_TABLE_ROW_COUNT,
-};
+export const DEFAULT_TABLE_ROW_COUNT = 10;
+export const FOCUS_HEADER_HEIGHT = 80;

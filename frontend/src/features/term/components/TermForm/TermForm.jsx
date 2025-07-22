@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import {
@@ -38,6 +38,7 @@ import {
   termUpdated,
   termDeleted,
 } from "@term/resources/notifications";
+import { useActiveTermContext } from "@book/hooks/useActiveTermContext";
 import classes from "./TermForm.module.css";
 
 const termBlank = {
@@ -56,16 +57,16 @@ const termBlank = {
 
 const languageBlank = { id: 0, right_to_left: false, show_romanization: true };
 
-function TermForm({
+export function TermForm({
   term = termBlank,
   language = languageBlank,
   translationFieldRef = {},
-  onSetActiveTerm = null, // selected word data from page text
   onSetTerm = null, // typed text in the term field
 }) {
-  const form = useTermForm(term, language);
-  const { data: tags } = useQuery(getTagSuggestionsQuery);
   const queryClient = useQueryClient();
+  const form = useTermForm(term, language);
+  const { setActiveTerm } = useActiveTermContext();
+  const { data: tags } = useQuery(getTagSuggestionsQuery);
 
   const editMode = term.id !== null;
   const blankMode = !term.text;
@@ -121,7 +122,7 @@ function TermForm({
     onSuccess: () => {
       notifications.show(editMode ? termUpdated : termCreated);
       blankMode && form.reset();
-      !blankMode && bookId && onSetActiveTerm({ data: null });
+      !blankMode && bookId && setActiveTerm({ data: null });
       !blankMode && bookId && queryClient.invalidateQueries(["page", bookId]);
     },
   });
@@ -130,7 +131,7 @@ function TermForm({
     mutationFn: editTerm,
     onSuccess: () => {
       notifications.show(termUpdated);
-      bookId && onSetActiveTerm({ data: null });
+      bookId && setActiveTerm({ data: null });
       bookId && queryClient.invalidateQueries(["page", bookId]);
     },
   });
@@ -139,7 +140,7 @@ function TermForm({
     mutationFn: deleteTerm,
     onSuccess: () => {
       notifications.show(termDeleted);
-      bookId && onSetActiveTerm({ data: null });
+      bookId && setActiveTerm({ data: null });
       bookId && queryClient.invalidateQueries(["page", bookId]);
     },
   });
@@ -188,7 +189,6 @@ function TermForm({
         values={form.getValues().parents || []}
         onSetValues={(parents) => form.setFieldValue("parents", parents)}
         onSubmitParent={handleParentSubmit}
-        onSetActiveTerm={onSetActiveTerm}
         languageId={language.id}
         leftSection={<IconSitemap size={20} />}
         leftSectionProps={{ className: classes.leftSection }}
@@ -277,5 +277,3 @@ function TermForm({
     </form>
   );
 }
-
-export default memo(TermForm);

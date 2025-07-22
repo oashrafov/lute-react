@@ -3,9 +3,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { keys } from "@book/api/keys";
 import { editBook } from "@book/api/api";
 import { getFormDataFromObj } from "@actions/utils";
+import { useParams } from "react-router-dom";
 
-function useMarkAsStale(id) {
+export function useMarkAsStale() {
   const queryClient = useQueryClient();
+  const { id } = useParams();
 
   const { mutate } = useMutation({
     mutationFn: editBook,
@@ -20,5 +22,3 @@ function useMarkAsStale(id) {
     });
   }, [id, mutate]);
 }
-
-export default useMarkAsStale;

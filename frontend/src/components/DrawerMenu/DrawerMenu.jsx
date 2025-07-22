@@ -1,29 +1,12 @@
-import { memo, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  ActionIcon,
-  Center,
-  Divider,
-  Drawer,
-  Group,
-  Image,
-  ScrollArea,
-  SegmentedControl,
-  Text,
-} from "@mantine/core";
-import { IconPalette } from "@tabler/icons-react";
-import DrawerLinks from "./components/DrawerLinks";
-import SchemeToggleButton from "@common/SchemeToggleButton/SchemeToggleButton";
-import MenuBookList from "./components/MenuBookList";
-import DrawerFooter from "./components/DrawerFooter";
+import { Divider, Drawer, Group, Image, Text } from "@mantine/core";
 import classes from "./DrawerMenu.module.css";
 
-function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
-  const [section, setSection] = useState("navigation");
+export function DrawerMenu({ isOpen, onClose, children }) {
   return (
     <Drawer.Root
       classNames={{ content: classes.drawer }}
-      opened={drawerOpen}
+      opened={isOpen}
       onClose={onClose}
       size="250">
       <Drawer.Overlay />
@@ -41,49 +24,9 @@ function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
         <Divider />
 
         <Drawer.Body p={0} className={classes.drawer}>
-          <Center p={10}>
-            <Group gap={5}>
-              <SchemeToggleButton onCloseDrawer={onClose} />
-              {onThemeFormOpen && (
-                <ActionIcon
-                  onClick={() => {
-                    onThemeFormOpen((v) => !v);
-                    onClose();
-                  }}
-                  size="lg"
-                  variant="subtle">
-                  <IconPalette size="90%" />
-                </ActionIcon>
-              )}
-            </Group>
-          </Center>
-
-          <SegmentedControl
-            value={section}
-            onChange={(value) => setSection(value)}
-            transitionTimingFunction="ease"
-            fullWidth
-            data={[
-              { label: "Navigation", value: "navigation" },
-              { label: "Books", value: "books" },
-            ]}
-          />
-
-          {section === "navigation" ? (
-            <ScrollArea className={classes.scroll} type="never">
-              <DrawerLinks />
-            </ScrollArea>
-          ) : (
-            <MenuBookList onDrawerClose={onClose} />
-          )}
-
-          <Divider />
-
-          <DrawerFooter />
+          {children}
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>
   );
 }
-
-export default memo(DrawerMenu);

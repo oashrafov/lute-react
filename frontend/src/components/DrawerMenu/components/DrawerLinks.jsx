@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import {
@@ -14,7 +14,7 @@ import { menu } from "@resources/menus";
 import { softwareInfo } from "@resources/modals";
 import classes from "../DrawerMenu.module.css";
 
-function DrawerLinks() {
+export function DrawerLinks() {
   return (
     <nav className={classes.nav}>
       <ul>
@@ -32,7 +32,26 @@ function DrawerLinks() {
           <CollapsingMenu key={menu.label} section={menu} />
         ))}
 
-        <CollapsingMenu section={menu.about}>{aboutMenuItems}</CollapsingMenu>
+        <CollapsingMenu section={menu.about}>
+          <UnstyledButton
+            className={classes.link}
+            onClick={() => modals.openContextModal(softwareInfo)}>
+            {menu.about.info.label}
+          </UnstyledButton>
+          {makeLink(menu.about.stats)}
+          <a
+            className={classes.link}
+            href={menu.about.docs.action}
+            target="_blank">
+            {menu.about.docs.label}
+          </a>
+          <a
+            className={classes.link}
+            href={menu.about.discord.action}
+            target="_blank">
+            {menu.about.discord.label}
+          </a>
+        </CollapsingMenu>
       </ul>
     </nav>
   );
@@ -42,26 +61,6 @@ const makeLink = (child) => (
   <Link key={child.label} className={classes.link} to={child.action}>
     {child.label}
   </Link>
-);
-
-const aboutMenuItems = (
-  <>
-    <UnstyledButton
-      className={classes.link}
-      onClick={() => modals.openContextModal(softwareInfo)}>
-      {menu.about.info.label}
-    </UnstyledButton>
-    {makeLink(menu.about.stats)}
-    <a className={classes.link} href={menu.about.docs.action} target="_blank">
-      {menu.about.docs.label}
-    </a>
-    <a
-      className={classes.link}
-      href={menu.about.discord.action}
-      target="_blank">
-      {menu.about.discord.label}
-    </a>
-  </>
 );
 
 function CollapsingMenu({ section, children }) {
@@ -108,5 +107,3 @@ function Section({ label, hasLinks, opened, icon: Icon }) {
     </Group>
   );
 }
-
-export default memo(DrawerLinks);

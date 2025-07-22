@@ -13,6 +13,7 @@ import "@mantine/charts/styles.css";
 import "mantine-react-table/styles.css";
 import "./index.css";
 import "./highlight.css";
+import { GlobalContextProvider } from "./store/globalContext";
 import SoftwareInfo from "./components/Modals/SoftwareInfo";
 import routes from "./routes/routes";
 
@@ -37,7 +38,9 @@ function App() {
         <Notifications />
         <NavigationProgress />
         <ModalsProvider modals={{ about: SoftwareInfo }}>
-          <RouterProvider router={routes(queryClient)} />
+          <GlobalContextProvider>
+            <RouterProvider router={routes(queryClient)} />
+          </GlobalContextProvider>
         </ModalsProvider>
       </MantineProvider>
     </QueryClientProvider>

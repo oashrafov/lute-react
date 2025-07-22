@@ -1,7 +1,7 @@
 import { Group, Text } from "@mantine/core";
-import DeleteLanguageButton from "./DeleteLanguageButton/DeleteLanguageButton";
+import { DeleteLanguageButton } from "./DeleteLanguageButton/DeleteLanguageButton";
 
-function LanguageRadioLabel() {
+export function LanguageRadioLabel() {
   return (
     <Group wrap="nowrap" gap={5} align="center">
       <Text component="span" fw={500} fz="sm">
@@ -11,5 +11,3 @@ function LanguageRadioLabel() {
     </Group>
   );
 }
-
-export default LanguageRadioLabel;

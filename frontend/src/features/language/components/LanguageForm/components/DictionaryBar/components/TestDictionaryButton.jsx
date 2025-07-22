@@ -7,8 +7,9 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
+import { IFrame } from "@language/components/DictTabs/components/common/IFrame";
 
-function TestDictionaryButton({ src }) {
+export function TestDictionaryButton({ src }) {
   return (
     <Popover>
       <Popover.Target>
@@ -27,16 +28,9 @@ function TestDictionaryButton({ src }) {
 
           <Divider mb={5} />
 
-          <iframe
-            style={{ border: "none" }}
-            height="100%"
-            src={src}
-            loading="lazy"
-          />
+          <IFrame src={src} />
         </Stack>
       </Popover.Dropdown>
     </Popover>
   );
 }
-
-export default TestDictionaryButton;

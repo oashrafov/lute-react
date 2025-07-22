@@ -2,7 +2,7 @@ import { Text } from "@mantine/core";
 import DictFavicon from "./common/DictFavicon";
 import classes from "../DictTabs.module.css";
 
-function DictTabEmbedded({
+export function DictTabEmbedded({
   dict,
   value,
   innerRef,
@@ -23,5 +23,3 @@ function DictTabEmbedded({
     </Component>
   );
 }
-
-export default DictTabEmbedded;
