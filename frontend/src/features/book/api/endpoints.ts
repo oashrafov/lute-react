@@ -14,5 +14,5 @@ export const endpoints = {
   getBookDataFromUrl: `${root}/url`,
   commitPage: (bookId: number, pageNum: number) =>
     `${root}/${bookId}/pages/${pageNum}`,
-  getBookFormInitValues: `${BASE_API_URL}/form`,
+  getBookFormInitValues: `${root}/form`,
 } as const;

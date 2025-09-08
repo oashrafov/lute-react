@@ -9,5 +9,5 @@ export const endpoints = {
   getPredefinedLanguage: (langName: string) => `${root}/predefined/${langName}`,
   getLanguageParsers: `${root}/parsers`,
   createLanguage: root,
-  getLanguageFormInitValues: `${BASE_API_URL}/form`,
+  getLanguageFormInitValues: `${root}/form`,
 } as const;
