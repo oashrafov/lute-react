@@ -13,7 +13,6 @@ import {
 import { IconCircleCheckFilled, IconSearch } from "@tabler/icons-react";
 import { useBookContext } from "../../../features/book/hooks/useBookContext";
 import { queries } from "../../../features/book/api/queries";
-import classes from "../DrawerMenu.module.css";
 
 const searchParams = new URLSearchParams({ shelf: "active" });
 
@@ -32,7 +31,7 @@ export function MenuBookList() {
           autoCorrect="off"
         />
       </Box>
-      <ScrollArea className={classes.scroll} px={16} pb={16} type="never">
+      <ScrollArea flex={1} px={16} pb={16} type="never">
         <ul style={{ listStyle: "none" }}>
           {data?.data.map((book) => (
             <li key={book.id}>
