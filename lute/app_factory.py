@@ -21,6 +21,7 @@ from flask import (
 )
 from sqlalchemy.event import listens_for
 from sqlalchemy.pool import Pool
+from flask_cors import CORS
 
 from lute.config.app_config import AppConfig
 from lute.db import db
@@ -295,6 +296,7 @@ def _create_app(app_config, extra_config):
     """
 
     app = Flask(__name__, instance_path=app_config.datapath)
+    CORS(app)
 
     config = {
         "SECRET_KEY": "some_secret",

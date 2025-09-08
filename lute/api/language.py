@@ -72,7 +72,7 @@ def create_language():
 
         return {"id": lang_id}, 200
 
-    return None
+    return ""
 
 
 @bp.route("/predefined/<string:langname>", methods=["GET"])
@@ -80,7 +80,7 @@ def get_predefined_language(langname):
     "get predefined language form data"
 
     if langname is None:
-        return None
+        return ""
 
     service = LangService(db.session)
     predefined = service.supported_predefined_languages()
@@ -88,7 +88,7 @@ def get_predefined_language(langname):
     if len(candidates) == 1:
         language = candidates[0]
     else:
-        return None
+        return ""
 
     return _lang_to_dict(language)
 

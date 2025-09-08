@@ -272,7 +272,7 @@ def get_term_popup(termid):
     d = service.get_popup_data(termid)
 
     if d is None:
-        return None
+        return ""
 
     return {
         "text": d.term_and_parents_text(),

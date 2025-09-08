@@ -297,7 +297,7 @@ def edit_book(bookid):
 
         return {"id": book.id, "title": book.title}, 200
 
-    return None, 400
+    return "", 400
 
 
 @bp.route("/<int:bookid>", methods=["DELETE"])
@@ -376,7 +376,7 @@ def get_stats(bookid):
 
     sum_words = sum(status_distribution.values())
     if sum_words == 0:
-        return None
+        return ""
 
     status_distribution[99] = status_distribution.get(98, 0) + status_distribution.get(
         99, 0
@@ -460,7 +460,7 @@ def _book_row_to_dict(row):
         "id": row.BkID,
         "language": row.LgName,
         "languageId": row.BkLgID,
-        "textDirection": "rtl" if row.language.LgRightToLeft == 1 else "ltr",
+        "textDirection": "rtl" if row.LgRightToLeft == 1 else "ltr",
         "source": row.BkSourceURI or "",
         "audioName": row.BkAudioFilename or "",
         "title": row.BkTitle,
