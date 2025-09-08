@@ -206,6 +206,7 @@ class Service:
             ]
             for s in sentences:
                 s[0].add_html_class("sentencestart")
+                s[0].is_sentence_start = True
             return sentences
 
         paras = [

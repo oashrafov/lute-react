@@ -2,7 +2,7 @@
 API endpoints
 """
 
-from flask import Blueprint, jsonify, current_app
+from flask import Blueprint, current_app
 
 from lute import __version__
 from lute.db import db
@@ -35,7 +35,7 @@ def wipe_db():
             "message": "Success",
         }
 
-    return jsonify(response), 200
+    return response, 200
 
 
 @bp.route("/settings/db", methods=["PATCH"])
@@ -52,7 +52,7 @@ def deactivate_demo():
             "message": "Success",
         }
 
-    return jsonify(response), 200
+    return response, 200
 
 
 @bp.route("/initial", methods=["GET"])
@@ -88,19 +88,17 @@ def get_backup_list():
     backups = service.list_backups(bs.backup_dir)
     backups.sort(reverse=True)
 
-    return jsonify(
-        {
-            "backups": [
-                {
-                    "name": backup.name,
-                    "size": backup.size,
-                    "lastModified": backup.last_modified.strftime("%Y-%m-%d %H:%M:%S"),
-                }
-                for backup in backups
-            ],
-            "directory": bs.backup_dir,
-        }
-    )
+    return {
+        "backups": [
+            {
+                "name": backup.name,
+                "size": backup.size,
+                "lastModified": backup.last_modified.strftime("%Y-%m-%d %H:%M:%S"),
+            }
+            for backup in backups
+        ],
+        "directory": bs.backup_dir,
+    }
 
 
 @bp.route("/settings", methods=["GET"])
@@ -115,14 +113,14 @@ def user_settings():
     highlights = {
         "highlights": {
             "status": {
-                "status0": {"light": "#addfff", "dark": "#5cacf3", "type": "bg"},
-                "status1": {"light": "#f5b8a9", "dark": "#e68f79", "type": "bg"},
-                "status2": {"light": "#f5cca9", "dark": "#efa96d", "type": "bg"},
-                "status3": {"light": "#f5e1a9", "dark": "#f3cd64", "type": "bg"},
-                "status4": {"light": "#f5f3a9", "dark": "#fcac67", "type": "bg"},
-                "status5": {"light": "#ddffdd", "dark": "#7ae07a", "type": "bg"},
-                "status98": {"light": "#ee8577", "dark": "#ee8577", "type": "none"},
-                "status99": {"light": "#51cf66", "dark": "#51cf66", "type": "none"},
+                0: {"light": "#addfff", "dark": "#5cacf3", "type": "bg"},
+                1: {"light": "#f5b8a9", "dark": "#e68f79", "type": "bg"},
+                2: {"light": "#f5cca9", "dark": "#efa96d", "type": "bg"},
+                3: {"light": "#f5e1a9", "dark": "#f3cd64", "type": "bg"},
+                4: {"light": "#f5f3a9", "dark": "#fcac67", "type": "bg"},
+                5: {"light": "#ddffdd", "dark": "#7ae07a", "type": "bg"},
+                98: {"light": "#ee8577", "dark": "#ee8577", "type": "none"},
+                99: {"light": "#51cf66", "dark": "#51cf66", "type": "none"},
             },
             "general": {
                 "kwordmarked": {
@@ -148,7 +146,7 @@ def user_settings():
         "timeSince": bs.time_since_last_backup,
     }
 
-    return jsonify(settings)
+    return settings
 
 
 @bp.route("/shortcuts", methods=["GET", "POST"])
@@ -241,23 +239,21 @@ def keys():
     }
 
     settings = {h.key: h.value for h in db.session.query(UserSetting).all()}
-    return jsonify(
-        [
-            {
-                "name": category,
-                "shortcuts": [
-                    {
-                        "label": setting_descs[key],
-                        "key": settings[key],
-                        "description": key,
-                    }
-                    for key in keylist
-                ],
-            }
-            for entry in categorized_settings
-            for category, keylist in entry.items()
-        ]
-    )
+    return [
+        {
+            "name": category,
+            "shortcuts": [
+                {
+                    "label": setting_descs[key],
+                    "key": settings[key],
+                    "description": key,
+                }
+                for key in keylist
+            ],
+        }
+        for entry in categorized_settings
+        for category, keylist in entry.items()
+    ]
 
 
 #
@@ -267,14 +263,12 @@ def version():
     app version
     """
     ac = current_app.env_config
-    return jsonify(
-        {
-            "version": __version__,
-            "datapath": ac.datapath,
-            "database": ac.dbfilename,
-            "isDocker": ac.is_docker,
-        }
-    )
+    return {
+        "version": __version__,
+        "datapath": ac.datapath,
+        "database": ac.dbfilename,
+        "isDocker": ac.is_docker,
+    }
 
 
 def _get_backup_settings():

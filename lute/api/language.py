@@ -3,7 +3,7 @@ Languages endpoints
 """
 
 from urllib.parse import urlparse
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request
 
 from sqlalchemy import text as SQLText
 from lute.parse.registry import supported_parsers
@@ -44,7 +44,7 @@ def get_user_languages():
         for row in result
     ]
 
-    return jsonify(languages), 200
+    return languages, 200
 
 
 @bp.route("/predefined", methods=["GET"])
@@ -57,7 +57,7 @@ def get_predefined_languages():
     existing_names = [l.name for l in existing_langs]
     filtered = [p for p in all_predefined if p.name not in existing_names]
 
-    return jsonify([language.name for language in filtered])
+    return [language.name for language in filtered]
 
 
 @bp.route("/", methods=["POST"])
@@ -70,9 +70,9 @@ def create_language():
         service = LangService(db.session)
         lang_id = service.load_language_def(data["name"])
 
-        return jsonify({"id": lang_id}), 200
+        return {"id": lang_id}, 200
 
-    return jsonify(None)
+    return None
 
 
 @bp.route("/predefined/<string:langname>", methods=["GET"])
@@ -80,7 +80,7 @@ def get_predefined_language(langname):
     "get predefined language form data"
 
     if langname is None:
-        return jsonify(None)
+        return None
 
     service = LangService(db.session)
     predefined = service.supported_predefined_languages()
@@ -88,28 +88,54 @@ def get_predefined_language(langname):
     if len(candidates) == 1:
         language = candidates[0]
     else:
-        return jsonify(None)
+        return None
 
-    return jsonify(_lang_to_dict(language))
+    return _lang_to_dict(language)
 
 
 @bp.route("/user/<int:langid>", methods=["GET"])
-def get_user_languag(langid):
+def get_user_language(langid):
     """
     get existing language form data
     """
 
     if not langid:
-        return jsonify("Language does not exist")
+        return "Language does not exist"
 
     language = db.session.get(LanguageModel, langid)
 
-    return jsonify(_lang_to_dict(language))
+    return _lang_to_dict(language)
 
 
 @bp.route("/parsers", methods=["GET"])
 def get_parsers():
-    return jsonify([{"value": a[0], "label": a[1].name()} for a in supported_parsers()])
+    return [{"value": a[0], "label": a[1].name()} for a in supported_parsers()]
+
+
+@bp.route("/form", methods=["GET"])
+def get_language_form():
+    """
+    default language form settings
+    """
+    empty_dict = {
+        "active": True,
+        "for": "terms",
+        "type": "embedded",
+        "url": "",
+        "label": "",
+        "hostname": "",
+    }
+
+    return {
+        "character_substitutions": "´='|`='|’='|‘='|...=…|..=‥",
+        "split_sentences": ".!?",
+        "split_sentence_exceptions": "Mr.|Mrs.|Dr.|[A-Z].|Vd.|Vds.",
+        "word_chars": "a-zA-ZÀ-ÖØ-öø-ȳáéíóúÁÉÍÓÚñÑ",
+        "right_to_left": False,
+        "show_romanization": False,
+        "parser_type": "spacedel",
+        "dictionaries": [empty_dict, empty_dict],
+    }
 
 
 def _lang_to_dict(language):

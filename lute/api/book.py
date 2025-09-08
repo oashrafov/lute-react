@@ -4,7 +4,7 @@ import os
 import json
 from datetime import datetime
 
-from flask import Blueprint, jsonify, send_file, current_app, request
+from flask import Blueprint, send_file, current_app, request
 from sqlalchemy import text as SQLText
 
 from lute.db import db
@@ -128,15 +128,13 @@ def get_books():
 
     books.extend(pinned_books)
 
-    return jsonify(
-        {
-            "data": books,
-            "totalCount": total_count,
-            "filteredCount": filtered_count,
-            "activeCount": active_count,
-            "archivedCount": archived_count,
-        }
-    )
+    return {
+        "data": books,
+        "totalCount": total_count,
+        "filteredCount": filtered_count,
+        "activeCount": active_count,
+        "archivedCount": archived_count,
+    }
 
 
 @bp.route("/<int:bookid>", methods=["GET"])
@@ -145,7 +143,7 @@ def get_book(bookid):
 
     book = _find_book(bookid)
     if book is None:
-        return jsonify("No such book")
+        return "No such book"
 
     page_num = 1
     text = book.texts[0]
@@ -160,6 +158,7 @@ def get_book(bookid):
         "pageCount": book.page_count,
         "currentPage": page_num,
         "languageId": book.language.id,
+        "textDirection": "rtl" if book.language.right_to_left else "ltr",
         "audio": (
             {
                 "name": book.audio_filename,
@@ -207,7 +206,7 @@ def get_book(bookid):
         },
     }
 
-    return jsonify(book_dict)
+    return book_dict
 
 
 @bp.route("/new", methods=["POST"])
@@ -242,10 +241,10 @@ def create_book():
         book = svc.import_book(domain_book, db.session)
         response = {"id": book.id, "title": book.title}
 
-        return jsonify(response), 200
+        return response, 200
 
     except BookImportException as e:
-        return jsonify(e.message), 400
+        return e.message, 400
 
 
 @bp.route("/<int:bookid>", methods=["PATCH"])
@@ -268,7 +267,7 @@ def edit_book(bookid):
 
         response = {"id": book.id, "title": book.title}
         response["archivedCount"] = archived_count
-        return jsonify(response), 200
+        return response, 200
 
     if action == "edit":
         files_dict = request.files.to_dict()
@@ -287,20 +286,18 @@ def edit_book(bookid):
         svc = BookService()
         svc.import_book(book, db.session)
 
-        response = {"id": book.id, "title": book.title}
-        return jsonify(response), 200
+        return {"id": book.id, "title": book.title}, 200
 
     if action == "markAsStale":
         book = _find_book(bookid)
         if book is None:
-            return jsonify("No such book")
+            return "No such book"
 
         _mark_book_as_stale(book)
 
-        response = {"id": book.id, "title": book.title}
-        return jsonify(response), 200
+        return {"id": book.id, "title": book.title}, 200
 
-    return jsonify(None), 400
+    return None, 400
 
 
 @bp.route("/<int:bookid>", methods=["DELETE"])
@@ -323,11 +320,9 @@ def parse_content_from_url():
     try:
         b = service.book_data_from_url(url)
     except BookImportException as e:
-        return jsonify(e.message), 400
+        return e.message, 400
 
-    response = {"title": b.title, "source_uri": b.source_uri, "text": b.text}
-
-    return jsonify(response)
+    return {"title": b.title, "source_uri": b.source_uri, "text": b.text}
 
 
 @bp.route("/<int:bookid>/pages/<int:pagenum>", methods=["GET"])
@@ -335,13 +330,11 @@ def get_page_content(bookid, pagenum):
     "get page content"
     book = _find_book(bookid)
     if book is None:
-        return jsonify("No such book")
+        return "No such book"
 
     text, paragraphs = _load_page_content(book, pagenum)
 
-    return jsonify(
-        {"text": text.text, "paragraphs": _paragraphs_to_dict_array(paragraphs)}
-    )
+    return {"text": text.text, "paragraphs": _paragraphs_to_dict_array(paragraphs)}
 
 
 @bp.route("/<int:bookid>/pages/<int:pagenum>", methods=["POST"])
@@ -350,7 +343,7 @@ def commit_page(bookid, pagenum):
 
     book = _find_book(bookid)
     if book is None:
-        return jsonify("No such book")
+        return "No such book"
 
     text = book.text_at_page(pagenum)
 
@@ -361,7 +354,7 @@ def commit_page(bookid, pagenum):
     read_service = ReadService(db.session)
     read_service._save_new_status_0_terms(paragraphs)  # pylint: disable=W0212
 
-    return jsonify({"id": book.id}), 200
+    return {"id": book.id}, 200
 
 
 @bp.route("<int:bookid>/audio", methods=["GET"])
@@ -395,7 +388,22 @@ def get_stats(bookid):
         pct = words / sum_words * 100
         with_percentages[status] = {"wordCount": words, "percentage": pct}
 
-    return jsonify(with_percentages)
+    return with_percentages
+
+
+@bp.route("/form", methods=["GET"])
+def get_new_book_form():
+    return {
+        "title": "",
+        "text": "",
+        "importurl": "",
+        "text_file": None,
+        "audio_file": None,
+        "threshold_page_tokens": 250,
+        "split_by": "paragraphs",
+        "source_uri": "",
+        "book_tags": [],
+    }
 
 
 def _find_book(bookid):
@@ -452,7 +460,7 @@ def _book_row_to_dict(row):
         "id": row.BkID,
         "language": row.LgName,
         "languageId": row.BkLgID,
-        "languageRtl": row.LgRightToLeft == 1,
+        "textDirection": "rtl" if row.language.LgRightToLeft == 1 else "ltr",
         "source": row.BkSourceURI or "",
         "audioName": row.BkAudioFilename or "",
         "title": row.BkTitle,
@@ -474,15 +482,16 @@ def _paragraphs_to_dict_array(paragraphs):
                 {
                     "id": textitem.span_id,
                     "displayText": textitem.html_display_text,
-                    "classes": getattr(textitem, "html_class_string", ""),
-                    "langId": getattr(textitem, "lang_id", ""),
+                    "langId": getattr(textitem, "lang_id", None),
                     "paragraphId": textitem.paragraph_number,
                     "sentenceId": textitem.sentence_number,
                     "text": textitem.text,
-                    "statusClass": textitem.status_class,
                     "order": textitem.index,
                     "wid": textitem.wo_id,
                     "isWord": textitem.is_word,
+                    "status": textitem.wo_status,
+                    "isOverlapped": textitem.is_overlapped,
+                    "isSentenceStart": textitem.is_sentence_start,
                 }
                 for textitem in sentence
             ]

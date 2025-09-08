@@ -1,47 +1,51 @@
-import js from "@eslint/js";
-import globals from "globals";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import pluginQuery from "@tanstack/eslint-plugin-query";
+import tanstackQuery from "@tanstack/eslint-plugin-query";
+import js from "@eslint/js";
+import globals from "globals";
 import tseslint from "typescript-eslint";
+import { globalIgnores } from "eslint/config";
+import prettier from "eslint-config-prettier/flat";
 
 export default tseslint.config([
-  ...pluginQuery.configs["flat/recommended"],
-  { ignores: ["dist"] },
+  globalIgnores(["dist"]),
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*.{ts,tsx}"],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.recommended,
+      reactHooks.configs["recommended-latest"],
+      reactRefresh.configs.vite,
+      tanstackQuery.configs["flat/recommended"],
+      react.configs.flat.recommended,
+      react.configs.flat["jsx-runtime"],
+      prettier,
+    ],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2023,
       globals: globals.browser,
-      parserOptions: {
-        ecmaVersion: "latest",
-        ecmaFeatures: { jsx: true },
-        sourceType: "module",
-      },
-    },
-    settings: { react: { version: "18.3" } },
-    plugins: {
-      react,
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
     },
     rules: {
-      ...js.configs.recommended.rules,
-      ...tseslint.configs.recommended,
-      ...react.configs.recommended.rules,
-      ...react.configs["jsx-runtime"].rules,
-      ...reactHooks.configs.recommended.rules,
-      "no-use-before-define": [
-        "error",
-        { variables: false, functions: false, classes: false },
-      ],
       "react/jsx-no-target-blank": "off",
       "react/prop-types": "off",
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
       ],
+      "no-use-before-define": "off",
+      "@typescript-eslint/no-use-before-define": [
+        "error",
+        { variables: false, functions: false, classes: false },
+      ],
+      "prefer-const": [
+        "error",
+        {
+          destructuring: "any",
+          ignoreReadBeforeAssign: false,
+        },
+      ],
     },
+    settings: { react: { version: "detect" } },
   },
 ]);

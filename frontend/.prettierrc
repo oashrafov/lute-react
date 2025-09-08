@@ -5,5 +5,11 @@
   "singleQuote": false,
   "bracketSameLine": true,
   "quoteProps": "consistent",
-  "printWidth": 80
+  "printWidth": 80,
+  "overrides": [
+    {
+      "files": ".prettierrc",
+      "options": { "parser": "json" }
+    }
+  ]
 }

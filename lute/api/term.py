@@ -4,7 +4,7 @@ import os
 import csv
 import json
 
-from flask import Blueprint, jsonify, send_file, current_app, request
+from flask import Blueprint, send_file, current_app, request
 from sqlalchemy import text as SQLText
 
 from lute.db import db
@@ -133,7 +133,7 @@ def get_terms():
                 "id": row.WordID,
                 "language": row.LgName,
                 "languageId": row.LgID,
-                "languageRtl": row.LgRightToLeft == 1,
+                "textDirection": "rtl" if row.LgRightToLeft == 1 else "ltr",
                 "text": row.WoText,
                 "parentsString": row.ParentText,
                 "translation": row.WoTranslation,
@@ -146,9 +146,11 @@ def get_terms():
             }
         )
 
-    return jsonify(
-        {"data": response, "totalCount": total_count, "filteredCount": filtered_count}
-    )
+    return {
+        "data": response,
+        "totalCount": total_count,
+        "filteredCount": filtered_count,
+    }
 
 
 @bp.route("/tags", methods=["GET"])
@@ -168,7 +170,7 @@ def get_term_tags():
             }
         )
 
-    return jsonify(response)
+    return response
 
 
 @bp.route("/export", methods=["GET"])
@@ -240,7 +242,7 @@ def create_term():
 
     # print(term, "ID")
 
-    return jsonify({"text": text})
+    return {"text": text}
 
 
 @bp.route("/<int:termid>", methods=["PUT"])
@@ -249,7 +251,7 @@ def edit_term(termid):
 
     print(request.data)
 
-    return jsonify({"id": termid})
+    return {"id": termid}
 
 
 @bp.route("/<int:termid>", methods=["DELETE"])
@@ -258,7 +260,7 @@ def delete_term(termid):
 
     print(request.data)
 
-    return jsonify({"id": termid})
+    return {"id": termid}
 
 
 @bp.route("<int:termid>/popup", methods=["GET"])
@@ -270,35 +272,33 @@ def get_term_popup(termid):
     d = service.get_popup_data(termid)
 
     if d is None:
-        return jsonify(None)
+        return None
 
-    return jsonify(
-        {
-            "text": d.term_and_parents_text(),
-            "parents": [
-                {
-                    "text": item.term_text,
-                    "translation": item.translation,
-                    "pronunciation": item.romanization,
-                    "tags": item.tags,
-                }
-                for item in d.parents
-            ],
-            "components": [
-                {
-                    "text": item.term_text,
-                    "translation": item.translation,
-                    "pronunciation": item.romanization,
-                    "tags": item.tags,
-                }
-                for item in d.components
-            ],
-            "pronunciation": d.romanization,
-            "translation": d.translation,
-            "tags": d.tags,
-            "images": d.popup_image_data,
-        }
-    )
+    return {
+        "text": d.term_and_parents_text(),
+        "parents": [
+            {
+                "text": item.term_text,
+                "translation": item.translation,
+                "pronunciation": item.romanization,
+                "tags": item.tags,
+            }
+            for item in d.parents
+        ],
+        "components": [
+            {
+                "text": item.term_text,
+                "translation": item.translation,
+                "pronunciation": item.romanization,
+                "tags": item.tags,
+            }
+            for item in d.components
+        ],
+        "pronunciation": d.romanization,
+        "translation": d.translation,
+        "tags": d.tags,
+        "images": d.popup_image_data,
+    }
 
 
 @bp.route("/<text>/<int:langid>/sentences", methods=["GET"])
@@ -333,7 +333,7 @@ def get_sentences(langid, text):
         for k, dtos in refdata
     ]
 
-    return jsonify({"text": text, "variations": variations if refcount > 0 else []})
+    return {"text": text, "variations": variations if refcount > 0 else []}
 
 
 @bp.route("/<text>/<int:langid>/suggestions", methods=["GET"])
@@ -356,7 +356,7 @@ def get_term_suggestions(text, langid):
         for t in matches
     ]
 
-    return jsonify(result)
+    return result
 
 
 @bp.route("/tags/suggestions", methods=["GET"])
@@ -364,7 +364,7 @@ def get_tag_suggestions():
     "tag suggestions"
 
     repo = Repository(db.session)
-    return jsonify(repo.get_term_tags())
+    return repo.get_term_tags()
 
 
 def _term_to_dict(term):
