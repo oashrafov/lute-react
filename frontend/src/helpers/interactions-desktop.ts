@@ -42,6 +42,8 @@ export function startHoverMode() {
 }
 // selection started
 export function handleMouseDown(e: MouseEvent) {
+  if (e.button !== 0) return;
+
   clearAllMultiterm();
   const textitem = e.target as WordTextItemElement;
   makeMultiterm([textitem]);

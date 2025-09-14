@@ -1,6 +1,6 @@
 import { useRef, type CSSProperties, type MouseEvent } from "react";
 import { ScrollArea } from "@mantine/core";
-import { TheTextContainer } from "../common/TheTextContainer/TheTextContainer";
+import { TheTextContainer } from "../TheTextContainer/TheTextContainer";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
 import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
 import { hasClickedOutsideText } from "../../../../helpers/interactions-desktop";

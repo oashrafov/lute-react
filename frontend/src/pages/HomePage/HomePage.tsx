@@ -9,7 +9,7 @@ import { PageContainer } from "../../components/common/PageContainer/PageContain
 import { DemoNotice } from "../../components/DemoNotice/DemoNotice";
 import { WelcomeModal } from "../../components/Modals/WelcomeModal";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
-import { useInitializePage } from "../../features/book/components/TheText/hooks/useInitializePage";
+import { useInitializePage } from "../../features/book/components/TheTextContainer/hooks/useInitializePage";
 import { queries } from "../../features/settings/api/queries";
 
 export default function HomePage() {

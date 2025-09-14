@@ -1,9 +1,9 @@
-import { forwardRef, memo, type ComponentPropsWithoutRef } from "react";
+import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { clsx } from "clsx";
 import type { Textitem } from "../../../api/types";
 import { TEXTITEM_CLASS } from "../../../../../resources/constants";
 
-const TextItem = forwardRef<
+export const TextItem = forwardRef<
   HTMLSpanElement,
   ComponentPropsWithoutRef<"span"> & { data: Textitem }
 >(function TextItem(props, ref) {
@@ -33,5 +33,3 @@ const TextItem = forwardRef<
     </span>
   );
 });
-
-export default memo(TextItem);
