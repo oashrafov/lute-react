@@ -13,6 +13,7 @@ import {
   Select,
   TextInput,
 } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import {
   IconAbc,
   IconAlt,
@@ -28,6 +29,7 @@ import { queries as langQueries } from "../../api/queries";
 import classes from "./LanguageForm.module.css";
 
 export function LanguageForm() {
+  const { t } = useTranslation("form", { keyPrefix: "language" });
   const [params] = useSearchParams();
   const langId = params.get("langId");
   const { data: formValues, isSuccess } = useQuery(langQueries.languageForm());
@@ -82,7 +84,7 @@ export function LanguageForm() {
 
         <Fieldset
           variant="filled"
-          legend="Dictionaries"
+          legend={t("dictionariesLabel")}
           styles={{
             legend: { fontWeight: 500 },
           }}>
@@ -96,20 +98,20 @@ export function LanguageForm() {
         </Fieldset>
 
         <Checkbox
-          label="Show pronunciation field"
+          label={t("pronunciationLabel")}
           key={form.key("show_romanization")}
           {...form.getInputProps("show_romanization", { type: "checkbox" })}
         />
 
         <Checkbox
-          label="Is right-to-left"
+          label={t("rtlLabel")}
           key={form.key("right_to_left")}
           {...form.getInputProps("right_to_left", { type: "checkbox" })}
         />
 
         <Select
+          label={t("parseLabel")}
           w="fit-content"
-          label="Parse as"
           leftSection={<IconAnalyzeFilled />}
           withCheckIcon={false}
           searchable={false}
@@ -120,7 +122,7 @@ export function LanguageForm() {
         />
 
         <TextInput
-          label="Character substitutions"
+          label={t("charSubsLabel")}
           leftSection={<IconAlt />}
           key={form.key("character_substitutions")}
           {...form.getInputProps("character_substitutions")}
@@ -128,24 +130,24 @@ export function LanguageForm() {
 
         <Group align="flex-end">
           <TextInput
-            flex={1}
-            label="Split sentences at"
-            description="default: all Unicode sentence terminators"
+            label={t("splitLabel")}
+            description={t("splitDescription")}
             leftSection={<IconCut />}
+            flex={1}
             key={form.key("split_sentences")}
             {...form.getInputProps("split_sentences")}
           />
           <TextInput
+            label={t("splitExceptionsLabel")}
             flex={2}
-            label="Exceptions"
             key={form.key("split_sentence_exceptions")}
             {...form.getInputProps("split_sentence_exceptions")}
           />
         </Group>
 
         <TextInput
-          label="Word characters"
-          description="default: all Unicode letters and marks"
+          label={t("wordCharsLabel")}
+          description={t("wordCharsDescription")}
           leftSection={<IconAbc />}
           key={form.key("word_chars")}
           {...form.getInputProps("word_chars")}

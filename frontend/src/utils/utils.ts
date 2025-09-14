@@ -10,21 +10,6 @@ export function getFromLocalStorage<T>(item: string, defaultVal: T) {
   }
 }
 
-export const paneResizeStorage = (() => {
-  function strip(name: string) {
-    return name.replace("react-resizable-panels:", "");
-  }
-
-  return {
-    getItem(name: string) {
-      return JSON.parse(localStorage.getItem(strip(name))!);
-    },
-    setItem(name: string, value: string) {
-      localStorage.setItem(strip(name), JSON.stringify(value));
-    },
-  };
-})();
-
 export function convertPixelsToRem(sizeInPixels: number) {
   const bodyFontSize = window.getComputedStyle(
     document.querySelector("body")!

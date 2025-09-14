@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { Box, Group } from "@mantine/core";
 import { PageContainer } from "../../components/common/PageContainer/PageContainer";
@@ -12,6 +13,7 @@ import { queries as termQueries } from "../../features/term/api/queries";
 import { useUserLanguageQuery } from "../../features/language/hooks/useUserLanguageQuery";
 
 export default function NewEditTermPage() {
+  const { t } = useTranslation("page", { keyPrefix: "newEditTerm" });
   const [newTerm, setNewTerm] = useState("");
   const [params] = useSearchParams();
   const langId = params.get("langId");
@@ -23,11 +25,11 @@ export default function NewEditTermPage() {
 
   return (
     <PageContainer width="90%">
-      <PageTitle>{termId ? "Edit term" : "Create new term"}</PageTitle>
+      <PageTitle>{t(termId ? "titleEdit" : "titleCreate")}</PageTitle>
       {!termId && (
         <LanguageCards
-          label="My languages"
-          description="Pick a language to add the new term"
+          label={t("languageCardsLabel")}
+          description={t("languageCardsDescription")}
         />
       )}
 
@@ -38,7 +40,7 @@ export default function NewEditTermPage() {
           dir={language.right_to_left ? "rtl" : "ltr"}>
           <Box flex={0.3}>
             <TermForm
-              key={term}
+              key={term.text}
               term={termId ? term : undefined}
               language={language}
               onSetTerm={setNewTerm}
@@ -52,14 +54,12 @@ export default function NewEditTermPage() {
                 termText={termId ? term.text : newTerm}
               />
             ) : (
-              <Placeholder label="Type term text and click the lookup button to load dictionaries" />
+              <Placeholder label={t("dictTabsPlaceholderLabel")} />
             )}
           </Box>
         </Group>
       ) : (
-        !termId && (
-          <Placeholder label="Select a language to show the term form" />
-        )
+        !termId && <Placeholder label={t("termFormPlaceholderLabel")} />
       )}
     </PageContainer>
   );

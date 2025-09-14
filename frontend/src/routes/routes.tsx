@@ -24,7 +24,7 @@ export const routes = (queryClient: QueryClient) =>
         },
         {
           path: "/books/new",
-          element: lazyImport(() => import("../pages/NewBookPage")),
+          element: lazyImport(() => import("../pages/NewBookPage/NewBookPage")),
           loader: languagesLoader(queryClient),
         },
         {

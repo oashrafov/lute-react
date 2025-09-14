@@ -41,3 +41,17 @@ export function setTextColor(id: string, color: string, root: HTMLElement) {
       : "var(--mantine-color-dark-0)"
   );
 }
+export const paneResizeStorage = (() => {
+  function strip(name: string) {
+    return name.replace("react-resizable-panels:", "");
+  }
+
+  return {
+    getItem(name: string) {
+      return JSON.parse(localStorage.getItem(strip(name))!);
+    },
+    setItem(name: string, value: string) {
+      localStorage.setItem(strip(name), JSON.stringify(value));
+    },
+  };
+})();

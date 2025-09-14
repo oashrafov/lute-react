@@ -13,6 +13,7 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
 import {
   IconBookUpload,
@@ -35,6 +36,7 @@ import { useUserLanguageQuery } from "../../../language/hooks/useUserLanguageQue
 import classes from "./NewBookForm.module.css";
 
 export function NewBookForm() {
+  const { t } = useTranslation("form", { keyPrefix: "newBook" });
   const [params] = useSearchParams();
   const langId = params.get("langId");
   const { data: formValues } = useQuery(bookQueries.bookForm());
@@ -66,7 +68,7 @@ export function NewBookForm() {
         disabled={language ? false : true}
         required
         withAsterisk
-        label="Title"
+        label={t("titleLabel")}
         leftSection={<IconHeading />}
         key={form.key("title")}
         {...form.getInputProps("title")}
@@ -74,19 +76,19 @@ export function NewBookForm() {
       <Fieldset
         disabled={language ? false : true}
         variant="filled"
-        legend="Content"
+        legend={t("contentLabel")}
         flex={1}
         styles={{
           legend: { fontWeight: 500 },
         }}>
         <Stack style={{ flexWrap: "nowrap" }} gap={5}>
           <Textarea
+            label={t("textLabel")}
             disabled={!!form.getValues().text_file}
             wrapperProps={{ dir: textDirection }}
             spellCheck={false}
             autoCapitalize="off"
             autoCorrect="off"
-            label="Text"
             resize="vertical"
             autosize
             minRows={15}
@@ -95,10 +97,10 @@ export function NewBookForm() {
             {...form.getInputProps("text")}
           />
 
-          <p>or</p>
+          <p>{t("or")}</p>
 
           <FileInput
-            label="Import from file"
+            label={t("textFileLabel")}
             description=".txt, .epub, .pdf, .srt, .vtt"
             accept="text/plain, application/pdf, .epub, .srt, .vtt"
             leftSection={<IconBookUpload />}
@@ -107,7 +109,6 @@ export function NewBookForm() {
             {...form.getInputProps("text_file")}
             // value={form.getValues().text_file}
             onChange={(value) => {
-              // console.log(value);
               if (value) {
                 form.setFieldValue(
                   "title",
@@ -119,13 +120,13 @@ export function NewBookForm() {
             }}
           />
 
-          <p>or</p>
+          <p>{t("or")}</p>
 
           <Group align="flex-end">
             <TextInput
               disabled={!!form.getValues().text_file}
               flex={1}
-              label="Import from URL"
+              label={t("importfromURLLabel")}
               leftSection={<IconWorldWww />}
               rightSection={<ImportURLInfoPopup />}
               key={form.key("importurl")}
@@ -145,10 +146,10 @@ export function NewBookForm() {
       </Fieldset>
 
       <Select
-        label="Split by"
+        label={t("splitLabel")}
         data={[
-          { value: "paragraphs", label: "Paragraphs" },
-          { value: "sentences", label: "Sentences" },
+          { value: "paragraphs", label: t("paragraphsOption") },
+          { value: "sentences", label: t("sentencesOption") },
         ]}
         leftSection={<IconCut />}
         withCheckIcon={false}
@@ -159,14 +160,14 @@ export function NewBookForm() {
       />
 
       <NumberInput
-        label="Words per page"
+        label={t("wordCountLabel")}
         key={form.key("threshold_page_tokens")}
         {...form.getInputProps("threshold_page_tokens")}
         leftSection={<IconBracketsContain />}
       />
 
       <FileInput
-        label="Audio file"
+        label={t("audioFileLabel")}
         description=".mp3, .m4a, .wav, .ogg, .opus"
         accept="audio/mpeg,audio/ogg,audio/mp4"
         leftSection={<IconHeadphones />}
@@ -177,7 +178,7 @@ export function NewBookForm() {
       />
 
       <TextInput
-        label="Source URL"
+        label={t("sourceURLLabel")}
         leftSection={<IconLink />}
         key={form.key("source_uri")}
         {...form.getInputProps("source_uri")}

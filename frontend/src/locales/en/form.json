@@ -1,0 +1,56 @@
+{
+  "newBook": {
+    "titleLabel": "Title",
+    "contentLabel": "Content",
+    "textLabel": "Text",
+    "textFileLabel": "Import from file",
+    "importfromURLLabel": "Import from URL",
+    "importLabel": "Import",
+    "splitLabel": "Split by",
+    "paragraphsOption": "Paragraphs",
+    "sentencesOption": "Sentences",
+    "wordCountLabel": "Words per page",
+    "audioFileLabel": "Audio file",
+    "sourceURLLabel": "Source URL",
+    "tagsLabel": "Tags",
+    "or": "or"
+  },
+  "language": {
+    "dictionariesLabel": "Dictionaries",
+    "pronunciationLabel": "Show pronunciation field",
+    "rtlLabel": "Is right-to-left",
+    "parseLabel": "Parse as",
+    "charSubsLabel": "Character substitutions",
+    "splitLabel": "Split sentences at",
+    "splitDescription": "default: all Unicode sentence terminators",
+    "splitExceptionsLabel": "Exceptions",
+    "wordCharsLabel": "Word characters",
+    "wordCharsDescription": "default: all Unicode letters and marks"
+  },
+  "settings": {
+    "backupLabel": "Backup",
+    "backupEnabledLabel": "Enabled",
+    "backupDirLabel": "Directory",
+    "backupAutoLabel": "Run automatically (daily)",
+    "backupWarnLabel": "Warn if backup hasn't run in a week",
+    "backupCountLabel": "Retain backup count",
+
+    "behaviourLabel": "Behaviour",
+    "openInNewTabLabel": "Open translation popup in new tab",
+    "stopAudioLabel": "Stop audio on term form open",
+    "focusActiveSentenceLabel": "Focus active sentence",
+    "statsSampleSizeLabel": "Book stats page sample size",
+
+    "popupsLabel": "Term popups",
+    "promoteParentLabel": "Promote parent translation if possible",
+    "showComponentTermsLabel": "Show component terms",
+
+    "japaneseLabel": "Japanese",
+    "mecabPathLabel": "MECAB_PATH environment variable",
+    "testMecabConfigLabel": "Test my MeCab configuration",
+    "pronunciationCharsLabel": "Pronunciation characters",
+    "katakana": "Katakana",
+    "hiragana": "Hiragana",
+    "romanji": "Romanji"
+  }
+}
