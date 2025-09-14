@@ -1,69 +1,78 @@
 import { ScrollArea } from "@mantine/core";
 import type { UseFormReturnType } from "@mantine/form";
 import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  type DropResult,
-} from "@hello-pangea/dnd";
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { DraggableContainer } from "./DraggableContainer";
 import { DictionaryBar } from "./DictionaryBar/DictionaryBar";
-import type { Dictionary, LanguageForm } from "../../../api/types";
+import type { LanguageForm } from "../../../api/types";
+import { MIN_DICT_COUNT } from "../../../../../resources/constants";
 
 interface DictionaryBars {
   form: UseFormReturnType<LanguageForm>;
 }
 
 export function DictionaryBars({ form }: DictionaryBars) {
-  function onDragEnd(result: DropResult) {
-    if (!result.destination) {
+  const dicts = form.getValues().dictionaries;
+  const numOfDicts = dicts.length;
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor)
+  );
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) {
       return;
     }
-
-    if (result.destination.index === result.source.index) {
-      return;
-    }
-
-    const reordered = reorderList(
-      form.getValues().dictionaries,
-      result.source.index,
-      result.destination.index
-    );
-
+    const oldIndex = dicts.findIndex((dict) => dict.id === active.id);
+    const newIndex = dicts.findIndex((dict) => dict.id === over.id);
+    const reordered = arrayMove(dicts, oldIndex, newIndex);
     form.setFieldValue("dictionaries", reordered);
+  }
+
+  function handleRemoveDict(index: number) {
+    return () => {
+      if (numOfDicts > MIN_DICT_COUNT) {
+        form.removeListItem("dictionaries", index);
+      }
+    };
   }
 
   return (
     <ScrollArea.Autosize mah={300} offsetScrollbars="y" flex={1}>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="dnd-list" direction="vertical">
-          {(droppableProvided) => (
-            <div
-              {...droppableProvided.droppableProps}
-              ref={droppableProvided.innerRef}>
-              {form.getValues().dictionaries.map((dict, index) => (
-                <Draggable index={index} draggableId={dict.url} key={dict.url}>
-                  {(draggableProvided) => (
-                    <DictionaryBar
-                      form={form}
-                      index={index}
-                      dndProvided={draggableProvided}
-                    />
-                  )}
-                </Draggable>
-              ))}
-              {droppableProvided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={dicts.map((dict) => dict.id)}
+          strategy={verticalListSortingStrategy}>
+          {dicts.map((dict, index) => (
+            <DraggableContainer key={dict.id} id={dict.id}>
+              <DictionaryBar
+                dict={dict}
+                index={index}
+                form={form}
+                editable={numOfDicts > MIN_DICT_COUNT}
+                onRemove={handleRemoveDict(index)}
+              />
+            </DraggableContainer>
+          ))}
+        </SortableContext>
+      </DndContext>
     </ScrollArea.Autosize>
   );
-}
-
-function reorderList(list: Dictionary[], startIndex: number, endIndex: number) {
-  const result = list;
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
 }

@@ -1,51 +1,36 @@
 import {
   ActionIcon,
   Checkbox,
-  Group,
   NativeSelect,
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import {
-  IconGripVertical,
-  IconSquareRoundedMinusFilled,
-} from "@tabler/icons-react";
-import { TestDictionaryButton } from "./components/TestDictionaryButton";
-import type { DraggableProvided } from "@hello-pangea/dnd";
-import type { LanguageForm } from "../../../../api/types";
 import type { UseFormReturnType } from "@mantine/form";
+import { IconSquareRoundedMinusFilled } from "@tabler/icons-react";
+import { TestDictionaryButton } from "./components/TestDictionaryButton";
+import type { Dictionary, LanguageForm } from "../../../../api/types";
 
-interface DictionaryBar {
+export interface DictionaryBar {
+  dict: Dictionary;
   form: UseFormReturnType<LanguageForm>;
   index: number;
-  dndProvided: DraggableProvided;
+  editable: boolean;
+  onRemove: () => void;
 }
 
-export function DictionaryBar({ form, index, dndProvided }: DictionaryBar) {
-  const testUrl = form
-    .getValues()
-    .dictionaries[index]?.url.replace("###", "test")
-    .replace("[LUTE]", "test");
-
+export function DictionaryBar({
+  form,
+  index,
+  dict,
+  editable,
+  onRemove,
+}: DictionaryBar) {
   return (
-    <Group
-      mb={5}
-      gap="xs"
-      wrap="nowrap"
-      justify="space-between"
-      ref={dndProvided.innerRef}
-      {...dndProvided.draggableProps}>
-      <ActionIcon
-        variant="transparent"
-        c="dark"
-        {...dndProvided.dragHandleProps}>
-        <IconGripVertical />
-      </ActionIcon>
-
+    <>
       <Tooltip label="Is active?" openDelay={300} withinPortal={false}>
         <Checkbox
           size="xs"
-          disabled={form.getValues().dictionaries.length <= 2}
+          disabled={!editable}
           key={form.key(`dictionaries.${index}.active`)}
           {...form.getInputProps(`dictionaries.${index}.active`, {
             type: "checkbox",
@@ -58,8 +43,10 @@ export function DictionaryBar({ form, index, dndProvided }: DictionaryBar) {
         size="xs"
         placeholder="Dictionary URL"
         rightSection={
-          form.getValues().dictionaries[index]?.url.length > 0 && (
-            <TestDictionaryButton src={testUrl} />
+          dict.url.length > 0 && (
+            <TestDictionaryButton
+              src={dict.url.replace("###", "test").replace("[LUTE]", "test")}
+            />
           )
         }
         key={form.key(`dictionaries.${index}.url`)}
@@ -94,18 +81,15 @@ export function DictionaryBar({ form, index, dndProvided }: DictionaryBar) {
 
       <Tooltip label="Remove dictionary" openDelay={300} withinPortal={false}>
         <ActionIcon
-          disabled={form.getValues().dictionaries.length > 2 ? false : true}
+          disabled={!editable}
           variant="transparent"
           color="red.6"
           size="sm"
           style={{ backgroundColor: "transparent" }}
-          onClick={() =>
-            form.getValues().dictionaries.length > 2 &&
-            form.removeListItem("dictionaries", index)
-          }>
+          onClick={onRemove}>
           <IconSquareRoundedMinusFilled />
         </ActionIcon>
       </Tooltip>
-    </Group>
+    </>
   );
 }

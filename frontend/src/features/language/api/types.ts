@@ -13,6 +13,7 @@ export interface UserLanguageDetail extends LanguageForm {
 }
 
 export interface Dictionary {
+  id: number;
   active: boolean;
   for: "terms" | "sentences";
   hostname: string;

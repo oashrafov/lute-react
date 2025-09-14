@@ -4,6 +4,7 @@ export const BASE_API_URL = "http://localhost:5001/api";
 export const FAVICON_SOURCE_URL = "http://www.google.com/s2/favicons?domain=";
 export const MAX_VISIBLE_DICT_TABS = 5;
 export const MAX_PARENT_TAG_SUGGESTION_COUNT = 15;
+export const MIN_DICT_COUNT = 2;
 export const DEFAULT_TABLE_ROW_COUNT = 10;
 export const FOCUS_HEADER_HEIGHT = 80;
 export const TEXTITEM_CLASS = {

@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
-import { IFrame } from "../../../../DictTabs/components/common/IFrame";
+import { IFrame } from "../../../../DictTabs/components/common/Iframe";
 
 export function TestDictionaryButton({ src }: { src: string }) {
   return (

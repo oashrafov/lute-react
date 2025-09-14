@@ -18,8 +18,7 @@ export function CreateLanguageModal({ isOpen, onClose }: CreateLanguageModal) {
       opened={isOpen}
       onClose={onClose}
       position="bottom"
-      // TODO drag and drop issue with non 100% (temporary)
-      size="100%">
+      size="75%">
       <Drawer.Overlay />
       <Drawer.Content>
         <PageContainer>

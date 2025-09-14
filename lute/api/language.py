@@ -154,13 +154,16 @@ def _lang_to_dict(language):
         url = d.dicturi
         hostname = urlparse(url).hostname
         dictionary = {
+            "id": d.id,
             "for": d.usefor,
             "type": d.dicttype.replace("html", ""),
             "url": url,
             "active": d.is_active,
             "hostname": hostname,
             "label": (
-                hostname.split("www.")[-1] if hostname.startswith("www.") else hostname
+                hostname.split("www.")[-1]
+                if hostname and hostname.startswith("www.")
+                else hostname
             ),
         }
         ret["dictionaries"].append(dictionary)
