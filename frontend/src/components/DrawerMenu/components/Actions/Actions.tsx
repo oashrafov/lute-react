@@ -1,14 +1,14 @@
 import { ActionIcon, Center, Group } from "@mantine/core";
 import { IconPalette } from "@tabler/icons-react";
 import { useBookContext } from "../../../../features/book/hooks/useBookContext";
-import { SchemeToggleButton } from "../../../common/SchemeToggleButton/SchemeToggleButton";
+import { ThemeSelect } from "../../../common/ThemeSelect/ThemeSelect";
 
 export function Actions() {
   const { drawer, themeForm } = useBookContext();
   return (
     <Center p={10}>
       <Group gap={5}>
-        <SchemeToggleButton onClick={drawer.close} />
+        <ThemeSelect />
         <ActionIcon
           onClick={() => {
             themeForm.toggle();

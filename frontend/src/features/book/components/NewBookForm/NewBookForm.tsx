@@ -1,20 +1,15 @@
 import { useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import { notifications } from "@mantine/notifications";
 import {
   Button,
   Fieldset,
-  FileInput,
   Group,
-  NumberInput,
-  Select,
+  InputClearButton,
   Stack,
-  TagsInput,
-  Textarea,
-  TextInput,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useForm } from "@mantine/form";
 import {
   IconBookUpload,
   IconBracketsContain,
@@ -25,6 +20,12 @@ import {
   IconTags,
   IconWorldWww,
 } from "@tabler/icons-react";
+import { TextInput } from "../../../../components/common/TextInput/TextInput";
+import { FileInput } from "../../../../components/common/FileInput/FileInput";
+import { TagsInput } from "../../../../components/common/TagsInput/TagsInput";
+import { NumberInput } from "../../../../components/common/NumberInput/NumberInput";
+import { Select } from "../../../../components/common/Select/Select";
+import { Textarea } from "../../../../components/common/Textarea/Textarea";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
 import { errorMessage } from "../../../../resources/notifications";
 import { getBookDataFromUrl } from "../../api/api";
@@ -44,35 +45,42 @@ export function NewBookForm() {
   const { data: initial } = useQuery(settingsQueries.init());
   const textDirection = language?.right_to_left ? "rtl" : "ltr";
 
-  const form = useForm({ initialValues: formValues });
+  const { control, getValues, setValue, reset, watch, handleSubmit } = useForm({
+    defaultValues: formValues,
+  });
+
+  const hasTextFile = !!watch("text_file");
+  const hasAudioFile = !!watch("audio_file");
+  const hasImportURL = !!watch("importurl");
 
   const createBookMutation = useCreateBook();
 
   const getBookDataFromUrlMutation = useMutation({
     mutationFn: getBookDataFromUrl,
-    onSuccess: (data) => form.setValues(data),
+    onSuccess: (data) => reset(data),
     onError: (error) => notifications.show(errorMessage(error.message)),
   });
 
   function handlePopulateFromUrl() {
-    getBookDataFromUrlMutation.mutate(form.getValues().importurl);
-    form.setFieldValue("importurl", "");
+    getBookDataFromUrlMutation.mutate(getValues().importurl);
+    setValue("importurl", "");
   }
 
   return (
     <form
       className={classes.container}
-      onSubmit={form.onSubmit((data) => createBookMutation.mutate(data))}>
+      onSubmit={handleSubmit((data) => createBookMutation.mutate(data))}>
       <TextInput
+        name="title"
+        control={control}
         wrapperProps={{ dir: textDirection }}
         disabled={language ? false : true}
         required
         withAsterisk
         label={t("titleLabel")}
         leftSection={<IconHeading />}
-        key={form.key("title")}
-        {...form.getInputProps("title")}
       />
+
       <Fieldset
         disabled={language ? false : true}
         variant="filled"
@@ -83,8 +91,10 @@ export function NewBookForm() {
         }}>
         <Stack style={{ flexWrap: "nowrap" }} gap={5}>
           <Textarea
+            name="text"
+            control={control}
             label={t("textLabel")}
-            disabled={!!form.getValues().text_file}
+            disabled={hasTextFile}
             wrapperProps={{ dir: textDirection }}
             spellCheck={false}
             autoCapitalize="off"
@@ -93,30 +103,29 @@ export function NewBookForm() {
             autosize
             minRows={15}
             maxRows={25}
-            key={form.key("text")}
-            {...form.getInputProps("text")}
           />
 
           <p>{t("or")}</p>
 
           <FileInput
+            name="text_file"
+            control={control}
             label={t("textFileLabel")}
             description=".txt, .epub, .pdf, .srt, .vtt"
             accept="text/plain, application/pdf, .epub, .srt, .vtt"
             leftSection={<IconBookUpload />}
-            clearable
-            key={form.key("text_file")}
-            {...form.getInputProps("text_file")}
-            // value={form.getValues().text_file}
+            rightSection={
+              hasTextFile && (
+                <InputClearButton onClick={() => setValue("text_file", null)} />
+              )
+            }
             onChange={(value) => {
               if (value) {
-                form.setFieldValue(
+                setValue(
                   "title",
                   value.name.slice(0, value.name.lastIndexOf("."))
                 );
-                form.setFieldValue("text_file", value);
               }
-              // setTextFile(value);
             }}
           />
 
@@ -124,28 +133,29 @@ export function NewBookForm() {
 
           <Group align="flex-end">
             <TextInput
-              disabled={!!form.getValues().text_file}
+              name="importurl"
+              control={control}
+              disabled={hasTextFile}
               flex={1}
               label={t("importfromURLLabel")}
               leftSection={<IconWorldWww />}
               rightSection={<ImportURLInfoPopup />}
-              key={form.key("importurl")}
-              {...form.getInputProps("importurl")}
             />
+
             <Button
-              disabled={
-                !!(!form.getValues().importurl || form.getValues().text_file)
-              }
+              disabled={!hasImportURL || hasTextFile}
               variant="filled"
               loading={getBookDataFromUrlMutation.isPending}
               onClick={handlePopulateFromUrl}>
-              Import
+              {t("importLabel")}
             </Button>
           </Group>
         </Stack>
       </Fieldset>
 
       <Select
+        name="split_by"
+        control={control}
         label={t("splitLabel")}
         data={[
           { value: "paragraphs", label: t("paragraphsOption") },
@@ -155,41 +165,42 @@ export function NewBookForm() {
         withCheckIcon={false}
         searchable={false}
         allowDeselect={false}
-        key={form.key("split_by")}
-        {...form.getInputProps("split_by")}
       />
 
       <NumberInput
+        name="threshold_page_tokens"
+        control={control}
         label={t("wordCountLabel")}
-        key={form.key("threshold_page_tokens")}
-        {...form.getInputProps("threshold_page_tokens")}
         leftSection={<IconBracketsContain />}
       />
 
       <FileInput
+        name="audio_file"
+        control={control}
         label={t("audioFileLabel")}
         description=".mp3, .m4a, .wav, .ogg, .opus"
         accept="audio/mpeg,audio/ogg,audio/mp4"
         leftSection={<IconHeadphones />}
-        clearable
-        key={form.key("audio_file")}
-        {...form.getInputProps("audio_file")}
-        // onChange={(v) => form.setFieldValue("audio_file", v)}
+        rightSection={
+          hasAudioFile && (
+            <InputClearButton onClick={() => setValue("audio_file", null)} />
+          )
+        }
       />
 
       <TextInput
+        name="source_uri"
+        control={control}
         label={t("sourceURLLabel")}
         leftSection={<IconLink />}
-        key={form.key("source_uri")}
-        {...form.getInputProps("source_uri")}
       />
 
       <TagsInput
+        name="book_tags"
+        control={control}
         label="Tags"
-        data={initial.bookTags}
+        data={initial!.bookTags}
         leftSection={<IconTags />}
-        key={form.key("book_tags")}
-        {...form.getInputProps("book_tags")}
       />
 
       <FormButtons

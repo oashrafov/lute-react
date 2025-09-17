@@ -16,7 +16,7 @@ const PageTermsDrawer = lazy(
 
 export default function BookPage() {
   const { data: book } = useBookQuery();
-  useDocumentTitle(`Reading "${book.title}"`);
+  useDocumentTitle(`Reading "${book!.title}"`);
   useMarkAsStale();
   useNavigationProgress();
 

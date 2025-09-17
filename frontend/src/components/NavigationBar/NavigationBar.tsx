@@ -10,9 +10,8 @@ import { queries } from "../../features/settings/api/queries";
 import classes from "./NavigationBar.module.css";
 
 export function NavigationBar({ ...props }) {
-  const { data: settings } = useQuery(queries.settings());
-  const createBackupMenu =
-    settings.backup.enabled && settings.backup.directory != "";
+  const { data: settings } = useQuery(queries.settingsForm());
+  const createBackupMenu = settings.backup_enabled && settings.backup_dir != "";
 
   return (
     <Group component="nav" gap={5} wrap="nowrap" ml="auto" {...props}>
@@ -36,13 +35,13 @@ export function NavigationBar({ ...props }) {
 
       {createBackupMenu && (
         <DropdownMenu label={menu.backup.label}>
-          {settings.backup.lastDate && (
+          {settings?.last_backup_display_date && (
             <>
               <div className={classes.backup}>
-                {settings.backup.timeSince && (
-                  <p>{`Last backup was ${settings.backup.timeSince}`}</p>
+                {settings.time_since_last_backup && (
+                  <p>{`Last backup was ${settings.time_since_last_backup}`}</p>
                 )}
-                <p>{settings.backup.lastDate}</p>
+                <p>{settings.last_backup_display_date}</p>
               </div>
               <Menu.Label>
                 <Divider />

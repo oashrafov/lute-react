@@ -2,9 +2,10 @@ import { queryOptions } from "@tanstack/react-query";
 import {
   getBackupInfo,
   getInitialState,
-  getSettings,
+  getSettingsFormInitValues,
   getShortcuts,
   getAppInfo,
+  getThemeFormInitValues,
 } from "./api";
 
 export const queries = {
@@ -14,10 +15,15 @@ export const queries = {
       queryFn: getInitialState,
       staleTime: Infinity,
     }),
-  settings: () =>
+  settingsForm: () =>
     queryOptions({
-      queryKey: ["settings"],
-      queryFn: getSettings,
+      queryKey: ["settingsForm"],
+      queryFn: getSettingsFormInitValues,
+    }),
+  themeForm: () =>
+    queryOptions({
+      queryKey: ["themeForm"],
+      queryFn: getThemeFormInitValues,
     }),
   shortcuts: () =>
     queryOptions({

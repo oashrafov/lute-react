@@ -1,15 +1,8 @@
 import { useState, type RefObject } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import {
-  Group,
-  TextInput,
-  Textarea,
-  TagsInput,
-  Checkbox,
-  rem,
-  Collapse,
-} from "@mantine/core";
+import { Group, rem, Collapse, InputClearButton } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import {
@@ -20,6 +13,10 @@ import {
   IconSpeakerphone,
   IconTags,
 } from "@tabler/icons-react";
+import { TextInput } from "../../../../components/common/TextInput/TextInput";
+import { Checkbox } from "../../../../components/common/Checkbox/Checkbox";
+import { TagsInput } from "../../../../components/common/TagsInput/TagsInput";
+import { Textarea } from "../../../../components/common/Textarea/Textarea";
 import { StatusRadio } from "../StatusRadio/StatusRadio";
 import { TagsField } from "./components/TagsField/TagsField";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
@@ -28,7 +25,6 @@ import { ToLowerCaseButton } from "./components/ToLowerCaseButton";
 import { PronunciationButton } from "./components/PronunciationButton";
 import { NotesButton } from "./components/NotesButton";
 import { TermImage } from "../TermImage/TermImage";
-import { useTermForm } from "./hooks/useTermForm";
 import { moveCursorToEnd } from "../../../../utils/utils";
 import { editTerm, createTerm, deleteTerm } from "../../api/api";
 import { deleteTermConfirm } from "../../../../resources/modals";
@@ -60,7 +56,20 @@ export function TermForm({
   const queryClient = useQueryClient();
   const { id: bookId } = useParams();
 
-  const form = useTermForm(term, language);
+  const {
+    control,
+    getValues,
+    setValue,
+    watch,
+    reset,
+    handleSubmit: handleFormSubmit,
+  } = useForm({
+    defaultValues: term,
+  });
+
+  const hasText = !!watch("text");
+  const numOfParents = watch("parents", []).length;
+
   const { setActiveTerm } = useActiveTermContext();
   const { data: tags } = useQuery(termQueries.tagSuggestions());
 
@@ -76,14 +85,14 @@ export function TermForm({
   function handleParentSubmit(val: string) {
     const obj = JSON.parse(val);
 
-    const parents = [...form.getValues().parents, obj.value];
+    const parents = [...getValues().parents, obj.value];
     const hasSingleParent = parents.length === 1;
 
     if (hasSingleParent) {
-      form.setFieldValue("status", String(obj.status));
+      setValue("status", obj.status);
     }
-    form.setFieldValue("syncStatus", hasSingleParent);
-    form.setFieldValue("parents", parents);
+    setValue("syncStatus", hasSingleParent);
+    setValue("parents", parents);
   }
 
   function handleKeydown(e) {
@@ -109,7 +118,7 @@ export function TermForm({
   }
 
   function handleToLowerCase() {
-    form.setFieldValue("text", form.getValues().text.toLowerCase());
+    setValue("text", getValues().text.toLowerCase());
   }
 
   const createTermMutation = useMutation({
@@ -117,7 +126,7 @@ export function TermForm({
     onSuccess: () => {
       notifications.show(editMode ? termUpdated : termCreated);
       if (blankMode) {
-        form.reset();
+        reset();
       }
       if (!blankMode && bookId) {
         setActiveTerm({ data: null });
@@ -155,29 +164,26 @@ export function TermForm({
   });
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)} onKeyDown={handleKeydown}>
+    <form onSubmit={handleFormSubmit(handleSubmit)} onKeyDown={handleKeydown}>
       <div className={`${classes.termBox} ${classes.fieldBox}`}>
         <TextInput
+          name="text"
+          control={control}
           readOnly={editMode}
           variant={editMode ? "filled" : "default"}
           wrapperProps={{ dir: dir }}
           placeholder="Term"
           flex={1}
           rightSection={
-            <ToLowerCaseButton
-              enabled={!!form.getValues().text}
-              onClick={handleToLowerCase}
-            />
+            <ToLowerCaseButton enabled={hasText} onClick={handleToLowerCase} />
           }
           leftSection={<IconBubbleText size={20} />}
           leftSectionProps={{ className: classes.leftSection }}
-          key={form.key("text")}
-          {...form.getInputProps("text")}
         />
         {blankMode && (
           <LoadDictsButton
-            disabled={!form.getValues().text}
-            onClick={() => onSetTerm?.(form.getValues().text)}
+            disabled={!hasText}
+            onClick={() => onSetTerm?.(getValues().text)}
           />
         )}
         {!blankMode && (
@@ -194,9 +200,9 @@ export function TermForm({
         )}
       </div>
       <TagsField
-        termText={form.getValues().originalText}
-        values={form.getValues().parents || []}
-        onSetValues={(parents) => form.setFieldValue("parents", parents)}
+        termText={getValues().originalText}
+        values={getValues().parents || []}
+        onSetValues={(parents) => setValue("parents", parents)}
         onSubmitParent={handleParentSubmit}
         languageId={language.id}
         leftSection={<IconSitemap size={20} />}
@@ -205,16 +211,18 @@ export function TermForm({
       />
       <Collapse in={pronunciationOpened}>
         <TextInput
+          name="romanization"
+          control={control}
           mb={5}
           placeholder="Pronunciation"
           leftSection={<IconSpeakerphone size={20} />}
           leftSectionProps={{ className: classes.leftSection }}
-          key={form.key("romanization")}
-          {...form.getInputProps("romanization")}
         />
       </Collapse>
       <div className={`${classes.translationBox} ${classes.fieldBox}`}>
         <Textarea
+          name="translation"
+          control={control}
           wrapperProps={{ dir: dir }}
           placeholder="Translation"
           resize="vertical"
@@ -228,17 +236,15 @@ export function TermForm({
           autoFocus
           leftSection={<IconLanguage size={20} />}
           leftSectionProps={{ className: classes.leftSection }}
-          key={form.key("translation")}
-          {...form.getInputProps("translation")}
         />
-        {form.getValues().currentImg && (
-          <TermImage
-            src={`http://localhost:5001${form.getValues().currentImg}`}
-          />
+        {getValues().currentImg && (
+          <TermImage src={`http://localhost:5001${getValues().currentImg}`} />
         )}
       </div>
       <Collapse in={notesOpened}>
         <Textarea
+          name="notes"
+          control={control}
           resize="vertical"
           placeholder="Notes"
           autosize
@@ -251,29 +257,38 @@ export function TermForm({
         />
       </Collapse>
       <Group dir="ltr" gap="md" style={{ rowGap: rem(7) }} mb={5}>
-        <StatusRadio {...form.getInputProps("status")} />
+        <Controller
+          name="status"
+          control={control}
+          render={({ field: { value, ...field } }) => (
+            <StatusRadio {...field} value={String(value)} />
+          )}
+        />
         <Checkbox
+          name="syncStatus"
+          control={control}
           styles={{ label: { paddingInlineStart: rem(5) } }}
           size="xs"
           label="Link to parent"
-          key={form.key("syncStatus")}
-          {...form.getInputProps("syncStatus", { type: "checkbox" })}
+          disabled={numOfParents !== 1}
         />
       </Group>
       <TagsInput
-        clearable
+        name="termTags"
+        control={control}
         data={tags || []}
         placeholder="Tags"
         maxDropdownHeight={200}
         mb={5}
         leftSection={<IconTags size={20} />}
         leftSectionProps={{ className: classes.leftSection }}
-        key={form.key("termTags")}
-        {...form.getInputProps("termTags")}
+        rightSection={
+          <InputClearButton onClick={() => setValue("termTags", [])} />
+        }
       />
 
       <FormButtons
-        okDisabled={!form.getValues().text}
+        okDisabled={!hasText}
         discardLabel={editMode ? "Delete" : undefined}
         discardCallback={() =>
           modals.openConfirmModal(

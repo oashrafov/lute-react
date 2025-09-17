@@ -14,6 +14,7 @@ import "@mantine/charts/styles.css";
 import "mantine-react-table/styles.css";
 import "./styles/index.css";
 import "./styles/highlight.css";
+import "../public/theme/theme.css";
 import { GlobalContextProvider } from "./store/globalContext";
 import { AppInfo } from "./components/Modals/AppInfo";
 import { routes } from "./routes/routes";

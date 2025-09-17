@@ -1,7 +1,8 @@
 import { BASE_API_URL } from "../../../resources/constants";
 
 export const endpoints = {
-  getSettings: `${BASE_API_URL}/settings`,
+  getSettingsFormInitValues: `${BASE_API_URL}/settings/form`,
+  getThemeFormInitValues: `${BASE_API_URL}/theme/form`,
   getShortcuts: `${BASE_API_URL}/shortcuts`,
   getAppInfo: `${BASE_API_URL}/appinfo`,
   getInitialState: `${BASE_API_URL}/initial`,

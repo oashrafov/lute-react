@@ -1,7 +1,10 @@
 import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { clsx } from "clsx";
 import type { Textitem } from "../../../api/types";
-import { TEXTITEM_CLASS } from "../../../../../resources/constants";
+import {
+  DEFAULT_HIGHLIGHT_TYPE,
+  TEXTITEM_CLASS,
+} from "../../../../../resources/constants";
 
 export const TextItem = forwardRef<
   HTMLSpanElement,
@@ -14,13 +17,17 @@ export const TextItem = forwardRef<
     [TEXTITEM_CLASS.overlapped]: data.isOverlapped,
   });
 
+  const highlightType = data.status && {
+    "data-highlight-type": DEFAULT_HIGHLIGHT_TYPE[data.status],
+  };
+
   return (
     <span
       ref={ref}
       {...restProps}
+      {...highlightType}
       id={String(data.id)}
       className={classes}
-      data-highlight-type="none"
       data-lang-id={data.langId}
       data-paragraph-id={data.paragraphId}
       data-sentence-id={data.sentenceId}

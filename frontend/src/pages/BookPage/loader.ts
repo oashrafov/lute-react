@@ -16,7 +16,7 @@ export function loader(queryClient: QueryClient) {
       queryClient.ensureQueryData(
         bookQueries.page(Number(params.id), Number(params.page))
       ),
-      queryClient.ensureQueryData(settingsQueries.settings()),
+      queryClient.ensureQueryData(settingsQueries.settingsForm()),
       queryClient.ensureQueryData(settingsQueries.appInfo()),
     ]);
   };

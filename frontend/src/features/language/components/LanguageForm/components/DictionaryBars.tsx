@@ -1,5 +1,4 @@
 import { ScrollArea } from "@mantine/core";
-import type { UseFormReturnType } from "@mantine/form";
 import {
   closestCenter,
   DndContext,
@@ -16,16 +15,25 @@ import {
 } from "@dnd-kit/sortable";
 import { DraggableContainer } from "./DraggableContainer";
 import { DictionaryBar } from "./DictionaryBar/DictionaryBar";
-import type { LanguageForm } from "../../../api/types";
+import type { Dictionary } from "../../../api/types";
 import { MIN_DICT_COUNT } from "../../../../../resources/constants";
+import type { Control, FieldValues } from "react-hook-form";
+import { RemoveDictionaryButton } from "./DictionaryBar/components/RemoveDictionaryButton";
 
-interface DictionaryBars {
-  form: UseFormReturnType<LanguageForm>;
+interface DictionaryBars<T extends FieldValues> {
+  control: Control<T>;
+  dictionaries: Dictionary[];
+  onSet: (dicts: Dictionary[]) => void;
+  onRemove: (index: number) => void;
 }
 
-export function DictionaryBars({ form }: DictionaryBars) {
-  const dicts = form.getValues().dictionaries;
-  const numOfDicts = dicts.length;
+export function DictionaryBars<T extends FieldValues>({
+  control,
+  dictionaries,
+  onSet,
+  onRemove,
+}: DictionaryBars<T>) {
+  const numOfDicts = dictionaries.length;
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -37,16 +45,16 @@ export function DictionaryBars({ form }: DictionaryBars) {
     if (!over || active.id === over.id) {
       return;
     }
-    const oldIndex = dicts.findIndex((dict) => dict.id === active.id);
-    const newIndex = dicts.findIndex((dict) => dict.id === over.id);
-    const reordered = arrayMove(dicts, oldIndex, newIndex);
-    form.setFieldValue("dictionaries", reordered);
+    const oldIndex = dictionaries.findIndex((dict) => dict.id === active.id);
+    const newIndex = dictionaries.findIndex((dict) => dict.id === over.id);
+    const reordered = arrayMove(dictionaries, oldIndex, newIndex);
+    onSet(reordered);
   }
 
   function handleRemoveDict(index: number) {
     return () => {
       if (numOfDicts > MIN_DICT_COUNT) {
-        form.removeListItem("dictionaries", index);
+        onRemove(index);
       }
     };
   }
@@ -58,16 +66,19 @@ export function DictionaryBars({ form }: DictionaryBars) {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}>
         <SortableContext
-          items={dicts.map((dict) => dict.id)}
+          items={dictionaries.map((dict) => dict.id)}
           strategy={verticalListSortingStrategy}>
-          {dicts.map((dict, index) => (
+          {dictionaries.map((dict, index) => (
             <DraggableContainer key={dict.id} id={dict.id}>
               <DictionaryBar
+                control={control}
                 dict={dict}
-                index={index}
-                form={form}
+                name={`dictionaries.${index}`}
                 editable={numOfDicts > MIN_DICT_COUNT}
-                onRemove={handleRemoveDict(index)}
+              />
+              <RemoveDictionaryButton
+                disabled={numOfDicts <= MIN_DICT_COUNT}
+                onClick={handleRemoveDict(index)}
               />
             </DraggableContainer>
           ))}

@@ -1,18 +1,13 @@
-import {
-  ActionIcon,
-  Checkbox,
-  FileInput,
-  Group,
-  Stack,
-  Tooltip,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { ActionIcon, Group, Stack, Tooltip } from "@mantine/core";
+import { useForm } from "react-hook-form";
 import { IconCsv, IconQuestionMark } from "@tabler/icons-react";
 import { FormButtons } from "../../../../../components/common/FormButtons/FormButtons";
+import { Checkbox } from "../../../../../components/common/Checkbox/Checkbox";
+import { FileInput } from "../../../../../components/common/FileInput/FileInput";
 
 export function TermImportForm() {
-  const form = useForm({
-    initialValues: {
+  const { control } = useForm({
+    defaultValues: {
       importNewOnly: false,
       setToUnknown: false,
       updateExisting: false,
@@ -24,30 +19,27 @@ export function TermImportForm() {
     <form>
       <Stack gap={5}>
         <Checkbox
+          name="importNewOnly"
+          control={control}
           label="Import new terms only"
-          key={form.key("importNewOnly")}
-          {...form.getInputProps("importNewOnly", { type: "checkbox" })}
         />
-
         <Checkbox
+          name="setToUnknown"
+          control={control}
           label="Set new to Unknown"
-          key={form.key("setToUnknown")}
-          {...form.getInputProps("setToUnknown", { type: "checkbox" })}
         />
-
         <Checkbox
+          name="updateExisting"
+          control={control}
           label="Update existing"
-          key={form.key("updateExisting")}
-          {...form.getInputProps("updateExisting", { type: "checkbox" })}
         />
-
         <FileInput
+          name="file"
+          control={control}
           label="Browse CSV"
           accept="text/csv"
           leftSection={<IconCsv />}
           clearable
-          key={form.key("file")}
-          {...form.getInputProps("file")}
         />
       </Stack>
 

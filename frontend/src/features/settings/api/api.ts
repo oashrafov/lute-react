@@ -2,13 +2,14 @@ import { endpoints } from "./endpoints";
 import type {
   AppInfoResponse,
   BackupsResponse,
+  Highlights,
   InitialResponse,
-  SettingsResponse,
-  ShortcutsResponse,
+  SettingsForm,
+  ShortcutsForm,
 } from "./types";
 
-export async function getSettings(): Promise<SettingsResponse> {
-  const response = await fetch(endpoints.getSettings);
+export async function getSettingsFormInitValues(): Promise<SettingsForm> {
+  const response = await fetch(endpoints.getSettingsFormInitValues);
 
   if (!response.ok) {
     const message = await response.json();
@@ -18,7 +19,18 @@ export async function getSettings(): Promise<SettingsResponse> {
   return await response.json();
 }
 
-export async function getShortcuts(): Promise<ShortcutsResponse> {
+export async function getThemeFormInitValues(): Promise<Highlights> {
+  const response = await fetch(endpoints.getThemeFormInitValues);
+
+  if (!response.ok) {
+    const message = await response.json();
+    throw new Error(message);
+  }
+
+  return await response.json();
+}
+
+export async function getShortcuts(): Promise<ShortcutsForm> {
   const response = await fetch(endpoints.getShortcuts);
 
   if (!response.ok) {

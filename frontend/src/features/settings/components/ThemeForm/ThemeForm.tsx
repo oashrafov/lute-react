@@ -1,19 +1,9 @@
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { useForm, type UseFormReturnType } from "@mantine/form";
-import {
-  Box,
-  CloseButton,
-  ColorInput,
-  Divider,
-  Group,
-  NativeSelect,
-  Select,
-  Stack,
-  Table,
-  Text,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { useFieldArray, useForm } from "react-hook-form";
+import { CloseButton, Divider, Group, Stack, Table, Text } from "@mantine/core";
+import { Select } from "../../../../components/common/Select/Select";
+import { ThemeSelect } from "../../../../components/common/ThemeSelect/ThemeSelect";
+import { ColorInput } from "../../../../components/common/ColorInput/ColorInput";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
 import {
   clearAllFlashing,
@@ -22,123 +12,140 @@ import {
 } from "../../../../helpers/text";
 import { setTextColor } from "../../../../helpers/general";
 import { useBookContext } from "../../../book/hooks/useBookContext";
-import { queries } from "../../api/queries";
-import { TEXTITEM_DATA } from "../../../../resources/constants";
+import {
+  DEFAULT_HIGHLIGHT_TYPE,
+  STATUS_LABEL,
+  TEXTITEM_CLASS,
+  TEXTITEM_DATA,
+} from "../../../../resources/constants";
 import type {
   HighlightType,
+  Status,
   TextItemElement,
+  WordTextItemElement,
 } from "../../../../resources/types";
-import type {
-  GeneralHighlights,
-  SettingsResponse,
-  StatusHighlights,
-} from "../../api/types";
+import { getFromLocalStorage } from "../../../../utils/utils";
 
-const label = {
-  status: {
-    0: "0",
-    1: "1",
-    2: "2",
-    3: "3",
-    4: "4",
-    5: "5",
-    98: "Ignored",
-    99: "Well known",
-  },
-  general: {
-    kwordmarked: "Selected",
-    wordhover: "Hovered",
-    multiterm: "Multi selection",
-    flash: "Flashing highlight",
-  },
-} as const;
-
-function getLuteHighlights(
-  labels: typeof label.status | typeof label.general,
-  colors: GeneralHighlights | StatusHighlights,
-  scheme: "light" | "dark"
-) {
-  type T = typeof labels;
-  const keys = Object.keys(labels) as Array<T>;
-  return keys.map((key) => ({
-    id: key,
-    color: colors[key][scheme],
-    type: colors[key].type,
-    label: labels[key],
-    isActive: colors[key].type === "none",
-  }));
+interface StatusHighlight {
+  key: string;
+  color: string;
+  label: string;
+  type: HighlightType;
 }
 
-function getRootElement() {
-  return document.querySelector(
-    `:root[data-mantine-color-scheme]`
-  ) as HTMLElement;
-}
+const generalHighlightsLabels = [
+  [TEXTITEM_CLASS.marked, "Selected"],
+  [TEXTITEM_CLASS.hovered, "Hovered"],
+  [TEXTITEM_CLASS.multi, "Multi selection"],
+  [TEXTITEM_CLASS.flashing, "Flashing highlight"],
+] as const;
 
-interface ThemeFormValues {
-  highlights: {
-    statuses: {
-      id: string;
-      color: any;
-      type: any;
-      label: any;
-      isActive: boolean;
-    }[];
-    allType: {
-      allType: string;
+const statusHighlights = Object.entries(STATUS_LABEL).map(
+  ([id, label]): StatusHighlight => {
+    const color = getComputedStyle(document.documentElement).getPropertyValue(
+      `--lute-color-highlight-status${id}`
+    );
+    return {
+      key: `status${id}`,
+      color: color,
+      label: `${label} (${id})`,
+      type: DEFAULT_HIGHLIGHT_TYPE[Number(id) as Status],
     };
-    general: {
-      id: string;
-      color: any;
-      type: any;
-      label: any;
-      isActive: boolean;
-    }[];
+  }
+);
+
+const generalHighlights = generalHighlightsLabels.map(([id, label]) => {
+  const color = getComputedStyle(document.documentElement).getPropertyValue(
+    `--lute-color-highlight-${id}`
+  );
+  return {
+    key: id,
+    color: color,
+    label: label,
   };
-  primaryColor: string;
-  backgroundColor: string;
+});
+
+interface FormValues {
+  status: typeof statusHighlights;
+  general: typeof generalHighlights;
+  font: string;
+  typeAll: HighlightType | "";
+  bgColor: `#${string}`;
 }
 
 function ThemeForm() {
   const { themeForm } = useBookContext();
-  const { colorScheme } = useMantineColorScheme();
-  const { data: settings } = useQuery(queries.settings());
-  const root = getRootElement();
+  const root = document.documentElement;
 
-  const form = useForm({
-    mode: "controlled",
-    name: "settingsForm",
-    initialValues: {
-      highlights: {
-        statuses: [
-          ...getLuteHighlights(
-            label.status,
-            settings.highlights.status,
-            colorScheme
-          ),
-        ],
-        allType: { allType: "-" },
-        general: [
-          ...getLuteHighlights(
-            label.general,
-            settings.highlights.general,
-            colorScheme
-          ),
-        ],
-      },
-      primaryColor: "#fff",
-      backgroundColor: "#000",
+  const { control, setValue, getValues, handleSubmit } = useForm<FormValues>({
+    defaultValues: {
+      status: statusHighlights,
+      general: generalHighlights,
+      font: "arial",
+      typeAll: "",
+      bgColor: "#000000",
     },
   });
+  const { fields: statusFields } = useFieldArray({ control, name: "status" });
+  const { fields: generalFields } = useFieldArray({ control, name: "general" });
 
-  const {
-    handleStatusHighlightChange,
-    handleStatusHighlightChangeEnd,
-    handleTypeChange,
-    handleAllTypeChange,
-    handleGeneralHighlightChange,
-    handleGeneralHighlightChangeEnd,
-  } = useThemeForm(form, root, settings, colorScheme);
+  useEffect(() => {
+    const highlightType = getFromLocalStorage("Lute.highlightType", {});
+    const types = highlightType[document.documentElement.dataset.theme!];
+    if (types) {
+      setValue(
+        "status",
+        statusHighlights.map((status) => ({
+          ...status,
+          type: types[status.key],
+        }))
+      );
+    }
+  }, [setValue]);
+
+  function handleStatusHighlightChange(
+    highlight: StatusHighlight,
+    color: string
+  ) {
+    root.style.setProperty(`--lute-color-highlight-${highlight.key}`, color);
+    setTextColor(highlight.key, color, root);
+  }
+
+  function handleTypeChange(val: HighlightType, highlight: StatusHighlight) {
+    const textitems = document.querySelectorAll<WordTextItemElement>(
+      `[data-${TEXTITEM_DATA.status}="${highlight.key.split(TEXTITEM_DATA.status)[1]}"]`
+    );
+    textitems.forEach((textitem) => (textitem.dataset.highlightType = val));
+
+    setTextColor(highlight.key, highlight.color, root);
+    setValue("typeAll", "");
+  }
+
+  function handleAllTypeChange(type: HighlightType) {
+    const textitems = document.querySelectorAll<WordTextItemElement>(
+      TEXTITEM_CLASS.word
+    );
+    textitems.forEach((textitem) => (textitem.dataset.highlightType = type));
+
+    getValues().status.forEach((_, index) =>
+      setValue(`status.${index}.type`, type)
+    );
+
+    setValue("typeAll", type);
+  }
+
+  function handleGeneralHighlightChange(id: string, color: string) {
+    root.style.setProperty(`--lute-color-highlight-${id}`, color);
+    setTextColor(id, color, root);
+  }
+
+  function handleFlashHighlight() {
+    const textitem = document.querySelector<TextItemElement>(
+      `[data-${TEXTITEM_DATA.sentenceId}="0"]`
+    )!;
+    makeFlashing(getMatchedTextItems(textitem, "sentence"));
+    clearAllFlashing();
+  }
 
   return (
     <Stack gap={0} style={{ flexWrap: "nowrap" }}>
@@ -148,193 +155,172 @@ function ThemeForm() {
         </Text>
         <CloseButton onClick={themeForm.close} />
       </Group>
-      <form>
-        <Box>
+      <form
+        onSubmit={handleSubmit((data) => {
+          downloadCSS(makeCSS(data, "light"));
+          const highlightType = getFromLocalStorage("Lute.highlightType", {});
+          const newType = {
+            ...highlightType,
+            [document.documentElement.dataset.theme!]: Object.fromEntries(
+              data.status.map((status) => [status.key, status.type])
+            ),
+          };
+          localStorage.setItem("Lute.highlightType", JSON.stringify(newType));
+        })}>
+        <Group wrap="nowrap" mb={10}>
+          <ThemeSelect label="Theme" flex={1} />
           <Select
+            name="font"
+            control={control}
             size="xs"
-            label="Presets"
-            withCheckIcon={false}
-            allowDeselect={false}
-            defaultValue="default"
-            data={["default", "LWT", "LinQ"]}
+            flex={1}
+            label="Text font"
+            data={[
+              { label: "Arial", value: "arial" },
+              { label: "Roboto", value: "roboto" },
+              { label: "Montserrat", value: "montserrat" },
+            ]}
           />
-          <Group wrap="nowrap" mb={10}>
-            <NativeSelect
-              size="xs"
-              flex={1}
-              label="Text font"
-              data={[
-                { label: "Arial", value: "arial" },
-                { label: "Roboto", value: "roboto" },
-                { label: "Montserrat", value: "montserrat" },
-              ]}
-            />
-            <ColorInput
-              size="xs"
-              flex={1}
-              label="Body color"
-              popoverProps={{ position: "bottom" }}
-              styles={{
-                root: { minWidth: "200px", width: "min-content" },
-              }}
-              fixOnBlur
-              {...form.getInputProps("backgroundColor")}
-              key={form.key("backgroundColor")}
-              onChangeEnd={(color) =>
-                form.setFieldValue("backgroundColor", color)
-              }
-              onChange={(color) =>
-                root.style.setProperty("--lute-color-read", color)
-              }
-            />
-            <ColorInput
-              size="xs"
-              flex={1}
-              label="Primary scheme color"
-              popoverProps={{ position: "bottom" }}
-              styles={{
-                root: { minWidth: "200px", width: "min-content" },
-              }}
-              fixOnBlur
-              {...form.getInputProps("primaryColor")}
-              key={form.key("primaryColor")}
-            />
-          </Group>
-          <Divider label="Status Highlights" mb={10} />
-          <Stack gap={10}>
-            <Table
-              withTableBorder
-              verticalSpacing={5}
-              horizontalSpacing={30}
-              striped
-              highlightOnHover>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th fw={500}>Name</Table.Th>
-                  <Table.Th fw={500}>Color</Table.Th>
-                  <Table.Th fw={500}>Highlight</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {form
-                  .getValues()
-                  .highlights.statuses.map((highlight, index) => (
-                    <Table.Tr key={highlight.label}>
-                      <Table.Td style={{ minWidth: "170px", paddingRight: 0 }}>
-                        {highlight.label}
-                      </Table.Td>
-                      <Table.Td>
-                        <ColorInput
-                          {...form.getInputProps(
-                            `highlights.statuses.${index}.color`
-                          )}
-                          key={form.key(`highlights.statuses.${index}.color`)}
-                          onChange={(color) =>
-                            handleStatusHighlightChange(highlight, color)
-                          }
-                          onChangeEnd={(color) =>
-                            handleStatusHighlightChangeEnd(color, index)
-                          }
-                          format="hex"
-                          popoverProps={{ position: "bottom" }}
-                          fixOnBlur
-                          size="xs"
-                        />
-                      </Table.Td>
-                      <Table.Td>
-                        <NativeSelect
-                          size="xs"
-                          data={[
-                            { label: "Background", value: "bg" },
-                            { label: "Text", value: "text" },
-                            { label: "Underline: solid", value: "solid" },
-                            { label: "Underline: dashed", value: "dashed" },
-                            { label: "None", value: "none" },
-                          ]}
-                          {...form.getInputProps(
-                            `highlights.statuses.${index}.type`
-                          )}
-                          key={form.key(`highlights.statuses.${index}.type`)}
-                          onChange={(e) => {
-                            handleTypeChange(e, index, highlight);
-                          }}
-                        />
-                      </Table.Td>
-                    </Table.Tr>
-                  ))}
-                <Table.Tr>
-                  <Table.Td>All</Table.Td>
-                  <Table.Td></Table.Td>
+          <ColorInput
+            name="bgColor"
+            control={control}
+            label="Body color"
+            size="xs"
+            flex={1}
+            popoverProps={{ position: "bottom" }}
+            styles={{
+              root: { minWidth: "200px", width: "min-content" },
+            }}
+            fixOnBlur
+            onChange={(color) =>
+              root.style.setProperty("--lute-color-read", color)
+            }
+          />
+        </Group>
+        <Divider label="Status Highlights" mb={10} />
+        <Stack gap={10}>
+          <Table
+            withTableBorder
+            verticalSpacing={5}
+            horizontalSpacing={30}
+            striped
+            highlightOnHover>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th fw={500}>Name</Table.Th>
+                <Table.Th fw={500}>Color</Table.Th>
+                <Table.Th fw={500}>Highlight</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {statusFields.map((highlight, index) => (
+                <Table.Tr key={highlight.label}>
+                  <Table.Td style={{ minWidth: "170px", paddingRight: 0 }}>
+                    {highlight.label}
+                  </Table.Td>
                   <Table.Td>
-                    <NativeSelect
+                    <ColorInput
+                      name={`status.${index}.color`}
+                      control={control}
+                      format="hex"
+                      popoverProps={{ position: "bottom" }}
+                      fixOnBlur
                       size="xs"
+                      onChange={(color) =>
+                        handleStatusHighlightChange(highlight, color)
+                      }
+                    />
+                  </Table.Td>
+                  <Table.Td>
+                    <Select
+                      name={`status.${index}.type`}
+                      control={control}
+                      size="xs"
+                      allowDeselect={false}
                       data={[
-                        { label: "-", value: "-" },
                         { label: "Background", value: "bg" },
                         { label: "Text", value: "text" },
                         { label: "Underline: solid", value: "solid" },
                         { label: "Underline: dashed", value: "dashed" },
+                        { label: "None", value: "none" },
                       ]}
-                      {...form.getInputProps("highlights.allType")}
-                      onChange={(e) => {
-                        handleAllTypeChange(
-                          e.currentTarget.value as HighlightType
-                        );
+                      onChange={(val) =>
+                        handleTypeChange(val as HighlightType, highlight)
+                      }
+                    />
+                  </Table.Td>
+                </Table.Tr>
+              ))}
+              <Table.Tr>
+                <Table.Td>All</Table.Td>
+                <Table.Td></Table.Td>
+                <Table.Td>
+                  <Select
+                    name="typeAll"
+                    control={control}
+                    size="xs"
+                    allowDeselect={false}
+                    data={[
+                      { label: "-", value: "" },
+                      { label: "Background", value: "bg" },
+                      { label: "Text", value: "text" },
+                      { label: "Underline: solid", value: "solid" },
+                      { label: "Underline: dashed", value: "dashed" },
+                    ]}
+                    onChange={(val) => {
+                      if (val) {
+                        handleAllTypeChange(val as HighlightType);
+                      }
+                    }}
+                  />
+                </Table.Td>
+              </Table.Tr>
+            </Table.Tbody>
+          </Table>
+
+          <Divider label="General Text Highlights" />
+
+          <Table
+            withTableBorder
+            verticalSpacing={5}
+            horizontalSpacing={30}
+            striped
+            highlightOnHover>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th fw={500}>Name</Table.Th>
+                <Table.Th fw={500}>Color</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {generalFields.map((highlight, index) => (
+                <Table.Tr key={highlight.label}>
+                  <Table.Td style={{ minWidth: "170px", paddingRight: 0 }}>
+                    {highlight.label}
+                  </Table.Td>
+                  <Table.Td>
+                    <ColorInput
+                      name={`general.${index}.color`}
+                      control={control}
+                      format="hex"
+                      size="xs"
+                      popoverProps={{ position: "bottom" }}
+                      fixOnBlur
+                      onChange={(color) =>
+                        handleGeneralHighlightChange(highlight.key, color)
+                      }
+                      onChangeEnd={() => {
+                        if (highlight.key === "flash") {
+                          handleFlashHighlight();
+                        }
                       }}
                     />
                   </Table.Td>
                 </Table.Tr>
-              </Table.Tbody>
-            </Table>
-
-            <Divider label="General Text Highlights" />
-
-            <Table
-              withTableBorder
-              verticalSpacing={5}
-              horizontalSpacing={30}
-              striped
-              highlightOnHover>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th fw={500}>Name</Table.Th>
-                  <Table.Th fw={500}>Color</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {form.getValues().highlights.general.map((highlight, index) => (
-                  <Table.Tr key={highlight.label}>
-                    <Table.Td style={{ minWidth: "170px", paddingRight: 0 }}>
-                      {highlight.label}
-                    </Table.Td>
-                    <Table.Td>
-                      <ColorInput
-                        size="xs"
-                        {...form.getInputProps(
-                          `highlights.general.${index}.color`
-                        )}
-                        key={`highlights.general.${index}.color`}
-                        onChange={(color) =>
-                          handleGeneralHighlightChange(highlight.id, color)
-                        }
-                        onChangeEnd={(color) =>
-                          handleGeneralHighlightChangeEnd(
-                            highlight.id,
-                            color,
-                            index
-                          )
-                        }
-                        format="hex"
-                        popoverProps={{ position: "bottom" }}
-                        fixOnBlur
-                      />
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
-          </Stack>
-        </Box>
+              ))}
+            </Table.Tbody>
+          </Table>
+        </Stack>
 
         <FormButtons />
       </form>
@@ -342,93 +328,34 @@ function ThemeForm() {
   );
 }
 
-function useThemeForm(
-  form: UseFormReturnType<ThemeFormValues>,
-  root: HTMLElement,
-  settings: SettingsResponse,
-  colorScheme: "dark" | "light"
-) {
-  function handleStatusHighlightChange(highlight, color) {
-    root.style.setProperty(`--lute-color-highlight-${highlight.id}`, color);
-    setTextColor(highlight.id, color, root);
-  }
+function makeCSS(data: FormValues, scheme: "light" | "dark") {
+  return `[data-scheme="${scheme}"][data-theme="night"] {
+${[data.status, data.general]
+  .map((item) =>
+    item
+      .map(
+        (status) => `  --lute-color-highlight-${status.key}: ${status.color}`
+      )
+      .join(";\n")
+  )
+  .join(";\n\n")
+  .concat(";")}
+}`;
+}
 
-  function handleStatusHighlightChangeEnd(color, index) {
-    form.setFieldValue(`highlights.statuses.${index}.color`, color);
-  }
+function downloadCSS(css: string) {
+  const blob = new Blob([css], { type: "text/css" });
 
-  function handleTypeChange(e, index, highlight) {
-    const val = e.currentTarget.value;
-    const textitems = document.querySelectorAll(`.${highlight.id}`);
-    textitems.forEach((textitem) => (textitem.dataset.highlightType = val));
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "download.css";
 
-    setTextColor(highlight.id, highlight.color, root);
+  document.body.appendChild(a);
+  a.click();
 
-    form.setFieldValue(`highlights.statuses.${index}.type`, val);
-    form.setFieldValue("highlights.allType", "-");
-  }
-
-  function handleAllTypeChange(type: HighlightType) {
-    const textitems = document.querySelectorAll<TextItemElement>(
-      form
-        .getValues()
-        .highlights.statuses.map((highlight) => `.${highlight.id}`)
-        .join(",")
-    );
-    textitems.forEach((textitem) => (textitem.dataset.highlightType = type));
-
-    form
-      .getValues()
-      .highlights.statuses.forEach((highlight, index) =>
-        form.setFieldValue(`highlights.statuses.${index}.type`, type)
-      );
-  }
-
-  function handleGeneralHighlightChange(id, color) {
-    root.style.setProperty(`--lute-color-highlight-${id}`, color);
-    setTextColor(id, color, root);
-  }
-
-  function handleGeneralHighlightChangeEnd(id, color, index) {
-    form.setFieldValue(`highlights.general.${index}.color`, color);
-    setTextColor(id, color, root);
-
-    if (id === "flash") {
-      const textitem = document.querySelector<TextItemElement>(
-        `[data-${TEXTITEM_DATA.sentenceId}="0"]`
-      )!;
-      const matched = getMatchedTextItems(textitem, "sentence");
-      makeFlashing(matched);
-      clearAllFlashing();
-    }
-  }
-
-  useEffect(() => {
-    form.setFieldValue("highlights.statuses", [
-      ...getLuteHighlights(
-        label.status,
-        settings.highlights.status,
-        colorScheme
-      ),
-    ]);
-    form.setFieldValue("highlights.general", [
-      ...getLuteHighlights(
-        label.general,
-        settings.highlights.general,
-        colorScheme
-      ),
-    ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorScheme]);
-
-  return {
-    handleStatusHighlightChange,
-    handleStatusHighlightChangeEnd,
-    handleTypeChange,
-    handleAllTypeChange,
-    handleGeneralHighlightChange,
-    handleGeneralHighlightChangeEnd,
-  };
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 export default ThemeForm;

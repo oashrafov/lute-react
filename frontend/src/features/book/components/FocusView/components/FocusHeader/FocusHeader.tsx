@@ -1,8 +1,8 @@
 import { Divider, Paper, Stack } from "@mantine/core";
 import { Player } from "../../../common/Player/Player";
 import { HomeImageLink } from "../../../../../../components/common/HomeImageLink/HomeImageLink";
-import { SchemeToggleButton } from "../../../../../../components/common/SchemeToggleButton/SchemeToggleButton";
 import { BookTitle } from "../../../common/BookTitle";
+import { ThemeSelect } from "../../../../../../components/common/ThemeSelect/ThemeSelect";
 import { PageCounter } from "../../../common/PageCounter";
 import { BookSourceButton } from "../../../common/BookSourceButton";
 import { FocusSwitch } from "../../../common/FocusSwitch/FocusSwitch";
@@ -49,7 +49,7 @@ export function FocusHeader({ book }: FocusHeader) {
 
       <Divider orientation="vertical" />
 
-      <SchemeToggleButton />
+      <ThemeSelect />
     </Paper>
   );
 }

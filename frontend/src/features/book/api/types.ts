@@ -1,4 +1,4 @@
-import type { TextDirection } from "../../../resources/types";
+import type { Status, TextDirection } from "../../../resources/types";
 
 export interface BookStats {
   [key: string]: {
@@ -9,7 +9,7 @@ export interface BookStats {
 
 export interface BooksListItem {
   id: number;
-  audioName: string;
+  audioName: string | null;
   currentPage: number;
   isArchived: boolean;
   isCompleted: boolean;
@@ -72,7 +72,7 @@ export interface Textitem {
   order: number;
   wid: number | null;
   isWord: boolean;
-  status: number | null;
+  status: Status | null;
   isSentenceStart: boolean;
   isOverlapped: boolean;
 }
@@ -97,8 +97,8 @@ export interface NewBookForm {
   title: string;
   text: string;
   importurl: string;
-  text_file: File | undefined;
-  audio_file: File | undefined;
+  text_file: File | null;
+  audio_file: File | null;
   threshold_page_tokens: number;
   split_by: "paragraphs" | "sentences";
   source_uri: string;

@@ -7,8 +7,6 @@ from flask import Blueprint, current_app
 from lute import __version__
 from lute.db import db
 
-# import lute.utils.formutils
-
 from lute.settings.current import current_settings
 from lute.models.book import Book
 from lute.models.language import Language
@@ -17,6 +15,7 @@ from lute.models.repositories import UserSettingRepository
 from lute.book.model import Repository as BookRepository
 from lute.db.demo import Service as DemoService
 from lute.backup.service import Service as BackupService
+from lute.settings.hotkey_data import categorized_hotkeys, hotkey_descriptions
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -101,16 +100,49 @@ def get_backup_list():
     }
 
 
-@bp.route("/settings", methods=["GET"])
+@bp.route("/settings/form", methods=["GET"])
 def user_settings():
     """
     settings
     """
 
-    bs = _get_backup_settings()
+    settings_form_values = {
+        "open_popup_in_new_tab",
+        "stop_audio_on_term_form_open",
+        "stats_calc_sample_size",
+        "term_popup_promote_parent_translation",
+        "term_popup_show_components",
+        "mecab_path",
+        "japanese_reading",
+    }
 
+    form_settings = {
+        k: v for k, v in current_settings.items() if k in settings_form_values
+    }
+
+    bs = _get_backup_settings()
+    backup_settings = {
+        "backup_enabled": bs.backup_enabled,
+        "backup_dir": bs.backup_dir,
+        "last_backup_display_date": bs.last_backup_display_date,
+        "time_since_last_backup": bs.time_since_last_backup,
+        "backup_warn": bs.backup_warn,
+        "backup_count": bs.backup_count,
+        "backup_auto": bs.backup_auto,
+    }
+
+    settings = form_settings | backup_settings
+
+    return settings
+
+
+@bp.route("/theme/form", methods=["GET", "POST"])
+def highlights():
+    """
+    theme highlights
+    """
     # temporary mock data
-    highlights = {
+    return {
         "highlights": {
             "status": {
                 0: {"light": "#addfff", "dark": "#5cacf3", "type": "bg"},
@@ -137,126 +169,23 @@ def user_settings():
         }
     }
 
-    settings = current_settings | highlights
-
-    settings["backup"] = {
-        "enabled": bs.backup_enabled,
-        "directory": bs.backup_dir,
-        "lastDate": bs.last_backup_display_date,
-        "timeSince": bs.time_since_last_backup,
-    }
-
-    return settings
-
 
 @bp.route("/shortcuts", methods=["GET", "POST"])
-def keys():
+def shortcuts():
     """
-    Return hotkey UserSetting keys and values,
-    grouped by category.
+    shortcuts
     """
+    categorized = categorized_hotkeys()
+    descriptions = hotkey_descriptions()
+    settings = {h.key: h.value for h in db.session.query(UserSetting).all()}
 
-    categorized_settings = [
-        {
-            "Navigation": [
-                "hotkey_StartHover",
-                "hotkey_PrevWord",
-                "hotkey_NextWord",
-                "hotkey_PrevUnknownWord",
-                "hotkey_NextUnknownWord",
-                "hotkey_PrevSentence",
-                "hotkey_NextSentence",
-            ]
-        },
-        {
-            "Update status": [
-                "hotkey_Status1",
-                "hotkey_Status2",
-                "hotkey_Status3",
-                "hotkey_Status4",
-                "hotkey_Status5",
-                "hotkey_StatusIgnore",
-                "hotkey_StatusWellKnown",
-                "hotkey_StatusUp",
-                "hotkey_StatusDown",
-                "hotkey_DeleteTerm",
-            ]
-        },
-        {
-            "Translate": [
-                "hotkey_TranslateSentence",
-                "hotkey_TranslatePara",
-                "hotkey_TranslatePage",
-            ]
-        },
-        {
-            "Copy": [
-                "hotkey_CopySentence",
-                "hotkey_CopyPara",
-                "hotkey_CopyPage",
-            ]
-        },
-        {
-            "Misc": [
-                "hotkey_Bookmark",
-                "hotkey_EditPage",
-                "hotkey_NextTheme",
-                "hotkey_ToggleHighlight",
-                "hotkey_ToggleFocus",
-            ]
-        },
-    ]
-
-    setting_descs = {
-        "hotkey_StartHover": "Deselect all words",
-        "hotkey_PrevWord": "Move to previous word",
-        "hotkey_NextWord": "Move to next word",
-        "hotkey_PrevUnknownWord": "Move to previous unknown word",
-        "hotkey_NextUnknownWord": "Move to next unknown word",
-        "hotkey_PrevSentence": "Move to previous sentence",
-        "hotkey_NextSentence": "Move to next sentence",
-        "hotkey_StatusUp": "Bump up by 1",
-        "hotkey_StatusDown": "Bump down by 1",
-        "hotkey_Bookmark": "Bookmark the current page",
-        "hotkey_CopySentence": "Sentence of the current word",
-        "hotkey_CopyPara": "Paragraph of the current word",
-        "hotkey_CopyPage": "Full page",
-        "hotkey_TranslateSentence": "Sentence of the current word",
-        "hotkey_TranslatePara": "Paragraph of the current word",
-        "hotkey_TranslatePage": "Full page",
-        "hotkey_NextTheme": "Cycle theme",
-        "hotkey_ToggleHighlight": "Toggle highlights",
-        "hotkey_ToggleFocus": "Toggle focus mode",
-        "hotkey_Status1": "Set to 1",
-        "hotkey_Status2": "Set to 2",
-        "hotkey_Status3": "Set to 3",
-        "hotkey_Status4": "Set to 4",
-        "hotkey_Status5": "Set to 5",
-        "hotkey_StatusIgnore": "Set to Ignore",
-        "hotkey_StatusWellKnown": "Set to Well Known",
-        "hotkey_DeleteTerm": "Set to Unknown (Delete term)",
-        "hotkey_EditPage": "Edit the current page",
+    return {
+        id: {"key": settings[id], "category": category, "description": descriptions[id]}
+        for category, ids in categorized.items()
+        for id in ids
     }
 
-    settings = {h.key: h.value for h in db.session.query(UserSetting).all()}
-    return [
-        {
-            "name": category,
-            "shortcuts": [
-                {
-                    "label": setting_descs[key],
-                    "key": settings[key],
-                    "description": key,
-                }
-                for key in keylist
-            ],
-        }
-        for entry in categorized_settings
-        for category, keylist in entry.items()
-    ]
 
-
-#
 @bp.route("/appinfo")
 def version():
     """

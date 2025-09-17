@@ -29,7 +29,7 @@
 
   --lute-color-highlight-kwordmarked: #f56767;
   --lute-color-highlight-wordhover: #228be6;
-  --lute-color-highlight-multiterm: #ffe066;
+  --lute-color-highlight-newmultiterm: #ffe066;
   --lute-color-highlight-flash: #ff6868;
 
   --lute-color-read: var(--mantine-color-body);
@@ -47,7 +47,7 @@
 
   --lute-color-highlight-kwordmarked: #f56767;
   --lute-color-highlight-wordhover: #228be6;
-  --lute-color-highlight-multiterm: #ffe066;
+  --lute-color-highlight-newmultiterm: #ffe066;
   --lute-color-highlight-flash: #ff6868;
 
   --lute-color-read: var(--mantine-color-body);

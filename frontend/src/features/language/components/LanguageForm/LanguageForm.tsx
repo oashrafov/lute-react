@@ -1,18 +1,9 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import { useForm } from "@mantine/form";
+import { useFieldArray, useForm } from "react-hook-form";
+import { Box, Divider, Fieldset, Group, LoadingOverlay } from "@mantine/core";
 import { randomId } from "@mantine/hooks";
-import {
-  Box,
-  Checkbox,
-  Divider,
-  Fieldset,
-  Group,
-  LoadingOverlay,
-  Select,
-  TextInput,
-} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
   IconAbc,
@@ -20,12 +11,16 @@ import {
   IconAnalyzeFilled,
   IconCut,
 } from "@tabler/icons-react";
+import { Checkbox } from "../../../../components/common/Checkbox/Checkbox";
+import { Select } from "../../../../components/common/Select/Select";
+import { TextInput } from "../../../../components/common/TextInput/TextInput";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
 import LanguageSelect from "./components/LanguageSelect";
 import { DictionaryBars } from "./components/DictionaryBars";
 import { AddDictionaryButton } from "./components/AddDictionaryButton";
 import { useSelectedLanguage } from "../../hooks/useSelectedLanguage";
 import { queries as langQueries } from "../../api/queries";
+import type { Dictionary, LanguageForm } from "../../api/types";
 import classes from "./LanguageForm.module.css";
 
 export function LanguageForm() {
@@ -36,36 +31,36 @@ export function LanguageForm() {
   const { data: parsers } = useQuery(langQueries.parsers());
   const { language, isSuccess: isLanguageSuccess } = useSelectedLanguage();
 
-  const form = useForm({ initialValues: formValues });
+  const { control, setValue, reset } = useForm({
+    defaultValues: formValues,
+  });
 
-  useEffect(() => {
-    if (isSuccess && formValues) {
-      form.setInitialValues(formValues);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formValues, isSuccess]);
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "dictionaries",
+  });
 
   useEffect(() => {
     if (isLanguageSuccess && language) {
-      form.setValues(language);
+      reset(language);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, isLanguageSuccess]);
+  }, [language, isLanguageSuccess, reset]);
 
   useEffect(() => {
-    if (!langId) {
-      form.reset();
+    if (!langId && isSuccess) {
+      reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [langId]);
+  }, [langId, isSuccess, reset]);
 
   function handleAddDictionary() {
-    form.insertListItem("dictionaries", {
+    append({
       for: "terms",
       type: "embedded",
       url: "",
       active: false,
-      key: randomId(),
+      hostname: "",
+      id: parseInt(randomId()),
+      label: "",
     });
   }
 
@@ -90,26 +85,31 @@ export function LanguageForm() {
           }}>
           <div className={classes.flex}>
             <AddDictionaryButton onClick={handleAddDictionary} />
-            <DictionaryBars
-              key={form.getValues().dictionaries.length}
-              form={form}
+            <DictionaryBars<LanguageForm>
+              key={fields.length}
+              dictionaries={fields}
+              control={control}
+              onSet={(dicts: Dictionary[]) => setValue("dictionaries", dicts)}
+              onRemove={(index: number) => remove(index)}
             />
           </div>
         </Fieldset>
 
         <Checkbox
+          name="show_romanization"
+          control={control}
           label={t("pronunciationLabel")}
-          key={form.key("show_romanization")}
-          {...form.getInputProps("show_romanization", { type: "checkbox" })}
         />
 
         <Checkbox
+          name="show_romanization"
+          control={control}
           label={t("rtlLabel")}
-          key={form.key("right_to_left")}
-          {...form.getInputProps("right_to_left", { type: "checkbox" })}
         />
 
         <Select
+          name="parser_type"
+          control={control}
           label={t("parseLabel")}
           w="fit-content"
           leftSection={<IconAnalyzeFilled />}
@@ -117,40 +117,38 @@ export function LanguageForm() {
           searchable={false}
           allowDeselect={false}
           data={parsers}
-          key={form.key("parser_type")}
-          {...form.getInputProps("parser_type")}
         />
 
         <TextInput
+          name="character_substitutions"
+          control={control}
           label={t("charSubsLabel")}
           leftSection={<IconAlt />}
-          key={form.key("character_substitutions")}
-          {...form.getInputProps("character_substitutions")}
         />
 
         <Group align="flex-end">
           <TextInput
+            name="split_sentences"
+            control={control}
             label={t("splitLabel")}
             description={t("splitDescription")}
             leftSection={<IconCut />}
             flex={1}
-            key={form.key("split_sentences")}
-            {...form.getInputProps("split_sentences")}
           />
           <TextInput
+            name="split_sentence_exceptions"
+            control={control}
             label={t("splitExceptionsLabel")}
             flex={2}
-            key={form.key("split_sentence_exceptions")}
-            {...form.getInputProps("split_sentence_exceptions")}
           />
         </Group>
 
         <TextInput
+          name="word_chars"
+          control={control}
           label={t("wordCharsLabel")}
           description={t("wordCharsDescription")}
           leftSection={<IconAbc />}
-          key={form.key("word_chars")}
-          {...form.getInputProps("word_chars")}
         />
 
         <FormButtons />

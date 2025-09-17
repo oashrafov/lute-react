@@ -1,13 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { useForm } from "@mantine/form";
-import {
-  Checkbox,
-  Divider,
-  Group,
-  Stack,
-  TagsInput,
-  Text,
-} from "@mantine/core";
+import { Controller, useForm } from "react-hook-form";
+import { Divider, Group, Stack, Text } from "@mantine/core";
+import { Checkbox } from "../../../../components/common/Checkbox/Checkbox";
+import { TagsInput } from "../../../../components/common/TagsInput/TagsInput";
 import { StatusRadio } from "../StatusRadio/StatusRadio";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
 import { queries } from "../../api/queries";
@@ -15,8 +10,8 @@ import { queries } from "../../api/queries";
 function BulkTermForm({ terms }: { terms: number[] }) {
   const { data: tags } = useQuery(queries.tagSuggestions());
 
-  const form = useForm({
-    initialValues: {
+  const { control } = useForm({
+    defaultValues: {
       convertToLowerCase: false,
       removeParents: false,
       changeStatus: false,
@@ -37,44 +32,47 @@ function BulkTermForm({ terms }: { terms: number[] }) {
       <form>
         <Stack gap={5}>
           <Checkbox
+            name="convertToLowerCase"
+            control={control}
             label="Convert to lowercase"
-            key={form.key("convertToLowerCase")}
-            {...form.getInputProps("convertToLowerCase", { type: "checkbox" })}
           />
           <Checkbox
+            name="removeParents"
+            control={control}
             label="Remove parents"
-            key={form.key("removeParents")}
-            {...form.getInputProps("removeParents", { type: "checkbox" })}
           />
           <Group>
             <Checkbox
+              name="changeStatus"
+              control={control}
               label="Change status"
-              key={form.key("changeStatus")}
-              {...form.getInputProps("changeStatus", { type: "checkbox" })}
             />
-            <StatusRadio
-              {...form.getInputProps("status")}
-              disabled={!form.getValues().changeStatus}
+            <Controller
+              name="status"
+              control={control}
+              render={({ field: { value, ...field } }) => (
+                <StatusRadio {...field} value={String(value)} />
+              )}
             />
           </Group>
           <Divider mt={5} mb={5} />
           <TagsInput
+            name="parent"
+            control={control}
             placeholder="Parent (Limit: one)"
             maxTags={1}
-            key={form.key("parent")}
-            {...form.getInputProps("parent")}
           />
           <TagsInput
+            name="tagsAdd"
+            control={control}
             placeholder="Tags to add"
             data={tags || []}
-            key={form.key("tagsAdd")}
-            {...form.getInputProps("tagsAdd")}
           />
           <TagsInput
+            name="tagsRemove"
+            control={control}
             placeholder="Tags to remove"
             data={tags || []}
-            key={form.key("tagsRemove")}
-            {...form.getInputProps("tagsRemove")}
           />
         </Stack>
 

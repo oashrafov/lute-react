@@ -1,4 +1,4 @@
-import type { Status } from "./types";
+import type { HighlightType, Status } from "./types";
 
 export const BASE_API_URL = "http://localhost:5001/api";
 export const FAVICON_SOURCE_URL = "http://www.google.com/s2/favicons?domain=";
@@ -41,3 +41,13 @@ export const STATUS_LABEL = {
   98: "Ignored",
   99: "Well Known",
 } as const satisfies Record<Status, string>;
+export const DEFAULT_HIGHLIGHT_TYPE: Record<Status, HighlightType> = {
+  0: "bg",
+  1: "bg",
+  2: "bg",
+  3: "bg",
+  4: "bg",
+  5: "bg",
+  98: "none",
+  99: "none",
+} as const;

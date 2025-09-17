@@ -18,7 +18,7 @@ import {
 } from "../../../../helpers/interactions-desktop";
 import type { ActiveTerm } from "../../../term/store/activeTermContext";
 import { useProcessPage } from "./hooks/useProcessPage";
-import { useInitializePage } from "./hooks/useInitializePage";
+import { useApplyHighlightTypes } from "./hooks/useApplyHighlightTypes";
 import { copyToClipboard } from "../../../../utils/utils";
 import type { WordTextItemElement } from "../../../../resources/types";
 import { notifications } from "@mantine/notifications";
@@ -28,10 +28,10 @@ export function TheTextContainer() {
   const { data: book } = useBookQuery();
   const { data: page } = usePageQuery();
   const { page: pageNum } = useParams();
-  useInitializePage();
   const { state } = usePageContext();
   const { activeTerm, setActiveTerm } = useActiveTermContext();
   const pageProcessed = useProcessPage();
+  useApplyHighlightTypes();
 
   const textContainerClass = clsx("textcontainer", {
     "highlight": state.highlights,

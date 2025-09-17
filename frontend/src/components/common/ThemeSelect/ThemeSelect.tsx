@@ -1,30 +1,25 @@
 import { useState } from "react";
-import {
-  Select,
-  useMantineColorScheme,
-  type MantineColorScheme,
-} from "@mantine/core";
+import { Select, type SelectProps } from "@mantine/core";
 import { IconPalette } from "@tabler/icons-react";
-
-export function ThemeSelect() {
-  const { setColorScheme } = useMantineColorScheme();
-
-  const userThemes = ["LWT", "Lute", "Night"] as const; // mock
-  const themes = ["Light", "Dark", ...userThemes] as const;
+// TODO - create context
+export function ThemeSelect(props: SelectProps) {
+  const userThemes = ["LWT_dark", "Lute_light", "Night_dark"] as const; // mock
+  const themes = ["Light_light", "Dark_dark", ...userThemes] as const;
   type Theme = (typeof themes)[number];
 
-  const [theme, setTheme] = useState<Theme>("Light");
+  const [theme, setTheme] = useState<Theme>("Light_light");
 
   function handleToggleScheme(theme: Theme) {
-    if (theme === "Light" || theme === "Dark") {
-      setColorScheme(theme.toLowerCase() as MantineColorScheme);
-    }
+    const [name, scheme] = theme.split("_");
+    document.documentElement.dataset.theme = name.toLowerCase();
+    document.documentElement.dataset.scheme = scheme;
+    document.documentElement.dataset.mantineColorScheme = scheme;
 
     setTheme(theme);
   }
 
   const selectData = themes.map((theme) => ({
-    label: theme,
+    label: theme.split("_")[0],
     value: theme,
   }));
 
@@ -37,6 +32,7 @@ export function ThemeSelect() {
       allowDeselect={false}
       data={selectData}
       leftSection={<IconPalette size={16} />}
+      {...props}
     />
   );
 }

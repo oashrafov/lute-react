@@ -75,9 +75,9 @@
 }
 /* data property for equal specificity with above styles */
 .textitem.newmultiterm[data-highlight-type] {
-  background: var(--lute-color-highlight-multiterm);
+  background: var(--lute-color-highlight-newmultiterm);
   border-radius: 0;
-  color: var(--lute-text-color-multiterm);
+  color: var(--lute-text-color-newmultiterm);
   text-decoration: none;
 }
 

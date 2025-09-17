@@ -9,12 +9,12 @@ import { PageContainer } from "../../components/common/PageContainer/PageContain
 import { DemoNotice } from "../../components/DemoNotice/DemoNotice";
 import { WelcomeModal } from "../../components/Modals/WelcomeModal";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
-import { useInitializePage } from "../../features/book/components/TheTextContainer/hooks/useInitializePage";
+import { useApplyHighlightTypes } from "../../features/book/components/TheTextContainer/hooks/useApplyHighlightTypes";
 import { queries } from "../../features/settings/api/queries";
 
 export default function HomePage() {
   const media = useMediaQuery();
-  useInitializePage();
+  useApplyHighlightTypes();
   const navigate = useNavigate();
   const { data: initial } = useQuery(queries.init());
   const haveLanguagesButNoBooks = !initial?.haveBooks && initial?.haveLanguages;

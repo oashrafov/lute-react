@@ -1,59 +1,41 @@
 import { type KeyboardEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Fieldset, Group, Input, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { useForm } from "react-hook-form";
+import { Fieldset, Group, InputClearButton, rem } from "@mantine/core";
+import { TextInput } from "../../../../components/common/TextInput/TextInput";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
 import { getPressedKeysAsString } from "../../../../utils/utils";
-import { PageSpinner } from "../../../../components/common/PageSpinner/PageSpinner";
+import type { ShortcutsForm } from "../../api/types";
 import { queries } from "../../api/queries";
+
+function getShortcutsInCategory(category: string, data: ShortcutsForm) {
+  return Object.entries(data!)
+    .map(([id, shortcut]) => ({ ...shortcut, id: id }))
+    .filter((shortcut) => shortcut.category === category);
+}
 
 export function ShortcutsForm() {
   const { data } = useQuery(queries.shortcuts());
-  const form = useForm({
-    mode: "uncontrolled",
-    onValuesChange: () => {
-      form.validate();
-    },
-
-    // validate: (values) => {
-    //   const validations = {};
-
-    //   Object.entries(values).forEach(([field, value]) => {
-    //     validations[field] = matches({ [field]: value }, values)
-    //       ? "Hotkey already defined"
-    //       : null;
-    //   });
-
-    //   return validations;
-    // },
-    // validateInputOnBlur: true, // needed because for some reason with keydown event (or because the input is readonly) clicking away after dupicate match removes error from the clicked field
+  const { setValue, control, watch } = useForm({
+    defaultValues: Object.fromEntries(
+      Object.entries(data!).map(([key, value]) => [key, value.key])
+    ),
   });
 
-  // useEffect(() => {
-  //   if (data) {
-  //     const values = {};
-  //     data.forEach((obj) => {
-  //       Object.values(obj)[1].forEach((shortcut) => {
-  //         values[shortcut.description] = shortcut.key;
-  //       });
-  //     });
-
-  //     form.initialize(values);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [data]);
-
-  if (!data) {
-    return <PageSpinner />;
-  }
+  const categories = [
+    ["Navigation", "Navigation"],
+    ["Paging", "Reading"],
+    ["Update status", "Status"],
+    ["Copy", "Copy"],
+    ["Misc", "Misc"],
+  ];
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     e.preventDefault();
     const eventAsString = getPressedKeysAsString(e);
     if (!eventAsString) return;
 
-    // e.target.value = eventAsString;
-    form.setFieldValue(e.currentTarget.name, eventAsString);
+    setValue(e.currentTarget.name, eventAsString);
   }
 
   return (
@@ -65,44 +47,33 @@ export function ShortcutsForm() {
       </p>
       <form>
         <Group align="flex-stretch" wrap="nowrap">
-          {data.map((category) => {
-            return (
-              <Fieldset
-                key={category.name}
-                styles={{
-                  legend: { fontSize: "1.2rem", fontWeight: 700 },
-                }}
-                legend={category.name}>
-                {category.shortcuts.map((shortcut) => {
-                  return (
-                    <Group key={shortcut.label} gap="0.5rem" align="flex-end">
-                      <TextInput
-                        {...form.getInputProps(shortcut.description)}
-                        key={shortcut.description}
-                        name={shortcut.description}
-                        onKeyDown={handleKeyDown}
-                        size="xs"
-                        label={shortcut.label}
-                        readOnly
-                        rightSection={
-                          <Input.ClearButton
-                            onClick={() =>
-                              form.setFieldValue(shortcut.description, "")
-                            }
-                            style={{
-                              display: form.getValues()[shortcut.description]
-                                ? undefined
-                                : "none",
-                            }}
-                          />
-                        }
+          {categories.map(([key, label]) => (
+            <Fieldset
+              key={label}
+              legend={label}
+              styles={{
+                legend: { fontSize: rem(20), fontWeight: 700 },
+              }}>
+              {getShortcutsInCategory(key, data!).map((shortcut) => (
+                <TextInput
+                  key={shortcut.id}
+                  control={control}
+                  name={shortcut.id}
+                  onKeyDown={handleKeyDown}
+                  size="xs"
+                  label={shortcut.description}
+                  readOnly
+                  rightSection={
+                    !!watch(shortcut.id) && (
+                      <InputClearButton
+                        onClick={() => setValue(shortcut.id, "")}
                       />
-                    </Group>
-                  );
-                })}
-              </Fieldset>
-            );
-          })}
+                    )
+                  }
+                />
+              ))}
+            </Fieldset>
+          ))}
         </Group>
 
         <FormButtons />
@@ -110,12 +81,3 @@ export function ShortcutsForm() {
     </>
   );
 }
-
-// function matches(entry, entries) {
-//   const rest = { ...entries };
-//   delete rest[Object.keys(entry)[0]];
-
-//   return Object.values(rest).some(
-//     (value) => value !== "" && value === Object.values(entry)[0]
-//   );
-// }

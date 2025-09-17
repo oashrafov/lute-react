@@ -6,7 +6,7 @@ export function loader(queryClient: QueryClient) {
   return async () =>
     await Promise.all([
       queryClient.ensureQueryData(settingsQueries.appInfo()),
-      queryClient.ensureQueryData(settingsQueries.settings()),
+      queryClient.ensureQueryData(settingsQueries.settingsForm()),
       queryClient.ensureQueryData(settingsQueries.init()),
       queryClient.ensureQueryData(langQueries.predefinedLanguagesList()),
     ]);

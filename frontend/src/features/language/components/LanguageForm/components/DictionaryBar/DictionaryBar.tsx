@@ -1,44 +1,38 @@
-import {
-  ActionIcon,
-  Checkbox,
-  NativeSelect,
-  TextInput,
-  Tooltip,
-} from "@mantine/core";
-import type { UseFormReturnType } from "@mantine/form";
-import { IconSquareRoundedMinusFilled } from "@tabler/icons-react";
+import { Tooltip } from "@mantine/core";
+import type { Control, FieldValues, Path } from "react-hook-form";
+import { TextInput } from "../../../../../../components/common/TextInput/TextInput";
+import { Checkbox } from "../../../../../../components/common/Checkbox/Checkbox";
+import { Select } from "../../../../../../components/common/Select/Select";
 import { TestDictionaryButton } from "./components/TestDictionaryButton";
-import type { Dictionary, LanguageForm } from "../../../../api/types";
+import type { Dictionary } from "../../../../api/types";
 
-export interface DictionaryBar {
+export interface DictionaryBar<T extends FieldValues> {
+  control: Control<T>;
   dict: Dictionary;
-  form: UseFormReturnType<LanguageForm>;
-  index: number;
+  name: string;
   editable: boolean;
-  onRemove: () => void;
 }
 
-export function DictionaryBar({
-  form,
-  index,
+export function DictionaryBar<T extends FieldValues>({
+  name,
   dict,
+  control,
   editable,
-  onRemove,
-}: DictionaryBar) {
+}: DictionaryBar<T>) {
   return (
     <>
       <Tooltip label="Is active?" openDelay={300} withinPortal={false}>
         <Checkbox
+          name={`${name}.active` as Path<T>}
+          control={control}
           size="xs"
           disabled={!editable}
-          key={form.key(`dictionaries.${index}.active`)}
-          {...form.getInputProps(`dictionaries.${index}.active`, {
-            type: "checkbox",
-          })}
         />
       </Tooltip>
 
       <TextInput
+        name={`${name}.url` as Path<T>}
+        control={control}
         flex={5}
         size="xs"
         placeholder="Dictionary URL"
@@ -49,46 +43,32 @@ export function DictionaryBar({
             />
           )
         }
-        key={form.key(`dictionaries.${index}.url`)}
-        {...form.getInputProps(`dictionaries.${index}.url`)}
       />
 
       <Tooltip label="Use for" openDelay={300} withinPortal={false}>
-        <NativeSelect
+        <Select
+          name={`${name}.for` as Path<T>}
+          control={control}
           aria-label="Use dictionary for"
           size="xs"
           data={[
             { label: "Terms", value: "terms" },
             { label: "Sentences", value: "sentences" },
           ]}
-          key={form.key(`dictionaries.${index}.for`)}
-          {...form.getInputProps(`dictionaries.${index}.for`)}
         />
       </Tooltip>
 
       <Tooltip label="Show as" openDelay={300} withinPortal={false}>
-        <NativeSelect
+        <Select
+          name={`${name}.type` as Path<T>}
+          control={control}
           aria-label="Show dictionary as"
           size="xs"
           data={[
             { label: "Embedded", value: "embedded" },
             { label: "Pop-up", value: "popup" },
           ]}
-          key={form.key(`dictionaries.${index}.type`)}
-          {...form.getInputProps(`dictionaries.${index}.type`)}
         />
-      </Tooltip>
-
-      <Tooltip label="Remove dictionary" openDelay={300} withinPortal={false}>
-        <ActionIcon
-          disabled={!editable}
-          variant="transparent"
-          color="red.6"
-          size="sm"
-          style={{ backgroundColor: "transparent" }}
-          onClick={onRemove}>
-          <IconSquareRoundedMinusFilled />
-        </ActionIcon>
       </Tooltip>
     </>
   );
