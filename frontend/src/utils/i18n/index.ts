@@ -1,4 +1,4 @@
-import i18n from "i18next";
+import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import enPage from "../../locales/en/page.json";
 import enForm from "../../locales/en/form.json";
@@ -10,10 +10,10 @@ export const resources = {
   },
 };
 
-i18n.use(initReactI18next).init({
+i18next.use(initReactI18next).init({
   resources,
   lng: "en",
   fallbackLng: "en",
 });
 
-export default i18n;
+export default i18next;

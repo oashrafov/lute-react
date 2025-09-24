@@ -7,11 +7,11 @@ import {
   hoverOut,
 } from "../../../../helpers/interactions-desktop";
 import type { Paragraph } from "../../api/types";
-import type { WordTextItemElement } from "../../../../resources/types";
+import type { WordElement } from "../../../../resources/types";
 
 interface TheText {
   paragraphs: Paragraph[];
-  onSelectEnd: (e: MouseEvent<WordTextItemElement>) => Promise<void>;
+  onSelectEnd: (e: MouseEvent<WordElement>) => Promise<void>;
 }
 
 export function TheText({ paragraphs, onSelectEnd }: TheText) {
@@ -23,7 +23,7 @@ export function TheText({ paragraphs, onSelectEnd }: TheText) {
             <span key={`sent_${index + 1}`} id={`sent_${index + 1}`}>
               {sentence.map((textitem) =>
                 textitem.isWord ? (
-                  <TermPopup id={textitem.wid} key={textitem.id}>
+                  <TermPopup id={textitem.wordId} key={textitem.id}>
                     <TextItem
                       data={textitem}
                       onMouseDown={handleMouseDown}

@@ -10,13 +10,13 @@ import {
 import { IconChevronLeftPipe, IconChevronRightPipe } from "@tabler/icons-react";
 import { BooksGridTopToolbar } from "./components/BooksGridTopToolbar";
 import { BookCards } from "./components/BookCards";
-import { DEFAULT_TABLE_ROW_COUNT } from "../../../../resources/constants";
+import { TABLE_PAGE_SIZE } from "../../../../resources/constants";
 import { useMediaQuery } from "../../../../hooks/useMediaQuery";
 import { queries } from "../../api/queries";
 
 const PAGINATION = {
   pageIndex: 0,
-  pageSize: DEFAULT_TABLE_ROW_COUNT,
+  pageSize: TABLE_PAGE_SIZE,
 };
 
 export function BooksGrid() {

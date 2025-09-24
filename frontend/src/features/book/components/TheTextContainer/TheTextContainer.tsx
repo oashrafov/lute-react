@@ -17,10 +17,10 @@ import {
   handleMouseUp,
 } from "../../../../helpers/interactions-desktop";
 import type { ActiveTerm } from "../../../term/store/activeTermContext";
+import type { WordElement } from "../../../../resources/types";
 import { useProcessPage } from "./hooks/useProcessPage";
 import { useApplyHighlightTypes } from "./hooks/useApplyHighlightTypes";
 import { copyToClipboard } from "../../../../utils/utils";
-import type { WordTextItemElement } from "../../../../resources/types";
 import { notifications } from "@mantine/notifications";
 import { textCopied } from "../../resources/notifications";
 
@@ -45,7 +45,7 @@ export function TheTextContainer() {
   } as CSSProperties;
 
   const handleSelectEnd = useCallback(
-    async (e: MouseEvent<WordTextItemElement>) => {
+    async (e: MouseEvent<WordElement>) => {
       if (e.button !== 0) return;
 
       function handleSetTerm(termData: ActiveTerm) {

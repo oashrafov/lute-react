@@ -16,10 +16,10 @@ import {
   Input,
   type PillsInputProps,
 } from "@mantine/core";
-import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "../../../../../../resources/constants";
+import { MAX_TERM_SUGGESTIONS } from "../../../../../../resources/constants";
 import { useActiveTermContext } from "../../../../hooks/useActiveTermContext";
-import { queries } from "../../../../api/queries";
 import { buildSuggestionsList } from "../../../../../../helpers/term";
+import { queries } from "../../../../api/queries";
 
 interface TagsField extends PillsInputProps {
   termText: string;
@@ -50,7 +50,7 @@ export function TagsField({
   const suggestions = data ? buildSuggestionsList(termText, data) : [];
 
   const options = suggestions
-    .slice(0, MAX_PARENT_TAG_SUGGESTION_COUNT)
+    .slice(0, MAX_TERM_SUGGESTIONS)
     .filter((item) =>
       item.suggestion.toLowerCase().includes(search.trim().toLowerCase())
     )
@@ -168,7 +168,7 @@ export function TagsField({
               ))}
             </ScrollArea.Autosize>
           </Combobox.Options>
-          {suggestions.length > MAX_PARENT_TAG_SUGGESTION_COUNT && (
+          {suggestions.length > MAX_TERM_SUGGESTIONS && (
             <Combobox.Footer>
               <Text c="dimmed" size="xs" fs="italic">
                 (more items available, please refine your search.)

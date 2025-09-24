@@ -3,20 +3,20 @@ export type HighlightType = "bg" | "text" | "solid" | "dashed" | "none";
 export type TextUnit = "sentence" | "paragraph" | "page";
 export type TextDirection = "ltr" | "rtl";
 
-export interface TextItemElement extends HTMLSpanElement {
+export interface TextitemElement extends HTMLSpanElement {
   dataset: {
     order: string;
-    highlightType: HighlightType;
   } & DOMStringMap;
 }
 
-export interface WordTextItemElement extends TextItemElement {
+export interface WordElement extends TextitemElement {
   dataset: {
     langId: number;
     sentenceId: number;
     paragraphId: number;
     text: string;
-    wid: string;
+    wordId: string;
+    highlightType: HighlightType;
   } & DOMStringMap &
-    TextItemElement["dataset"];
+    TextitemElement["dataset"];
 }

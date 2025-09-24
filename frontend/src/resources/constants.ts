@@ -3,9 +3,10 @@ import type { HighlightType, Status } from "./types";
 export const BASE_API_URL = "http://localhost:5001/api";
 export const FAVICON_SOURCE_URL = "http://www.google.com/s2/favicons?domain=";
 export const MAX_VISIBLE_DICT_TABS = 5;
-export const MAX_PARENT_TAG_SUGGESTION_COUNT = 15;
-export const MIN_DICT_COUNT = 2;
-export const DEFAULT_TABLE_ROW_COUNT = 10;
+export const MAX_TERM_SUGGESTIONS = 15;
+export const TERM_SUGGESTION_STR_MAX_LEN = 70;
+export const MIN_LANGUAGE_DICTS = 2;
+export const TABLE_PAGE_SIZE = 10;
 export const FOCUS_HEADER_HEIGHT = 80;
 export const TEXTITEM_CLASS = {
   textitem: "textitem",
@@ -18,7 +19,7 @@ export const TEXTITEM_CLASS = {
   bookmarked: "bookmarked",
   ghosted: "ghosted",
 } as const;
-export const TEXTITEM_DATA = {
+export const TEXTITEM_DATASET = {
   status: "status",
   sentenceStart: "sentence-start",
   sentenceId: "sentence-id",

@@ -1,8 +1,8 @@
-import { TEXTITEM_CLASS, TEXTITEM_DATA } from "../resources/constants";
+import { TEXTITEM_CLASS, TEXTITEM_DATASET } from "../resources/constants";
 import type {
-  TextItemElement,
+  TextitemElement,
   TextUnit,
-  WordTextItemElement,
+  WordElement,
 } from "../resources/types";
 import {
   addClassToElements,
@@ -11,13 +11,13 @@ import {
 } from "../utils/utils";
 
 const textUnitAttr = {
-  sentence: TEXTITEM_DATA.sentenceId,
-  paragraph: TEXTITEM_DATA.paragraphId,
+  sentence: TEXTITEM_DATASET.sentenceId,
+  paragraph: TEXTITEM_DATASET.paragraphId,
 } as const;
 
-function _partitionByParagraphId(textItems: HTMLSpanElement[]) {
-  const partitioned: Record<string, HTMLSpanElement[]> = {};
-  textItems.forEach((item) => {
+function _partitionByParagraphId(textitems: TextitemElement[]) {
+  const partitioned: Record<string, TextitemElement[]> = {};
+  textitems.forEach((item) => {
     const id = item.dataset.paragraphId!;
     if (!partitioned[id]) {
       partitioned[id] = [];
@@ -26,13 +26,13 @@ function _partitionByParagraphId(textItems: HTMLSpanElement[]) {
   });
   return partitioned;
 }
-/** Get the text from the text items, adding "\n" between paragraphs. */
-export function getTextContent(textitems: TextItemElement[]) {
+
+export function getTextContent(textitems: TextitemElement[]) {
   if (textitems.length === 0) return "";
 
   const paras = _partitionByParagraphId(textitems);
-  const paratexts = Object.entries(paras).map(([, textItems]) => {
-    const text = textItems.map((item) => item.textContent).join("");
+  const paratexts = Object.entries(paras).map(([, textitems]) => {
+    const text = textitems.map((item) => item.textContent).join("");
     return text.replace(/\u200B/g, "");
   });
 
@@ -42,8 +42,8 @@ export function getTextContent(textitems: TextItemElement[]) {
 /** Get the textitems whose span_attribute value matches that of the
  * current active/hovered word.  If span_attribute is null, return
  * all. */
-export function getMatchedTextItems(
-  textitem: TextItemElement,
+export function getMatchedTextitems(
+  textitem: TextitemElement,
   unit?: Exclude<TextUnit, "page">
 ) {
   const single = getMarked();
@@ -52,33 +52,22 @@ export function getMatchedTextItems(
 
   if (!(textitem || hasSelection)) return [];
 
-  // let textitems: NodeListOf<Element> = [];
-
   const textitems =
     single.length > 0 ? single : multi.length > 0 ? multi : [textitem];
 
-  // single.length > 0
-  //   ? (textitems = single)
-  //   : multi.length > 0
-  //     ? (textitems = multi)
-  //     : (textitems = [textitem]);
-
-  const elements = Array.from(textitems).toSorted(
-    (a, b) => parseInt(a.dataset.order!) - parseInt(b.dataset.order!)
-  );
-
   if (!unit) return textitems;
 
-  const attr = textUnitAttr[unit];
-
-  const attrValue = elements[0].getAttribute(`data-${attr}`);
-  const selected = Array.from(
-    document.querySelectorAll<TextItemElement>(
-      `.${TEXTITEM_CLASS.textitem}[data-${attr}="${attrValue}"]`
-    )
+  const textitemsSorted = textitems.toSorted(
+    (a, b) => Number(a.dataset.order!) - Number(b.dataset.order!)
   );
 
-  return selected;
+  const attr = textUnitAttr[unit];
+  const attrValue = textitemsSorted[0].getAttribute(`data-${attr}`);
+  const selected = document.querySelectorAll<TextitemElement>(
+    `.${TEXTITEM_CLASS.textitem}[data-${attr}="${attrValue}"]`
+  );
+
+  return Array.from(selected);
 }
 
 export function scrollSentenceIntoView(id: number) {
@@ -89,35 +78,35 @@ export function scrollSentenceIntoView(id: number) {
 
 export function getMarked() {
   return Array.from(
-    document.querySelectorAll<TextItemElement>(`.${TEXTITEM_CLASS.marked}`)
+    document.querySelectorAll<TextitemElement>(`.${TEXTITEM_CLASS.marked}`)
   );
 }
 
 export function getHovered() {
   return Array.from(
-    document.querySelectorAll<TextItemElement>(`.${TEXTITEM_CLASS.hovered}`)
+    document.querySelectorAll<TextitemElement>(`.${TEXTITEM_CLASS.hovered}`)
   );
 }
 
 export function getMultiSelection() {
   return Array.from(
-    document.querySelectorAll<TextItemElement>(`.${TEXTITEM_CLASS.multi}`)
+    document.querySelectorAll<TextitemElement>(`.${TEXTITEM_CLASS.multi}`)
   );
 }
 
 export function getTextitems() {
   return Array.from(
-    document.querySelectorAll<TextItemElement>(`.${TEXTITEM_CLASS.textitem}`)
+    document.querySelectorAll<TextitemElement>(`.${TEXTITEM_CLASS.textitem}`)
   );
 }
 
 export function getWords() {
   return Array.from(
-    document.querySelectorAll<WordTextItemElement>(`.${TEXTITEM_CLASS.word}`)
+    document.querySelectorAll<WordElement>(`.${TEXTITEM_CLASS.word}`)
   );
 }
 
-export function clearMarked(textitem: TextItemElement) {
+export function clearMarked(textitem: TextitemElement) {
   textitem.classList.remove(TEXTITEM_CLASS.marked);
 }
 
@@ -129,15 +118,15 @@ export function clearAllMultiterm() {
   removeAllContainingClass(TEXTITEM_CLASS.multi);
 }
 
-export function makeMarked(textitem: TextItemElement) {
+export function makeMarked(textitem: TextitemElement) {
   textitem.classList.add(TEXTITEM_CLASS.marked);
 }
 
-export function makeHovered(textitem: TextItemElement) {
+export function makeHovered(textitem: TextitemElement) {
   textitem.classList.add(TEXTITEM_CLASS.hovered);
 }
 
-export function clearHovered(textitem: TextItemElement) {
+export function clearHovered(textitem: TextitemElement) {
   textitem.classList.remove(TEXTITEM_CLASS.hovered);
 }
 
@@ -145,11 +134,11 @@ export function clearAllHovered() {
   removeAllContainingClass(TEXTITEM_CLASS.hovered);
 }
 
-export function makeMultiterm(textitems: TextItemElement[]) {
+export function makeMultiterm(textitems: TextitemElement[]) {
   addClassToElements(textitems, TEXTITEM_CLASS.multi);
 }
 
-export function isMarked(textitem: TextItemElement) {
+export function isMarked(textitem: TextitemElement) {
   return textitem.classList.contains(TEXTITEM_CLASS.marked);
 }
 
@@ -157,7 +146,7 @@ export function isTextitem(element: HTMLElement) {
   return element.classList.contains(TEXTITEM_CLASS.textitem);
 }
 
-export function makeFlashing(textitems: TextItemElement[]) {
+export function makeFlashing(textitems: TextitemElement[]) {
   addClassToElements(textitems, TEXTITEM_CLASS.flashing);
 }
 
@@ -166,33 +155,33 @@ export function clearAllFlashing() {
 }
 
 export function makeBookmarked(
-  textitems: TextItemElement[] | NodeListOf<HTMLElement>
+  textitems: TextitemElement[] | NodeListOf<HTMLElement>
 ) {
   addClassToElements(textitems, TEXTITEM_CLASS.bookmarked);
 }
 
 export function clearBookmarked(
-  textitems: TextItemElement[] | NodeListOf<HTMLElement>
+  textitems: TextitemElement[] | NodeListOf<HTMLElement>
 ) {
   textitems.forEach((t) => t.classList.remove(TEXTITEM_CLASS.bookmarked));
 }
 
 export function getSentence(id: number) {
   return Array.from(
-    document.querySelectorAll<TextItemElement>(
-      `[data-${TEXTITEM_DATA.sentenceId}="${id}"]`
+    document.querySelectorAll<TextitemElement>(
+      `[data-${TEXTITEM_DATASET.sentenceId}="${id}"]`
     )
   );
 }
 
 export function makeGhosted(
-  textitems: TextItemElement[] | NodeListOf<HTMLElement>
+  textitems: TextitemElement[] | NodeListOf<HTMLElement>
 ) {
   return addClassToElements(textitems, TEXTITEM_CLASS.ghosted);
 }
 
 export function clearGhosted(
-  textitems: TextItemElement[] | NodeListOf<HTMLElement>
+  textitems: TextitemElement[] | NodeListOf<HTMLElement>
 ) {
   textitems.forEach((t) => t.classList.remove(TEXTITEM_CLASS.ghosted));
 }

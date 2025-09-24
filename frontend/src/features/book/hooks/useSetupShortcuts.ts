@@ -18,9 +18,9 @@ import { useBookContext } from "./useBookContext";
 import { useViewContext } from "./useViewContext";
 import { useActiveTermContext } from "../../term/hooks/useActiveTermContext";
 import { queries as settingsQueries } from "../../settings/api/queries";
-import { TEXTITEM_CLASS, TEXTITEM_DATA } from "../../../resources/constants";
+import { TEXTITEM_CLASS, TEXTITEM_DATASET } from "../../../resources/constants";
 import { useBookQuery } from "./useBookQuery";
-import type { TextItemElement } from "../../../resources/types";
+import type { TextitemElement } from "../../../resources/types";
 
 export function useSetupShortcuts() {
   const { themeForm } = useBookContext();
@@ -41,7 +41,7 @@ export function useSetupShortcuts() {
     function setupKeydownEvents(e) {
       if (ignoreKeydown(e)) return;
 
-      let selected: TextItemElement;
+      let selected: TextitemElement;
 
       const next = book.textDirection === "rtl" ? -1 : 1;
       const prev = -1 * next;
@@ -60,17 +60,17 @@ export function useSetupShortcuts() {
         [settings.hotkey_NextWord.key]: () =>
           handleMoveCursor(`.${TEXTITEM_CLASS.word}`, next),
         [settings.hotkey_PrevUnknownWord.key]: () =>
-          handleMoveCursor(`[data-${TEXTITEM_DATA.status}="0"]`, prev),
+          handleMoveCursor(`[data-${TEXTITEM_DATASET.status}="0"]`, prev),
         [settings.hotkey_NextUnknownWord.key]: () =>
-          handleMoveCursor(`[data-${TEXTITEM_DATA.status}="0"]`, next),
+          handleMoveCursor(`[data-${TEXTITEM_DATASET.status}="0"]`, next),
         [settings.hotkey_PrevSentence.key]: () =>
           handleMoveCursor(
-            `[data-${TEXTITEM_DATA.sentenceStart}="true"]`,
+            `[data-${TEXTITEM_DATASET.sentenceStart}="true"]`,
             prev
           ),
         [settings.hotkey_NextSentence.key]: () =>
           handleMoveCursor(
-            `[data-${TEXTITEM_DATA.sentenceStart}="true"]`,
+            `[data-${TEXTITEM_DATASET.sentenceStart}="true"]`,
             next
           ),
 

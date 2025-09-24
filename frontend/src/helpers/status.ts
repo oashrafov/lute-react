@@ -3,7 +3,7 @@ import { clearAllHovered, getHovered, getMarked, makeMarked } from "./text";
 export function updateStatusForMarked(new_status: number) {
   const termids = getMarked()
     .concat(getHovered())
-    .map((el) => Number(el.dataset.wid));
+    .map((el) => Number(el.dataset.wordId));
   const updates = [createStatusUpdateHash(new_status, termids)];
   post_bulk_update(updates);
 }

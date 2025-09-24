@@ -70,7 +70,7 @@ export interface Textitem {
   text: string;
   statusClass: string;
   order: number;
-  wid: number | null;
+  wordId: number | null;
   isWord: boolean;
   status: Status | null;
   isSentenceStart: boolean;

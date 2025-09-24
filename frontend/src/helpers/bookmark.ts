@@ -1,10 +1,10 @@
-import { TEXTITEM_DATA } from "../resources/constants";
-import type { TextItemElement } from "../resources/types";
-import { clearAllFlashing, getMatchedTextItems, makeFlashing } from "./text";
+import { TEXTITEM_DATASET } from "../resources/constants";
+import type { TextitemElement } from "../resources/types";
+import { clearAllFlashing, getMatchedTextitems, makeFlashing } from "./text";
 
-export function handleBookmarkSentence(textitem: TextItemElement) {
+export function handleBookmarkSentence(textitem: TextitemElement) {
   const sentenceId = textitem.dataset.sentenceId;
-  const matched = getMatchedTextItems(textitem, "sentence");
+  const matched = getMatchedTextitems(textitem, "sentence");
   makeFlashing(matched);
   clearAllFlashing();
 
@@ -17,13 +17,13 @@ export function handleBookmarkSentence(textitem: TextItemElement) {
 }
 
 export function handleShowBookmark(sentenceId: number) {
-  const textitem = document.querySelector<TextItemElement>(
-    `[data-${TEXTITEM_DATA.sentenceId}="${sentenceId}"][data-${TEXTITEM_DATA.sentenceStart}="true"]`
+  const textitem = document.querySelector<TextitemElement>(
+    `[data-${TEXTITEM_DATASET.sentenceId}="${sentenceId}"][data-${TEXTITEM_DATASET.sentenceStart}="true"]`
   );
 
   if (textitem) {
     textitem.scrollIntoView({ behavior: "smooth" });
-    const matched = getMatchedTextItems(textitem, "sentence");
+    const matched = getMatchedTextitems(textitem, "sentence");
     setTimeout(() => makeFlashing(matched), 300);
     clearAllFlashing();
   }

@@ -1,12 +1,12 @@
-import type { TextItemElement, TextUnit } from "../resources/types";
-import { getMatchedTextItems, getTextContent } from "./text";
+import type { TextitemElement, TextUnit } from "../resources/types";
+import { getMatchedTextitems, getTextContent } from "./text";
 
 /** Show the translation using the next dictionary. */
 export function handleTranslate(
-  textitem: TextItemElement,
+  textitem: TextitemElement,
   unit?: Exclude<TextUnit, "page">
 ) {
-  const textitems = getMatchedTextItems(textitem, unit);
+  const textitems = getMatchedTextitems(textitem, unit);
   const text = getTextContent(textitems);
   showTextTranslation(text, [], false);
 }

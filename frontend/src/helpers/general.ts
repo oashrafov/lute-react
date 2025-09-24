@@ -1,6 +1,7 @@
 import { isLightColor } from "@mantine/core";
 
-export function setTextColor(id: string, color: string, root: HTMLElement) {
+export function setTextColor(id: string, color: string) {
+  const root = document.documentElement;
   root.style.setProperty(
     `--lute-text-color-${id}`,
     isLightColor(color)
@@ -8,6 +9,7 @@ export function setTextColor(id: string, color: string, root: HTMLElement) {
       : "var(--mantine-color-dark-0)"
   );
 }
+
 export const paneResizeStorage = (() => {
   function strip(name: string) {
     return name.replace("react-resizable-panels:", "");

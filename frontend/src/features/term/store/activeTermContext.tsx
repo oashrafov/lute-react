@@ -5,25 +5,25 @@ import {
   type ReactNode,
   type SetStateAction,
 } from "react";
-import type { TextItemElement } from "../../../resources/types";
+import type { TextitemElement } from "../../../resources/types";
 
 interface SingleTerm {
   data: number;
   type: "single";
-  textitems: TextItemElement[];
+  textitems: TextitemElement[];
 }
 
 interface MultiTerm {
   data: string;
   type: "multi";
   langId: number;
-  textitems: TextItemElement[];
+  textitems: TextitemElement[];
 }
 
 interface SelectedTerm {
   data: number[];
   type: "select";
-  textitems: TextItemElement[];
+  textitems: TextitemElement[];
 }
 
 interface CopiedTerm {

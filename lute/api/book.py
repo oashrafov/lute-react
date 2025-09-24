@@ -487,7 +487,7 @@ def _paragraphs_to_dict_array(paragraphs):
                     "sentenceId": textitem.sentence_number,
                     "text": textitem.text,
                     "order": textitem.index,
-                    "wid": textitem.wo_id,
+                    "wordId": textitem.wo_id,
                     "isWord": textitem.is_word,
                     "status": textitem.wo_status,
                     "isOverlapped": textitem.is_overlapped,

@@ -4,7 +4,7 @@ import { useClickOutside } from "@mantine/hooks";
 import { clearAllFlashing, makeFlashing } from "../../../../helpers/text";
 import { menu } from "./resources/menu";
 import { TEXTITEM_CLASS } from "../../../../resources/constants";
-import type { TextItemElement } from "../../../../resources/types";
+import type { TextitemElement } from "../../../../resources/types";
 
 interface ContextMenu {
   areaRef: RefObject<HTMLDivElement>;
@@ -20,7 +20,7 @@ export function ContextMenu({ areaRef }: ContextMenu) {
     clientX: null,
     clientY: null,
   });
-  const selectedTextItemRef = useRef<TextItemElement | null>(null);
+  const selectedTextItemRef = useRef<TextitemElement | null>(null);
   const validCoords = coords.clientX !== null && coords.clientY !== null;
 
   const menuRef = useClickOutside(() => {

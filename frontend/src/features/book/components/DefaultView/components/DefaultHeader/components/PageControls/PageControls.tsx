@@ -10,22 +10,22 @@ import {
   IconSquareRoundedChevronRightFilled,
   IconTypography,
 } from "@tabler/icons-react";
-import { PageSlider } from "../PageSlider";
 import { BookmarksButton } from "../../../../../common/BookmarksButton";
 import { BookmarksMenu } from "../../../../../common/BookmarksMenu";
-import { EditButton } from "../EditButton";
 import { BookSourceButton } from "../../../../../common/BookSourceButton";
-import { PageActionButton } from "../PageActionButton";
 import { PageCounter } from "../../../../../common/PageCounter";
 import { BookTitle } from "../../../../../common/BookTitle";
 import { FocusSwitch } from "../../../../../common/FocusSwitch/FocusSwitch";
 import { HighlightsSwitch } from "../../../../../common/HighlightSwitch/HighlightSwitch";
+import { PageSlider } from "../PageSlider";
+import { EditButton } from "../EditButton";
+import { PageActionButton } from "../PageActionButton";
+import { Toolbar } from "../../../Toolbar/Toolbar";
 import { usePageControl } from "../../../../../../hooks/usePageControl";
 import { loader } from "../../../../../../../../pages/TermsPage/loader";
 import { getWords } from "../../../../../../../../helpers/text";
 import type { BookDetail } from "../../../../../../api/types";
 import classes from "./PageControls.module.css";
-import { Toolbar } from "../../../Toolbar/Toolbar";
 
 interface PageControls {
   book: BookDetail;
@@ -48,8 +48,7 @@ export function PageControls({ book }: PageControls) {
   } = usePageControl(setChangeVal);
 
   async function handleOpenTermsTable() {
-    const textItems = getWords();
-    const termIds = textItems.map((word) => word.dataset.wid);
+    const termIds = getWords().map((word) => word.dataset.wordId);
     await loader(queryClient)();
     setSearchParams({ ids: JSON.stringify(termIds) });
   }

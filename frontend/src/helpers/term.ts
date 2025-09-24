@@ -1,3 +1,5 @@
+import { TERM_SUGGESTION_STR_MAX_LEN } from "../resources/constants";
+
 interface TermSuggestion {
   id: number;
   text: string;
@@ -13,10 +15,9 @@ function _createSuggestionString(suggestion: TermSuggestion) {
     return txt;
   }
 
-  const maxLen = 70;
   t = t.replaceAll("\n", "; ").replaceAll("\r", "");
-  if (t.length > maxLen) {
-    t = t.substring(0, maxLen) + "...";
+  if (t.length >= TERM_SUGGESTION_STR_MAX_LEN) {
+    t = t.substring(0, TERM_SUGGESTION_STR_MAX_LEN) + "...";
   }
 
   return `${txt} (${t})`;

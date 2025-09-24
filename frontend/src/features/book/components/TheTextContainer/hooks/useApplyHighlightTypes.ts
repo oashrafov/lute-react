@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import type {
   HighlightType,
-  TextItemElement,
+  TextitemElement,
 } from "../../../../../resources/types";
-import { TEXTITEM_DATA } from "../../../../../resources/constants";
+import { TEXTITEM_DATASET } from "../../../../../resources/constants";
 import { getFromLocalStorage } from "../../../../../utils/utils";
 
 export function useApplyHighlightTypes() {
@@ -11,8 +11,8 @@ export function useApplyHighlightTypes() {
     Object.entries(getFromLocalStorage("Lute.highlightType", {})).map(
       ([, value]) =>
         document
-          .querySelectorAll<TextItemElement>(
-            `[data-${TEXTITEM_DATA.status}="${value}"]`
+          .querySelectorAll<TextitemElement>(
+            `[data-${TEXTITEM_DATASET.status}="${value}"]`
           )
           .forEach(
             (textitem) =>

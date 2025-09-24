@@ -7,7 +7,8 @@ import { ColorInput } from "../../../../components/common/ColorInput/ColorInput"
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
 import {
   clearAllFlashing,
-  getMatchedTextItems,
+  getMatchedTextitems,
+  getWords,
   makeFlashing,
 } from "../../../../helpers/text";
 import { setTextColor } from "../../../../helpers/general";
@@ -16,18 +17,18 @@ import {
   DEFAULT_HIGHLIGHT_TYPE,
   STATUS_LABEL,
   TEXTITEM_CLASS,
-  TEXTITEM_DATA,
+  TEXTITEM_DATASET,
 } from "../../../../resources/constants";
 import type {
   HighlightType,
   Status,
-  TextItemElement,
-  WordTextItemElement,
+  TextitemElement,
+  WordElement,
 } from "../../../../resources/types";
 import { getFromLocalStorage } from "../../../../utils/utils";
 
 interface StatusHighlight {
-  key: string;
+  key: `status${number | string}`;
   color: string;
   label: string;
   type: HighlightType;
@@ -75,7 +76,6 @@ interface FormValues {
 
 function ThemeForm() {
   const { themeForm } = useBookContext();
-  const root = document.documentElement;
 
   const { control, setValue, getValues, handleSubmit } = useForm<FormValues>({
     defaultValues: {
@@ -107,26 +107,24 @@ function ThemeForm() {
     highlight: StatusHighlight,
     color: string
   ) {
+    const root = document.documentElement;
     root.style.setProperty(`--lute-color-highlight-${highlight.key}`, color);
-    setTextColor(highlight.key, color, root);
+    setTextColor(highlight.key, color);
   }
 
-  function handleTypeChange(val: HighlightType, highlight: StatusHighlight) {
-    const textitems = document.querySelectorAll<WordTextItemElement>(
-      `[data-${TEXTITEM_DATA.status}="${highlight.key.split(TEXTITEM_DATA.status)[1]}"]`
-    );
-    textitems.forEach((textitem) => (textitem.dataset.highlightType = val));
+  function handleTypeChange(type: HighlightType, highlight: StatusHighlight) {
+    document
+      .querySelectorAll<WordElement>(
+        `[data-${TEXTITEM_DATASET.status}="${highlight.key.split(TEXTITEM_DATASET.status)[1]}"]`
+      )
+      .forEach((word) => (word.dataset.highlightType = type));
 
-    setTextColor(highlight.key, highlight.color, root);
+    setTextColor(highlight.key, highlight.color);
     setValue("typeAll", "");
   }
 
   function handleAllTypeChange(type: HighlightType) {
-    const textitems = document.querySelectorAll<WordTextItemElement>(
-      TEXTITEM_CLASS.word
-    );
-    textitems.forEach((textitem) => (textitem.dataset.highlightType = type));
-
+    getWords().forEach((word) => (word.dataset.highlightType = type));
     getValues().status.forEach((_, index) =>
       setValue(`status.${index}.type`, type)
     );
@@ -135,15 +133,16 @@ function ThemeForm() {
   }
 
   function handleGeneralHighlightChange(id: string, color: string) {
+    const root = document.documentElement;
     root.style.setProperty(`--lute-color-highlight-${id}`, color);
-    setTextColor(id, color, root);
+    setTextColor(id, color);
   }
 
   function handleFlashHighlight() {
-    const textitem = document.querySelector<TextItemElement>(
-      `[data-${TEXTITEM_DATA.sentenceId}="0"]`
+    const textitem = document.querySelector<TextitemElement>(
+      `[data-${TEXTITEM_DATASET.sentenceId}="0"]`
     )!;
-    makeFlashing(getMatchedTextItems(textitem, "sentence"));
+    makeFlashing(getMatchedTextitems(textitem, "sentence"));
     clearAllFlashing();
   }
 
@@ -192,9 +191,10 @@ function ThemeForm() {
               root: { minWidth: "200px", width: "min-content" },
             }}
             fixOnBlur
-            onChange={(color) =>
-              root.style.setProperty("--lute-color-read", color)
-            }
+            onChange={(color) => {
+              const root = document.documentElement;
+              root.style.setProperty("--lute-color-read", color);
+            }}
           />
         </Group>
         <Divider label="Status Highlights" mb={10} />

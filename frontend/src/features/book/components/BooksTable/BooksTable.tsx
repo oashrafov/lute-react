@@ -20,7 +20,7 @@ import { TableTopToolbarDefaultItems } from "../../../../components/common/Table
 import { getDefaultTableOptions } from "../../../../resources/table-options-default";
 import { columnDefinition } from "./columnDefinition";
 import { getFromLocalStorage } from "../../../../utils/utils";
-import { DEFAULT_TABLE_ROW_COUNT } from "../../../../resources/constants";
+import { TABLE_PAGE_SIZE } from "../../../../resources/constants";
 import { queries as settingsQueries } from "../../../settings/api/queries";
 import { queries as bookQueries } from "../../api/queries";
 import type { BooksListItem } from "../../api/types";
@@ -37,7 +37,7 @@ const defaultOptions = getDefaultTableOptions<BooksListItem>();
 
 const PAGINATION = {
   pageIndex: 0,
-  pageSize: DEFAULT_TABLE_ROW_COUNT,
+  pageSize: TABLE_PAGE_SIZE,
 };
 
 const COLUMN_FILTER_FNS = {

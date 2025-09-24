@@ -19,9 +19,9 @@ import {
   isTextitem,
 } from "./text";
 import type { ActiveTerm } from "../features/term/store/activeTermContext";
-import type { TextItemElement, WordTextItemElement } from "../resources/types";
+import type { TextitemElement, WordElement } from "../resources/types";
 
-let selectionStart: WordTextItemElement | null = null;
+let selectionStart: WordElement | null = null;
 let selectionStartShiftHeld = false;
 let currentTermDataOrder = -1;
 
@@ -33,8 +33,7 @@ export function startHoverMode() {
   );
 
   if (currentWord.length === 1) {
-    const w = currentWord[0];
-    makeHovered(w);
+    makeHovered(currentWord[0]);
   }
 
   clearAllMultiterm();
@@ -45,7 +44,7 @@ export function handleMouseDown(e: MouseEvent) {
   if (e.button !== 0) return;
 
   clearAllMultiterm();
-  const textitem = e.target as WordTextItemElement;
+  const textitem = e.target as WordElement;
   makeMultiterm([textitem]);
 
   selectionStart = textitem;
@@ -54,7 +53,7 @@ export function handleMouseDown(e: MouseEvent) {
 }
 // mouse over during selection or without it
 export function handleMouseOver(e: MouseEvent) {
-  const textitem = e.target as WordTextItemElement;
+  const textitem = e.target as WordElement;
   if (selectionStart) {
     clearAllMultiterm();
     makeMultiterm(_getSelectedInRange(selectionStart, textitem));
@@ -67,7 +66,7 @@ export function handleMouseOver(e: MouseEvent) {
   }
 }
 // selection ended
-export function handleMouseUp(e: MouseEvent<WordTextItemElement>): ActiveTerm {
+export function handleMouseUp(e: MouseEvent<WordElement>): ActiveTerm {
   const textitem = e.currentTarget;
   if (selectionStart?.getAttribute("id") === textitem.getAttribute("id")) {
     return _singleWordClicked(e);
@@ -110,7 +109,7 @@ export function hasClickedOutsideText(e: MouseEvent) {
   return false;
 }
 
-export function focusActiveSentence(textitems: TextItemElement[]) {
+export function focusActiveSentence(textitems: TextitemElement[]) {
   // make all textitems ghosted, then remove it from active sentence
   makeGhosted(getTextitems());
 
@@ -132,10 +131,8 @@ export function resetFocusActiveSentence() {
 export function handleMoveCursor(selector: string, direction = 1) {
   const firstElement = _firstSelectedElement();
   const firstElementOrder =
-    firstElement != null ? parseInt(firstElement.dataset.order) : 0;
-  let candidates = Array.from(
-    document.querySelectorAll<WordTextItemElement>(selector)
-  );
+    firstElement != null ? Number(firstElement.dataset.order) : 0;
+  let candidates = Array.from(document.querySelectorAll<WordElement>(selector));
   let comparator = function (a: number, b: number) {
     return a > b;
   };
@@ -148,14 +145,14 @@ export function handleMoveCursor(selector: string, direction = 1) {
   }
 
   const match = candidates.find((el) =>
-    comparator(parseInt(el.dataset.order), firstElementOrder)
+    comparator(Number(el.dataset.order), firstElementOrder)
   );
 
   if (match) {
     _updateCursor(match);
     // Highlight the word if we're jumping around a lot.
     if (selector !== ".word") {
-      const matchOrder = parseInt(match.dataset.order);
+      const matchOrder = Number(match.dataset.order);
       const matchClass = `highlight_${matchOrder}`;
       match.classList.add("flash-highlight", `${matchClass}`);
       setTimeout(
@@ -172,7 +169,7 @@ export function handleMoveCursor(selector: string, direction = 1) {
 function _singleWordClicked(e: MouseEvent): ActiveTerm {
   clearAllMultiterm();
   selectionStart = null;
-  const textitem = e.target as TextItemElement;
+  const textitem = e.target as TextitemElement;
 
   clearHovered(textitem);
   currentTermDataOrder = Number(textitem.dataset.order);
@@ -197,7 +194,7 @@ function _singleWordClicked(e: MouseEvent): ActiveTerm {
     makeMarked(textitem);
 
     return {
-      data: Number(textitem.dataset.wid),
+      data: Number(textitem.dataset.wordId),
       type: "single",
       textitems: [textitem],
     };
@@ -206,7 +203,7 @@ function _singleWordClicked(e: MouseEvent): ActiveTerm {
     const markedTextitems = getMarked();
     if (markedTextitems.length > 0) {
       return {
-        data: markedTextitems.map((item) => Number(item.dataset.wid)),
+        data: markedTextitems.map((item) => Number(item.dataset.wordId)),
         type: "select",
         textitems: markedTextitems,
       };
@@ -217,7 +214,7 @@ function _singleWordClicked(e: MouseEvent): ActiveTerm {
   return null;
 }
 /** Update cursor, clear prior cursors. */
-function _updateCursor(textitem: WordTextItemElement) {
+function _updateCursor(textitem: WordElement) {
   document
     .querySelectorAll("span.newmultiterm, span.kwordmarked, span.wordhover")
     .forEach((item) => {
@@ -234,7 +231,7 @@ function _updateCursor(textitem: WordTextItemElement) {
 /** First selected/hovered element, or null if nothing. */
 function _firstSelectedElement() {
   const elements = Array.from(
-    document.querySelectorAll<TextItemElement>(
+    document.querySelectorAll<TextitemElement>(
       ".kwordmarked, .newmultiterm, .wordhover"
     )
   ).sort((a, b) => Number(a.dataset.order) - Number(b.dataset.order));
@@ -242,7 +239,7 @@ function _firstSelectedElement() {
   return elements.length > 0 ? elements[0] : null;
 }
 
-function _getSelectedMultiTerm(selected: TextItemElement[]) {
+function _getSelectedMultiTerm(selected: TextitemElement[]) {
   const textParts = selected.map((el) => el.dataset.text);
   const cleanText = textParts.join("").trim();
   const text = cleanText.replace(/\//g, "LUTESLASH");
@@ -251,10 +248,7 @@ function _getSelectedMultiTerm(selected: TextItemElement[]) {
   return { text, langId };
 }
 
-function _getSelectedInRange(
-  startEl: WordTextItemElement,
-  endEl: WordTextItemElement
-) {
+function _getSelectedInRange(startEl: WordElement, endEl: WordElement) {
   const [startord, endord] = [
     Number(startEl.dataset.order),
     Number(endEl.dataset.order),

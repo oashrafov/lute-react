@@ -12,7 +12,7 @@ import { handleTranslate } from "../../../../../helpers/translation";
 import { handleBookmarkSentence } from "../../../../../helpers/bookmark";
 import { textCopied } from "../../../resources/notifications";
 import { handleCopy } from "../../../../../helpers/copy";
-import type { TextItemElement, TextUnit } from "../../../../../resources/types";
+import type { TextitemElement, TextUnit } from "../../../../../resources/types";
 
 export const menu = [
   {
@@ -21,18 +21,18 @@ export const menu = [
       {
         label: "Selection",
         icon: IconClick,
-        action: (textitem: TextItemElement) => handleTranslate(textitem),
+        action: (textitem: TextitemElement) => handleTranslate(textitem),
       },
       {
         label: "Sentence",
         icon: IconAlignLeft,
-        action: (textitem: TextItemElement) =>
+        action: (textitem: TextitemElement) =>
           handleTranslate(textitem, "sentence"),
       },
       {
         label: "Paragraph",
         icon: IconPilcrow,
-        action: (textitem: TextItemElement) =>
+        action: (textitem: TextitemElement) =>
           handleTranslate(textitem, "paragraph"),
       },
     ],
@@ -44,24 +44,24 @@ export const menu = [
         label: "Selection",
         icon: IconClipboardCheck,
         // !FIX have changed handleCopy in the actions file. fix
-        action: async (textitem: TextItemElement) => handleTextCopy(textitem),
+        action: async (textitem: TextitemElement) => handleTextCopy(textitem),
       },
       {
         label: "Sentence",
         icon: IconClipboardText,
-        action: async (textitem: TextItemElement) =>
+        action: async (textitem: TextitemElement) =>
           handleTextCopy(textitem, "sentence"),
       },
       {
         label: "Paragraph",
         icon: IconClipboardTypography,
-        action: async (textitem: TextItemElement) =>
+        action: async (textitem: TextitemElement) =>
           handleTextCopy(textitem, "paragraph"),
       },
       {
         label: "Page",
         icon: IconClipboardTypography,
-        action: async (textitem: TextItemElement) =>
+        action: async (textitem: TextitemElement) =>
           handleTextCopy(textitem, "page"),
       },
     ],
@@ -72,13 +72,13 @@ export const menu = [
       {
         label: "Bookmark sentence",
         icon: IconBookmarkPlus,
-        action: (textitem: TextItemElement) => handleBookmarkSentence(textitem),
+        action: (textitem: TextitemElement) => handleBookmarkSentence(textitem),
       },
     ],
   },
 ];
 
-async function handleTextCopy(textitem: TextItemElement, unit?: TextUnit) {
+async function handleTextCopy(textitem: TextitemElement, unit?: TextUnit) {
   const text = await handleCopy(textitem, unit);
   notifications.show(textCopied(text));
 }

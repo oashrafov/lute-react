@@ -17,25 +17,21 @@ export const TextItem = forwardRef<
     [TEXTITEM_CLASS.overlapped]: data.isOverlapped,
   });
 
-  const highlightType = data.status && {
-    "data-highlight-type": DEFAULT_HIGHLIGHT_TYPE[data.status],
-  };
-
   return (
     <span
       ref={ref}
       {...restProps}
-      {...highlightType}
       id={String(data.id)}
       className={classes}
       data-lang-id={data.langId}
       data-paragraph-id={data.paragraphId}
       data-sentence-id={data.sentenceId}
       data-sentence-start={data.isSentenceStart}
+      data-highlight-type={data.status && DEFAULT_HIGHLIGHT_TYPE[data.status]}
       data-text={data.text}
       data-status={data.status}
       data-order={data.order}
-      data-wid={data.wid}>
+      data-word-id={data.wordId}>
       {data.displayText}
     </span>
   );

@@ -13,7 +13,7 @@ import { TermImage } from "../TermImage/TermImage";
 import { LanguageCell } from "../../../../components/common/LanguageCell/LanguageCell";
 import { EditButtonsCell } from "../../../../components/common/EditButtonsCell/EditButtonsCell";
 import {
-  MAX_PARENT_TAG_SUGGESTION_COUNT,
+  MAX_TERM_SUGGESTIONS,
   STATUS_LABEL,
 } from "../../../../resources/constants";
 import { queries } from "../../api/queries";
@@ -95,7 +95,7 @@ export const columnDefinition = (
           searchValue={search}
           onSearchChange={setSearch}
           data={suggestions}
-          limit={MAX_PARENT_TAG_SUGGESTION_COUNT}
+          limit={MAX_TERM_SUGGESTIONS}
           value={value}
           onChange={(parents) => {
             cell.row._valuesCache[cell.column.id] = parents.join(",");

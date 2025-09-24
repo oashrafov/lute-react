@@ -1,4 +1,5 @@
 import { ScrollArea } from "@mantine/core";
+import type { Control, FieldValues } from "react-hook-form";
 import {
   closestCenter,
   DndContext,
@@ -13,12 +14,11 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { RemoveDictionaryButton } from "./DictionaryBar/components/RemoveDictionaryButton";
 import { DraggableContainer } from "./DraggableContainer";
 import { DictionaryBar } from "./DictionaryBar/DictionaryBar";
+import { MIN_LANGUAGE_DICTS } from "../../../../../resources/constants";
 import type { Dictionary } from "../../../api/types";
-import { MIN_DICT_COUNT } from "../../../../../resources/constants";
-import type { Control, FieldValues } from "react-hook-form";
-import { RemoveDictionaryButton } from "./DictionaryBar/components/RemoveDictionaryButton";
 
 interface DictionaryBars<T extends FieldValues> {
   control: Control<T>;
@@ -53,7 +53,7 @@ export function DictionaryBars<T extends FieldValues>({
 
   function handleRemoveDict(index: number) {
     return () => {
-      if (numOfDicts > MIN_DICT_COUNT) {
+      if (numOfDicts > MIN_LANGUAGE_DICTS) {
         onRemove(index);
       }
     };
@@ -74,10 +74,10 @@ export function DictionaryBars<T extends FieldValues>({
                 control={control}
                 dict={dict}
                 name={`dictionaries.${index}`}
-                editable={numOfDicts > MIN_DICT_COUNT}
+                editable={numOfDicts > MIN_LANGUAGE_DICTS}
               />
               <RemoveDictionaryButton
-                disabled={numOfDicts <= MIN_DICT_COUNT}
+                disabled={numOfDicts <= MIN_LANGUAGE_DICTS}
                 onClick={handleRemoveDict(index)}
               />
             </DraggableContainer>

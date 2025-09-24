@@ -1,15 +1,22 @@
-import { EditHeader } from "./components/EditHeader/EditHeader";
-import { EditTheText } from "./components/EditTheText/EditTheText";
 import { Box, Transition } from "@mantine/core";
+import { useForm } from "react-hook-form";
+import { EditHeader } from "./components/EditHeader/EditHeader";
 import { useBookQuery } from "../../hooks/useBookQuery";
 import { useViewContext } from "../../hooks/useViewContext";
 import { usePageQuery } from "../../hooks/usePageQuery";
+import { Textarea } from "../../../../components/common/Textarea/Textarea";
+import classes from "./EditView.module.css";
 
 export function EditView() {
   const { view } = useViewContext();
   const show = view === "edit";
   const { data: book } = useBookQuery();
   const { data: page } = usePageQuery();
+
+  const { control } = useForm({
+    defaultValues: { text: page.text },
+  });
+
   return (
     <>
       <Transition transition="slide-down" mounted={show}>
@@ -22,7 +29,17 @@ export function EditView() {
       <Transition transition="fade" mounted={show}>
         {(styles) => (
           <Box style={styles}>
-            <EditTheText text={page.text} textDirection={book.textDirection} />
+            <Textarea
+              name="text"
+              control={control}
+              className={classes.textarea}
+              wrapperProps={{ dir: book.textDirection }}
+              size="lg"
+              autosize
+              spellCheck={false}
+              autoCapitalize="off"
+              autoFocus
+            />
           </Box>
         )}
       </Transition>
