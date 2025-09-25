@@ -5,7 +5,7 @@ import { useUncontrolled } from "@mantine/hooks";
 import { IconPhoto } from "@tabler/icons-react";
 import { MAX_VISIBLE_DICT_TABS } from "../../../../resources/constants";
 import { Sentences } from "../../../term/components/Sentences/Sentences";
-import { IFrame } from "./components/common/IFrame";
+import { IFrame } from "./components/common/Iframe";
 import { DictTabExternal } from "./components/DictTabExternal";
 import { DictTabEmbedded } from "./components/DictTabEmbedded";
 import { DictDropdown } from "./components/DictDropdown";

@@ -107,15 +107,18 @@ function ThemeForm() {
     highlight: StatusHighlight,
     color: string
   ) {
-    const root = document.documentElement;
-    root.style.setProperty(`--lute-color-highlight-${highlight.key}`, color);
+    document.documentElement.style.setProperty(
+      `--lute-color-highlight-${highlight.key}`,
+      color
+    );
     setTextColor(highlight.key, color);
   }
 
   function handleTypeChange(type: HighlightType, highlight: StatusHighlight) {
+    const statusId = highlight.key.split(TEXTITEM_DATASET.status)[1];
     document
       .querySelectorAll<WordElement>(
-        `[data-${TEXTITEM_DATASET.status}="${highlight.key.split(TEXTITEM_DATASET.status)[1]}"]`
+        `[data-${TEXTITEM_DATASET.status}="${statusId}"]`
       )
       .forEach((word) => (word.dataset.highlightType = type));
 
@@ -133,8 +136,10 @@ function ThemeForm() {
   }
 
   function handleGeneralHighlightChange(id: string, color: string) {
-    const root = document.documentElement;
-    root.style.setProperty(`--lute-color-highlight-${id}`, color);
+    document.documentElement.style.setProperty(
+      `--lute-color-highlight-${id}`,
+      color
+    );
     setTextColor(id, color);
   }
 
@@ -191,10 +196,12 @@ function ThemeForm() {
               root: { minWidth: "200px", width: "min-content" },
             }}
             fixOnBlur
-            onChange={(color) => {
-              const root = document.documentElement;
-              root.style.setProperty("--lute-color-read", color);
-            }}
+            onChange={(color) =>
+              document.documentElement.style.setProperty(
+                "--lute-color-read",
+                color
+              )
+            }
           />
         </Group>
         <Divider label="Status Highlights" mb={10} />

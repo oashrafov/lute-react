@@ -1,6 +1,6 @@
+import type { MouseEventHandler } from "react";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import { IconSpeakerphone } from "@tabler/icons-react";
-import type { MouseEventHandler } from "react";
 
 interface PronunciationButton {
   onToggle: MouseEventHandler<HTMLButtonElement>;

@@ -6,6 +6,7 @@ import {
 } from "react";
 import { useParams } from "react-router-dom";
 import { Box, LoadingOverlay, Title } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { clsx } from "clsx";
 import { TheText } from "../TheText/TheText";
 import { usePageContext } from "../../hooks/usePageContext";
@@ -21,7 +22,6 @@ import type { WordElement } from "../../../../resources/types";
 import { useProcessPage } from "./hooks/useProcessPage";
 import { useApplyHighlightTypes } from "./hooks/useApplyHighlightTypes";
 import { copyToClipboard } from "../../../../utils/utils";
-import { notifications } from "@mantine/notifications";
 import { textCopied } from "../../resources/notifications";
 
 export function TheTextContainer() {

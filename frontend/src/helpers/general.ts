@@ -1,8 +1,7 @@
 import { isLightColor } from "@mantine/core";
 
 export function setTextColor(id: string, color: string) {
-  const root = document.documentElement;
-  root.style.setProperty(
+  document.documentElement.style.setProperty(
     `--lute-text-color-${id}`,
     isLightColor(color)
       ? "var(--mantine-color-dark-7)"

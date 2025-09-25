@@ -15,6 +15,7 @@ export function LanguageCards({ label, description }: LanguageCards) {
   const { data: languages } = useQuery(queries.userLanguagesList());
   const [params, setParams] = useSearchParams();
   const currentId = params.get("langId");
+  const languagesSorted = languages?.toSorted((a, b) => b.id - a.id);
 
   function handleLanguageChange(id: string) {
     if (id === params.get("langId")) {
@@ -37,19 +38,17 @@ export function LanguageCards({ label, description }: LanguageCards) {
       onChange={(id) => handleLanguageChange(id)}>
       <ScrollArea type="scroll" offsetScrollbars="x">
         <Group gap={2} wrap="nowrap" align="stretch">
-          {languages
-            ?.toSorted((a, b) => b.id - a.id)
-            .map((data) => (
-              <Radio.Card
-                key={data.id}
-                value={String(data.id)}
-                className={classes.card}>
-                <Group wrap="nowrap" align="flex-start" gap={8}>
-                  <Radio.Indicator size="xs" />
-                  <LanguageCard data={data} />
-                </Group>
-              </Radio.Card>
-            ))}
+          {languagesSorted?.map((data) => (
+            <Radio.Card
+              key={data.id}
+              value={String(data.id)}
+              className={classes.card}>
+              <Group wrap="nowrap" align="flex-start" gap={8}>
+                <Radio.Indicator size="xs" />
+                <LanguageCard data={data} />
+              </Group>
+            </Radio.Card>
+          ))}
         </Group>
       </ScrollArea>
     </Radio.Group>

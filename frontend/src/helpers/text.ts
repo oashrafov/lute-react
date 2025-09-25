@@ -78,13 +78,13 @@ export function scrollSentenceIntoView(id: number) {
 
 export function getMarked() {
   return Array.from(
-    document.querySelectorAll<TextitemElement>(`.${TEXTITEM_CLASS.marked}`)
+    document.querySelectorAll<WordElement>(`.${TEXTITEM_CLASS.marked}`)
   );
 }
 
 export function getHovered() {
   return Array.from(
-    document.querySelectorAll<TextitemElement>(`.${TEXTITEM_CLASS.hovered}`)
+    document.querySelectorAll<WordElement>(`.${TEXTITEM_CLASS.hovered}`)
   );
 }
 
@@ -106,7 +106,7 @@ export function getWords() {
   );
 }
 
-export function clearMarked(textitem: TextitemElement) {
+export function clearMarked(textitem: WordElement) {
   textitem.classList.remove(TEXTITEM_CLASS.marked);
 }
 
@@ -118,15 +118,15 @@ export function clearAllMultiterm() {
   removeAllContainingClass(TEXTITEM_CLASS.multi);
 }
 
-export function makeMarked(textitem: TextitemElement) {
+export function makeMarked(textitem: WordElement) {
   textitem.classList.add(TEXTITEM_CLASS.marked);
 }
 
-export function makeHovered(textitem: TextitemElement) {
+export function makeHovered(textitem: WordElement) {
   textitem.classList.add(TEXTITEM_CLASS.hovered);
 }
 
-export function clearHovered(textitem: TextitemElement) {
+export function clearHovered(textitem: WordElement) {
   textitem.classList.remove(TEXTITEM_CLASS.hovered);
 }
 

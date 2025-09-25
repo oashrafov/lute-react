@@ -13,7 +13,7 @@ import {
   Text,
   Loader,
   ScrollArea,
-  Input,
+  InputClearButton,
   type PillsInputProps,
 } from "@mantine/core";
 import { MAX_TERM_SUGGESTIONS } from "../../../../../../resources/constants";
@@ -57,7 +57,7 @@ export function TagsField({
     .filter((item) => !values.includes(item.value));
 
   const inputRightSection = values.length ? (
-    <Input.ClearButton onClick={() => onSetValues([])} />
+    <InputClearButton onClick={() => onSetValues([])} />
   ) : (
     isFetching && <Loader size="sm" />
   );

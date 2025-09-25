@@ -73,7 +73,7 @@ export function removeAllContainingClassWithTimeout(
 export function removeAllContainingClass(className: string) {
   document
     .querySelectorAll(`.${className}`)
-    .forEach((element) => element.classList.remove(`${className}`));
+    .forEach((element) => element.classList.remove(className));
 }
 
 export function convertSecsToDisplayString(secs: number) {

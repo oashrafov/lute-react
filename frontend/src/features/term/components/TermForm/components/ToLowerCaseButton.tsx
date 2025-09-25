@@ -1,6 +1,6 @@
+import type { MouseEventHandler } from "react";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import { IconLetterCaseLower } from "@tabler/icons-react";
-import type { MouseEventHandler } from "react";
 
 interface ToLowerCaseButton {
   onClick: MouseEventHandler<HTMLButtonElement>;
