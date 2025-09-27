@@ -13,7 +13,7 @@ export async function handleCopy(textitem: TextitemElement, unit?: TextUnit) {
   makeFlashing(textitems);
   clearAllFlashing();
 
-  return text;
+  return { text, textitems };
 }
 
 async function _copyUnit(textitem: TextitemElement, unit?: TextUnit) {

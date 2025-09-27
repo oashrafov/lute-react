@@ -1,11 +1,16 @@
 import { TEXTITEM_DATASET } from "../resources/constants";
 import type { TextitemElement } from "../resources/types";
-import { clearAllFlashing, getMatchedTextitems, makeFlashing } from "./text";
+import {
+  clearAllFlashing,
+  getMatchedTextitems,
+  getTextContent,
+  makeFlashing,
+} from "./text";
 
 export function handleBookmarkSentence(textitem: TextitemElement) {
   const sentenceId = textitem.dataset.sentenceId;
-  const matched = getMatchedTextitems(textitem, "sentence");
-  makeFlashing(matched);
+  const textitems = getMatchedTextitems(textitem, "sentence");
+  makeFlashing(textitems);
   clearAllFlashing();
 
   // all_bookmarks = {
@@ -13,7 +18,10 @@ export function handleBookmarkSentence(textitem: TextitemElement) {
   //     page_num: [{ sentence_id: 0, bookmark_description: "" }],
   //   },
   // };
+
   console.log(`POST sentence id: ${sentenceId} to db`);
+
+  return { text: getTextContent(textitems), textitems };
 }
 
 export function handleShowBookmark(sentenceId: number) {

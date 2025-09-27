@@ -5,9 +5,9 @@ import { NavigationBar } from "../NavigationBar/NavigationBar";
 import { BurgerButton } from "../BurgerButton/BurgerButton";
 import { ThemeSelect } from "../common/ThemeSelect/ThemeSelect";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
-import classes from "./Header.module.css";
+import classes from "./AppHeader.module.css";
 
-export function Header() {
+export function AppHeader() {
   const media = useMediaQuery();
   const pinned = useHeadroom({ fixedAt: 120 });
   return (

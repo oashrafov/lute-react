@@ -1,6 +1,9 @@
-import type { FocusEvent, KeyboardEvent } from "react";
+import type { FocusEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
 
-export function getFromLocalStorage<T>(item: string, defaultVal: T) {
+export function getFromLocalStorage<K extends string>(
+  item: K,
+  defaultVal: unknown
+) {
   const storageVal = JSON.parse(localStorage.getItem(item)!);
 
   if (storageVal === null || Object.is(storageVal, NaN)) {
@@ -8,6 +11,10 @@ export function getFromLocalStorage<T>(item: string, defaultVal: T) {
   } else {
     return storageVal;
   }
+}
+
+export function setLocalStorageItem<K extends string>(key: K, value: unknown) {
+  localStorage.setItem(key, JSON.stringify(value));
 }
 
 export function convertPixelsToRem(sizeInPixels: number) {
@@ -22,28 +29,20 @@ export function clamp(num: number, min: number, max: number) {
   return Math.min(Math.max(num, min), max);
 }
 
-/**
- * Get the pressed keys as a string, eg 'meta-c', 'shift-a'.
- *
- * Note that there _must_ be a "regular" key pressed as well.
- * If only meta/alt/ctl/shift are pressed, returns null.
- */
-export function getPressedKeysAsString(event: KeyboardEvent<HTMLInputElement>) {
+// Get the pressed keys as a string, eg 'meta-KeyC', 'shift-KeyA'
+export function getPressedKeysAsString(
+  event: KeyboardEvent | ReactKeyboardEvent
+) {
   const keys = [];
 
-  // Check for modifier keys
   if (event.ctrlKey) keys.push("ctrl");
   if (event.shiftKey) keys.push("shift");
   if (event.altKey) keys.push("alt");
   if (event.metaKey) keys.push("meta");
 
-  const code = event.key;
-  // console.log(`event.code = ${code}`);
-  // console.log('event = ', event)
-  keys.push(code);
-  const ret = keys.join("+");
-  // console.log(`got hotkey = ${ret}`);
-  return ret;
+  keys.push(event.code);
+
+  return keys.join("+");
 }
 
 export async function copyToClipboard(text: string) {

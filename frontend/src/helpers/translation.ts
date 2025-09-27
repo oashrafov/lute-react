@@ -9,6 +9,8 @@ export function handleTranslate(
   const textitems = getMatchedTextitems(textitem, unit);
   const text = getTextContent(textitems);
   showTextTranslation(text, [], false);
+
+  return { text, textitems };
 }
 
 // LUTE_USER_SETTINGS.open_popup_in_new_tab

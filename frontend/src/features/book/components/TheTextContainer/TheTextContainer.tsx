@@ -1,15 +1,8 @@
-import {
-  useCallback,
-  useMemo,
-  type CSSProperties,
-  type MouseEvent,
-} from "react";
-import { useParams } from "react-router-dom";
-import { Box, LoadingOverlay, Title } from "@mantine/core";
+import { useCallback, useMemo, type MouseEvent } from "react";
+import { Box, LoadingOverlay } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { clsx } from "clsx";
 import { TheText } from "../TheText/TheText";
-import { usePageContext } from "../../hooks/usePageContext";
 import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
 import { useBookQuery } from "../../hooks/useBookQuery";
 import { usePageQuery } from "../../hooks/usePageQuery";
@@ -17,32 +10,22 @@ import {
   focusActiveSentence,
   handleMouseUp,
 } from "../../../../helpers/interactions-desktop";
+import { applyTextSettings } from "../../../../helpers/general";
 import type { ActiveTerm } from "../../../term/store/activeTermContext";
 import type { WordElement } from "../../../../resources/types";
-import { useProcessPage } from "./hooks/useProcessPage";
-import { useApplyHighlightTypes } from "./hooks/useApplyHighlightTypes";
-import { copyToClipboard } from "../../../../utils/utils";
 import { textCopied } from "../../resources/notifications";
+import { useProcessPage } from "./hooks/useProcessPage";
+import { copyToClipboard } from "../../../../utils/utils";
 
 export function TheTextContainer() {
   const { data: book } = useBookQuery();
   const { data: page } = usePageQuery();
-  const { page: pageNum } = useParams();
-  const { state } = usePageContext();
   const { activeTerm, setActiveTerm } = useActiveTermContext();
   const pageProcessed = useProcessPage();
-  useApplyHighlightTypes();
 
   const textContainerClass = clsx("textcontainer", {
-    "highlight": state.highlights,
     "term-active": activeTerm?.data && activeTerm.type !== "select",
   });
-
-  const textContainerStyle = {
-    "--lute-text-font-size": `${state.fontSize}rem`,
-    "--lute-text-column-count": state.columnCount,
-    "--lute-text-line-height": `${state.lineHeight}px`,
-  } as CSSProperties;
 
   const handleSelectEnd = useCallback(
     async (e: MouseEvent<WordElement>) => {
@@ -72,7 +55,7 @@ export function TheTextContainer() {
     [setActiveTerm]
   );
 
-  const text = useMemo(
+  const theText = useMemo(
     () => (
       <TheText paragraphs={page.paragraphs} onSelectEnd={handleSelectEnd} />
     ),
@@ -84,15 +67,9 @@ export function TheTextContainer() {
       pos="relative"
       dir={book.textDirection}
       className={textContainerClass}
-      style={textContainerStyle}>
-      {/* zIndex less than drawer */}
-      {Number(pageNum) === 1 && (
-        <Title size={22} mb={14} style={{ overflowWrap: "break-word" }}>
-          {book.title}
-        </Title>
-      )}
+      ref={applyTextSettings}>
       <LoadingOverlay visible={!pageProcessed} zIndex={199} />
-      {text}
+      {theText}
     </Box>
   );
 }

@@ -2,20 +2,21 @@ import { useTransition } from "react";
 import { IconHighlight } from "@tabler/icons-react";
 import { ModeSwitch } from "../ModeSwitch/ModeSwitch";
 import { handleSetHighlights } from "../../../../../helpers/page";
-import { usePageContext } from "../../../hooks/usePageContext";
+import { getFromLocalStorage } from "../../../../../utils/utils";
+import type { LocalStorageItem } from "../../../../../resources/types";
 
 export function HighlightsSwitch() {
-  const { state, dispatch } = usePageContext();
   const [, startTransition] = useTransition();
 
   return (
     <ModeSwitch
       label="Highlights"
       icon={IconHighlight}
-      checked={state.highlights}
+      id="highlightsSwitch"
+      checked={getFromLocalStorage<LocalStorageItem>("Lute.highlights", true)}
       onChange={(e) =>
         startTransition(() =>
-          handleSetHighlights(Boolean(e.currentTarget.checked), dispatch)
+          handleSetHighlights(Boolean(e.currentTarget.checked))
         )
       }
     />

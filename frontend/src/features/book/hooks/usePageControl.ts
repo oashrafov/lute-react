@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useBookQuery } from "./useBookQuery";
 
-export function usePageControl(onNavigateToPage?: (num: number) => void) {
+export function usePageControl(onNavigate?: (num: number) => void) {
   const params = useParams();
   const navigate = useNavigate();
   const page = Number(params.page);
@@ -11,7 +11,7 @@ export function usePageControl(onNavigateToPage?: (num: number) => void) {
     if (num > book.pageCount || num < 1) return;
 
     navigate(`/books/${book.id}/pages/${num}`);
-    if (onNavigateToPage) onNavigateToPage(num);
+    if (onNavigate) onNavigate(num);
   }
 
   function goToNextPage() {

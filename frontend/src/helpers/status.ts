@@ -1,6 +1,7 @@
+import type { Status } from "../resources/types";
 import { clearAllHovered, getHovered, getMarked, makeMarked } from "./text";
 
-export function updateStatusForMarked(new_status: number) {
+export function updateStatusForMarked(new_status: Status) {
   const termids = getMarked()
     .concat(getHovered())
     .map((el) => Number(el.dataset.wordId));

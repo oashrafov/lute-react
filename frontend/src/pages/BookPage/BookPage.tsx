@@ -5,7 +5,6 @@ import { useMarkAsStale } from "../../features/book/hooks/useMarkAsStale";
 import { useNavigationProgress } from "../../hooks/useNavigationProgress";
 import { Book } from "../../features/book/components/Book/Book";
 import { SideMenu } from "../../features/book/components/SideMenu/SideMenu";
-import { PageContextProvider } from "../../features/book/store/pageContext";
 import { ActiveTermContextProvider } from "../../features/term/store/activeTermContext";
 import { ViewProvider } from "../../features/book/store/viewContext";
 import { useBookQuery } from "../../features/book/hooks/useBookQuery";
@@ -28,11 +27,9 @@ export default function BookPage() {
       </Suspense>
 
       <ViewProvider>
-        <PageContextProvider>
-          <ActiveTermContextProvider>
-            <Book />
-          </ActiveTermContextProvider>
-        </PageContextProvider>
+        <ActiveTermContextProvider>
+          <Book />
+        </ActiveTermContextProvider>
       </ViewProvider>
     </BookContextProvider>
   );

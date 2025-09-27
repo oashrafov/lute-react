@@ -11,7 +11,7 @@ import {
 import { BookmarksMenu } from "../../../common/BookmarksMenu";
 import { BookmarksButton } from "../../../common/BookmarksButton";
 import { MarkRestAsKnownButton } from "../../../common/MarkRestAsKnownButton/MarkRestAsKnownButton";
-import { useToolbar } from "../../../../hooks/useToolbar";
+import { toolbar } from "../../../../../../resources/toolbar";
 import type { BookDetail } from "../../../../api/types";
 import classes from "./FocusToolbar.module.css";
 
@@ -22,7 +22,6 @@ interface FocusToolbar {
 }
 
 export function FocusToolbar({ book, showDicts, onShowDicts }: FocusToolbar) {
-  const toolbarButtons = useToolbar();
   return (
     <Paper shadow="md" withBorder radius={10} p={10}>
       <Stack gap={10}>
@@ -35,7 +34,7 @@ export function FocusToolbar({ book, showDicts, onShowDicts }: FocusToolbar) {
         <Divider />
 
         <div className={classes.toolbar}>
-          {toolbarButtons.map((buttonGrp, index) => (
+          {toolbar.map((buttonGrp, index) => (
             <ActionIcon.Group key={index} orientation="horizontal">
               {buttonGrp.map((button) => {
                 const Icon = button.icon;

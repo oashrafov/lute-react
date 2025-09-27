@@ -76,9 +76,11 @@ export const menu = [
       },
     ],
   },
-];
+] as const;
 
 async function handleTextCopy(textitem: TextitemElement, unit?: TextUnit) {
-  const text = await handleCopy(textitem, unit);
+  const { text, textitems } = await handleCopy(textitem, unit);
   notifications.show(textCopied(text));
+
+  return { text, textitems };
 }

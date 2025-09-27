@@ -39,7 +39,9 @@ export function ContextMenu({ areaRef }: ContextMenu) {
       setCoords({ clientX, clientY });
       const target = e.target as HTMLElement;
       const targetIsWord = target.matches(`.${TEXTITEM_CLASS.word}`);
-      selectedTextItemRef.current = targetIsWord ? target : null;
+      selectedTextItemRef.current = targetIsWord
+        ? (target as TextitemElement)
+        : null;
     }
 
     ref.addEventListener("contextmenu", handleContextMenu);
@@ -51,14 +53,15 @@ export function ContextMenu({ areaRef }: ContextMenu) {
     };
   });
 
-  type A = (typeof menu)[number]["items"][number];
-
-  async function handleRightClick(item: A) {
-    const textItemSelection = item.action(selectedTextItemRef.current);
-
-    if (textItemSelection) {
-      makeFlashing(textItemSelection);
-      clearAllFlashing();
+  async function handleRightClick(
+    item: (typeof menu)[number]["items"][number]
+  ) {
+    if (selectedTextItemRef.current) {
+      const { textitems } = await item.action(selectedTextItemRef.current);
+      if (textitems) {
+        makeFlashing(textitems);
+        clearAllFlashing();
+      }
     }
   }
 

@@ -21,6 +21,7 @@ import {
 } from "../../../../resources/constants";
 import type {
   HighlightType,
+  LocalStorageItem,
   Status,
   TextitemElement,
   WordElement,
@@ -90,7 +91,10 @@ function ThemeForm() {
   const { fields: generalFields } = useFieldArray({ control, name: "general" });
 
   useEffect(() => {
-    const highlightType = getFromLocalStorage("Lute.highlightType", {});
+    const highlightType = getFromLocalStorage<LocalStorageItem>(
+      "Lute.highlightType",
+      {}
+    );
     const types = highlightType[document.documentElement.dataset.theme!];
     if (types) {
       setValue(
@@ -162,7 +166,10 @@ function ThemeForm() {
       <form
         onSubmit={handleSubmit((data) => {
           downloadCSS(makeCSS(data, "light"));
-          const highlightType = getFromLocalStorage("Lute.highlightType", {});
+          const highlightType = getFromLocalStorage<LocalStorageItem>(
+            "Lute.highlightType",
+            {}
+          );
           const newType = {
             ...highlightType,
             [document.documentElement.dataset.theme!]: Object.fromEntries(

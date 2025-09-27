@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Paper, Transition } from "@mantine/core";
+import { Box, Paper, Transition } from "@mantine/core";
 import { FocusPageControls } from "./components/FocusPageControls/FocusPageControls";
 import { FocusToolbar } from "./components/FocusToolbar/FocusToolbar";
 import { FocusHeader } from "./components/FocusHeader/FocusHeader";
 import { FloatingContainer } from "../common/FloatingContainer/FloatingContainer";
 import { DictTabs } from "../../../language/components/DictTabs/DictTabs";
 import { PagePane } from "../PagePane/PagePane";
-import { usePageContext } from "../../hooks/usePageContext";
 import { FOCUS_HEADER_HEIGHT } from "../../../../resources/constants";
 import { useSecondaryView } from "../../hooks/useSecondaryView";
 import { TermForm } from "../../../term/components/TermForm/TermForm";
@@ -20,7 +19,6 @@ export function FocusView() {
   const { data: book } = useBookQuery();
   const { data: term } = useTermQuery();
   const { data: language } = useUserLanguageQuery(book.languageId);
-  const { state } = usePageContext();
 
   const show = view === "focus";
   const secondaryView = useSecondaryView();
@@ -35,13 +33,9 @@ export function FocusView() {
 
       <Transition transition="fade" mounted={show}>
         {(styles) => (
-          <PagePane
-            containerStyles={{
-              ...styles,
-              paddingInline: `${(100 - state.textWidth) * 0.5}%`,
-              marginTop: FOCUS_HEADER_HEIGHT,
-            }}
-          />
+          <Box style={styles} mt={FOCUS_HEADER_HEIGHT}>
+            <PagePane />
+          </Box>
         )}
       </Transition>
 

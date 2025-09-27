@@ -8,6 +8,12 @@ export const TERM_SUGGESTION_STR_MAX_LEN = 70;
 export const MIN_LANGUAGE_DICTS = 2;
 export const TABLE_PAGE_SIZE = 10;
 export const FOCUS_HEADER_HEIGHT = 80;
+export const CSS_VAR = {
+  fontSize: "--lute-text-font-size",
+  lineHeight: "--lute-text-line-height",
+  columnCount: "--lute-text-column-count",
+  textWidth: "--lute-text-width",
+} as const;
 export const TEXTITEM_CLASS = {
   textitem: "textitem",
   word: "word",
@@ -24,13 +30,6 @@ export const TEXTITEM_DATASET = {
   sentenceStart: "sentence-start",
   sentenceId: "sentence-id",
   paragraphId: "paragraph-id",
-} as const;
-export const DEFAULT_TEXT_SETTINGS = {
-  fontSize: 1,
-  lineHeight: 1,
-  columnCount: 1,
-  highlights: true,
-  textWidth: 50,
 } as const;
 export const STATUS_LABEL = {
   0: "Unknown",
@@ -51,4 +50,12 @@ export const DEFAULT_HIGHLIGHT_TYPE: Record<Status, HighlightType> = {
   5: "bg",
   98: "none",
   99: "none",
+} as const;
+export const DEFAULT_TEXT_SETTINGS = {
+  fontSize: 1,
+  lineHeight: 1,
+  columnCount: 1,
+  highlights: true,
+  textWidth: 50,
+  highlightType: DEFAULT_HIGHLIGHT_TYPE,
 } as const;

@@ -61,9 +61,11 @@
   --lute-text-font-size: 1rem;
   --lute-text-column-count: 1;
   --lute-text-line-height: 1px; /*controls margin-bottom*/
+  --lute-text-width: 100%;
 
   padding: 1.8rem 3rem;
-  width: 100%;
+  width: var(--lute-text-width);
+  margin-inline: auto;
 }
 
 .thetext {

@@ -169,7 +169,7 @@ export function handleMoveCursor(selector: string, direction = 1) {
 function _singleWordClicked(e: MouseEvent): ActiveTerm {
   clearAllMultiterm();
   selectionStart = null;
-  const textitem = e.target as TextitemElement;
+  const textitem = e.target as WordElement;
 
   clearHovered(textitem);
   currentTermDataOrder = Number(textitem.dataset.order);

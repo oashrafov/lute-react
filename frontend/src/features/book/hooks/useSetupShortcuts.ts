@@ -1,4 +1,4 @@
-import { useEffect, type KeyboardEvent } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getPressedKeysAsString } from "../../../utils/utils";
 import { handleCopy } from "../../../helpers/copy";
@@ -13,7 +13,6 @@ import {
   startHoverMode,
 } from "../../../helpers/interactions-desktop";
 import { handleSetView, handleToggleHighlights } from "../../../helpers/page";
-import { usePageContext } from "./usePageContext";
 import { useBookContext } from "./useBookContext";
 import { useViewContext } from "./useViewContext";
 import { useActiveTermContext } from "../../term/hooks/useActiveTermContext";
@@ -25,92 +24,90 @@ import type { TextitemElement } from "../../../resources/types";
 export function useSetupShortcuts() {
   const { themeForm } = useBookContext();
   const { view, setView } = useViewContext();
-  const { dispatch } = usePageContext();
   const { setActiveTerm } = useActiveTermContext();
-  const { data: settings } = useQuery(settingsQueries.shortcuts());
+  const { data: shortcut } = useQuery(settingsQueries.shortcuts());
   const { data: book } = useBookQuery();
 
   useEffect(() => {
     function ignoreKeydown(e: KeyboardEvent) {
+      const target = e.target as HTMLElement;
       const inEditMode = view === "edit";
-      const isTyping =
-        e.target.matches("input, textarea") && e.key !== "Escape"; // Escape shortcut should still work even when typing
+      // Escape should still work even when typing
+      const isTyping = target.matches("input, textarea") && e.key !== "Escape";
       return inEditMode || isTyping;
     }
 
-    function setupKeydownEvents(e) {
+    function setupKeydownEvents(e: KeyboardEvent) {
       if (ignoreKeydown(e)) return;
 
-      let selected: TextitemElement;
+      let selected: TextitemElement | null;
 
       const next = book.textDirection === "rtl" ? -1 : 1;
       const prev = -1 * next;
 
-      // Map of shortcuts to lambdas:
       const map = {
-        [settings.hotkey_StartHover.key]: () => {
+        [shortcut.hotkey_StartHover.key]: () => {
           startHoverMode();
           setActiveTerm({ data: null });
           resetFocusActiveSentence();
           themeForm.close();
         },
 
-        [settings.hotkey_PrevWord.key]: () =>
+        [shortcut.hotkey_PrevWord.key]: () =>
           handleMoveCursor(`.${TEXTITEM_CLASS.word}`, prev),
-        [settings.hotkey_NextWord.key]: () =>
+        [shortcut.hotkey_NextWord.key]: () =>
           handleMoveCursor(`.${TEXTITEM_CLASS.word}`, next),
-        [settings.hotkey_PrevUnknownWord.key]: () =>
+        [shortcut.hotkey_PrevUnknownWord.key]: () =>
           handleMoveCursor(`[data-${TEXTITEM_DATASET.status}="0"]`, prev),
-        [settings.hotkey_NextUnknownWord.key]: () =>
+        [shortcut.hotkey_NextUnknownWord.key]: () =>
           handleMoveCursor(`[data-${TEXTITEM_DATASET.status}="0"]`, next),
-        [settings.hotkey_PrevSentence.key]: () =>
+        [shortcut.hotkey_PrevSentence.key]: () =>
           handleMoveCursor(
             `[data-${TEXTITEM_DATASET.sentenceStart}="true"]`,
             prev
           ),
-        [settings.hotkey_NextSentence.key]: () =>
+        [shortcut.hotkey_NextSentence.key]: () =>
           handleMoveCursor(
             `[data-${TEXTITEM_DATASET.sentenceStart}="true"]`,
             next
           ),
 
-        [settings.hotkey_CopySentence.key]: () =>
+        [shortcut.hotkey_CopySentence.key]: () =>
           handleCopy(selected, "sentence"),
-        [settings.hotkey_CopyPara.key]: () => handleCopy(selected, "paragraph"),
-        [settings.hotkey_CopyPage.key]: () => handleCopy(selected),
+        [shortcut.hotkey_CopyPara.key]: () => handleCopy(selected, "paragraph"),
+        [shortcut.hotkey_CopyPage.key]: () => handleCopy(selected),
 
-        [settings.hotkey_TranslateSentence.key]: () =>
+        [shortcut.hotkey_TranslateSentence.key]: () =>
           handleTranslate("sentence"),
-        [settings.hotkey_TranslatePara.key]: () => handleTranslate("paragraph"),
-        [settings.hotkey_TranslatePage.key]: () => handleTranslate(null),
+        [shortcut.hotkey_TranslatePara.key]: () => handleTranslate("paragraph"),
+        [shortcut.hotkey_TranslatePage.key]: () => handleTranslate(null),
 
-        [settings.hotkey_StatusUp.key]: () => incrementStatusForMarked(+1),
-        [settings.hotkey_StatusDown.key]: () => incrementStatusForMarked(-1),
+        [shortcut.hotkey_StatusUp.key]: () => incrementStatusForMarked(+1),
+        [shortcut.hotkey_StatusDown.key]: () => incrementStatusForMarked(-1),
 
-        [settings.hotkey_Status1.key]: () => updateStatusForMarked(1),
-        [settings.hotkey_Status2.key]: () => updateStatusForMarked(2),
-        [settings.hotkey_Status3.key]: () => updateStatusForMarked(3),
-        [settings.hotkey_Status4.key]: () => updateStatusForMarked(4),
-        [settings.hotkey_Status5.key]: () => updateStatusForMarked(5),
-        [settings.hotkey_StatusIgnore.key]: () => updateStatusForMarked(98),
-        [settings.hotkey_StatusWellKnown.key]: () => updateStatusForMarked(99),
-        [settings.hotkey_DeleteTerm.key]: () => updateStatusForMarked(0),
+        [shortcut.hotkey_Status1.key]: () => updateStatusForMarked(1),
+        [shortcut.hotkey_Status2.key]: () => updateStatusForMarked(2),
+        [shortcut.hotkey_Status3.key]: () => updateStatusForMarked(3),
+        [shortcut.hotkey_Status4.key]: () => updateStatusForMarked(4),
+        [shortcut.hotkey_Status5.key]: () => updateStatusForMarked(5),
+        [shortcut.hotkey_StatusIgnore.key]: () => updateStatusForMarked(98),
+        [shortcut.hotkey_StatusWellKnown.key]: () => updateStatusForMarked(99),
+        [shortcut.hotkey_DeleteTerm.key]: () => updateStatusForMarked(0),
 
         // [settings.hotkey_Bookmark.key]: () => handleAddBookmark(book),
-        [settings.hotkey_EditPage.key]: () => {
+        [shortcut.hotkey_EditPage.key]: () => {
           setActiveTerm({ data: null });
           resetFocusActiveSentence();
           setView("edit");
         },
 
-        [settings.hotkey_NextTheme.key]: () => {
+        [shortcut.hotkey_NextTheme.key]: () => {
           themeForm.toggle();
           setActiveTerm({ data: null });
           resetFocusActiveSentence();
         },
-        [settings.hotkey_ToggleHighlight.key]: () =>
-          handleToggleHighlights(dispatch),
-        [settings.hotkey_ToggleFocus.key]: () => {
+        [shortcut.hotkey_ToggleHighlight.key]: () => handleToggleHighlights(),
+        [shortcut.hotkey_ToggleFocus.key]: () => {
           setView((prev) => {
             const newView = prev === "focus" ? "default" : "focus";
             handleSetView(newView);
@@ -121,8 +118,9 @@ export function useSetupShortcuts() {
 
       const key = getPressedKeysAsString(e);
       if (key in map) {
-        selected = e.target.matches(`.${TEXTITEM_CLASS.word}`)
-          ? e.target
+        const target = e.target as HTMLElement;
+        selected = target.matches(`.${TEXTITEM_CLASS.word}`)
+          ? (target as TextitemElement)
           : null;
         // Override any existing event - e.g., if "up" arrow is in the map,
         // don't scroll screen.

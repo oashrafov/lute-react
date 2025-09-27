@@ -38,26 +38,26 @@
   --lute-color-text-status: var(--lute-text-color-status99);
 }
 
-.highlight:not(.term-active) [data-highlight-type="bg"],
+[data-show-highlights="true"]:not(.term-active) [data-highlight-type="bg"],
 [data-highlight-type="bg"].wordhover {
   background-color: var(--lute-color-highlight-status);
   color: var(--lute-color-text-status);
 }
 
-.highlight:not(.term-active) [data-highlight-type="text"],
+[data-show-highlights="true"]:not(.term-active) [data-highlight-type="text"],
 [data-highlight-type="text"].wordhover {
   color: var(--lute-color-highlight-status);
   background-color: transparent;
 }
 
-.highlight:not(.term-active) [data-highlight-type="dashed"],
+[data-show-highlights="true"]:not(.term-active) [data-highlight-type="dashed"],
 [data-highlight-type="dashed"].wordhover {
   text-decoration: 2px underline dashed var(--lute-color-highlight-status);
   text-underline-offset: 2px;
   background-color: transparent;
 }
 
-.highlight:not(.term-active) [data-highlight-type="solid"],
+[data-show-highlights="true"]:not(.term-active) [data-highlight-type="solid"],
 [data-highlight-type="solid"].wordhover {
   text-decoration: 2px underline solid var(--lute-color-highlight-status);
   text-underline-offset: 2px;
@@ -74,7 +74,7 @@
   text-underline-offset: 2px;
 }
 /* data property for equal specificity with above styles */
-.textitem.newmultiterm[data-highlight-type] {
+.textitem.newmultiterm[data-order] {
   background: var(--lute-color-highlight-newmultiterm);
   border-radius: 0;
   color: var(--lute-text-color-newmultiterm);
