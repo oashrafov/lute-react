@@ -1,30 +1,5 @@
 import type { FocusEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
 
-export function getFromLocalStorage<K extends string>(
-  item: K,
-  defaultVal: unknown
-) {
-  const storageVal = JSON.parse(localStorage.getItem(item)!);
-
-  if (storageVal === null || Object.is(storageVal, NaN)) {
-    return defaultVal;
-  } else {
-    return storageVal;
-  }
-}
-
-export function setLocalStorageItem<K extends string>(key: K, value: unknown) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
-
-export function convertPixelsToRem(sizeInPixels: number) {
-  const bodyFontSize = window.getComputedStyle(
-    document.querySelector("body")!
-  ).fontSize;
-
-  return sizeInPixels / parseFloat(bodyFontSize);
-}
-
 export function clamp(num: number, min: number, max: number) {
   return Math.min(Math.max(num, min), max);
 }

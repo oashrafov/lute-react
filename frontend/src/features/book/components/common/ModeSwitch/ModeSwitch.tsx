@@ -7,7 +7,6 @@ import {
 import { type TablerIcon } from "@tabler/icons-react";
 
 interface ModeSwitch extends SwitchProps {
-  checked: boolean;
   label: TooltipProps["label"];
   icon: TablerIcon;
 }

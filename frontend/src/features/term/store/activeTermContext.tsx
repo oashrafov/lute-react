@@ -51,7 +51,7 @@ interface ActiveTermContextValue {
 
 const ActiveTermContext = createContext<ActiveTermContextValue | null>(null);
 
-function ActiveTermContextProvider({ children }: { children: ReactNode }) {
+function ActiveTermProvider({ children }: { children: ReactNode }) {
   const [activeTerm, setActiveTerm] = useState<ActiveTerm>(null);
 
   return (
@@ -61,4 +61,4 @@ function ActiveTermContextProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export { ActiveTermContextProvider, ActiveTermContext };
+export { ActiveTermProvider, ActiveTermContext };

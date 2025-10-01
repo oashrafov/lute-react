@@ -11,7 +11,11 @@ import {
   getWords,
   makeFlashing,
 } from "../../../../helpers/text";
-import { setTextColor } from "../../../../helpers/general";
+import {
+  setTextColor,
+  setLocalStorageItem,
+  getFromLocalStorage,
+} from "../../../../helpers/general";
 import { useBookContext } from "../../../book/hooks/useBookContext";
 import {
   DEFAULT_HIGHLIGHT_TYPE,
@@ -21,12 +25,10 @@ import {
 } from "../../../../resources/constants";
 import type {
   HighlightType,
-  LocalStorageItem,
   Status,
   TextitemElement,
   WordElement,
 } from "../../../../resources/types";
-import { getFromLocalStorage } from "../../../../utils/utils";
 
 interface StatusHighlight {
   key: `status${number | string}`;
@@ -91,10 +93,7 @@ function ThemeForm() {
   const { fields: generalFields } = useFieldArray({ control, name: "general" });
 
   useEffect(() => {
-    const highlightType = getFromLocalStorage<LocalStorageItem>(
-      "Lute.highlightType",
-      {}
-    );
+    const highlightType = getFromLocalStorage("Lute.highlightType", {});
     const types = highlightType[document.documentElement.dataset.theme!];
     if (types) {
       setValue(
@@ -166,17 +165,14 @@ function ThemeForm() {
       <form
         onSubmit={handleSubmit((data) => {
           downloadCSS(makeCSS(data, "light"));
-          const highlightType = getFromLocalStorage<LocalStorageItem>(
-            "Lute.highlightType",
-            {}
-          );
+          const highlightType = getFromLocalStorage("Lute.highlightType", {});
           const newType = {
             ...highlightType,
             [document.documentElement.dataset.theme!]: Object.fromEntries(
               data.status.map((status) => [status.key, status.type])
             ),
           };
-          localStorage.setItem("Lute.highlightType", JSON.stringify(newType));
+          setLocalStorageItem("Lute.highlightType", newType);
         })}>
         <Group wrap="nowrap" mb={10}>
           <ThemeSelect label="Theme" flex={1} />

@@ -14,15 +14,15 @@ import {
   IconFileXFilled,
 } from "@tabler/icons-react";
 import { PageCounter } from "../../../common/PageCounter";
-import { useViewContext } from "../../../../hooks/useViewContext";
 import type { BookDetail } from "../../../../api/types";
+import { useView } from "../../../../hooks/useView";
 
 interface EditHeader {
   book: BookDetail;
 }
 
 export function EditHeader({ book }: EditHeader) {
-  const { setView } = useViewContext();
+  const { setView } = useView();
   function handleAddBefore() {}
   function handleAddAfter() {}
   function handleDelete() {}

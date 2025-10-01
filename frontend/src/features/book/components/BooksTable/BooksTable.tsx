@@ -19,7 +19,10 @@ import { TableTopToolbar } from "../../../../components/common/TableTopToolbar/T
 import { TableTopToolbarDefaultItems } from "../../../../components/common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
 import { getDefaultTableOptions } from "../../../../resources/table-options-default";
 import { columnDefinition } from "./columnDefinition";
-import { getFromLocalStorage } from "../../../../utils/utils";
+import {
+  setLocalStorageItem,
+  getFromLocalStorage,
+} from "../../../../helpers/general";
 import { TABLE_PAGE_SIZE } from "../../../../resources/constants";
 import { queries as settingsQueries } from "../../../settings/api/queries";
 import { queries as bookQueries } from "../../api/queries";
@@ -59,7 +62,7 @@ function BooksTable() {
   function handleRowPinning(updater: Updater<RowPinningState>) {
     setRowPinning((prev) => {
       const res = typeof updater === "function" ? updater(prev) : updater;
-      localStorage.setItem("Lute.booksTable.pinnedRows", JSON.stringify(res));
+      setLocalStorageItem("Lute.booksTable.pinnedRows", res);
       return res;
     });
   }

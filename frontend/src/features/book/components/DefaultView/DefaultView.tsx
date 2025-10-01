@@ -5,12 +5,12 @@ import { DefaultHeader } from "./components/DefaultHeader/DefaultHeader";
 import { PageSpinner } from "../../../../components/common/PageSpinner/PageSpinner";
 import { TranslationPane } from "./components/TranslationPane/TranslationPane";
 import { HorizontalPanels } from "./components/ResizablePanels/HorizontalPanels";
-import { useViewContext } from "../../hooks/useViewContext";
 import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
 import { FloatingContainer } from "../common/FloatingContainer/FloatingContainer";
 import { useTermQuery } from "../../../term/hooks/useTermQuery";
 import { PagePane } from "../PagePane/PagePane";
 import { useBookQuery } from "../../hooks/useBookQuery";
+import { useView } from "../../hooks/useView";
 import classes from "./DefaultView.module.css";
 
 const ThemeForm = lazy(
@@ -21,7 +21,7 @@ const BulkTermForm = lazy(
 );
 
 export function DefaultView() {
-  const { view } = useViewContext();
+  const { view } = useView();
   const { data: book } = useBookQuery();
   const { data: term, isFetching } = useTermQuery();
   const secondaryView = useSecondaryView();

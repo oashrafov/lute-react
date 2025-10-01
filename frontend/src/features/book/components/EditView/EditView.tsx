@@ -2,13 +2,13 @@ import { Box, Transition } from "@mantine/core";
 import { useForm } from "react-hook-form";
 import { EditHeader } from "./components/EditHeader/EditHeader";
 import { useBookQuery } from "../../hooks/useBookQuery";
-import { useViewContext } from "../../hooks/useViewContext";
 import { usePageQuery } from "../../hooks/usePageQuery";
 import { Textarea } from "../../../../components/common/Textarea/Textarea";
+import { useView } from "../../hooks/useView";
 import classes from "./EditView.module.css";
 
 export function EditView() {
-  const { view } = useViewContext();
+  const { view } = useView();
   const show = view === "edit";
   const { data: book } = useBookQuery();
   const { data: page } = usePageQuery();

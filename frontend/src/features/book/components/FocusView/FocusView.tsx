@@ -8,14 +8,14 @@ import { DictTabs } from "../../../language/components/DictTabs/DictTabs";
 import { PagePane } from "../PagePane/PagePane";
 import { FOCUS_HEADER_HEIGHT } from "../../../../resources/constants";
 import { useSecondaryView } from "../../hooks/useSecondaryView";
+import { useView } from "../../hooks/useView";
 import { TermForm } from "../../../term/components/TermForm/TermForm";
 import { useBookQuery } from "../../hooks/useBookQuery";
 import { useTermQuery } from "../../../term/hooks/useTermQuery";
-import { useViewContext } from "../../hooks/useViewContext";
 import { useUserLanguageQuery } from "../../../language/hooks/useUserLanguageQuery";
 
 export function FocusView() {
-  const { view } = useViewContext();
+  const { view } = useView();
   const { data: book } = useBookQuery();
   const { data: term } = useTermQuery();
   const { data: language } = useUserLanguageQuery(book.languageId);
@@ -33,7 +33,7 @@ export function FocusView() {
 
       <Transition transition="fade" mounted={show}>
         {(styles) => (
-          <Box style={styles} mt={FOCUS_HEADER_HEIGHT}>
+          <Box style={{ ...styles, marginTop: FOCUS_HEADER_HEIGHT }}>
             <PagePane />
           </Box>
         )}

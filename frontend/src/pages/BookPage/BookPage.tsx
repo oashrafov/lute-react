@@ -5,8 +5,8 @@ import { useMarkAsStale } from "../../features/book/hooks/useMarkAsStale";
 import { useNavigationProgress } from "../../hooks/useNavigationProgress";
 import { Book } from "../../features/book/components/Book/Book";
 import { SideMenu } from "../../features/book/components/SideMenu/SideMenu";
-import { ActiveTermContextProvider } from "../../features/term/store/activeTermContext";
-import { ViewProvider } from "../../features/book/store/viewContext";
+import { PageSpinner } from "../../components/common/PageSpinner/PageSpinner";
+import { ActiveTermProvider } from "../../features/term/store/activeTermContext";
 import { useBookQuery } from "../../features/book/hooks/useBookQuery";
 
 const PageTermsDrawer = lazy(
@@ -22,15 +22,13 @@ export default function BookPage() {
   return (
     <BookContextProvider>
       <SideMenu />
-      <Suspense>
+      <Suspense fallback={<PageSpinner />}>
         <PageTermsDrawer />
       </Suspense>
 
-      <ViewProvider>
-        <ActiveTermContextProvider>
-          <Book />
-        </ActiveTermContextProvider>
-      </ViewProvider>
+      <ActiveTermProvider>
+        <Book />
+      </ActiveTermProvider>
     </BookContextProvider>
   );
 }

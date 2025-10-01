@@ -12,18 +12,18 @@ import {
   resetFocusActiveSentence,
   startHoverMode,
 } from "../../../helpers/interactions-desktop";
-import { handleSetView, handleToggleHighlights } from "../../../helpers/page";
+import { handleToggleHighlights } from "../../../helpers/page";
 import { useBookContext } from "./useBookContext";
-import { useViewContext } from "./useViewContext";
 import { useActiveTermContext } from "../../term/hooks/useActiveTermContext";
 import { queries as settingsQueries } from "../../settings/api/queries";
 import { TEXTITEM_CLASS, TEXTITEM_DATASET } from "../../../resources/constants";
 import { useBookQuery } from "./useBookQuery";
+import { useView } from "./useView";
 import type { TextitemElement } from "../../../resources/types";
 
 export function useSetupShortcuts() {
   const { themeForm } = useBookContext();
-  const { view, setView } = useViewContext();
+  const { view, toggleFocus } = useView();
   const { setActiveTerm } = useActiveTermContext();
   const { data: shortcut } = useQuery(settingsQueries.shortcuts());
   const { data: book } = useBookQuery();
@@ -108,11 +108,7 @@ export function useSetupShortcuts() {
         },
         [shortcut.hotkey_ToggleHighlight.key]: () => handleToggleHighlights(),
         [shortcut.hotkey_ToggleFocus.key]: () => {
-          setView((prev) => {
-            const newView = prev === "focus" ? "default" : "focus";
-            handleSetView(newView);
-            return newView;
-          });
+          toggleFocus();
         },
       };
 
@@ -131,8 +127,6 @@ export function useSetupShortcuts() {
 
     document.addEventListener("keydown", setupKeydownEvents);
 
-    return () => {
-      document.removeEventListener("keydown", setupKeydownEvents);
-    };
+    return () => document.removeEventListener("keydown", setupKeydownEvents);
   }, []);
 }
