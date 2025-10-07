@@ -24,10 +24,10 @@ export function LoadSampleBooksButton({
   const loadSampleStoriesMutation = useMutation({
     mutationFn: createLanguage,
     onSuccess: async () => {
+      queryClient.removeQueries({
+        queryKey: bookQueries.all(),
+      });
       await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: bookQueries.list().queryKey,
-        }),
         queryClient.invalidateQueries({
           queryKey: settingsQueries.init().queryKey,
         }),

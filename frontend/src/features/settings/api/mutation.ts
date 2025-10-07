@@ -13,11 +13,11 @@ export function useWipeDatabase() {
 
   return useMutation({
     mutationFn: wipeDemoDatabase,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: bookQueries.list().queryKey,
+    onSuccess: async () => {
+      queryClient.removeQueries({
+        queryKey: bookQueries.all(),
       });
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: settingsQueries.init().queryKey,
       });
       notifications.show(databaseCleaned);
