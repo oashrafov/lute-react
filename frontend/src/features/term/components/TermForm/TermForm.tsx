@@ -70,7 +70,7 @@ export function TermForm({
   const hasText = !!watch("text");
   const numOfParents = watch("parents", []).length;
 
-  const { setActiveTerm } = useActiveTermContext();
+  const { clearActiveTerm } = useActiveTermContext();
   const { data: tags } = useQuery(termQueries.tagSuggestions());
 
   const editMode = term.id !== null;
@@ -129,7 +129,7 @@ export function TermForm({
         reset();
       }
       if (!blankMode && bookId) {
-        setActiveTerm({ data: null });
+        clearActiveTerm();
         queryClient.invalidateQueries({
           queryKey: bookQueries.bookPages(Number(bookId)),
         });
@@ -142,7 +142,7 @@ export function TermForm({
     onSuccess: () => {
       notifications.show(termUpdated);
       if (bookId) {
-        setActiveTerm({ data: null });
+        clearActiveTerm();
         queryClient.invalidateQueries({
           queryKey: bookQueries.bookPages(Number(bookId)),
         });
@@ -155,7 +155,7 @@ export function TermForm({
     onSuccess: () => {
       notifications.show(termDeleted);
       if (bookId) {
-        setActiveTerm({ data: null });
+        clearActiveTerm();
         queryClient.invalidateQueries({
           queryKey: bookQueries.bookPages(Number(bookId)),
         });

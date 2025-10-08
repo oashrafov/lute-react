@@ -7,11 +7,7 @@ import {
   incrementStatusForMarked,
   updateStatusForMarked,
 } from "../../../helpers/status";
-import {
-  handleMoveCursor,
-  resetFocusActiveSentence,
-  startHoverMode,
-} from "../../../helpers/interactions-desktop";
+import { handleMoveCursor } from "../../../helpers/interactions-desktop";
 import { handleToggleHighlights } from "../../../helpers/page";
 import { useBookContext } from "./useBookContext";
 import { useActiveTermContext } from "../../term/hooks/useActiveTermContext";
@@ -23,8 +19,8 @@ import type { TextitemElement } from "../../../resources/types";
 
 export function useSetupShortcuts() {
   const { themeForm } = useBookContext();
-  const { view, toggleFocus } = useView();
-  const { setActiveTerm } = useActiveTermContext();
+  const { view, setView, toggleFocus } = useView();
+  const { clearActiveTerm } = useActiveTermContext();
   const { data: shortcut } = useQuery(settingsQueries.shortcuts());
   const { data: book } = useBookQuery();
 
@@ -47,9 +43,7 @@ export function useSetupShortcuts() {
 
       const map = {
         [shortcut.hotkey_StartHover.key]: () => {
-          startHoverMode();
-          setActiveTerm({ data: null });
-          resetFocusActiveSentence();
+          clearActiveTerm();
           themeForm.close();
         },
 
@@ -96,15 +90,13 @@ export function useSetupShortcuts() {
 
         // [settings.hotkey_Bookmark.key]: () => handleAddBookmark(book),
         [shortcut.hotkey_EditPage.key]: () => {
-          setActiveTerm({ data: null });
-          resetFocusActiveSentence();
           setView("edit");
+          clearActiveTerm();
         },
 
         [shortcut.hotkey_NextTheme.key]: () => {
           themeForm.toggle();
-          setActiveTerm({ data: null });
-          resetFocusActiveSentence();
+          clearActiveTerm();
         },
         [shortcut.hotkey_ToggleHighlight.key]: () => handleToggleHighlights(),
         [shortcut.hotkey_ToggleFocus.key]: () => {

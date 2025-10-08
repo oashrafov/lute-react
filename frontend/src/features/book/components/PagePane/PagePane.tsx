@@ -4,18 +4,15 @@ import { TheTextContainer } from "../TheTextContainer/TheTextContainer";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
 import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
 import { hasClickedOutsideText } from "../../../../helpers/interactions-desktop";
-import { clearAllMarked, clearAllMultiterm } from "../../../../helpers/text";
 
 export function PagePane() {
-  const { setActiveTerm } = useActiveTermContext();
+  const { clearActiveTerm } = useActiveTermContext();
   const contextMenuAreaRef = useRef(null);
 
   function handleClickOutside(e: MouseEvent) {
     const res = hasClickedOutsideText(e);
     if (!res) return;
-    clearAllMarked();
-    clearAllMultiterm();
-    setActiveTerm({ data: null });
+    clearActiveTerm();
   }
 
   return (

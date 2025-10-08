@@ -105,12 +105,15 @@ export function TagsField({
 
   function handleTagClick(item: string) {
     if (languageId) {
-      setActiveTerm({
-        data: item,
-        langId: languageId,
-        type: "multi",
-        textitems: [],
-      });
+      setActiveTerm(
+        {
+          data: item,
+          langId: languageId,
+          type: "multi",
+          textitems: [],
+        },
+        false
+      );
     }
   }
 

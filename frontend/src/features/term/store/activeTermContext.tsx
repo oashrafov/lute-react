@@ -1,11 +1,11 @@
-import {
-  createContext,
-  useState,
-  type Dispatch,
-  type ReactNode,
-  type SetStateAction,
-} from "react";
+import { createContext, useState, type ReactNode } from "react";
 import type { TextitemElement } from "../../../resources/types";
+import {
+  focusActiveSentence as fas,
+  resetFocusActiveSentence,
+  startHoverMode,
+} from "../../../helpers/interactions-desktop";
+import { getTextContainer } from "../../../helpers/general";
 
 interface SingleTerm {
   data: number;
@@ -46,7 +46,8 @@ export type ActiveTerm =
 
 interface ActiveTermContextValue {
   activeTerm: ActiveTerm;
-  setActiveTerm: Dispatch<SetStateAction<ActiveTerm>>;
+  setActiveTerm: (termData: ActiveTerm, focusActiveSentence?: boolean) => void;
+  clearActiveTerm: () => void;
 }
 
 const ActiveTermContext = createContext<ActiveTermContextValue | null>(null);
@@ -54,8 +55,35 @@ const ActiveTermContext = createContext<ActiveTermContextValue | null>(null);
 function ActiveTermProvider({ children }: { children: ReactNode }) {
   const [activeTerm, setActiveTerm] = useState<ActiveTerm>(null);
 
+  function clearActiveTerm() {
+    setActiveTerm({ data: null });
+    resetFocusActiveSentence();
+    startHoverMode();
+    getTextContainer()?.classList.remove("term-active");
+  }
+
+  function handleSetActiveTerm(
+    termData: ActiveTerm,
+    focusActiveSentence = true
+  ) {
+    setActiveTerm(termData);
+
+    if (!termData) return;
+    if (termData.type !== "single" && termData.type !== "multi") return;
+
+    if (focusActiveSentence) {
+      fas(termData.textitems);
+      getTextContainer()?.classList.add("term-active");
+    }
+  }
+
   return (
-    <ActiveTermContext.Provider value={{ activeTerm, setActiveTerm }}>
+    <ActiveTermContext.Provider
+      value={{
+        activeTerm,
+        setActiveTerm: handleSetActiveTerm,
+        clearActiveTerm,
+      }}>
       {children}
     </ActiveTermContext.Provider>
   );

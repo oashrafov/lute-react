@@ -1,16 +1,14 @@
 import { ActionIcon, rem } from "@mantine/core";
 import { IconEdit } from "@tabler/icons-react";
-import { resetFocusActiveSentence } from "../../../../../../../helpers/interactions-desktop";
 import { useActiveTermContext } from "../../../../../../term/hooks/useActiveTermContext";
 import { useView } from "../../../../../hooks/useView";
 
 export function EditButton() {
-  const { setActiveTerm } = useActiveTermContext();
+  const { clearActiveTerm } = useActiveTermContext();
   const { setView } = useView();
 
   function handleClick() {
-    setActiveTerm({ data: null });
-    resetFocusActiveSentence();
+    clearActiveTerm();
     setView("edit");
   }
 
