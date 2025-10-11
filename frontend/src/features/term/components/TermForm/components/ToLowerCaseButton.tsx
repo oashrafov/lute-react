@@ -1,20 +1,19 @@
-import type { MouseEventHandler } from "react";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Tooltip,
+  type ActionIconProps,
+  type ElementProps,
+} from "@mantine/core";
 import { IconLetterCaseLower } from "@tabler/icons-react";
 
-interface ToLowerCaseButton {
-  onClick: MouseEventHandler<HTMLButtonElement>;
-  enabled: boolean;
-}
+interface ToLowerCaseButton
+  extends ActionIconProps,
+    ElementProps<"button", keyof ActionIconProps> {}
 
-export function ToLowerCaseButton({ onClick, enabled }: ToLowerCaseButton) {
+export function ToLowerCaseButton(props: ToLowerCaseButton) {
   return (
     <Tooltip label="Make lowercase">
-      <ActionIcon
-        size="md"
-        variant="subtle"
-        onClick={onClick}
-        disabled={!enabled}>
+      <ActionIcon size="md" variant="subtle" {...props}>
         <IconLetterCaseLower />
       </ActionIcon>
     </Tooltip>

@@ -1,4 +1,4 @@
-import { type MouseEvent } from "react";
+import { memo, type MouseEvent } from "react";
 import { TextItem } from "./components/TextItem";
 import { TermPopup } from "../../../term/components/TermPopup/TermPopup";
 import {
@@ -14,7 +14,10 @@ interface TheText {
   onSelectEnd: (e: MouseEvent<WordElement>) => Promise<void>;
 }
 
-export function TheText({ paragraphs, onSelectEnd }: TheText) {
+export const TheText = memo(function TheText({
+  paragraphs,
+  onSelectEnd,
+}: TheText) {
   return (
     <div className="thetext">
       {paragraphs.map((paragraph, index) => (
@@ -42,4 +45,4 @@ export function TheText({ paragraphs, onSelectEnd }: TheText) {
       ))}
     </div>
   );
-}
+});

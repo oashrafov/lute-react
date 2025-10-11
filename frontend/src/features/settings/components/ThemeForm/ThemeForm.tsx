@@ -5,17 +5,18 @@ import { Select } from "../../../../components/common/Select/Select";
 import { ThemeSelect } from "../../../../components/common/ThemeSelect/ThemeSelect";
 import { ColorInput } from "../../../../components/common/ColorInput/ColorInput";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
-import {
-  clearAllFlashing,
-  getMatchedTextitems,
-  getWords,
-  makeFlashing,
-} from "../../../../helpers/text";
+import { getWords } from "../../../../helpers/text";
 import {
   setTextColor,
   setLocalStorageItem,
   getFromLocalStorage,
 } from "../../../../helpers/general";
+import {
+  handleStatusHighlightChange,
+  handleGeneralHighlightChange,
+  handleFlashHighlight,
+  type StatusHighlight,
+} from "./helpers/utils";
 import { useBookContext } from "../../../book/hooks/useBookContext";
 import {
   DEFAULT_HIGHLIGHT_TYPE,
@@ -26,16 +27,8 @@ import {
 import type {
   HighlightType,
   Status,
-  TextitemElement,
   WordElement,
 } from "../../../../resources/types";
-
-interface StatusHighlight {
-  key: `status${number | string}`;
-  color: string;
-  label: string;
-  type: HighlightType;
-}
 
 const generalHighlightsLabels = [
   [TEXTITEM_CLASS.marked, "Selected"],
@@ -106,17 +99,6 @@ function ThemeForm() {
     }
   }, [setValue]);
 
-  function handleStatusHighlightChange(
-    highlight: StatusHighlight,
-    color: string
-  ) {
-    document.documentElement.style.setProperty(
-      `--lute-color-highlight-${highlight.key}`,
-      color
-    );
-    setTextColor(highlight.key, color);
-  }
-
   function handleTypeChange(type: HighlightType, highlight: StatusHighlight) {
     const statusId = highlight.key.split(TEXTITEM_DATASET.status)[1];
     document
@@ -138,22 +120,6 @@ function ThemeForm() {
     setValue("typeAll", type);
   }
 
-  function handleGeneralHighlightChange(id: string, color: string) {
-    document.documentElement.style.setProperty(
-      `--lute-color-highlight-${id}`,
-      color
-    );
-    setTextColor(id, color);
-  }
-
-  function handleFlashHighlight() {
-    const textitem = document.querySelector<TextitemElement>(
-      `[data-${TEXTITEM_DATASET.sentenceId}="0"]`
-    )!;
-    makeFlashing(getMatchedTextitems(textitem, "sentence"));
-    clearAllFlashing();
-  }
-
   return (
     <Stack gap={0} style={{ flexWrap: "nowrap" }}>
       <Group justify="space-between">
@@ -162,18 +128,7 @@ function ThemeForm() {
         </Text>
         <CloseButton onClick={themeForm.close} />
       </Group>
-      <form
-        onSubmit={handleSubmit((data) => {
-          downloadCSS(makeCSS(data, "light"));
-          const highlightType = getFromLocalStorage("Lute.highlightType", {});
-          const newType = {
-            ...highlightType,
-            [document.documentElement.dataset.theme!]: Object.fromEntries(
-              data.status.map((status) => [status.key, status.type])
-            ),
-          };
-          setLocalStorageItem("Lute.highlightType", newType);
-        })}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Group wrap="nowrap" mb={10}>
           <ThemeSelect label="Theme" flex={1} />
           <Select
@@ -254,9 +209,11 @@ function ThemeForm() {
                         { label: "Underline: dashed", value: "dashed" },
                         { label: "None", value: "none" },
                       ]}
-                      onChange={(val) =>
-                        handleTypeChange(val as HighlightType, highlight)
-                      }
+                      onChange={(val) => {
+                        if (val) {
+                          handleTypeChange(val as HighlightType, highlight);
+                        }
+                      }}
                     />
                   </Table.Td>
                 </Table.Tr>
@@ -338,7 +295,19 @@ function ThemeForm() {
   );
 }
 
-function makeCSS(data: FormValues, scheme: "light" | "dark") {
+function onSubmit(data: FormValues) {
+  downloadCSS("theme", generateThemeCSS(data, "light"));
+  const highlightType = getFromLocalStorage("Lute.highlightType", {});
+  const newType = {
+    ...highlightType,
+    [document.documentElement.dataset.theme!]: Object.fromEntries(
+      data.status.map((status) => [status.key, status.type])
+    ),
+  };
+  setLocalStorageItem("Lute.highlightType", newType);
+}
+
+function generateThemeCSS(data: FormValues, scheme: "light" | "dark") {
   return `[data-scheme="${scheme}"][data-theme="night"] {
 ${[data.status, data.general]
   .map((item) =>
@@ -353,13 +322,13 @@ ${[data.status, data.general]
 }`;
 }
 
-function downloadCSS(css: string) {
-  const blob = new Blob([css], { type: "text/css" });
+function downloadCSS(fileName: string, content: string) {
+  const blob = new Blob([content], { type: "text/css" });
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "download.css";
+  a.download = `${fileName}.css`;
 
   document.body.appendChild(a);
   a.click();

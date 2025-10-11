@@ -1,4 +1,4 @@
-import { useState, type RefObject } from "react";
+import { useState, type KeyboardEvent, type RefObject } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -95,9 +95,20 @@ export function TermForm({
     setValue("parents", parents);
   }
 
-  function handleKeydown(e) {
-    const isTextarea = e.target.type === "textarea";
-    const isSubmitButton = e.target.type === "submit";
+  function handleClearTags() {
+    setValue("termTags", []);
+  }
+
+  function handleDeleteTerm() {
+    modals.openConfirmModal(
+      deleteTermConfirm(term.text, () => deleteTermMutation.mutate(term.id))
+    );
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    const target = e.target;
+    const isTextarea = target.type === "textarea";
+    const isSubmitButton = target.type === "submit";
     const enterPressed = e.key === "Enter";
     const ctrlPressed = e.ctrlKey;
 
@@ -105,7 +116,7 @@ export function TermForm({
       e.preventDefault();
     }
     if (enterPressed && ctrlPressed && !isSubmitButton) {
-      e.currentTarget.requestSubmit();
+      target.requestSubmit();
     }
   }
 
@@ -175,7 +186,10 @@ export function TermForm({
           placeholder="Term"
           flex={1}
           rightSection={
-            <ToLowerCaseButton enabled={hasText} onClick={handleToLowerCase} />
+            <ToLowerCaseButton
+              disabled={!hasText}
+              onClick={handleToLowerCase}
+            />
           }
           leftSection={<IconBubbleText size={20} />}
           leftSectionProps={{ className: classes.leftSection }}
@@ -282,21 +296,13 @@ export function TermForm({
         mb={5}
         leftSection={<IconTags size={20} />}
         leftSectionProps={{ className: classes.leftSection }}
-        rightSection={
-          <InputClearButton onClick={() => setValue("termTags", [])} />
-        }
+        rightSection={<InputClearButton onClick={handleClearTags} />}
       />
 
       <FormButtons
         okDisabled={!hasText}
         discardLabel={editMode ? "Delete" : undefined}
-        discardCallback={() =>
-          modals.openConfirmModal(
-            deleteTermConfirm(term.text, () =>
-              deleteTermMutation.mutate(term.id)
-            )
-          )
-        }
+        discardCallback={handleDeleteTerm}
       />
     </form>
   );

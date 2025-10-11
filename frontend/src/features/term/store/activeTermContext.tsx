@@ -1,4 +1,4 @@
-import { createContext, useState, type ReactNode } from "react";
+import { createContext, useMemo, useState, type ReactNode } from "react";
 import type { TextitemElement } from "../../../resources/types";
 import {
   focusActiveSentence as fas,
@@ -77,13 +77,18 @@ function ActiveTermProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const functions = useMemo(
+    () => ({ setActiveTerm: handleSetActiveTerm, clearActiveTerm }),
+    []
+  );
+
+  const value = useMemo(
+    () => ({ ...functions, activeTerm }),
+    [activeTerm, functions]
+  );
+
   return (
-    <ActiveTermContext.Provider
-      value={{
-        activeTerm,
-        setActiveTerm: handleSetActiveTerm,
-        clearActiveTerm,
-      }}>
+    <ActiveTermContext.Provider value={value}>
       {children}
     </ActiveTermContext.Provider>
   );

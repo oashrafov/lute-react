@@ -1,4 +1,4 @@
-import { useCallback, useMemo, type MouseEvent } from "react";
+import { useCallback, type MouseEvent } from "react";
 import { Box, LoadingOverlay } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { TheText } from "../TheText/TheText";
@@ -41,13 +41,6 @@ export function TheTextContainer() {
     [clearActiveTerm, setActiveTerm]
   );
 
-  const theText = useMemo(
-    () => (
-      <TheText paragraphs={page.paragraphs} onSelectEnd={handleSelectEnd} />
-    ),
-    [handleSelectEnd, page.paragraphs]
-  );
-
   return (
     <Box
       pos="relative"
@@ -55,7 +48,7 @@ export function TheTextContainer() {
       className="textcontainer"
       ref={applyTextSettings}>
       <LoadingOverlay visible={!pageProcessed} zIndex={199} />
-      {theText}
+      <TheText paragraphs={page.paragraphs} onSelectEnd={handleSelectEnd} />
     </Box>
   );
 }

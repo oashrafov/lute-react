@@ -7,23 +7,28 @@ import { FloatingContainer } from "../common/FloatingContainer/FloatingContainer
 import { DictTabs } from "../../../language/components/DictTabs/DictTabs";
 import { PagePane } from "../PagePane/PagePane";
 import { FOCUS_HEADER_HEIGHT } from "../../../../resources/constants";
-import { useSecondaryView } from "../../hooks/useSecondaryView";
 import { useView } from "../../hooks/useView";
 import { TermForm } from "../../../term/components/TermForm/TermForm";
 import { useBookQuery } from "../../hooks/useBookQuery";
 import { useTermQuery } from "../../../term/hooks/useTermQuery";
 import { useUserLanguageQuery } from "../../../language/hooks/useUserLanguageQuery";
+import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
+import { useBookContext } from "../../hooks/useBookContext";
 
 export function FocusView() {
   const { view } = useView();
+  const { themeForm } = useBookContext();
   const { data: book } = useBookQuery();
   const { data: term } = useTermQuery();
+  const { activeTerm } = useActiveTermContext();
   const { data: language } = useUserLanguageQuery(book.languageId);
+  const [showDicts, setShowDicts] = useState(false);
 
   const show = view === "focus";
-  const secondaryView = useSecondaryView();
-  const showTranslationPane = secondaryView === "translation" && term;
-  const [showDicts, setShowDicts] = useState(false);
+  const isTermActive =
+    term && (activeTerm?.type === "single" || activeTerm?.type === "multi");
+  const showThemeForm = themeForm.isOpen;
+  const showTranslationPane = isTermActive && !showThemeForm;
 
   return (
     <>
