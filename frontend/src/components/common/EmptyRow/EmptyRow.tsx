@@ -1,15 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Text } from "@mantine/core";
 import { queries } from "../../../features/settings/api/queries";
 
 interface EmptyRow {
-  tableName: string;
+  tableName: "terms" | "books";
   language: string;
 }
 
 export function EmptyRow({ tableName, language }: EmptyRow) {
-  const { data: initial } = useQuery(queries.init());
+  const { data: initial } = useSuspenseQuery(queries.init());
   const langId = initial.languageChoices.filter(
     (lang) => lang.name === language
   )[0].id;
@@ -18,7 +18,10 @@ export function EmptyRow({ tableName, language }: EmptyRow) {
       <Text component="p" fz="sm" mb={8}>
         No {tableName} found for <strong>{language}</strong>.
       </Text>
-      <Button component={Link} to={`/${tableName}/new?langId=${langId}`}>
+      <Button
+        renderRoot={(props) => (
+          <Link to="/create-book" params={{ langId: langId }} {...props} />
+        )}>
         Create one?
       </Button>
     </div>

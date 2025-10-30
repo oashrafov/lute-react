@@ -1,6 +1,11 @@
 import { useState, useEffect, memo, type ChangeEvent } from "react";
+import {
+  useNavigate,
+  useSearch,
+  useRouterState,
+  type ValidateFromPath,
+} from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useSearchParams } from "react-router-dom";
 import {
   Combobox,
   Input,
@@ -11,11 +16,15 @@ import {
 import { IconLanguage } from "@tabler/icons-react";
 import { queries } from "../../../api/queries";
 
-function LanguageSelect() {
-  const [params, setParams] = useSearchParams();
-  const { pathname } = useLocation();
+export const LanguageSelect = memo(function LanguageSelect() {
+  const { langId, langName } = useSearch({ strict: false });
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate({ from: pathname as ValidateFromPath });
   const { data: languages } = useQuery(queries.predefinedLanguagesList());
 
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
   const [value, setValue] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
@@ -31,16 +40,14 @@ function LanguageSelect() {
     filteredOptions = [];
   }
 
-  const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
-  });
+  function handleOpenCombobox() {
+    combobox.openDropdown();
+  }
 
   function handleClearField() {
     setSearch("");
     setValue(null);
-    params.delete("name");
-    params.delete("langId");
-    setParams(params);
+    navigate({ search: { langId: 0, langName: "" } });
   }
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -60,7 +67,7 @@ function LanguageSelect() {
     } else {
       setValue(val);
       setSearch(val);
-      setParams({ langId: "0", name: val });
+      navigate({ search: { langId: 0, langName: val } });
     }
 
     combobox.closeDropdown();
@@ -74,19 +81,17 @@ function LanguageSelect() {
     );
 
   useEffect(() => {
-    const lang = params.get("name");
-    const id = params.get("langId");
     const openedFromLanguages = pathname === "/languages";
 
-    if (lang && openedFromLanguages) {
-      setSearch(lang);
-      setValue(lang);
+    if (langName && openedFromLanguages) {
+      setSearch(langName);
+      setValue(langName);
     }
-    if (id !== "0") {
+    if (langId !== 0) {
       setSearch("");
       setValue(null);
     }
-  }, [params, pathname]);
+  }, [langId, langName, pathname]);
 
   return (
     <Combobox
@@ -105,8 +110,8 @@ function LanguageSelect() {
           rightSectionPointerEvents={value === null ? "none" : "all"}
           value={search}
           onChange={handleChange}
-          onClick={() => combobox.openDropdown()}
-          onFocus={() => combobox.openDropdown()}
+          onClick={handleOpenCombobox}
+          onFocus={handleOpenCombobox}
           onBlur={handleOnBlur}
         />
       </Combobox.Target>
@@ -129,6 +134,4 @@ function LanguageSelect() {
       </Combobox.Dropdown>
     </Combobox>
   );
-}
-
-export default memo(LanguageSelect);
+});

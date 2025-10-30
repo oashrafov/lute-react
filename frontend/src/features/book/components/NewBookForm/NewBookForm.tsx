@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearch } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { notifications } from "@mantine/notifications";
@@ -33,15 +33,14 @@ import { useCreateBook } from "../../api/mutation";
 import { ImportURLInfoPopup } from "./components/ImportURLInfoPopup";
 import { queries as settingsQueries } from "../../../settings/api/queries";
 import { queries as bookQueries } from "../../api/queries";
-import { useUserLanguageQuery } from "../../../language/hooks/useUserLanguageQuery";
+import { queries as langQueries } from "../../../language/api/queries";
 import classes from "./NewBookForm.module.css";
 
 export function NewBookForm() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
-  const [params] = useSearchParams();
-  const langId = params.get("langId");
+  const { langId } = useSearch({ strict: false });
   const { data: formValues } = useQuery(bookQueries.bookForm());
-  const { data: language } = useUserLanguageQuery(Number(langId));
+  const { data: language } = useQuery(langQueries.userLanguageDetail(langId));
   const { data: initial } = useQuery(settingsQueries.init());
   const textDirection = language?.right_to_left ? "rtl" : "ltr";
 

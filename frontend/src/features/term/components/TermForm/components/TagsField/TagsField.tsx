@@ -17,7 +17,6 @@ import {
   type PillsInputProps,
 } from "@mantine/core";
 import { MAX_TERM_SUGGESTIONS } from "../../../../../../resources/constants";
-import { useActiveTermContext } from "../../../../hooks/useActiveTermContext";
 import { buildSuggestionsList } from "../../../../../../helpers/term";
 import { queries } from "../../../../api/queries";
 
@@ -25,19 +24,22 @@ interface TagsField extends PillsInputProps {
   termText: string;
   languageId: number;
   values: string[];
+  placeholder?: string;
   onSetValues: (values: string[]) => void;
-  onSubmitParent: (parent: string) => void;
+  onOptionSubmit: (parent: string) => void;
+  onTagClick?: (item: string) => void;
 }
 
 export function TagsField({
   termText,
   languageId,
   values,
+  placeholder,
   onSetValues,
-  onSubmitParent,
+  onOptionSubmit,
+  onTagClick,
   ...pillsInputProps
 }: TagsField) {
-  const { setActiveTerm } = useActiveTermContext();
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
@@ -47,7 +49,9 @@ export function TagsField({
     queries.termSuggestions(search, languageId)
   );
 
-  const suggestions = data ? buildSuggestionsList(termText, data) : [];
+  const suggestions = data
+    ? buildSuggestionsList(data.filter((d) => d.text !== termText))
+    : [];
 
   const options = suggestions
     .slice(0, MAX_TERM_SUGGESTIONS)
@@ -57,7 +61,7 @@ export function TagsField({
     .filter((item) => !values.includes(item.value));
 
   const inputRightSection = values.length ? (
-    <InputClearButton onClick={() => onSetValues([])} />
+    <InputClearButton onClick={handleClearValues} />
   ) : (
     isFetching && <Loader size="sm" />
   );
@@ -71,6 +75,10 @@ export function TagsField({
   function handleValueRemove(val: string) {
     const newValues = values.filter((v) => v !== val);
     onSetValues(newValues);
+  }
+
+  function handleClearValues() {
+    onSetValues([]);
   }
 
   function handleKeydown(event: KeyboardEvent<HTMLInputElement>) {
@@ -104,21 +112,11 @@ export function TagsField({
   }
 
   function handleTagClick(item: string) {
-    if (languageId) {
-      setActiveTerm(
-        {
-          data: item,
-          langId: languageId,
-          type: "multi",
-          textitems: [],
-        },
-        false
-      );
-    }
+    onTagClick?.(item);
   }
 
   function handleOptionSubmit(val: string) {
-    onSubmitParent(val);
+    onOptionSubmit(val);
     setSearch("");
     combobox.closeDropdown();
   }
@@ -147,7 +145,7 @@ export function TagsField({
             <Combobox.EventsTarget>
               <PillsInput.Field
                 value={decodeURIComponent(search)}
-                placeholder="Parents"
+                placeholder={placeholder}
                 onChange={handleInputChange}
                 onKeyDown={handleKeydown}
                 onBlur={handleOnBlur}

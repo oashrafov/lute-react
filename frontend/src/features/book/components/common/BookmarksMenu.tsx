@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { getRouteApi } from "@tanstack/react-router";
 import { Accordion, Divider, Menu, Stack, Text } from "@mantine/core";
 import { BookmarksButton } from "./BookmarksButton";
 import { BookmarkButton } from "../DefaultView/components/DefaultHeader/components/BookmarkButton";
@@ -9,10 +9,11 @@ import {
   scrollSentenceIntoView,
 } from "../../../../helpers/text";
 
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
+
 export function BookmarksMenu({ data }: { data: PageBookmark }) {
-  const params = useParams();
-  const location = useLocation();
-  const currentPage = Number(params.page);
+  const { pageNum } = route.useParams();
+  const { sentenceId } = route.useSearch();
 
   const bookmarkCount = Object.values(data).reduce(
     (acc, current) => acc + current.length,
@@ -21,10 +22,10 @@ export function BookmarksMenu({ data }: { data: PageBookmark }) {
   const pageCount = Object.keys(data).length;
 
   useEffect(() => {
-    if (location.state?.id) {
-      makeBookmarked(scrollSentenceIntoView(location.state.id)); // class is removed with mouseOut
+    if (sentenceId) {
+      makeBookmarked(scrollSentenceIntoView(sentenceId)); // class is removed with mouseOut
     }
-  }, [location]);
+  }, [sentenceId]);
 
   return (
     <Menu trigger="click" position="bottom-start" withArrow>
@@ -39,7 +40,7 @@ export function BookmarksMenu({ data }: { data: PageBookmark }) {
         <Divider />
         <Accordion
           variant="filled"
-          defaultValue={String(currentPage)}
+          defaultValue={String(pageNum)}
           miw={220}
           disableChevronRotation>
           {Object.entries(data).map(([bookmarkPage, bookmarks]) => (

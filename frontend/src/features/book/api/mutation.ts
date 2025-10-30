@@ -1,5 +1,5 @@
+import { getRouteApi } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
 import { bookDeleted, bookUpdated } from "../resources/notifications";
 import { errorMessage } from "../../../resources/notifications";
@@ -7,9 +7,11 @@ import { createBook, deleteBook, editBook } from "./api";
 import { queries as bookQueries } from "./queries";
 import { queries as settingsQueries } from "../../settings/api/queries";
 
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
+
 export function useCreateBook() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const navigate = route.useNavigate();
 
   return useMutation({
     mutationFn: createBook,
@@ -20,7 +22,7 @@ export function useCreateBook() {
       queryClient.invalidateQueries({
         queryKey: settingsQueries.init().queryKey,
       });
-      navigate(`/books/${response.id}/pages/1`);
+      navigate({ params: { bookId: response.id, pageNum: 1 } });
     },
     onError: (error) => notifications.show(errorMessage(error.message)),
   });

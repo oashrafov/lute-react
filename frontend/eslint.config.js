@@ -33,6 +33,10 @@ export default tseslint.config([
         "warn",
         { allowConstantExport: true },
       ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { ignoreRestSiblings: true },
+      ],
       "no-use-before-define": "off",
       "@typescript-eslint/no-use-before-define": [
         "error",

@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import { modals } from "@mantine/modals";
+import { Link } from "@tanstack/react-router";
 import { UnstyledButton } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { MenuLink } from "./MenuLink";
 import { appInfo } from "../../../resources/modals";
 import { menu } from "../../../resources/menus";
@@ -15,9 +15,8 @@ export function DrawerLinks() {
         {[menu.home, menu.book, menu.languages].map((menu) => (
           <UnstyledButton
             key={menu.label}
-            component={Link}
-            to={menu.action}
-            className={classes.control}>
+            className={classes.control}
+            renderRoot={(props) => <Link to={menu.action} {...props} />}>
             <MenuSection label={menu.label} icon={menu.icon} />
           </UnstyledButton>
         ))}
@@ -34,20 +33,17 @@ export function DrawerLinks() {
           <UnstyledButton
             className={classes.link}
             onClick={() => modals.openContextModal(appInfo)}>
-            {menu.about.info.label}
+            {menu.info.label}
           </UnstyledButton>
-          <MenuLink item={menu.about.stats} />
-          <a
-            className={classes.link}
-            href={menu.about.docs.action}
-            target="_blank">
-            {menu.about.docs.label}
+          <MenuLink item={menu.stats} />
+          <a className={classes.link} href={menu.docs.action} target="_blank">
+            {menu.docs.label}
           </a>
           <a
             className={classes.link}
-            href={menu.about.discord.action}
+            href={menu.discord.action}
             target="_blank">
-            {menu.about.discord.label}
+            {menu.discord.label}
           </a>
         </CollapsingMenu>
       </ul>

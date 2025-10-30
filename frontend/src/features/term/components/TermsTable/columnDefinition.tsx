@@ -1,6 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import { Badge, Button, Image, TagsInput, Text, Textarea } from "@mantine/core";
 import type {
   MRT_ColumnDef,
@@ -19,8 +19,8 @@ import {
 import { queries } from "../../api/queries";
 import type { TermsListItem } from "../../api/types";
 import type { LanguageChoice } from "../../../settings/api/types";
-import { buildSuggestionsList } from "../../../../helpers/term";
 import type { Status } from "../../../../resources/types";
+import { buildSuggestionsList } from "../../../../helpers/term";
 
 const statusLabel = {
   ...STATUS_LABEL,
@@ -50,8 +50,14 @@ export const columnDefinition = (
         maw={290}
         variant="subtle"
         size="compact-sm"
-        component={Link}
-        to={`/terms/term?termId=${row.original.id}&langId=${row.original.languageId}`}
+        renderRoot={(props) => (
+          <Link
+            to="/terms/$termId"
+            params={{ termId: row.original.id }}
+            search={(prev) => ({ ...prev, langId: row.original.languageId })}
+            {...props}
+          />
+        )}
         style={{ color: "inherit", textDecoration: "none" }}>
         <Text size="sm" lineClamp={1} truncate>
           {row.original.text}
@@ -83,9 +89,9 @@ export const columnDefinition = (
       );
 
       const suggestions = data
-        ? buildSuggestionsList(row.original.text, data).map(
-            (item) => item.suggestion
-          )
+        ? buildSuggestionsList(
+            data.filter((d) => d.text !== row.original.text)
+          ).map((item) => item.suggestion)
         : [];
 
       return (

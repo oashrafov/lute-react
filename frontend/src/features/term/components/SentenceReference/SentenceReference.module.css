@@ -1,0 +1,11 @@
+.bookLink {
+  display: block;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 0.2rem;
+  color: #2a72d1;
+}
+
+.bookLink:link {
+  color: #2a72d1;
+}

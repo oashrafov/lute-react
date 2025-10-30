@@ -1,5 +1,5 @@
 import { memo, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Box, Modal, SegmentedControl } from "@mantine/core";
 import {
   MantineReactTable,
@@ -50,8 +50,8 @@ const COLUMN_FILTER_FNS = {
   status: "greaterThan",
 };
 
-function BooksTable() {
-  const { data: initial } = useQuery(settingsQueries.init());
+export const BooksTable = memo(function BooksTable() {
+  const { data: initial } = useSuspenseQuery(settingsQueries.init());
   const [editedRow, setEditedRow] = useState<MRT_Row<BooksListItem> | null>(
     null
   );
@@ -100,14 +100,16 @@ function BooksTable() {
     sorting: JSON.stringify(sorting ?? []),
   });
 
-  const { data: books } = useQuery(bookQueries.list(searchParams.toString()));
+  const { data: books } = useSuspenseQuery(
+    bookQueries.list(searchParams.toString())
+  );
 
   const table = useMantineReactTable({
     ...defaultOptions,
 
     columns: columns,
-    data: books?.data || [],
-    rowCount: books?.filteredCount,
+    data: books.data || [],
+    rowCount: books.filteredCount,
 
     initialState: {
       ...defaultOptions.initialState,
@@ -202,6 +204,4 @@ function BooksTable() {
       </Modal>
     </>
   );
-}
-
-export default memo(BooksTable);
+});

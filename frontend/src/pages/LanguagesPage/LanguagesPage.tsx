@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { LanguageForm } from "../../features/language/components/LanguageForm/LanguageForm";
 import { PageContainer } from "../../components/common/PageContainer/PageContainer";
@@ -7,14 +7,14 @@ import { LanguageCards } from "../../features/language/components/LanguageCards/
 import { LanguageRadioLabel } from "./LanguageRadioLabel";
 import { queries } from "../../features/settings/api/queries";
 
-export default function LanguagesPage() {
+export function LanguagesPage() {
   const { t } = useTranslation("page", { keyPrefix: "languages" });
-  const { data: initial } = useQuery(queries.init());
+  const { data } = useSuspenseQuery(queries.init());
   return (
     <PageContainer width="75%">
       <PageTitle>{t("title")}</PageTitle>
 
-      {initial?.haveLanguages && (
+      {data.haveLanguages && (
         <LanguageCards
           label={<LanguageRadioLabel />}
           description={t("languageCardsDescription")}

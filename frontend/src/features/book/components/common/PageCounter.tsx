@@ -1,16 +1,17 @@
 import { Badge } from "@mantine/core";
-import { useParams } from "react-router-dom";
+import { getRouteApi } from "@tanstack/react-router";
+
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
 interface PageCounter {
   pageCount: number;
 }
 
 export function PageCounter({ pageCount }: PageCounter) {
-  const params = useParams();
-  const currentPage = Number(params.page);
+  const { pageNum } = route.useParams();
   return (
     <Badge ml="auto" variant="light" fw={600} miw="max-content">
-      {currentPage} / {pageCount}
+      {pageNum} / {pageCount}
     </Badge>
   );
 }

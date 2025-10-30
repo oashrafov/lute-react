@@ -1,11 +1,13 @@
 import { useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Box, ScrollAreaAutosize } from "@mantine/core";
 import { VerticalPanels } from "../ResizablePanels/VerticalPanels";
 import { DictTabs } from "../../../../../language/components/DictTabs/DictTabs";
 import { TermForm } from "../../../../../term/components/TermForm/TermForm";
-import type { TermDetail } from "../../../../../term/api/types";
 import { useBookQuery } from "../../../../hooks/useBookQuery";
-import { useUserLanguageQuery } from "../../../../../language/hooks/useUserLanguageQuery";
+import { useActiveTermContext } from "../../../../../term/hooks/useActiveTermContext";
+import { queries } from "../../../../../language/api/queries";
+import type { TermDetail } from "../../../../../term/api/types";
 import classes from "./TranslationPane.module.css";
 
 interface TranslationPane {
@@ -14,7 +16,10 @@ interface TranslationPane {
 
 export function TranslationPane({ term }: TranslationPane) {
   const { data: book } = useBookQuery();
-  const { data: language } = useUserLanguageQuery(book.languageId);
+  const { data: language } = useQuery(
+    queries.userLanguageDetail(book.languageId)
+  );
+  const { clearActiveTerm } = useActiveTermContext();
   const translationFieldRef = useRef<HTMLTextAreaElement>(null);
 
   function handleReturnFocusToForm() {
@@ -38,6 +43,7 @@ export function TranslationPane({ term }: TranslationPane) {
                 term={term}
                 language={language}
                 translationFieldRef={translationFieldRef}
+                onAction={clearActiveTerm}
               />
             </Box>
           </ScrollAreaAutosize>
@@ -45,11 +51,13 @@ export function TranslationPane({ term }: TranslationPane) {
         bottomPanel={
           <Box display="flex" h="100%">
             <Box className={classes.dictTabsContainer}>
-              <DictTabs
-                language={language}
-                termText={term.text}
-                onReturnFocusToForm={handleReturnFocusToForm}
-              />
+              {language && (
+                <DictTabs
+                  language={language}
+                  termText={term.text}
+                  onReturnFocusToForm={handleReturnFocusToForm}
+                />
+              )}
             </Box>
           </Box>
         }

@@ -1,3 +1,4 @@
+import type { ValidateToPath } from "@tanstack/react-router";
 import {
   IconHome,
   IconBooks,
@@ -6,7 +7,20 @@ import {
   IconDeviceFloppy,
   IconInfoCircle,
   IconLanguage,
+  type Icon,
 } from "@tabler/icons-react";
+import { DOCS_URL, DISCORD_URL, MANUAL_BACKUP_URL } from "./constants";
+
+interface MenuItem {
+  label: string;
+  action:
+    | ValidateToPath
+    | typeof DISCORD_URL
+    | typeof DOCS_URL
+    | typeof MANUAL_BACKUP_URL;
+  icon?: Icon;
+  children?: MenuItem[];
+}
 
 export const menu = {
   home: {
@@ -18,7 +32,7 @@ export const menu = {
   book: {
     label: "New Book",
     icon: IconBooks,
-    action: "/books/new",
+    action: "/create-book",
   },
 
   languages: {
@@ -39,7 +53,7 @@ export const menu = {
       },
       {
         label: "New Term",
-        action: "/terms/term",
+        action: "/terms/create-new",
       },
       {
         label: "Tags",
@@ -74,7 +88,7 @@ export const menu = {
       },
       {
         label: "Create backup",
-        action: "/backup/backup?type=manual",
+        action: MANUAL_BACKUP_URL,
       },
     ],
   },
@@ -83,22 +97,25 @@ export const menu = {
     label: "About",
     action: "/",
     icon: IconInfoCircle,
-
-    info: {
-      label: "Software info",
-      action: "/",
-    },
-    stats: {
-      label: "Usage statistics",
-      action: "/stats",
-    },
-    docs: {
-      label: "Documentation",
-      action: "https://luteorg.github.io/lute-manual/",
-    },
-    discord: {
-      label: "Discord",
-      action: "https://discord.gg/CzFUQP5m8u",
-    },
   },
-} as const;
+
+  info: {
+    label: "Software info",
+    action: "/",
+  },
+
+  stats: {
+    label: "Usage statistics",
+    action: "/stats",
+  },
+
+  docs: {
+    label: "Documentation",
+    action: DOCS_URL,
+  },
+
+  discord: {
+    label: "Discord",
+    action: DISCORD_URL,
+  },
+} as const satisfies Record<string, MenuItem>;

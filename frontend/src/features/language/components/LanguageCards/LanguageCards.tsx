@@ -1,6 +1,11 @@
 import type { ReactNode } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useRouterState,
+  useSearch,
+  type ValidateFromPath,
+} from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Group, Radio, rem, ScrollArea } from "@mantine/core";
 import { LanguageCard } from "../LanguageCard/LanguageCard";
 import { queries } from "../../api/queries";
@@ -12,20 +17,17 @@ interface LanguageCards {
 }
 
 export function LanguageCards({ label, description }: LanguageCards) {
-  const { data: languages } = useQuery(queries.userLanguagesList());
-  const [params, setParams] = useSearchParams();
-  const currentId = params.get("langId");
-  const languagesSorted = languages?.toSorted((a, b) => b.id - a.id);
+  const { data: languages } = useSuspenseQuery(queries.userLanguagesList());
+  const { langId } = useSearch({ strict: false });
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate({ from: pathname as ValidateFromPath });
 
-  function handleLanguageChange(id: string) {
-    if (id === params.get("langId")) {
-      params.delete("langId");
-    } else {
-      params.set("langId", id);
-    }
+  const languagesSorted = languages.toSorted((a, b) => b.id - a.id);
 
-    params.delete("name");
-    setParams(params);
+  function handleLanguageChange(id: number) {
+    navigate({
+      search: { langId: langId === id ? 0 : id, langName: "" },
+    });
   }
 
   return (
@@ -34,8 +36,8 @@ export function LanguageCards({ label, description }: LanguageCards) {
       label={label}
       description={description}
       name="langs"
-      value={currentId}
-      onChange={(id) => handleLanguageChange(id)}>
+      value={String(langId)}
+      onChange={(id) => handleLanguageChange(Number(id))}>
       <ScrollArea type="scroll" offsetScrollbars="x">
         <Group gap={2} wrap="nowrap" align="stretch">
           {languagesSorted?.map((data) => (

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { getRouteApi } from "@tanstack/react-router";
 import { ActionIcon, Stack } from "@mantine/core";
 import {
   IconCheck,
@@ -9,14 +9,15 @@ import { usePageControl } from "../../../../hooks/usePageControl";
 import { FloatingContainer } from "../../../common/FloatingContainer/FloatingContainer";
 import type { BookDetail } from "../../../../api/types";
 
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
+
 interface FocusPageControls {
   book: BookDetail;
   show: boolean;
 }
 
 export function FocusPageControls({ book, show }: FocusPageControls) {
-  const params = useParams();
-  const page = Number(params.page);
+  const { pageNum } = route.useParams();
   const { goToNextPage, goToPreviousPage } = usePageControl();
 
   return (
@@ -28,7 +29,7 @@ export function FocusPageControls({ book, show }: FocusPageControls) {
         zIndex={198}>
         <ActionIcon
           onClick={goToPreviousPage}
-          disabled={book.pageCount === 1 || page === 1}
+          disabled={book.pageCount === 1 || pageNum === 1}
           variant="light"
           size="xl"
           h={100}
@@ -53,7 +54,7 @@ export function FocusPageControls({ book, show }: FocusPageControls) {
           </ActionIcon>
           <ActionIcon
             onClick={goToNextPage}
-            disabled={book.pageCount === 1 || page === book.pageCount}
+            disabled={book.pageCount === 1 || pageNum === book.pageCount}
             variant="light"
             size="xl"
             h={100}>

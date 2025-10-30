@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { getRouteApi } from "@tanstack/react-router";
 import {
   ActionIcon,
   Button,
@@ -16,6 +16,8 @@ import {
   scrollSentenceIntoView,
 } from "../../../../../../../helpers/text";
 
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
+
 interface BookmarkButton {
   page: number;
   id: number;
@@ -23,26 +25,26 @@ interface BookmarkButton {
 }
 
 export function BookmarkButton({ page, id, description }: BookmarkButton) {
-  const navigate = useNavigate();
-  const params = useParams();
-  const currentPage = Number(params.page);
+  const navigate = route.useNavigate();
+  const { bookId, pageNum } = route.useParams();
 
   const [isEditMode, setEditMode] = useState(false);
 
   function handleMouseOver() {
-    if (page !== currentPage) return;
+    if (page !== pageNum) return;
     makeBookmarked(getSentence(id));
   }
 
   function handleMouseOut() {
-    if (page !== currentPage) return;
+    if (page !== pageNum) return;
     clearBookmarked(getSentence(id));
   }
 
   function handleViewBookmark() {
-    if (page !== currentPage) {
-      navigate(`/books/${params.id}/pages/${page}`, {
-        state: { id: id },
+    if (page !== pageNum) {
+      navigate({
+        params: { bookId: bookId, pageNum: page },
+        search: (params) => ({ ...params, sentenceId: id }),
       });
       return;
     }

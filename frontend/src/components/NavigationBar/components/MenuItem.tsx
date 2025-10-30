@@ -1,5 +1,5 @@
+import { Link } from "@tanstack/react-router";
 import { Menu } from "@mantine/core";
-import { NavLink } from "react-router-dom";
 
 interface MenuItem {
   label: string;
@@ -8,7 +8,9 @@ interface MenuItem {
 
 export function MenuItem({ item }: { item: MenuItem }) {
   return (
-    <Menu.Item key={item.label} component={NavLink} to={item.action}>
+    <Menu.Item
+      key={item.label}
+      renderRoot={(props) => <Link to={item.action} {...props} />}>
       {item.label}
     </Menu.Item>
   );

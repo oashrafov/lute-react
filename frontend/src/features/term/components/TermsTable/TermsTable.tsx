@@ -1,6 +1,6 @@
 import { useMemo, useState, type CSSProperties } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearch, Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Group, Modal } from "@mantine/core";
 import {
   MantineReactTable,
@@ -42,11 +42,9 @@ const COLUMN_FILTER_FNS = {
 const COLUMN_FILTERS = [{ id: "status", value: [0, 6] }];
 
 export function TermsTable() {
-  const [params] = useSearchParams();
-  const termIds = params.get("ids");
-
-  const { data: initial } = useQuery(settingsQueries.init());
-  const { data: termTags } = useQuery(termQueries.tagSuggestions());
+  const { termIds } = useSearch({ strict: false });
+  const { data: initial } = useSuspenseQuery(settingsQueries.init());
+  const { data: termTags } = useSuspenseQuery(termQueries.tagSuggestions());
   const [editModalOpened, setEditModalOpened] = useState(false);
 
   const [showParentsOnly, setShowParentsOnly] = useState(false);
@@ -73,7 +71,7 @@ export function TermsTable() {
   );
 
   const searchParams = new URLSearchParams({
-    ids: termIds ?? "[]",
+    ids: termIds ? JSON.stringify(termIds) : "[]",
     parentsOnly: showParentsOnly ? "true" : "false",
     start: `${pagination.pageIndex * pagination.pageSize}`,
     size: `${pagination.pageSize}`,
@@ -83,7 +81,7 @@ export function TermsTable() {
     sorting: JSON.stringify(sorting ?? []),
   });
 
-  const response = useQuery(termQueries.list(searchParams.toString()));
+  const response = useSuspenseQuery(termQueries.list(searchParams.toString()));
 
   const handleSaveRow = async ({
     table,
@@ -170,9 +168,8 @@ export function TermsTable() {
     },
 
     renderEmptyRowsFallback: ({ table }) => {
-      const language = table.getColumn("language").getFilterValue();
-      const isLanguageFiltered = language?.length > 0;
-      return isLanguageFiltered ? (
+      const language = table.getColumn("language").getFilterValue() as string;
+      return language.length > 0 ? (
         <EmptyRow tableName="terms" language={language} />
       ) : null;
     },
@@ -180,13 +177,14 @@ export function TermsTable() {
     renderTopToolbar: ({ table }) => (
       <TableTopToolbar>
         <Group gap={5} wrap="nowrap">
-          {!termIds && (
+          {termIds && termIds.length === 0 && (
             <Button
               color="green"
               size="xs"
-              component={Link}
-              to="/terms/term"
-              leftSection={<IconPlus size={22} />}>
+              leftSection={<IconPlus size={22} />}
+              renderRoot={(props) => (
+                <Link to="/terms/create-new" {...props} />
+              )}>
               New
             </Button>
           )}

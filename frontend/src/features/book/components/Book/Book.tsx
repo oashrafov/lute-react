@@ -5,7 +5,6 @@ import { EditView } from "../EditView/EditView";
 import { FocusView } from "../FocusView/FocusView";
 import { PageSpinner } from "../../../../components/common/PageSpinner/PageSpinner";
 import { PlayerProvider } from "../common/Player/store/playerContext";
-import { ActiveDictTabProvider } from "../../../language/store/activeDictTabContext";
 import { useApplyInitialView } from "../../hooks/useApplyInitialView";
 
 export function Book() {
@@ -20,10 +19,8 @@ export function Book() {
   return (
     <>
       <PlayerProvider>
-        <ActiveDictTabProvider>
-          <DefaultView />
-          <FocusView />
-        </ActiveDictTabProvider>
+        <DefaultView />
+        <FocusView />
       </PlayerProvider>
       <EditView />
     </>

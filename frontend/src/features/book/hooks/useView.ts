@@ -1,27 +1,25 @@
-import { useSearchParams } from "react-router-dom";
+import { getRouteApi } from "@tanstack/react-router";
 import type { View } from "../../../resources/types";
 import { setLocalStorageItem } from "../../../helpers/general";
 
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
+
 export function useView() {
-  const [searchParam, setSearchParam] = useSearchParams();
+  const navigate = route.useNavigate();
+  const { view } = route.useSearch();
 
   function setView(view: View) {
-    if (view === "default") {
-      searchParam.delete("view");
-    } else {
-      searchParam.set("view", view);
-    }
     setLocalStorageItem("Lute.view", view);
-    setSearchParam(searchParam);
+    navigate({ search: { view } });
   }
 
   function toggleFocus() {
-    setView(searchParam.get("view") === "focus" ? "default" : "focus");
+    setView(view === "focus" ? "default" : "focus");
   }
 
   return {
     get view() {
-      return (searchParam.get("view") ?? "default") as View;
+      return (view ?? "default") as View;
     },
     toggleFocus,
     setView,

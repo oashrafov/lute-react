@@ -1,6 +1,6 @@
 import { useEffect } from "react";
+import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Box, Divider, Fieldset, Group, LoadingOverlay } from "@mantine/core";
 import { randomId } from "@mantine/hooks";
@@ -15,7 +15,7 @@ import { Checkbox } from "../../../../components/common/Checkbox/Checkbox";
 import { Select } from "../../../../components/common/Select/Select";
 import { TextInput } from "../../../../components/common/TextInput/TextInput";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
-import LanguageSelect from "./components/LanguageSelect";
+import { LanguageSelect } from "./components/LanguageSelect";
 import { DictionaryBars } from "./components/DictionaryBars";
 import { AddDictionaryButton } from "./components/AddDictionaryButton";
 import { useSelectedLanguage } from "../../hooks/useSelectedLanguage";
@@ -25,14 +25,15 @@ import classes from "./LanguageForm.module.css";
 
 export function LanguageForm() {
   const { t } = useTranslation("form", { keyPrefix: "language" });
-  const [params] = useSearchParams();
-  const langId = params.get("langId");
-  const { data: formValues, isSuccess } = useQuery(langQueries.languageForm());
+  const { langId, langName } = useSearch({ strict: false });
+  const { data: initialValues, isSuccess } = useQuery(
+    langQueries.languageForm()
+  );
   const { data: parsers } = useQuery(langQueries.parsers());
   const { language, isSuccess: isLanguageSuccess } = useSelectedLanguage();
 
   const { control, setValue, reset } = useForm({
-    defaultValues: formValues,
+    defaultValues: initialValues,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -48,9 +49,15 @@ export function LanguageForm() {
 
   useEffect(() => {
     if (!langId && isSuccess) {
-      reset();
+      reset(initialValues);
     }
-  }, [langId, isSuccess, reset]);
+  }, [langId, isSuccess, reset, initialValues]);
+
+  useEffect(() => {
+    if (!langName && isSuccess) {
+      reset(initialValues);
+    }
+  }, [langName, isSuccess, reset, initialValues]);
 
   function handleAddDictionary() {
     append({
@@ -86,7 +93,7 @@ export function LanguageForm() {
           <div className={classes.flex}>
             <AddDictionaryButton onClick={handleAddDictionary} />
             <DictionaryBars<LanguageForm>
-              key={fields.length}
+              key={`${langId}${langName}`}
               dictionaries={fields}
               control={control}
               onSet={(dicts: Dictionary[]) => setValue("dictionaries", dicts)}

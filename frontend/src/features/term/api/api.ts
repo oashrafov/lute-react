@@ -5,6 +5,7 @@ import type {
   TermDetail,
   TermPopup,
   TermsList,
+  TermSuggestion,
 } from "./types";
 
 export async function getTerms(filters?: string): Promise<TermsList> {
@@ -55,7 +56,10 @@ export async function getTermPopup(id: number): Promise<TermPopup> {
   return await response.json();
 }
 
-export async function getTermSuggestions(searchText: string, langId: number) {
+export async function getTermSuggestions(
+  searchText: string,
+  langId: number
+): Promise<TermSuggestion[]> {
   const response = await fetch(
     endpoints.getTermSuggestions(searchText, langId)
   );

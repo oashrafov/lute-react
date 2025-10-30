@@ -3,6 +3,7 @@ import { usePlayerContext } from "./usePlayerContext";
 
 export function useHighlightActiveBookmark() {
   const { state, dispatch, audio } = usePlayerContext();
+
   useEffect(() => {
     function highlightActiveBookmark() {
       const rounded = parseFloat(audio.currentTime.toFixed(1));

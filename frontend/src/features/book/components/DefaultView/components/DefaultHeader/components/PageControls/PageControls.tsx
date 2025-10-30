@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "react-router-dom";
+import { getRouteApi } from "@tanstack/react-router";
 import { ActionIcon, Divider, Group, Stack, Tooltip } from "@mantine/core";
 import {
   IconBracketsContain,
@@ -22,22 +21,21 @@ import { EditButton } from "../EditButton";
 import { PageActionButton } from "../PageActionButton";
 import { Toolbar } from "../../../Toolbar/Toolbar";
 import { usePageControl } from "../../../../../../hooks/usePageControl";
-import { loader } from "../../../../../../../../pages/TermsPage/loader";
 import { getWords } from "../../../../../../../../helpers/text";
 import type { BookDetail } from "../../../../../../api/types";
 import classes from "./PageControls.module.css";
+
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
 interface PageControls {
   book: BookDetail;
 }
 
 export function PageControls({ book }: PageControls) {
-  const queryClient = useQueryClient();
+  const { pageNum } = route.useParams();
+  const navigate = route.useNavigate();
 
-  const params = useParams();
-  const page = Number(params.page);
-  const [, setSearchParams] = useSearchParams();
-  const [changeVal, setChangeVal] = useState(page);
+  const [changeVal, setChangeVal] = useState(pageNum);
 
   const {
     goToPage,
@@ -48,18 +46,17 @@ export function PageControls({ book }: PageControls) {
   } = usePageControl(setChangeVal);
 
   async function handleOpenTermsTable() {
-    const termIds = getWords().map((word) => word.dataset.wordId);
-    await loader(queryClient)();
-    setSearchParams({ ids: JSON.stringify(termIds) });
+    const termIds = getWords().map((word) => Number(word.dataset.wordId));
+    navigate({ search: (prev) => ({ ...prev, termIds: termIds }) });
   }
 
   const pageReadLabel =
-    page === book.pageCount
+    pageNum === book.pageCount
       ? "Mark page as read"
       : "Mark page as read and go to next page";
 
   const PageReadIcon =
-    page === book.pageCount
+    pageNum === book.pageCount
       ? IconSquareRoundedCheckFilled
       : IconSquareRoundedChevronRightFilled;
 
@@ -113,7 +110,7 @@ export function PageControls({ book }: PageControls) {
           <PageActionButton
             onClick={goToPreviousPage}
             icon={<IconSquareRoundedChevronLeftFilled />}
-            disabled={book.pageCount === 1 || page === 1}
+            disabled={book.pageCount === 1 || pageNum === 1}
           />
           <PageSlider
             book={book}
@@ -125,7 +122,7 @@ export function PageControls({ book }: PageControls) {
             <PageActionButton
               onClick={goToNextPage}
               icon={<IconSquareRoundedChevronRightFilled />}
-              disabled={book.pageCount === 1 || page === book.pageCount}
+              disabled={book.pageCount === 1 || pageNum === book.pageCount}
             />
             <Tooltip label={pageReadLabel} position="right">
               <PageActionButton

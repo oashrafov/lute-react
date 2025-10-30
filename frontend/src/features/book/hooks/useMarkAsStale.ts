@@ -1,12 +1,14 @@
 import { useEffect } from "react";
+import { getRouteApi } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import { editBook } from "../api/api";
 import { queries } from "../api/queries";
 
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
+
 export function useMarkAsStale() {
   const queryClient = useQueryClient();
-  const { id } = useParams();
+  const { bookId } = route.useParams();
 
   const { mutate } = useMutation({
     mutationFn: editBook,
@@ -18,8 +20,8 @@ export function useMarkAsStale() {
 
   useEffect(() => {
     mutate({
-      id: Number(id),
+      id: bookId,
       data: { action: "markAsStale" },
     });
-  }, [id, mutate]);
+  }, [bookId, mutate]);
 }

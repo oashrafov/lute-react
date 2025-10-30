@@ -1,5 +1,5 @@
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import {
   Box,
   Button,
@@ -40,12 +40,17 @@ export function MenuBookList() {
                   mb={2}
                   fullWidth
                   variant="subtle"
-                  component={Link}
                   size="compact-sm"
                   onClick={drawer.close}
                   styles={{ inner: { justifyContent: "flex-start" } }}
                   style={{ textDecoration: "none", color: "inherit" }}
-                  to={`/books/${book.id}/pages/${book.currentPage}`}>
+                  renderRoot={(props) => (
+                    <Link
+                      to="/books/$bookId/pages/$pageNum"
+                      params={{ bookId: book.id, pageNum: book.currentPage }}
+                      {...props}
+                    />
+                  )}>
                   <Group wrap="nowrap" gap={5}>
                     <ThemeIcon
                       size="sm"

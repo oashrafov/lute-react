@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Box, Paper, Transition } from "@mantine/core";
 import { FocusPageControls } from "./components/FocusPageControls/FocusPageControls";
 import { FocusToolbar } from "./components/FocusToolbar/FocusToolbar";
@@ -11,9 +12,9 @@ import { useView } from "../../hooks/useView";
 import { TermForm } from "../../../term/components/TermForm/TermForm";
 import { useBookQuery } from "../../hooks/useBookQuery";
 import { useTermQuery } from "../../../term/hooks/useTermQuery";
-import { useUserLanguageQuery } from "../../../language/hooks/useUserLanguageQuery";
 import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
 import { useBookContext } from "../../hooks/useBookContext";
+import { queries } from "../../../language/api/queries";
 
 export function FocusView() {
   const { view } = useView();
@@ -21,7 +22,9 @@ export function FocusView() {
   const { data: book } = useBookQuery();
   const { data: term } = useTermQuery();
   const { activeTerm } = useActiveTermContext();
-  const { data: language } = useUserLanguageQuery(book.languageId);
+  const { data: language } = useQuery(
+    queries.userLanguageDetail(book.languageId)
+  );
   const [showDicts, setShowDicts] = useState(false);
 
   const show = view === "focus";
@@ -69,7 +72,9 @@ export function FocusView() {
         position={{ bottom: 20, left: 20 }}
         transition="slide-right">
         <Paper shadow="sm" p={10} w={800} withBorder h={500}>
-          {term?.text && <DictTabs termText={term.text} language={language} />}
+          {term?.text && language && (
+            <DictTabs termText={term.text} language={language} />
+          )}
         </Paper>
       </FloatingContainer>
 

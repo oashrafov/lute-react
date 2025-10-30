@@ -50,7 +50,7 @@ function BulkTermForm({ terms }: { terms: number[] }) {
             <Controller
               name="status"
               control={control}
-              render={({ field: { value, ...field } }) => (
+              render={({ field: { value, ref, ...field } }) => (
                 <StatusRadio {...field} value={String(value)} />
               )}
             />

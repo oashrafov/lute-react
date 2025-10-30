@@ -42,7 +42,7 @@ export function FocusHeader({ book }: FocusHeader) {
         </div>
         {book.audio && (
           <div style={{ paddingInline: "1rem" }}>
-            <Player />
+            <Player audioData={book.audio} />
           </div>
         )}
       </Stack>

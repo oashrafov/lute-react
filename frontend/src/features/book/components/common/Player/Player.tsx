@@ -12,15 +12,20 @@ import { convertSecsToDisplayString } from "../../../../../utils/utils";
 import { usePlayerContext } from "./hooks/usePlayerContext";
 import { useSetupPlayer } from "./hooks/useSetupPlayer";
 import { useHighlightActiveBookmark } from "./hooks/useHighlightActiveBookmark";
+import type { Audio } from "../../../api/types";
 import classes from "./Player.module.css";
 
-export function Player() {
+interface Player {
+  audioData: Audio;
+}
+
+export function Player({ audioData }: Player) {
   const {
     state: { isPlaying, time, duration, bookmarks, volume },
     dispatch,
     audio,
   } = usePlayerContext();
-  useInitializePlayer();
+  useInitializePlayer(audioData);
   useSetupPlayer();
   useHighlightActiveBookmark();
 
@@ -69,9 +74,7 @@ export function Player() {
         {/* TIME SLIDER */}
         <Slider
           label={null}
-          marks={bookmarks.map((bookmark) => ({
-            value: bookmark,
-          }))}
+          marks={bookmarks.map((bookmark) => ({ value: bookmark }))}
           min={0}
           max={duration}
           step={0.1}

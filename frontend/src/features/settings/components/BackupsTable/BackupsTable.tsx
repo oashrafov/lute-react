@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { Button, Text, Tooltip } from "@mantine/core";
-import { Link } from "react-router-dom";
 import { IconPlus } from "@tabler/icons-react";
 import {
   MantineReactTable,
@@ -57,10 +56,10 @@ export function BackupsTable() {
     renderTopToolbar: () => (
       <TableTopToolbar>
         <Button
+          component="a"
           color="green"
           size="xs"
-          component={Link}
-          to="http://localhost:5001/backup/backup?type=manual"
+          href="http://localhost:5001/backup/backup?type=manual"
           leftSection={<IconPlus size={22} />}>
           New
         </Button>

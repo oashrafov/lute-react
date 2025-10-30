@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import {
   ActionIcon,
   Box,
@@ -95,9 +95,14 @@ export function BookCard({ book, onEditSuccess }: BookCard) {
 
           <div>
             <UnstyledButton
-              component={Link}
-              to={`/books/${book.id}/pages/${book.currentPage}`}
-              style={{ display: "block" }}>
+              display="block"
+              renderRoot={(props) => (
+                <Link
+                  to="/books/$bookId/pages/$pageNum"
+                  params={{ bookId: book.id, pageNum: book.currentPage }}
+                  {...props}
+                />
+              )}>
               <Text fw={500} fz="md" lineClamp={2} mt="-4px">
                 {book.title}
               </Text>

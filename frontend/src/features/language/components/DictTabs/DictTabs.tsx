@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Box, Button, Tabs, Text, Tooltip } from "@mantine/core";
-import { useUncontrolled } from "@mantine/hooks";
 import { IconPhoto } from "@tabler/icons-react";
 import { MAX_VISIBLE_DICT_TABS } from "../../../../resources/constants";
 import { Sentences } from "../../../term/components/Sentences/Sentences";
@@ -10,7 +9,6 @@ import { DictTabExternal } from "./components/DictTabExternal";
 import { DictTabEmbedded } from "./components/DictTabEmbedded";
 import { DictDropdown } from "./components/DictDropdown";
 import { VisibleTabsContainer } from "./components/VisibleTabsContainer";
-import { useActiveDictTabContext } from "../../hooks/useActiveDictTabContext";
 import { queries as termQueries } from "../../../term/api/queries";
 import type { Dictionary, UserLanguageDetail } from "../../api/types";
 import { getLookupURL } from "../../../../helpers/language";
@@ -32,13 +30,8 @@ export function DictTabs({
   language,
   onReturnFocusToForm,
 }: DictTabs) {
-  const { activeDictTab, setActiveDictTab } = useActiveDictTabContext();
   const [activeDropdownUrl, setActiveDropdownUrl] = useState("");
-  const [tabValue, setTabValue] = useUncontrolled({
-    value: activeDictTab,
-    defaultValue: "0",
-    onChange: setActiveDictTab,
-  });
+  const [tabValue, setTabValue] = useState("0");
 
   function handleTabClick(tab: string) {
     setTabValue(tab);

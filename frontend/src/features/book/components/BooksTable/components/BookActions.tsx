@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { ActionIcon, Button, Group, Popover } from "@mantine/core";
 import { IconChevronDown, IconPlus } from "@tabler/icons-react";
-import { SampleBooksSelect } from "../../common/SampleBooksSelect/SampleBooksSelect";
 import type { MRT_TableInstance } from "mantine-react-table";
+import { SampleBooksSelect } from "../../common/SampleBooksSelect/SampleBooksSelect";
 import type { BooksListItem } from "../../../api/types";
 import classes from "../BooksTable.module.css";
 
@@ -29,10 +29,9 @@ export function BookActions({ table }: BookActions) {
   return (
     <Group gap={0} wrap="nowrap">
       <Button
+        renderRoot={(props) => <Link to="/create-book" {...props} />}
         color="green"
         size="xs"
-        component={Link}
-        to="/books/new"
         leftSection={<IconPlus size={22} />}
         className={classes.button}>
         New

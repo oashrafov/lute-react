@@ -1,9 +1,8 @@
-import { Link, useRouteError } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { Button, Container, Group, Text, Title } from "@mantine/core";
 import classes from "./ErrorPage.module.css";
 
-export default function Error() {
-  const error = useRouteError() as Error;
+export function ErrorPage({ errorMessage }: { errorMessage: string }) {
   return (
     <Container className={classes.root}>
       <div className={classes.inner}>
@@ -23,10 +22,12 @@ export default function Error() {
             size="lg"
             ta="center"
             className={classes.description}>
-            {error.message}
+            {errorMessage}
           </Text>
           <Group justify="center">
-            <Button component={Link} size="md" to="/">
+            <Button
+              size="md"
+              renderRoot={(props) => <Link to="/" {...props} />}>
               Go back to home page
             </Button>
           </Group>

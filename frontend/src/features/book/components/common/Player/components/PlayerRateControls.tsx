@@ -10,13 +10,17 @@ import {
 import { IconMinus, IconPlus } from "@tabler/icons-react";
 import { usePlayerContext } from "../hooks/usePlayerContext";
 
+const PLAYBACK_RATE_STEP = 0.1;
+const MIN_PLAYBACK_RATE = 0.1;
+const MAX_PLAYBACK_RATE = 10.0;
+
 export function PlayerRateControls() {
   const { state, dispatch, audio } = usePlayerContext();
 
   function handlePlaybackRateChange(delta: number) {
     const playbackRate = Math.min(
-      Math.max((audio.playbackRate += delta), 0.1),
-      10
+      Math.max((audio.playbackRate += delta), MIN_PLAYBACK_RATE),
+      MAX_PLAYBACK_RATE
     );
     audio.playbackRate = playbackRate;
     dispatch({ type: "rateChanged", payload: playbackRate });
@@ -27,19 +31,17 @@ export function PlayerRateControls() {
     dispatch({ type: "rateChanged", payload: 1.0 });
   }
 
-  function handleDecreasePlaybackRate() {
-    return () => handlePlaybackRateChange(-0.1);
-  }
-
-  function handleIncreasePlaybackRate() {
-    return () => handlePlaybackRateChange(0.1);
+  function handleSetPlaybackRate(rate: number) {
+    return () => handlePlaybackRateChange(rate);
   }
 
   return (
     <Stack gap={0} align="center">
       <InputLabel fz="xs">Playback rate</InputLabel>
       <ActionIconGroup style={{ alignItems: "center" }}>
-        <ActionIcon onClick={handleDecreasePlaybackRate} size="xs">
+        <ActionIcon
+          onClick={handleSetPlaybackRate(-PLAYBACK_RATE_STEP)}
+          size="xs">
           <IconMinus size="80%" />
         </ActionIcon>
         <ActionIconGroupSection variant="transparent">
@@ -53,7 +55,9 @@ export function PlayerRateControls() {
             </UnstyledButton>
           </Tooltip>
         </ActionIconGroupSection>
-        <ActionIcon onClick={handleIncreasePlaybackRate} size="xs">
+        <ActionIcon
+          onClick={handleSetPlaybackRate(PLAYBACK_RATE_STEP)}
+          size="xs">
           <IconPlus size="80%" />
         </ActionIcon>
       </ActionIconGroup>

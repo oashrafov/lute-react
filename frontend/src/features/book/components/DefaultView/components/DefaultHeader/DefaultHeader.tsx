@@ -1,4 +1,4 @@
-import { useNavigation } from "react-router-dom";
+import { useRouterState } from "@tanstack/react-router";
 import {
   ActionIcon,
   Center,
@@ -20,7 +20,7 @@ interface DefaultHeader {
 }
 
 export function DefaultHeader({ book }: DefaultHeader) {
-  const navigation = useNavigation();
+  const state = useRouterState();
   const { drawer } = useBookContext();
   return (
     <>
@@ -31,8 +31,8 @@ export function DefaultHeader({ book }: DefaultHeader) {
           </ActionIcon>
 
           <Center className={classes.logoContainer}>
-            {navigation.state === "loading" && <Loader size="sm" />}
-            {navigation.state !== "loading" && <HomeImageLink size={48} />}
+            {state.status === "pending" && <Loader size="sm" />}
+            {state.status === "idle" && <HomeImageLink size={48} />}
           </Center>
 
           <Divider orientation="vertical" />
@@ -42,7 +42,7 @@ export function DefaultHeader({ book }: DefaultHeader) {
       </Paper>
       {book.audio && (
         <Paper withBorder shadow="sm" className={classes.playerContainer}>
-          <Player />
+          <Player audioData={book.audio} />
         </Paper>
       )}
     </>

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { ActionIcon, Group, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -10,10 +10,10 @@ import { PageTitle } from "../../components/common/PageTitle/PageTitle";
 import { queries } from "../../features/settings/api/queries";
 import { CreateLanguageModal } from "./CreateLanguageModal";
 
-export default function NewBookPage() {
+export function NewBookPage() {
   const { t } = useTranslation("page", { keyPrefix: "newBook" });
   const [opened, { open, close }] = useDisclosure(false);
-  const { data: initial } = useQuery(queries.init());
+  const { data } = useSuspenseQuery(queries.init());
 
   const cardsRadioLabel = (
     <Group wrap="nowrap" gap={5} align="center">
@@ -36,13 +36,13 @@ export default function NewBookPage() {
       <PageContainer width="75%">
         <PageTitle>{t("title")}</PageTitle>
 
-        {initial?.haveLanguages && (
+        {data.haveLanguages && (
           <LanguageCards
             label={cardsRadioLabel}
             description={t("languageCardsDescription")}
           />
         )}
-        {!initial?.haveLanguages && cardsRadioLabel}
+        {!data.haveLanguages && cardsRadioLabel}
 
         <NewBookForm />
       </PageContainer>

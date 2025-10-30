@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { getRouteApi } from "@tanstack/react-router";
 import { getFromLocalStorage } from "../../../helpers/general";
 
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
+
 export function useApplyInitialView() {
-  const [searchParam, setSearchParam] = useSearchParams();
+  const navigate = route.useNavigate();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -12,17 +14,10 @@ export function useApplyInitialView() {
       setReady(true);
       return;
     }
+    navigate({ search: (prev) => ({ ...prev, view }) });
 
-    if (view === "default") {
-      searchParam.delete("view");
-    } else {
-      searchParam.set("view", view);
-    }
-
-    setSearchParam(searchParam);
     setReady(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate]);
 
   return ready;
 }

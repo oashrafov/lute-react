@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { NavLink } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Menu, Group, Divider } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { appInfo } from "../../resources/modals";
@@ -10,15 +10,15 @@ import { queries } from "../../features/settings/api/queries";
 import classes from "./NavigationBar.module.css";
 
 export function NavigationBar({ ...props }) {
-  const { data: settings } = useQuery(queries.settingsForm());
+  const { data: settings } = useSuspenseQuery(queries.settingsForm());
   const createBackupMenu = settings.backup_enabled && settings.backup_dir != "";
 
   return (
     <Group component="nav" gap={5} wrap="nowrap" ml="auto" {...props}>
       {[menu.home, menu.book, menu.languages].map((menu) => (
-        <NavLink key={menu.label} to={menu.action} className={classes.link}>
+        <Link key={menu.label} to={menu.action} className={classes.link}>
           {menu.label}
-        </NavLink>
+        </Link>
       ))}
 
       <DropdownMenu label={menu.terms.label}>
@@ -48,27 +48,32 @@ export function NavigationBar({ ...props }) {
               </Menu.Label>
             </>
           )}
-          {menu.backup.children.map((child) => (
-            <MenuItem key={child.label} item={child} />
-          ))}
+          <MenuItem
+            key={menu.backup.children[0].label}
+            item={menu.backup.children[0]}
+          />
+          <Menu.Item
+            component="a"
+            href={menu.backup.children[1].action}
+            target="_blank">
+            {menu.backup.children[1].label}
+          </Menu.Item>
         </DropdownMenu>
       )}
 
       <DropdownMenu label={menu.about.label}>
         <Menu.Item onClick={() => modals.openContextModal(appInfo)}>
-          {menu.about.info.label}
-        </Menu.Item>
-        <Menu.Item component={NavLink} to={menu.about.stats.action}>
-          {menu.about.stats.label}
-        </Menu.Item>
-        <Menu.Item component="a" href={menu.about.docs.action} target="_blank">
-          {menu.about.docs.label}
+          {menu.info.label}
         </Menu.Item>
         <Menu.Item
-          component="a"
-          href={menu.about.discord.action}
-          target="_blank">
-          {menu.about.discord.label}
+          renderRoot={(props) => <Link to={menu.stats.action} {...props} />}>
+          {menu.stats.label}
+        </Menu.Item>
+        <Menu.Item component="a" href={menu.docs.action} target="_blank">
+          {menu.docs.label}
+        </Menu.Item>
+        <Menu.Item component="a" href={menu.discord.action} target="_blank">
+          {menu.discord.label}
         </Menu.Item>
       </DropdownMenu>
     </Group>

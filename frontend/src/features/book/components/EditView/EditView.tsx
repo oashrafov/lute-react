@@ -13,9 +13,7 @@ export function EditView() {
   const { data: book } = useBookQuery();
   const { data: page } = usePageQuery();
 
-  const { control } = useForm({
-    defaultValues: { text: page.text },
-  });
+  const { control } = useForm({ defaultValues: { text: page.text } });
 
   return (
     <>

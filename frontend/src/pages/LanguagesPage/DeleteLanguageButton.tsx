@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
+import { useSearch } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { modals } from "@mantine/modals";
@@ -9,23 +9,26 @@ import { queries } from "../../features/settings/api/queries";
 
 export function DeleteLanguageButton() {
   const { t } = useTranslation("page", { keyPrefix: "languages" });
-  const [params] = useSearchParams();
-  const langId = params.get("langId");
-  const { data: initial } = useQuery(queries.init());
-  const selectedLangName = initial?.languageChoices.filter(
-    (lang) => lang.id === Number(langId)
+  const { langId } = useSearch({ strict: false });
+  const { data: initial } = useSuspenseQuery(queries.init());
+  const selectedLangName = initial.languageChoices.filter(
+    (lang) => lang.id === langId
   )[0]?.name;
+
+  function handleClick() {
+    if (selectedLangName) {
+      modals.openConfirmModal(
+        deleteLanguageConfirm(selectedLangName, () => {})
+      );
+    }
+  }
+
   return (
     <Tooltip label={t("deleteLangLabel")}>
       <ActionIcon
         variant="transparent"
         color="red"
-        onClick={() =>
-          selectedLangName &&
-          modals.openConfirmModal(
-            deleteLanguageConfirm(selectedLangName, () => {})
-          )
-        }
+        onClick={handleClick}
         size="sm"
         style={{ backgroundColor: "transparent" }}
         disabled={!selectedLangName}>

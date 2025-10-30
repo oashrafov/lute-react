@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { ActionIcon, Image } from "@mantine/core";
 
 interface HomeImageLink {
@@ -7,7 +7,10 @@ interface HomeImageLink {
 
 export function HomeImageLink({ size }: HomeImageLink) {
   return (
-    <ActionIcon component={Link} to="/" variant="transparent" size={size}>
+    <ActionIcon
+      variant="transparent"
+      size={size}
+      renderRoot={(props) => <Link to="/" {...props} target="_blank" />}>
       <Image
         w={size}
         h={size}

@@ -1,14 +1,14 @@
 import { useEffect } from "react";
-import { useNavigation } from "react-router-dom";
+import { useRouterState } from "@tanstack/react-router";
 import { nprogress } from "@mantine/nprogress";
 
 export function useNavigationProgress() {
-  const navigation = useNavigation();
+  const state = useRouterState();
   useEffect(() => {
-    if (navigation.state === "loading") {
+    if (state.status === "pending") {
       nprogress.start();
     } else {
       nprogress.complete();
     }
-  }, [navigation.state]);
+  }, [state.status]);
 }

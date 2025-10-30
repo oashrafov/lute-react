@@ -1,25 +1,27 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { getRouteApi } from "@tanstack/react-router";
 import { useBookQuery } from "./useBookQuery";
 
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
+
 export function usePageControl(onNavigate?: (num: number) => void) {
-  const params = useParams();
-  const navigate = useNavigate();
-  const page = Number(params.page);
+  const { pageNum } = route.useParams();
+  const navigate = route.useNavigate();
+
   const { data: book } = useBookQuery();
 
   function goToPage(num: number) {
     if (num > book.pageCount || num < 1) return;
 
-    navigate(`/books/${book.id}/pages/${num}`);
-    if (onNavigate) onNavigate(num);
+    navigate({ params: { bookId: book.id, pageNum: num } });
+    onNavigate?.(num);
   }
 
   function goToNextPage() {
-    goToPage(page + 1);
+    goToPage(pageNum + 1);
   }
 
   function goToPreviousPage() {
-    goToPage(page - 1);
+    goToPage(pageNum - 1);
   }
 
   function markPageAsRead() {

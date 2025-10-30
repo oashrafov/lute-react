@@ -14,18 +14,6 @@
   list-style: disc;
 }
 
-.bookLink {
-  display: block;
-  font-size: 0.9rem;
-  font-style: italic;
-  margin-top: 0.2rem;
-  color: #2a72d1;
-}
-
-.bookLink:link {
-  color: #2a72d1;
-}
-
 .term {
   color: var(--mantine-color-default);
   background-color: var(--mantine-color-blue-3);

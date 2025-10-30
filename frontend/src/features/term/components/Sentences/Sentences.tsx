@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { NoSentences } from "../NoSentences/NoSentences";
+import { SentenceReference } from "../SentenceReference/SentenceReference";
 import { PageSpinner } from "../../../../components/common/PageSpinner/PageSpinner";
 import { queries } from "../../api/queries";
 import classes from "./Sentences.module.css";
@@ -29,17 +30,7 @@ export function Sentences({ langId, termText }: Sentences) {
                   <ul className={classes.innerList}>
                     {references.map((reference) => (
                       <li key={reference.id}>
-                        <p
-                          dangerouslySetInnerHTML={{
-                            __html: reference.sentence,
-                          }}
-                        />
-                        <a
-                          href={`/books/${reference.bookId}/pages/${reference.pageNumber}`}
-                          target="_blank"
-                          className={classes.bookLink}>
-                          {reference.bookTitle}
-                        </a>
+                        <SentenceReference data={reference} />
                       </li>
                     ))}
                   </ul>

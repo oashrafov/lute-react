@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { Alert, Button, rem, Text } from "@mantine/core";
+import { Link } from "@tanstack/react-router";
 import { IconInfoCircle } from "@tabler/icons-react";
 import {
   useDeactivateDemoMode,
@@ -23,12 +23,17 @@ export function DemoNotice({ tutorialBookId }: DemoNotice) {
       <Text size="sm">
         The Lute database has been loaded with a{" "}
         <Button
-          component={Link}
           fw="normal"
           td="none"
           variant="light"
           size="compact-sm"
-          to={`/books/${tutorialBookId}/pages/1`}>
+          renderRoot={(props) => (
+            <Link
+              to="/books/$bookId/pages/$pageNum"
+              params={{ bookId: tutorialBookId, pageNum: 1 }}
+              {...props}
+            />
+          )}>
           brief tutorial
         </Button>
         , some languages and short texts for you to try out. When you&apos;re

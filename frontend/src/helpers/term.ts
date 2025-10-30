@@ -1,11 +1,5 @@
+import type { TermSuggestion } from "../features/term/api/types";
 import { TERM_SUGGESTION_STR_MAX_LEN } from "../resources/constants";
-
-interface TermSuggestion {
-  id: number;
-  text: string;
-  translation: string;
-  status: string;
-}
 
 function _createSuggestionString(suggestion: TermSuggestion) {
   const txt = decodeURIComponent(suggestion.text);
@@ -23,15 +17,10 @@ function _createSuggestionString(suggestion: TermSuggestion) {
   return `${txt} (${t})`;
 }
 
-export function buildSuggestionsList(
-  currentTermText: string,
-  suggestions: TermSuggestion[]
-) {
-  return suggestions
-    .map((suggestion) => ({
-      value: suggestion.text,
-      suggestion: _createSuggestionString(suggestion),
-      status: suggestion.status,
-    }))
-    .filter((item) => item.value != currentTermText);
+export function buildSuggestionsList(suggestions: TermSuggestion[]) {
+  return suggestions.map((suggestion) => ({
+    value: suggestion.text,
+    suggestion: _createSuggestionString(suggestion),
+    status: suggestion.status,
+  }));
 }

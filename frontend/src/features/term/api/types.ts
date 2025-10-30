@@ -1,19 +1,21 @@
 import type { TextDirection } from "../../../resources/types";
 
-interface Sentence {
+export interface SentenceRef {
+  id: number;
+  sentence: string;
+  bookId: number;
+  bookTitle: string;
+  pageNumber: number;
+}
+
+interface Variation {
   term: string;
-  references: {
-    id: number;
-    sentence: string;
-    bookId: number;
-    bookTitle: string;
-    pageNumber: number;
-  }[];
+  references: SentenceRef[];
 }
 
 export interface SentencesResponse {
   text: string;
-  variations: Sentence[] | [];
+  variations: Variation[] | [];
 }
 
 export interface TermPopupSection {
@@ -75,4 +77,11 @@ export interface TermQueryParams {
   id?: number;
   text?: string;
   langId?: number;
+}
+
+export interface TermSuggestion {
+  id: number;
+  text: string;
+  translation: string;
+  status: number;
 }

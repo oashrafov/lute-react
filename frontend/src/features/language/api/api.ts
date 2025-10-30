@@ -3,6 +3,7 @@ import type {
   UserLanguageDetail,
   UserLanguagesList,
   LanguageForm,
+  PredefinedLanguageDetail,
 } from "./types";
 
 export async function getUserLanguages(): Promise<UserLanguagesList> {
@@ -38,7 +39,9 @@ export async function getUserLanguage(id: number): Promise<UserLanguageDetail> {
   return await response.json();
 }
 
-export async function getPredefinedLanguage(langName: string) {
+export async function getPredefinedLanguage(
+  langName: string
+): Promise<PredefinedLanguageDetail> {
   const response = await fetch(endpoints.getPredefinedLanguage(langName));
 
   if (!response.ok) {
@@ -71,7 +74,10 @@ export async function getLanguageFormInitValues(): Promise<LanguageForm> {
   return await response.json();
 }
 
-export async function createLanguage(data: any) {
+export async function createLanguage(data: {
+  name: string;
+  loadStories?: boolean;
+}) {
   const response = await fetch(endpoints.createLanguage, {
     method: "POST",
     headers: {

@@ -524,7 +524,7 @@ const languages = ["spanish", "german", "greek", "russian", "italian"];
 
 // console.log(Object.keys(data).map((lang) => ({ data: data[lang] })));
 
-export default function StatisticsPage() {
+export function StatisticsPage() {
   return (
     <AreaChart
       // maxBarWidth={15}

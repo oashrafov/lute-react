@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import {
   ActionIcon,
   Button,
@@ -69,8 +69,13 @@ export const columnDefinition = (
             td="none"
             variant="subtle"
             size="compact-sm"
-            component={Link}
-            to={`/books/${id}/pages/${currentPage}`}>
+            renderRoot={(props) => (
+              <Link
+                to="/books/$bookId/pages/$pageNum"
+                params={{ bookId: id, pageNum: currentPage }}
+                {...props}
+              />
+            )}>
             {title}
           </Button>
           {currentPage > 1 && currentPage !== pageCount && (
