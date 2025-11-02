@@ -4,7 +4,7 @@ import os
 import json
 from datetime import datetime
 
-from flask import Blueprint, send_file, current_app, request
+from flask import Blueprint, jsonify, send_file, current_app, request
 from sqlalchemy import text as SQLText
 
 from lute.db import db
@@ -143,7 +143,7 @@ def get_book(bookid):
 
     book = _find_book(bookid)
     if book is None:
-        return "No such book"
+        return jsonify("No such book"), 404
 
     page_num = 1
     text = book.texts[0]
@@ -288,14 +288,14 @@ def edit_book(bookid):
 
         return {"id": book.id, "title": book.title}, 200
 
-    if action == "markAsStale":
-        book = _find_book(bookid)
-        if book is None:
-            return "No such book"
+    # if action == "markAsStale":
+    #     book = _find_book(bookid)
+    #     if book is None:
+    #         return jsonify("No such book"), 404
 
-        _mark_book_as_stale(book)
+    #     _mark_book_as_stale(book)
 
-        return {"id": book.id, "title": book.title}, 200
+    #     return {"id": book.id, "title": book.title}, 200
 
     return "", 400
 
@@ -330,7 +330,7 @@ def get_page_content(bookid, pagenum):
     "get page content"
     book = _find_book(bookid)
     if book is None:
-        return "No such book"
+        return jsonify("No such book"), 404
 
     text, paragraphs = _load_page_content(book, pagenum)
 
@@ -343,7 +343,7 @@ def commit_page(bookid, pagenum):
 
     book = _find_book(bookid)
     if book is None:
-        return "No such book"
+        return jsonify("No such book"), 404
 
     text = book.text_at_page(pagenum)
 

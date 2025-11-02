@@ -8,11 +8,11 @@ import { PlayerProvider } from "../common/Player/store/playerContext";
 import { useApplyInitialView } from "../../hooks/useApplyInitialView";
 
 export function Book() {
-  const viewReady = useApplyInitialView();
+  const isSuccess = useApplyInitialView();
   usePrefetchPages();
   useSetupShortcuts();
 
-  if (!viewReady) {
+  if (!isSuccess) {
     return <PageSpinner />;
   }
 

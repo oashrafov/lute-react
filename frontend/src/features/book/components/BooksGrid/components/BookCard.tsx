@@ -26,9 +26,8 @@ dayjs.extend(relativeTime);
 import { StatsChart } from "./StatsChart";
 import { TagsGroup } from "../../../../../components/common/TagsGroup/TagsGroup";
 import { deleteBookConfirm } from "../../../../../resources/modals";
-import { useDeleteBook, useEditBook } from "../../../api/mutation";
-import type { EditAction } from "../../../api/types";
-import type { BooksListItem } from "../../../api/types";
+import { mutation } from "../../../api/mutation";
+import type { EditAction, BooksListItem } from "../../../api/types";
 
 interface BookCard {
   book: BooksListItem;
@@ -36,8 +35,8 @@ interface BookCard {
 }
 
 export function BookCard({ book, onEditSuccess }: BookCard) {
-  const deleteBookMutation = useDeleteBook();
-  const editBookMutation = useEditBook();
+  const deleteBookMutation = mutation.useDeleteBook();
+  const editBookMutation = mutation.useEditBook();
 
   function handleEdit(data: EditAction) {
     editBookMutation.mutate(

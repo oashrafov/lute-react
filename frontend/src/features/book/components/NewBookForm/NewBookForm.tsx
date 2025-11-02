@@ -1,7 +1,6 @@
 import { useSearch } from "@tanstack/react-router";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { notifications } from "@mantine/notifications";
 import {
   Button,
   Fieldset,
@@ -27,21 +26,21 @@ import { NumberInput } from "../../../../components/common/NumberInput/NumberInp
 import { Select } from "../../../../components/common/Select/Select";
 import { Textarea } from "../../../../components/common/Textarea/Textarea";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
-import { errorMessage } from "../../../../resources/notifications";
-import { getBookDataFromUrl } from "../../api/api";
-import { useCreateBook } from "../../api/mutation";
 import { ImportURLInfoPopup } from "./components/ImportURLInfoPopup";
 import { queries as settingsQueries } from "../../../settings/api/queries";
 import { queries as bookQueries } from "../../api/queries";
 import { queries as langQueries } from "../../../language/api/queries";
+import { mutation } from "../../api/mutation";
 import classes from "./NewBookForm.module.css";
 
 export function NewBookForm() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
   const { langId } = useSearch({ strict: false });
-  const { data: formValues } = useQuery(bookQueries.bookForm());
   const { data: language } = useQuery(langQueries.userLanguageDetail(langId));
-  const { data: initial } = useQuery(settingsQueries.init());
+  const { data: formValues } = useSuspenseQuery(bookQueries.bookForm());
+  const { data: initial } = useSuspenseQuery(settingsQueries.init());
+  const createBookMutation = mutation.useCreateBook();
+  const generateContentFromURLMutation = mutation.useGenerateContentFromURL();
   const textDirection = language?.right_to_left ? "rtl" : "ltr";
 
   const { control, getValues, setValue, reset, watch, handleSubmit } = useForm({
@@ -52,16 +51,10 @@ export function NewBookForm() {
   const hasAudioFile = !!watch("audio_file");
   const hasImportURL = !!watch("importurl");
 
-  const createBookMutation = useCreateBook();
-
-  const getBookDataFromUrlMutation = useMutation({
-    mutationFn: getBookDataFromUrl,
-    onSuccess: (data) => reset(data),
-    onError: (error) => notifications.show(errorMessage(error.message)),
-  });
-
   function handlePopulateFromUrl() {
-    getBookDataFromUrlMutation.mutate(getValues().importurl);
+    generateContentFromURLMutation.mutate(getValues().importurl, {
+      onSuccess: (data) => reset(data),
+    });
     setValue("importurl", "");
   }
 
@@ -144,7 +137,7 @@ export function NewBookForm() {
             <Button
               disabled={!hasImportURL || hasTextFile}
               variant="filled"
-              loading={getBookDataFromUrlMutation.isPending}
+              loading={generateContentFromURLMutation.isPending}
               onClick={handlePopulateFromUrl}>
               {t("importLabel")}
             </Button>
@@ -198,7 +191,7 @@ export function NewBookForm() {
         name="book_tags"
         control={control}
         label="Tags"
-        data={initial!.bookTags}
+        data={initial.bookTags}
         leftSection={<IconTags />}
       />
 

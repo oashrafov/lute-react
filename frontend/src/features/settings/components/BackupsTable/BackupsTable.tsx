@@ -8,6 +8,10 @@ import {
 } from "mantine-react-table";
 import { TableTopToolbar } from "../../../../components/common/TableTopToolbar/TableTopToolbar";
 import { getDefaultTableOptions } from "../../../../resources/table-options-default";
+import {
+  DOWNLOAD_BACKUP_URL,
+  MANUAL_BACKUP_URL,
+} from "../../../../resources/constants";
 import { queries } from "../../api/queries";
 import type { Backup } from "../../api/types";
 
@@ -25,7 +29,7 @@ const columns: MRT_ColumnDef<Backup>[] = [
           size="compact-sm"
           variant="subtle"
           component="a"
-          href={`http://localhost:5001/backup/download/${row.original.name}`}>
+          href={`${DOWNLOAD_BACKUP_URL}${row.original.name}`}>
           {row.original.name}
         </Button>
       </Tooltip>
@@ -59,7 +63,7 @@ export function BackupsTable() {
           component="a"
           color="green"
           size="xs"
-          href="http://localhost:5001/backup/backup?type=manual"
+          href={MANUAL_BACKUP_URL}
           leftSection={<IconPlus size={22} />}>
           New
         </Button>

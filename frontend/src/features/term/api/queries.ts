@@ -3,16 +3,7 @@ import {
   queryOptions,
   skipToken,
 } from "@tanstack/react-query";
-import {
-  getSentences,
-  getTags,
-  getTagSuggestions,
-  getTermById,
-  getTermByText,
-  getTermPopup,
-  getTerms,
-  getTermSuggestions,
-} from "./api";
+import { api } from "./api";
 import type { TermQueryParams } from "./types";
 
 export const queries = {
@@ -23,17 +14,16 @@ export const queries = {
   list: (filters?: string) =>
     queryOptions({
       queryKey: [...queries.all(), filters],
-      queryFn: () => getTerms(filters),
+      queryFn: () => api.getAll(filters),
       placeholderData: keepPreviousData,
-      staleTime: Infinity,
     }),
   detail: ({ id, text, langId }: TermQueryParams) =>
     queryOptions({
       queryKey: [...queries.allDetails(), id, text, langId],
       queryFn: id
-        ? () => getTermById(id)
+        ? () => api.getById(id)
         : text && langId
-          ? () => getTermByText(text, langId)
+          ? () => api.getByText(text, langId)
           : skipToken,
       refetchOnWindowFocus: false,
       placeholderData: keepPreviousData,
@@ -41,30 +31,29 @@ export const queries = {
   popup: (id: number) =>
     queryOptions({
       queryKey: [...queries.all(), "popup", id],
-      queryFn: () => getTermPopup(id),
+      queryFn: () => api.getPopup(id),
     }),
   sentences: (termText: string, langId: number) =>
     queryOptions({
       queryKey: [...queries.all(), "sentences", langId, termText],
-      queryFn: () => getSentences(termText, langId),
-      staleTime: Infinity,
+      queryFn: () => api.getSentences(termText, langId),
     }),
   tags: () =>
     queryOptions({
       queryKey: [...queries.allTags()],
-      queryFn: getTags,
+      queryFn: api.getTags,
     }),
   termSuggestions: (searchText: string, langId: number) =>
     queryOptions({
       queryKey: [...queries.allSuggestions(), langId, searchText],
       queryFn:
         searchText !== "" && langId != null
-          ? () => getTermSuggestions(searchText, langId)
+          ? () => api.getSuggestions(searchText, langId)
           : skipToken,
     }),
   tagSuggestions: () =>
     queryOptions({
       queryKey: [...queries.allTags(), "suggestions"],
-      queryFn: getTagSuggestions,
+      queryFn: api.getTagSuggestions,
     }),
 } as const;

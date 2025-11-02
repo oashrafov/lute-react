@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { IconInfoCircle } from "@tabler/icons-react";
 import {
   useDeactivateDemoMode,
-  useWipeDatabase,
+  useClearDemoData,
 } from "../../features/settings/api/mutation";
 
 interface DemoNotice {
@@ -11,7 +11,7 @@ interface DemoNotice {
 }
 
 export function DemoNotice({ tutorialBookId }: DemoNotice) {
-  const wipeDbMutation = useWipeDatabase();
+  const clearDemoDataMutation = useClearDemoData();
   const deactivateDemoMutation = useDeactivateDemoMode();
   return (
     <Alert
@@ -41,7 +41,7 @@ export function DemoNotice({ tutorialBookId }: DemoNotice) {
         <Button
           p={0}
           styles={{ root: { verticalAlign: "unset" } }}
-          onClick={() => wipeDbMutation.mutate()}
+          onClick={() => clearDemoDataMutation.mutate()}
           size="compact-sm"
           variant="transparent"
           fw="normal">

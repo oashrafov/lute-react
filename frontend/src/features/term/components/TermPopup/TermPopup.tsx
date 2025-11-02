@@ -17,7 +17,7 @@ export function TermPopup({ children, id }: TermPopupProps) {
   const [popupData, setPopupData] = useState<TermPopup>();
 
   async function fetchPopupData() {
-    if (id) {
+    if (id !== null) {
       setPopupData(await queryClient.fetchQuery(queries.popup(id)));
     }
   }

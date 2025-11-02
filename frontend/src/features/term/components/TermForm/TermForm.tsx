@@ -1,10 +1,9 @@
 import { useState, type KeyboardEvent, type RefObject } from "react";
 import { useParams } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { Group, rem, Collapse, InputClearButton } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
 import { IconSitemap } from "@tabler/icons-react";
 import { StatusRadio } from "../StatusRadio/StatusRadio";
 import { TagsField } from "./components/TagsField/TagsField";
@@ -14,13 +13,7 @@ import { ToLowerCaseButton } from "./components/ToLowerCaseButton";
 import { PronunciationButton } from "./components/PronunciationButton";
 import { NotesButton } from "./components/NotesButton";
 import { TermImage } from "../TermImage/TermImage";
-import { editTerm, createTerm, deleteTerm } from "../../api/api";
 import { deleteTermConfirm } from "../../../../resources/modals";
-import {
-  termCreated,
-  termUpdated,
-  termDeleted,
-} from "../../resources/notifications";
 import { queries as bookQueries } from "../../../book/api/queries";
 import { queries as termQueries } from "../../api/queries";
 import type { TermDetail } from "../../api/types";
@@ -31,6 +24,8 @@ import { TermTagsField } from "./components/TermTagsField/TermTagsField";
 import { NotesField } from "./components/NotesField/NotesField";
 import { SyncStatusCheckbox } from "./components/SyncStatusCheckbox/SyncStatusCheckbox";
 import { PronunciationField } from "./components/PronunciationField/PronunciationField";
+import { BACKEND_URL } from "../../../../resources/constants";
+import { mutation } from "../../api/mutation";
 import classes from "./TermForm.module.css";
 
 interface TermForm {
@@ -50,6 +45,9 @@ export function TermForm({
 }: TermForm) {
   const queryClient = useQueryClient();
   const { bookId } = useParams({ strict: false });
+  const createTermMutation = mutation.useCreateTerm();
+  const editTermMutation = mutation.useEditTerm();
+  const deleteTermMutation = mutation.useDeleteTerm();
 
   const {
     control,
@@ -108,7 +106,18 @@ export function TermForm({
 
   function handleDeleteTerm() {
     modals.openConfirmModal(
-      deleteTermConfirm(term.text, () => deleteTermMutation.mutate(term.id))
+      deleteTermConfirm(term.text, () =>
+        deleteTermMutation.mutate(term.id, {
+          onSuccess: () => {
+            if (bookId) {
+              onAction?.();
+              queryClient.invalidateQueries({
+                queryKey: bookQueries.bookPages(bookId),
+              });
+            }
+          },
+        })
+      )
     );
   }
 
@@ -127,59 +136,41 @@ export function TermForm({
     }
   }
 
-  function handleSubmit(data) {
+  function handleSubmit(data: TermDetail) {
     if (!editMode) {
-      createTermMutation.mutate(data);
+      createTermMutation.mutate(data, {
+        onSuccess: () => {
+          if (blankMode) {
+            reset();
+          }
+          if (!blankMode && bookId) {
+            onAction?.();
+            queryClient.invalidateQueries({
+              queryKey: bookQueries.bookPages(bookId),
+            });
+          }
+        },
+      });
     } else {
-      editTermMutation.mutate({ ...data, id: term.id });
+      editTermMutation.mutate(
+        { data, id: term.id },
+        {
+          onSuccess: () => {
+            if (bookId) {
+              onAction?.();
+              queryClient.invalidateQueries({
+                queryKey: bookQueries.bookPages(bookId),
+              });
+            }
+          },
+        }
+      );
     }
   }
 
   function handleToLowerCase() {
     setValue("text", getValues().text.toLowerCase());
   }
-
-  const createTermMutation = useMutation({
-    mutationFn: createTerm,
-    onSuccess: () => {
-      notifications.show(editMode ? termUpdated : termCreated);
-      if (blankMode) {
-        reset();
-      }
-      if (!blankMode && bookId) {
-        onAction?.();
-        queryClient.invalidateQueries({
-          queryKey: bookQueries.bookPages(bookId),
-        });
-      }
-    },
-  });
-
-  const editTermMutation = useMutation({
-    mutationFn: editTerm,
-    onSuccess: () => {
-      notifications.show(termUpdated);
-      if (bookId) {
-        onAction?.();
-        queryClient.invalidateQueries({
-          queryKey: bookQueries.bookPages(bookId),
-        });
-      }
-    },
-  });
-
-  const deleteTermMutation = useMutation({
-    mutationFn: deleteTerm,
-    onSuccess: () => {
-      notifications.show(termDeleted);
-      if (bookId) {
-        onAction?.();
-        queryClient.invalidateQueries({
-          queryKey: bookQueries.bookPages(bookId),
-        });
-      }
-    },
-  });
 
   return (
     <form onSubmit={handleFormSubmit(handleSubmit)} onKeyDown={handleKeydown}>
@@ -236,7 +227,7 @@ export function TermForm({
           textDirection={dir}
           inputRef={translationFieldRef}
         />
-        {termImage && <TermImage src={`http://localhost:5001${termImage}`} />}
+        {termImage && <TermImage src={`${BACKEND_URL}${termImage}`} />}
       </div>
       <Collapse in={notesOpened}>
         <NotesField control={control} />

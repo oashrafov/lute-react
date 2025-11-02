@@ -1,4 +1,5 @@
-import { endpoints } from "./endpoints";
+import { apiClient } from "../../../utils/apiClient";
+import { objToFormData } from "../../../utils/utils";
 import type {
   SentencesResponse,
   Tag,
@@ -8,149 +9,54 @@ import type {
   TermSuggestion,
 } from "./types";
 
-export async function getTerms(filters?: string): Promise<TermsList> {
-  const url = filters ? `${endpoints.getTerms}?${filters}` : endpoints.getTerms;
-  const response = await fetch(url);
+const BASE_URL = "/terms";
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+export const api = {
+  getAll(filters?: string): Promise<TermsList> {
+    return apiClient.get(filters ? `${BASE_URL}/?${filters}` : `${BASE_URL}/`);
+  },
 
-  return await response.json();
-}
+  getById(id: number): Promise<TermDetail> {
+    return apiClient.get(`${BASE_URL}/${id}`);
+  },
 
-export async function getTermById(id: number): Promise<TermDetail> {
-  const response = await fetch(endpoints.getTermById(id));
+  getByText(text: string, langId: number) {
+    return apiClient.get(`${BASE_URL}/${text}/${langId}`);
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+  getPopup(id: number): Promise<TermPopup> {
+    return apiClient.get(`${BASE_URL}/${id}/popup`);
+  },
 
-  return await response.json();
-}
+  getSuggestions(text: string, langId: number): Promise<TermSuggestion[]> {
+    return apiClient.get(`${BASE_URL}/${text}/${langId}/suggestions`);
+  },
 
-export async function getTermByText(
-  text: string,
-  langId: number
-): Promise<TermDetail> {
-  const response = await fetch(endpoints.getTermByText(text, langId));
+  getSentences(text: string, langId: number): Promise<SentencesResponse> {
+    return apiClient.get(`${BASE_URL}/${text}/${langId}/sentences`);
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+  getTags(): Promise<Tag[]> {
+    return apiClient.get(`${BASE_URL}/tags`);
+  },
 
-  return await response.json();
-}
+  getTagSuggestions(): Promise<string[]> {
+    return apiClient.get(`${BASE_URL}/tags/suggestions`);
+  },
 
-export async function getTermPopup(id: number): Promise<TermPopup> {
-  const response = await fetch(endpoints.getTermPopup(id));
+  create(data: TermDetail) {
+    return apiClient.post(BASE_URL, {
+      body: objToFormData(data),
+    });
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+  edit(id: number, data: TermDetail) {
+    return apiClient.patch(`${BASE_URL}/${id}`, {
+      body: objToFormData(data),
+    });
+  },
 
-  return await response.json();
-}
-
-export async function getTermSuggestions(
-  searchText: string,
-  langId: number
-): Promise<TermSuggestion[]> {
-  const response = await fetch(
-    endpoints.getTermSuggestions(searchText, langId)
-  );
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getSentences(
-  termText: string,
-  langId: number
-): Promise<SentencesResponse> {
-  const response = await fetch(endpoints.getSentences(termText, langId));
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getTags(): Promise<Tag[]> {
-  const response = await fetch(endpoints.getTags);
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getTagSuggestions(): Promise<string[]> {
-  const response = await fetch(endpoints.getTagSuggestions);
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function createTerm(data: any) {
-  const response = await fetch(endpoints.createTerm, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function editTerm(data: any) {
-  const response = await fetch(endpoints.editTerm(data.id), {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function deleteTerm(id: number) {
-  const response = await fetch(endpoints.deleteTerm(id), {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
+  delete(id: number) {
+    return apiClient.delete(`${BASE_URL}/${id}`);
+  },
+};

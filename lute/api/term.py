@@ -4,7 +4,7 @@ import os
 import csv
 import json
 
-from flask import Blueprint, send_file, current_app, request
+from flask import Blueprint, jsonify, send_file, current_app, request
 from sqlalchemy import text as SQLText
 
 from lute.db import db
@@ -230,7 +230,7 @@ def get_term_by_text(langid, text):
 def create_term():
     "create term"
 
-    data = request.get_json()
+    data = request.form
     # text = data.get("text")
     text = data.get("langId")
 
@@ -245,11 +245,11 @@ def create_term():
     return {"text": text}
 
 
-@bp.route("/<int:termid>", methods=["PUT"])
+@bp.route("/<int:termid>", methods=["PATCH"])
 def edit_term(termid):
     "edit term"
 
-    print(request.data)
+    print(request.form)
 
     return {"id": termid}
 
@@ -272,7 +272,7 @@ def get_term_popup(termid):
     d = service.get_popup_data(termid)
 
     if d is None:
-        return ""
+        return jsonify(None)
 
     return {
         "text": d.term_and_parents_text(),

@@ -1,41 +1,34 @@
 import { queryOptions } from "@tanstack/react-query";
-import {
-  getBackupInfo,
-  getInitialState,
-  getSettingsFormInitValues,
-  getShortcuts,
-  getAppInfo,
-  getThemeFormInitValues,
-} from "./api";
+import { api } from "./api";
 
 export const queries = {
   init: () =>
     queryOptions({
       queryKey: ["init"],
-      queryFn: getInitialState,
+      queryFn: api.getInitialState,
       staleTime: Infinity,
     }),
   settingsForm: () =>
     queryOptions({
       queryKey: ["settingsForm"],
-      queryFn: getSettingsFormInitValues,
+      queryFn: api.getSettingsFormValues,
     }),
   themeForm: () =>
     queryOptions({
       queryKey: ["themeForm"],
-      queryFn: getThemeFormInitValues,
+      queryFn: api.getThemeFormValues,
     }),
   shortcuts: () =>
     queryOptions({
       queryKey: ["shortcuts"],
-      queryFn: getShortcuts,
+      queryFn: api.getShortcuts,
     }),
   appInfo: () =>
     queryOptions({
       queryKey: ["appinfo"],
-      queryFn: getAppInfo,
+      queryFn: api.getAppInfo,
       staleTime: Infinity,
     }),
   backups: () =>
-    queryOptions({ queryKey: ["backups"], queryFn: getBackupInfo }),
+    queryOptions({ queryKey: ["backups"], queryFn: api.getBackupInfo }),
 } as const;

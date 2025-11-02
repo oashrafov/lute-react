@@ -21,7 +21,11 @@ export function DictionaryBar<T extends FieldValues>({
 }: DictionaryBar<T>) {
   return (
     <>
-      <Tooltip label="Is active?" openDelay={300} withinPortal={false}>
+      <Tooltip
+        label="Is active?"
+        openDelay={300}
+        withinPortal={false}
+        refProp="innerRef">
         <Checkbox
           name={`${name}.active` as Path<T>}
           control={control}
@@ -45,7 +49,11 @@ export function DictionaryBar<T extends FieldValues>({
         }
       />
 
-      <Tooltip label="Use for" openDelay={300} withinPortal={false}>
+      <Tooltip
+        label="Use for"
+        openDelay={300}
+        withinPortal={false}
+        refProp="innerRef">
         <Select
           name={`${name}.for` as Path<T>}
           control={control}
@@ -58,7 +66,11 @@ export function DictionaryBar<T extends FieldValues>({
         />
       </Tooltip>
 
-      <Tooltip label="Show as" openDelay={300} withinPortal={false}>
+      <Tooltip
+        label="Show as"
+        openDelay={300}
+        withinPortal={false}
+        refProp="innerRef">
         <Select
           name={`${name}.type` as Path<T>}
           control={control}

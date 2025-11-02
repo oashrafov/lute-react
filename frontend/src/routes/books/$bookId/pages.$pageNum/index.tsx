@@ -29,9 +29,18 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
     parse: (params) => ({ pageNum: Number(params.pageNum) }),
   },
   loader: async ({ context, params }) => {
-    const bookData = await context.queryClient.ensureQueryData(
-      bookQueries.detail(params.bookId)
-    );
+    let bookData;
+    try {
+      bookData = await context.queryClient.ensureQueryData(
+        bookQueries.detail(params.bookId)
+      );
+    } catch (_) {
+      redirect({
+        throw: true,
+        to: "/",
+      });
+      return;
+    }
 
     if (params.pageNum > bookData.pageCount) {
       redirect({

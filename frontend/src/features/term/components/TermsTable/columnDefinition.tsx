@@ -13,6 +13,7 @@ import { TermImage } from "../TermImage/TermImage";
 import { LanguageCell } from "../../../../components/common/LanguageCell/LanguageCell";
 import { EditButtonsCell } from "../../../../components/common/EditButtonsCell/EditButtonsCell";
 import {
+  BACKEND_URL,
   MAX_TERM_SUGGESTIONS,
   STATUS_LABEL,
 } from "../../../../resources/constants";
@@ -125,9 +126,7 @@ export const columnDefinition = (
           <Text size="sm" component="span" style={{ whiteSpace: "pre" }}>
             {row.original.translation}
           </Text>
-          {img && (
-            <TermImage position="right" src={`http://localhost:5001${img}`} />
-          )}
+          {img && <TermImage position="right" src={`${BACKEND_URL}${img}`} />}
         </>
       );
     },
@@ -155,7 +154,7 @@ export const columnDefinition = (
           {img && (
             <Image
               mt={5}
-              src={`http://localhost:5001${img}`}
+              src={`${BACKEND_URL}${img}`}
               radius={5}
               h={50}
               w={50}

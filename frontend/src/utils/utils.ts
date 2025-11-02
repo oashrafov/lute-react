@@ -64,7 +64,7 @@ export function moveCursorToEnd(e: FocusEvent) {
   input.setSelectionRange(input.value.length, input.value.length);
 }
 
-export function getFormDataFromObj(obj: object) {
+export function objToFormData(obj: object) {
   const formData = new FormData();
   Object.entries(obj).forEach(([key, value]) => formData.append(key, value));
 

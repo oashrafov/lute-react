@@ -2,6 +2,7 @@ import { Group, Text, Tooltip } from "@mantine/core";
 import { TagsGroup } from "../../../../../../components/common/TagsGroup/TagsGroup";
 import { PopupDataSection } from "./PopupDataSection";
 import type { TermPopup } from "../../../../api/types";
+import { BACKEND_URL } from "../../../../../../resources/constants";
 import classes from "./PopupData.module.css";
 
 export function PopupData({ data }: { data: TermPopup }) {
@@ -16,7 +17,7 @@ export function PopupData({ data }: { data: TermPopup }) {
 
       {Object.entries(data.images).map(([img, tooltip]) => (
         <Tooltip key={img} label={tooltip}>
-          <img className={classes.image} src={`http://localhost:5001${img}`} />
+          <img className={classes.image} src={`${BACKEND_URL}${img}`} />
         </Tooltip>
       ))}
 

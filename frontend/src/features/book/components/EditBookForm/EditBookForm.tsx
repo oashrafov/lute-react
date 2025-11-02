@@ -11,7 +11,7 @@ import { FileInput } from "../../../../components/common/FileInput/FileInput";
 import { TextInput } from "../../../../components/common/TextInput/TextInput";
 import { TagsInput } from "../../../../components/common/TagsInput/TagsInput";
 import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
-import { useEditBook } from "../../api/mutation";
+import { mutation } from "../../api/mutation";
 import type { BooksListItem, EditAction } from "../../api/types";
 
 interface EditBookForm {
@@ -21,7 +21,7 @@ interface EditBookForm {
 }
 
 export function EditBookForm({ book, bookTags, onCloseModal }: EditBookForm) {
-  const editBookMutation = useEditBook();
+  const editBookMutation = mutation.useEditBook();
   const [existingAudioName, setExistingAudioName] = useState(book.audioName);
 
   const {

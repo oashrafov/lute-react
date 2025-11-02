@@ -87,10 +87,6 @@ export interface Page {
 export interface EditAction {
   action: "active" | "archive" | "unarchive" | "markAsStale" | "edit";
 }
-export interface EditBook {
-  id: number;
-  data: EditAction;
-}
 
 export interface NewBookForm {
   language_id: string;

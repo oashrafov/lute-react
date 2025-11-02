@@ -9,7 +9,7 @@ import {
   IconUpload,
 } from "@tabler/icons-react";
 import { TermImportForm } from "./TermImportForm";
-import { BASE_API_URL } from "../../../../../resources/constants";
+import { API_BASE_URL } from "../../../../../resources/constants";
 import type { MRT_TableInstance } from "mantine-react-table";
 import type { TermsListItem } from "../../../api/types";
 
@@ -50,7 +50,7 @@ export function TermActions({ table, onSetEditModalOpened }: TermActions) {
           {/* sorting, filtering, etc.) */}
           <Menu.Item
             component="a"
-            href={`${BASE_API_URL}/terms/export`}
+            href={`${API_BASE_URL}/terms/export`}
             leftSection={<IconUpload style={iconSize} />}>
             All
           </Menu.Item>

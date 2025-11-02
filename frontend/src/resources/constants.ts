@@ -1,9 +1,11 @@
 import type { HighlightType, Status } from "./types";
 
-export const BASE_API_URL = "http://localhost:5001/api";
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+export const API_BASE_URL = import.meta.env.VITE_API_URL;
 export const DOCS_URL = "https://luteorg.github.io/lute-manual/";
 export const DISCORD_URL = "https://discord.gg/CzFUQP5m8u";
-export const MANUAL_BACKUP_URL = "localhost:5001/backup/backup?type=manual";
+export const DOWNLOAD_BACKUP_URL = `${BACKEND_URL}/backup/download/`;
+export const MANUAL_BACKUP_URL = `${BACKEND_URL}/backup/backup?type=manual`;
 export const FAVICON_SOURCE_URL = "http://www.google.com/s2/favicons?domain=";
 export const MAX_VISIBLE_DICT_TABS = 5;
 export const MAX_TERM_SUGGESTIONS = 15;

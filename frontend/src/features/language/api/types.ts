@@ -17,6 +17,11 @@ export interface PredefinedLanguageDetail extends LanguageForm {
   name: string;
 }
 
+export interface LanguageParser {
+  label: string;
+  value: string;
+}
+
 export interface Dictionary {
   id: number;
   active: boolean;

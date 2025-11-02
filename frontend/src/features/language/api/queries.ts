@@ -1,12 +1,5 @@
 import { queryOptions, skipToken } from "@tanstack/react-query";
-import {
-  getLanguageFormInitValues,
-  getLanguageParsers,
-  getPredefinedLanguage,
-  getPredefinedLanguages,
-  getUserLanguage,
-  getUserLanguages,
-} from "./api";
+import { api } from "./api";
 
 export const queries = {
   all: () => ["languages"],
@@ -17,35 +10,36 @@ export const queries = {
   userLanguagesList: () =>
     queryOptions({
       queryKey: [...queries.allUser()],
-      queryFn: getUserLanguages,
+      queryFn: api.getUserLanguages,
     }),
   predefinedLanguagesList: () =>
     queryOptions({
       queryKey: [...queries.allPredefined()],
-      queryFn: getPredefinedLanguages,
+      queryFn: api.getPredefinedLanguages,
       staleTime: Infinity,
     }),
   parsers: () =>
     queryOptions({
       queryKey: [...queries.all(), "parsers"],
-      queryFn: getLanguageParsers,
+      queryFn: api.getParsers,
       staleTime: Infinity,
     }),
   userLanguageDetail: (id?: number) =>
     queryOptions({
       queryKey: [...queries.allUserLangDetails(), id],
-      queryFn: id != null && id !== 0 ? () => getUserLanguage(id) : skipToken,
+      queryFn:
+        id != null && id !== 0 ? () => api.getUserLanguage(id) : skipToken,
       refetchOnWindowFocus: false,
     }),
   predefinedLanguageDetail: (name?: string) =>
     queryOptions({
       queryKey: [...queries.allPredefinedLangDetails(), name],
-      queryFn: name ? () => getPredefinedLanguage(name) : skipToken,
+      queryFn: name ? () => api.getPredefinedLanguage(name) : skipToken,
       staleTime: Infinity,
     }),
   languageForm: () =>
     queryOptions({
       queryKey: ["languageForm"],
-      queryFn: getLanguageFormInitValues,
+      queryFn: api.getFormValues,
     }),
 } as const;

@@ -10,7 +10,7 @@ export function HomeImageLink({ size }: HomeImageLink) {
     <ActionIcon
       variant="transparent"
       size={size}
-      renderRoot={(props) => <Link to="/" {...props} target="_blank" />}>
+      renderRoot={(props) => <Link to="/" {...props} />}>
       <Image
         w={size}
         h={size}

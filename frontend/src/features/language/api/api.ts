@@ -1,95 +1,45 @@
-import { endpoints } from "./endpoints";
+import { apiClient } from "../../../utils/apiClient";
 import type {
   UserLanguageDetail,
   UserLanguagesList,
   LanguageForm,
   PredefinedLanguageDetail,
+  LanguageParser,
 } from "./types";
 
-export async function getUserLanguages(): Promise<UserLanguagesList> {
-  const response = await fetch(endpoints.getUserLanguages);
+const BASE_URL = "/languages";
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+export const api = {
+  getUserLanguages(): Promise<UserLanguagesList> {
+    return apiClient.get(`${BASE_URL}/user`);
+  },
 
-  return await response.json();
-}
+  getPredefinedLanguages(): Promise<string[]> {
+    return apiClient.get(`${BASE_URL}/predefined`);
+  },
 
-export async function getPredefinedLanguages(): Promise<string[]> {
-  const response = await fetch(endpoints.getPredefinedLanguages);
+  getUserLanguage(id: number): Promise<UserLanguageDetail> {
+    return apiClient.get(`${BASE_URL}/user/${id}`);
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+  getPredefinedLanguage(langName: string): Promise<PredefinedLanguageDetail> {
+    return apiClient.get(`${BASE_URL}/predefined/${langName}`);
+  },
 
-  return await response.json();
-}
+  getParsers(): Promise<LanguageParser[]> {
+    return apiClient.get(`${BASE_URL}/parsers`);
+  },
 
-export async function getUserLanguage(id: number): Promise<UserLanguageDetail> {
-  const response = await fetch(endpoints.getUserLanguage(id));
+  getFormValues(): Promise<LanguageForm> {
+    return apiClient.get(`${BASE_URL}/form`);
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getPredefinedLanguage(
-  langName: string
-): Promise<PredefinedLanguageDetail> {
-  const response = await fetch(endpoints.getPredefinedLanguage(langName));
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getLanguageParsers() {
-  const response = await fetch(endpoints.getLanguageParsers);
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getLanguageFormInitValues(): Promise<LanguageForm> {
-  const response = await fetch(endpoints.getLanguageFormInitValues);
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function createLanguage(data: {
-  name: string;
-  loadStories?: boolean;
-}) {
-  const response = await fetch(endpoints.createLanguage, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
+  create(name: string, loadStories?: boolean) {
+    return apiClient.post(BASE_URL, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, loadStories }),
+    });
+  },
+};

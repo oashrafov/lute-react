@@ -11,10 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+.tanstack/
 
 # Editor directories and files
 .vscode/*
-.tanstack/
 !.vscode/extensions.json
 .idea
 .DS_Store

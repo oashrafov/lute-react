@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deactivateDemoMode, wipeDemoDatabase } from "./api";
 import { notifications } from "@mantine/notifications";
 import {
   databaseCleaned,
@@ -7,12 +6,13 @@ import {
 } from "../../../resources/notifications";
 import { queries as bookQueries } from "../../book/api/queries";
 import { queries as settingsQueries } from "./queries";
+import { api } from "./api";
 
-export function useWipeDatabase() {
+export function useClearDemoData() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: wipeDemoDatabase,
+    mutationFn: api.clearDemoData,
     onSuccess: async () => {
       queryClient.removeQueries({
         queryKey: bookQueries.all(),
@@ -29,7 +29,7 @@ export function useDeactivateDemoMode() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deactivateDemoMode,
+    mutationFn: api.deactivateDemoMode,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: settingsQueries.init().queryKey,

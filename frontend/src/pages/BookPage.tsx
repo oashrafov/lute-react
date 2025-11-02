@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BookContextProvider } from "../features/book/store/bookContext";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
-import { useMarkAsStale } from "../features/book/hooks/useMarkAsStale";
 import { useNavigationProgress } from "../hooks/useNavigationProgress";
 import { Book } from "../features/book/components/Book/Book";
 import { SideMenu } from "../features/book/components/SideMenu/SideMenu";
@@ -16,7 +15,6 @@ const PageTermsDrawer = lazy(
 export function BookPage() {
   const { data: book } = useBookQuery();
   useDocumentTitle(`Reading "${book.title}"`);
-  useMarkAsStale();
   useNavigationProgress();
 
   return (

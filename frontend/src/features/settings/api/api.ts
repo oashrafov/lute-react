@@ -1,4 +1,4 @@
-import { endpoints } from "./endpoints";
+import { apiClient } from "../../../utils/apiClient";
 import type {
   AppInfoResponse,
   BackupsResponse,
@@ -8,98 +8,43 @@ import type {
   ShortcutsForm,
 } from "./types";
 
-export async function getSettingsFormInitValues(): Promise<SettingsForm> {
-  const response = await fetch(endpoints.getSettingsFormInitValues);
+const BASE_URL = "";
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+export const api = {
+  getInitialState(): Promise<InitialResponse> {
+    return apiClient.get(`${BASE_URL}/initial`);
+  },
 
-  return await response.json();
-}
+  getAppInfo(): Promise<AppInfoResponse> {
+    return apiClient.get(`${BASE_URL}/appinfo`);
+  },
 
-export async function getThemeFormInitValues(): Promise<Highlights> {
-  const response = await fetch(endpoints.getThemeFormInitValues);
+  getShortcuts(): Promise<ShortcutsForm> {
+    return apiClient.get(`${BASE_URL}/shortcuts`);
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+  getBackupInfo(): Promise<BackupsResponse> {
+    return apiClient.get(`${BASE_URL}/backups`);
+  },
 
-  return await response.json();
-}
+  getSettingsFormValues(): Promise<SettingsForm> {
+    return apiClient.get(`${BASE_URL}/settings/form`);
+  },
 
-export async function getShortcuts(): Promise<ShortcutsForm> {
-  const response = await fetch(endpoints.getShortcuts);
+  getThemeFormValues(): Promise<Highlights> {
+    return apiClient.get(`${BASE_URL}/theme/form`);
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+  clearDemoData() {
+    return apiClient.delete(`${BASE_URL}/settings/db`);
+  },
 
-  return await response.json();
-}
-
-export async function getAppInfo(): Promise<AppInfoResponse> {
-  const response = await fetch(endpoints.getAppInfo);
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getInitialState(): Promise<InitialResponse> {
-  const response = await fetch(endpoints.getInitialState);
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getBackupInfo(): Promise<BackupsResponse> {
-  const response = await fetch(endpoints.getBackupInfo);
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function wipeDemoDatabase() {
-  const response = await fetch(endpoints.wipeDemoDatabase, {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function deactivateDemoMode() {
-  const response = await fetch(endpoints.deactivateDemoMode, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ deactiveDemo: true }),
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
+  deactivateDemoMode() {
+    return apiClient.patch(`${BASE_URL}/settings/db`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ deactiveDemo: true }),
+    });
+  },
+};

@@ -1,141 +1,68 @@
-import { endpoints } from "./endpoints";
-import { getFormDataFromObj } from "../../../utils/utils";
+import { apiClient } from "../../../utils/apiClient";
+import { objToFormData } from "../../../utils/utils";
 import type {
   BookDetail,
   BooksList,
   BookStats,
-  EditBook,
+  EditAction,
   NewBookForm,
   Page,
 } from "./types";
 
-export async function getBooks(filters?: string): Promise<BooksList> {
-  const url = filters ? `${endpoints.getBooks}?${filters}` : endpoints.getBooks;
-  const response = await fetch(url);
+const BASE_URL = "/books";
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+export const api = {
+  getById(id: number): Promise<BookDetail> {
+    return apiClient.get(`${BASE_URL}/${id}`);
+  },
 
-  return await response.json();
-}
+  getAll(filters?: string): Promise<BooksList> {
+    return apiClient.get(filters ? `${BASE_URL}/?${filters}` : `${BASE_URL}/`);
+  },
 
-export async function getBook(id: number): Promise<BookDetail> {
-  const response = await fetch(endpoints.getBook(id));
+  getStats(id: number): Promise<BookStats> {
+    return apiClient.get(`${BASE_URL}/${id}/stats`);
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+  getPage(bookId: number, pageNum: number): Promise<Page> {
+    return apiClient.get(`${BASE_URL}/${bookId}/pages/${pageNum}`);
+  },
 
-  return await response.json();
-}
+  create(data: NewBookForm) {
+    return apiClient.post(`${BASE_URL}/new`, {
+      body: objToFormData(data),
+    });
+  },
 
-export async function getBookStats(id: number): Promise<BookStats> {
-  const response = await fetch(endpoints.getBookStats(id));
+  edit(id: number, data: EditAction) {
+    return apiClient.patch(`${BASE_URL}/${id}`, {
+      body: objToFormData(data),
+    });
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
+  delete(id: number) {
+    return apiClient.delete(`${BASE_URL}/${id}`);
+  },
 
-  return await response.json();
-}
+  generateContentFromURL(url: string) {
+    return apiClient.post(`${BASE_URL}/url`, {
+      headers: {
+        "Content-Type": "text/plain",
+      },
+      body: url,
+    });
+  },
 
-export async function getPage(bookId: number, pageNum: number): Promise<Page> {
-  const response = await fetch(endpoints.getPage(bookId, pageNum));
+  processPage(bookId: number, pageNum: number) {
+    return apiClient.post(`${BASE_URL}/${bookId}/pages/${pageNum}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ shouldTrack: true }),
+    });
+  },
 
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getBookFormInitValues(): Promise<NewBookForm> {
-  const response = await fetch(endpoints.getBookFormInitValues);
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function createBook(data: NewBookForm) {
-  const response = await fetch(endpoints.createBook, {
-    method: "POST",
-    body: getFormDataFromObj(data),
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function getBookDataFromUrl(url: string) {
-  const response = await fetch(endpoints.getBookDataFromUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain",
-    },
-    body: url,
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function deleteBook(id: number) {
-  const response = await fetch(endpoints.deleteBook(id), {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function editBook({ id, data }: EditBook) {
-  const response = await fetch(endpoints.editBook(id), {
-    method: "PATCH",
-    body: getFormDataFromObj(data),
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
-
-export async function commitPage({ id, page }: { id: number; page: number }) {
-  const response = await fetch(endpoints.commitPage(id, page), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ shouldTrack: true }),
-  });
-
-  if (!response.ok) {
-    const message = await response.json();
-    throw new Error(message);
-  }
-
-  return await response.json();
-}
+  getFormValues(): Promise<NewBookForm> {
+    return apiClient.get(`${BASE_URL}/form`);
+  },
+};

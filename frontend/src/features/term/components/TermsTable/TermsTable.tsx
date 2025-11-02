@@ -169,7 +169,7 @@ export function TermsTable() {
 
     renderEmptyRowsFallback: ({ table }) => {
       const language = table.getColumn("language").getFilterValue() as string;
-      return language.length > 0 ? (
+      return language?.length > 0 ? (
         <EmptyRow tableName="terms" language={language} />
       ) : null;
     },

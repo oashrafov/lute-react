@@ -25,7 +25,6 @@ dayjs.extend(relativeTime);
 import { TagsGroup } from "../../../../components/common/TagsGroup/TagsGroup";
 import { StatsBar } from "../StatsBar/StatsBar";
 import { LanguageCell } from "../../../../components/common/LanguageCell/LanguageCell";
-import { useDeleteBook, useEditBook } from "../../api/mutation";
 import { deleteBookConfirm } from "../../../../resources/modals";
 import type {
   MRT_ColumnDef,
@@ -34,6 +33,7 @@ import type {
 } from "mantine-react-table";
 import type { BooksListItem, EditAction } from "../../api/types";
 import type { LanguageChoice } from "../../../settings/api/types";
+import { mutation } from "../../api/mutation";
 
 export const columnDefinition = (
   languageChoices: LanguageChoice[],
@@ -165,8 +165,8 @@ export const columnDefinition = (
     columnDefType: "display",
     size: 0,
     Cell: ({ row }) => {
-      const editBookMutation = useEditBook();
-      const deleteBookMutation = useDeleteBook();
+      const editBookMutation = mutation.useEditBook();
+      const deleteBookMutation = mutation.useDeleteBook();
 
       function handleEdit(id: number, data: EditAction) {
         editBookMutation.mutate(

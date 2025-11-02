@@ -27,7 +27,9 @@ export const TextItem = forwardRef<
       data-paragraph-id={data.paragraphId}
       data-sentence-id={data.sentenceId}
       data-sentence-start={data.isSentenceStart}
-      data-highlight-type={data.status && DEFAULT_HIGHLIGHT_TYPE[data.status]}
+      data-highlight-type={
+        data.status !== null && DEFAULT_HIGHLIGHT_TYPE[data.status]
+      }
       data-text={data.text}
       data-status={data.status}
       data-order={data.order}
