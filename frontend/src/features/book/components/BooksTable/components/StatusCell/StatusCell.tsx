@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Progress, Tooltip } from "@mantine/core";
-import { queries } from "../../api/queries";
-import classes from "./StatsBar.module.css";
+import { queries } from "../../../../api/queries";
+import classes from "./StatusCell.module.css";
 
 const labels: Record<string, string> = {
   0: "Unknown",
@@ -13,7 +13,7 @@ const labels: Record<string, string> = {
   99: "Well Known or Ignored",
 };
 
-export function StatsBar({ bookId }: { bookId: number }) {
+export function StatusCell({ bookId }: { bookId: number }) {
   const { data } = useQuery(queries.stats(bookId));
 
   if (!data) {

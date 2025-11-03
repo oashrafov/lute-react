@@ -1,7 +1,7 @@
 import { useMemo, useState, type CSSProperties } from "react";
-import { useSearch, Link } from "@tanstack/react-router";
+import { useSearch } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Button, Group, Modal } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -12,13 +12,9 @@ import {
   type MRT_TableInstance,
   type MRT_VisibilityState,
 } from "mantine-react-table";
-import { IconPlus } from "@tabler/icons-react";
-import { TermActions } from "./components/TermActions";
 import BulkTermForm from "../BulkTermForm/BulkTermForm";
-import { ShowParentsOnlyChip } from "./components/ShowParentsOnlyChip";
+import { TopToolbar } from "./components/TopToolbar";
 import { EmptyRow } from "../../../../components/common/EmptyRow/EmptyRow";
-import { TableTopToolbarDefaultItems } from "../../../../components/common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
-import { TableTopToolbar } from "../../../../components/common/TableTopToolbar/TableTopToolbar";
 import { getDefaultTableOptions } from "../../../../resources/table-options-default";
 import { columnDefinition } from "./columnDefinition";
 import { queries as termQueries } from "../../api/queries";
@@ -103,6 +99,14 @@ export function TermsTable() {
     table.setEditingRow(null); //exit editing mode
   };
 
+  function handleShowParentsOnly() {
+    setColumnVisibility((v) => ({
+      ...v,
+      parentsString: !v.parentsString,
+    }));
+    setShowParentsOnly((v) => !v);
+  }
+
   const data = response.data;
   const table = useMantineReactTable({
     ...defaultOptions,
@@ -175,33 +179,13 @@ export function TermsTable() {
     },
 
     renderTopToolbar: ({ table }) => (
-      <TableTopToolbar>
-        <Group gap={5} wrap="nowrap">
-          {termIds && termIds.length === 0 && (
-            <Button
-              color="green"
-              size="xs"
-              leftSection={<IconPlus size={22} />}
-              renderRoot={(props) => (
-                <Link to="/terms/create-new" {...props} />
-              )}>
-              New
-            </Button>
-          )}
-          <TermActions
-            table={table}
-            onSetEditModalOpened={setEditModalOpened}
-          />
-        </Group>
-        <Group wrap="nowrap">
-          <ShowParentsOnlyChip
-            show={showParentsOnly}
-            onShow={setShowParentsOnly}
-            onSetColumnVisibility={setColumnVisibility}
-          />
-          <TableTopToolbarDefaultItems table={table} />
-        </Group>
-      </TableTopToolbar>
+      <TopToolbar
+        table={table}
+        showParentsOnly={showParentsOnly}
+        onShowParentsOnly={handleShowParentsOnly}
+        onSetEditModalOpened={setEditModalOpened}
+        showNewTermButton={!termIds || termIds.length === 0}
+      />
     ),
   });
 

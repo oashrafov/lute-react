@@ -17,15 +17,16 @@ import classes from "./Player.module.css";
 
 interface Player {
   audioData: Audio;
+  source: string;
 }
 
-export function Player({ audioData }: Player) {
+export function Player({ audioData, source }: Player) {
   const {
     state: { isPlaying, time, duration, bookmarks, volume },
     dispatch,
     audio,
   } = usePlayerContext();
-  useInitializePlayer(audioData);
+  useInitializePlayer(audioData, source);
   useSetupPlayer();
   useHighlightActiveBookmark();
 

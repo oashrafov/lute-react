@@ -8,6 +8,7 @@ import { BookSourceButton } from "../../../common/BookSourceButton";
 import { FocusSwitch } from "../../../common/FocusSwitch/FocusSwitch";
 import { HighlightsSwitch } from "../../../common/HighlightSwitch/HighlightSwitch";
 import { FOCUS_HEADER_HEIGHT } from "../../../../../../resources/constants";
+import { useAudioQuery } from "../../../common/Player/hooks/useAudioQuery";
 import type { BookDetail } from "../../../../api/types";
 import classes from "./FocusHeader.module.css";
 
@@ -16,6 +17,7 @@ interface FocusHeader {
 }
 
 export function FocusHeader({ book }: FocusHeader) {
+  const audioSource = useAudioQuery(book);
   return (
     <Paper
       withBorder
@@ -40,9 +42,9 @@ export function FocusHeader({ book }: FocusHeader) {
           {book.source && <BookSourceButton source={book.source} />}
           <PageCounter pageCount={book.pageCount} />
         </div>
-        {book.audio && (
+        {book.audio && audioSource && (
           <div style={{ paddingInline: "1rem" }}>
-            <Player audioData={book.audio} />
+            <Player audioData={book.audio} source={audioSource} />
           </div>
         )}
       </Stack>

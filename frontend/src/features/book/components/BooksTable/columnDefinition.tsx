@@ -1,39 +1,19 @@
 import type { Dispatch, SetStateAction } from "react";
-import { Link } from "@tanstack/react-router";
-import {
-  ActionIcon,
-  Button,
-  Group,
-  Menu,
-  Text,
-  ThemeIcon,
-} from "@mantine/core";
-import { modals } from "@mantine/modals";
-import {
-  IconArchive,
-  IconArchiveFilled,
-  IconArchiveOff,
-  IconCircleCheckFilled,
-  IconDots,
-  IconEdit,
-  IconHeadphonesFilled,
-  IconTrash,
-} from "@tabler/icons-react";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-dayjs.extend(relativeTime);
-import { TagsGroup } from "../../../../components/common/TagsGroup/TagsGroup";
-import { StatsBar } from "../StatsBar/StatsBar";
-import { LanguageCell } from "../../../../components/common/LanguageCell/LanguageCell";
-import { deleteBookConfirm } from "../../../../resources/modals";
 import type {
   MRT_ColumnDef,
   MRT_ColumnFiltersState,
   MRT_Row,
 } from "mantine-react-table";
-import type { BooksListItem, EditAction } from "../../api/types";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+import { TagsGroup } from "../../../../components/common/TagsGroup/TagsGroup";
+import { StatusCell } from "./components/StatusCell/StatusCell";
+import { LanguageCell } from "../../../../components/common/LanguageCell/LanguageCell";
+import { TitleCell } from "./components/TitleCell";
+import { ActionsCell } from "./components/ActionsCell";
+import type { BooksListItem } from "../../api/types";
 import type { LanguageChoice } from "../../../settings/api/types";
-import { mutation } from "../../api/mutation";
 
 export const columnDefinition = (
   languageChoices: LanguageChoice[],
@@ -47,63 +27,7 @@ export const columnDefinition = (
     accessorKey: "title",
     size: 500,
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
-    Cell: ({ row }) => {
-      const id = row.original.id;
-      const title = row.original.title;
-      const currentPage = row.original.currentPage;
-      const pageCount = row.original.pageCount;
-      const isCompleted = row.original.isCompleted;
-      const isArchived = row.original.isArchived;
-      const hasAudio = row.original.audioName;
-      return (
-        <Group gap={5} align="center" wrap="nowrap" maw={400}>
-          <ThemeIcon
-            size="sm"
-            color={isCompleted ? "green.6" : "dark.1"}
-            variant="transparent">
-            <IconCircleCheckFilled />
-          </ThemeIcon>
-          <Button
-            c="inherit"
-            fw="normal"
-            td="none"
-            variant="subtle"
-            size="compact-sm"
-            renderRoot={(props) => (
-              <Link
-                to="/books/$bookId/pages/$pageNum"
-                params={{ bookId: id, pageNum: currentPage }}
-                {...props}
-              />
-            )}>
-            {title}
-          </Button>
-          {currentPage > 1 && currentPage !== pageCount && (
-            <Text component="span" size="xs" c="dimmed">
-              ({currentPage}/{pageCount})
-            </Text>
-          )}
-          {hasAudio && (
-            <ThemeIcon
-              size="xs"
-              variant="transparent"
-              color="dimmed"
-              opacity="0.4">
-              <IconHeadphonesFilled />
-            </ThemeIcon>
-          )}
-          {isArchived && (
-            <ThemeIcon
-              size="xs"
-              variant="transparent"
-              color="dimmed"
-              opacity="0.4">
-              <IconArchiveFilled />
-            </ThemeIcon>
-          )}
-        </Group>
-      );
-    },
+    Cell: ({ row }) => <TitleCell row={row} />,
   },
   {
     header: "LANGUAGE",
@@ -130,7 +54,7 @@ export const columnDefinition = (
     id: "status",
     accessorKey: "unknownPercent",
     size: 200,
-    Cell: ({ row }) => <StatsBar bookId={row.original.id} />,
+    Cell: ({ row }) => <StatusCell bookId={row.original.id} />,
     columnFilterModeOptions: ["equals", "greaterThan", "lessThan", "notEquals"],
     mantineFilterTextInputProps: {
       placeholder: "Filter by Unknown %",
@@ -164,75 +88,8 @@ export const columnDefinition = (
     header: "",
     columnDefType: "display",
     size: 0,
-    Cell: ({ row }) => {
-      const editBookMutation = mutation.useEditBook();
-      const deleteBookMutation = mutation.useDeleteBook();
-
-      function handleEdit(id: number, data: EditAction) {
-        editBookMutation.mutate(
-          {
-            id: id,
-            data: data,
-          },
-          {
-            onSuccess: (response) => {
-              if (response.archivedCount === 0) {
-                setShelf("active");
-              }
-            },
-          }
-        );
-      }
-
-      return (
-        <Menu shadow="sm">
-          <Menu.Target>
-            <ActionIcon size="sm" variant="subtle" display="block">
-              <IconDots color="var(--mantine-color-dimmed)" />
-            </ActionIcon>
-          </Menu.Target>
-
-          <Menu.Dropdown>
-            <Menu.Item
-              color="blue"
-              leftSection={<IconEdit size={20} />}
-              onClick={() => setEditedRow(row)}>
-              Edit
-            </Menu.Item>
-            {row.original.isArchived ? (
-              <Menu.Item
-                color="orange"
-                leftSection={<IconArchiveOff size={20} />}
-                onClick={() =>
-                  handleEdit(row.original.id, { action: "unarchive" })
-                }>
-                Unarchive
-              </Menu.Item>
-            ) : (
-              <Menu.Item
-                color="orange"
-                leftSection={<IconArchive size={20} />}
-                onClick={() =>
-                  handleEdit(row.original.id, { action: "archive" })
-                }>
-                Archive
-              </Menu.Item>
-            )}
-            <Menu.Item
-              color="red"
-              leftSection={<IconTrash size={20} />}
-              onClick={() =>
-                modals.openConfirmModal(
-                  deleteBookConfirm(row.original.title, () =>
-                    deleteBookMutation.mutate(row.original.id)
-                  )
-                )
-              }>
-              Delete
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-      );
-    },
+    Cell: ({ row }) => (
+      <ActionsCell row={row} onEditedRow={setEditedRow} onSetShelf={setShelf} />
+    ),
   },
 ];

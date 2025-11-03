@@ -26,9 +26,9 @@ export function PlayerBookmarkControls() {
     const currentTime = audio.currentTime;
 
     if (direction === "next") {
-      val = state.bookmarks.find((val) => Number(val) > currentTime);
+      val = state.bookmarks.find((val) => val > currentTime);
     } else {
-      val = state.bookmarks.findLast((val) => Number(val) < currentTime);
+      val = state.bookmarks.findLast((val) => val < currentTime);
     }
 
     if (!val) return;

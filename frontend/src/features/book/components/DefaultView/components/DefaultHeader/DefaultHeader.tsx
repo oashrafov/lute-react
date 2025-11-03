@@ -13,6 +13,7 @@ import { HomeImageLink } from "../../../../../../components/common/HomeImageLink
 import { PageControls } from "./components/PageControls/PageControls";
 import { useBookContext } from "../../../../hooks/useBookContext";
 import type { BookDetail } from "../../../../api/types";
+import { useAudioQuery } from "../../../common/Player/hooks/useAudioQuery";
 import classes from "./DefaultHeader.module.css";
 
 interface DefaultHeader {
@@ -22,6 +23,7 @@ interface DefaultHeader {
 export function DefaultHeader({ book }: DefaultHeader) {
   const state = useRouterState();
   const { drawer } = useBookContext();
+  const audioSource = useAudioQuery(book);
   return (
     <>
       <Paper withBorder shadow="sm" className={`${classes.header} readpage`}>
@@ -40,9 +42,9 @@ export function DefaultHeader({ book }: DefaultHeader) {
 
         <PageControls book={book} />
       </Paper>
-      {book.audio && (
+      {book.audio && audioSource && (
         <Paper withBorder shadow="sm" className={classes.playerContainer}>
-          <Player audioData={book.audio} />
+          <Player audioData={book.audio} source={audioSource} />
         </Paper>
       )}
     </>

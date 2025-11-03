@@ -364,7 +364,15 @@ def get_audio(bookid):
     br = BookRepository(db.session)
     book = br.find(bookid)
     fname = os.path.join(dirname, book.audio_filename)
-    return send_file(fname, as_attachment=True, max_age=0)
+    try:
+        return send_file(fname, as_attachment=True, max_age=0)
+    except FileNotFoundError:
+        return (
+            jsonify(
+                {"error": f"Audio file not found: {fname.rsplit('useraudio\\')[-1]}"}
+            ),
+            404,
+        )
 
 
 @bp.route("/<int:bookid>/stats", methods=["GET"])

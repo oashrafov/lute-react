@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../../resources/constants";
 import { apiClient } from "../../../utils/apiClient";
 import { objToFormData } from "../../../utils/utils";
 import type {
@@ -26,6 +27,19 @@ export const api = {
 
   getPage(bookId: number, pageNum: number): Promise<Page> {
     return apiClient.get(`${BASE_URL}/${bookId}/pages/${pageNum}`);
+  },
+
+  async getAudio(bookId: number) {
+    const response = await fetch(`${API_BASE_URL}${BASE_URL}/${bookId}/audio`);
+
+    if (!response.ok) {
+      const data = await response.json();
+      console.warn(data.error);
+      throw new Error(data.error);
+    }
+
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
   },
 
   create(data: NewBookForm) {

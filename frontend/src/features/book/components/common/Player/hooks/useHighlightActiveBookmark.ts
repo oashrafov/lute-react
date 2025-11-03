@@ -7,13 +7,9 @@ export function useHighlightActiveBookmark() {
   useEffect(() => {
     function highlightActiveBookmark() {
       const rounded = parseFloat(audio.currentTime.toFixed(1));
-      state.bookmarks.map((bookmark) => {
-        if (bookmark === rounded) {
-          dispatch({ type: "bookmarkActive", payload: true });
-        } else {
-          dispatch({ type: "bookmarkActive", payload: false });
-        }
-      });
+      state.bookmarks.forEach((bookmark) =>
+        dispatch({ type: "bookmarkActive", payload: bookmark === rounded })
+      );
     }
 
     audio.addEventListener("timeupdate", highlightActiveBookmark);

@@ -1,4 +1,8 @@
-import { keepPreviousData, queryOptions } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  queryOptions,
+  skipToken,
+} from "@tanstack/react-query";
 import { api } from "./api";
 
 export const queries = {
@@ -28,6 +32,12 @@ export const queries = {
     queryOptions({
       queryKey: [...queries.bookPages(bookId), pageNum],
       queryFn: () => api.getPage(bookId, pageNum),
+      refetchOnWindowFocus: false,
+    }),
+  audio: (bookId?: number) =>
+    queryOptions({
+      queryKey: ["audio", bookId],
+      queryFn: bookId ? () => api.getAudio(bookId) : skipToken,
       refetchOnWindowFocus: false,
     }),
   bookForm: () =>

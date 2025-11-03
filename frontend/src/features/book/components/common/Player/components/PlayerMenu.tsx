@@ -10,15 +10,15 @@ export function PlayerMenu({ children }: { children: ReactNode }) {
       <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown>
-        <Menu.Item>
+        <Menu.Item component="div">
           <PlayerRateControls />
         </Menu.Item>
 
-        <Menu.Item>
+        <Menu.Item component="div">
           <PlayerBookmarkControls />
         </Menu.Item>
 
-        <Menu.Item>
+        <Menu.Item component="div">
           <PlayerSkipAmountSelect />
         </Menu.Item>
       </Menu.Dropdown>
