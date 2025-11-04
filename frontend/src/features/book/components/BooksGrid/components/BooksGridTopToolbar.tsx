@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ActionIcon,
   Group,
@@ -11,17 +11,17 @@ import {
 } from "@mantine/core";
 import {
   IconSearch,
-  IconSelector,
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons-react";
 import { queries } from "../../../../settings/api/queries";
+import type { Shelf } from "../../../resources/types";
 
 interface BooksGridTopToolbar {
   activeLang: string;
   setActiveLang: Dispatch<SetStateAction<string>>;
-  shelf: string;
-  onSetShelf: Dispatch<SetStateAction<string>>;
+  shelf: Shelf;
+  onSetShelf: Dispatch<SetStateAction<Shelf>>;
   sorting: string;
   onSetSorting: Dispatch<SetStateAction<string>>;
   sortingDirection: string;
@@ -44,60 +44,44 @@ export function BooksGridTopToolbar({
   onSetGlobalFilter,
   hasArchived,
 }: BooksGridTopToolbar) {
-  const { data: initial } = useQuery(queries.init());
+  const { data: initial } = useSuspenseQuery(queries.init());
 
-  const langFieldRSection = activeLang ? (
-    <InputClearButton onClick={() => setActiveLang("")} />
-  ) : (
-    <IconSelector size={16} />
-  );
+  const shelfSelectData = [
+    { label: "Show: Active", value: "active" },
+    {
+      label: "Show: All",
+      value: "all",
+      disabled: !hasArchived,
+    },
+    {
+      label: "Show: Archived",
+      value: "archived",
+      disabled: !hasArchived,
+    },
+  ] satisfies {
+    label: string;
+    value: Shelf;
+    disabled?: boolean;
+  }[];
 
-  const globalFilterFieldRSection = globalFilter && (
-    <InputClearButton onClick={() => onSetGlobalFilter("")} />
-  );
-
-  const sortingDirectionIcon =
-    sortingDirection === "desc" ? (
-      <IconSortDescending />
-    ) : (
-      <IconSortAscending />
-    );
-
-  const sortingFieldRSection = sorting ? (
-    <InputClearButton onClick={() => onSetSorting("")} />
-  ) : (
-    <IconSelector size={16} />
-  );
-
-  const shelfFieldRSection =
-    shelf !== "active" ? (
-      <InputClearButton onClick={() => onSetShelf("active")} />
-    ) : (
-      <IconSelector size={16} />
-    );
+  const sortSelectData = [
+    { value: "title", label: "Title" },
+    { value: "lastRead", label: "Last read date" },
+    { value: "wordCount", label: "Word count" },
+    { value: "status", label: "Status" },
+  ];
 
   return (
     <Group justify="space-between" align="center" wrap="nowrap">
       <Stack gap={5} flex={1} align="flex-start" maw={240}>
         <Select
           value={shelf}
-          onChange={(v) => onSetShelf(v ?? "")}
+          onChange={(v) => onSetShelf((v as Shelf) ?? "active")}
           placeholder="Shelf"
           allowDeselect={false}
-          data={[
-            { label: "Show: Active", value: "active" },
-            {
-              label: "Show: All",
-              value: "all",
-              disabled: !hasArchived,
-            },
-            {
-              label: "Show: Archived",
-              value: "archived",
-              disabled: !hasArchived,
-            },
-          ]}
-          rightSection={shelfFieldRSection}
+          data={shelfSelectData}
+          clearable
+          w="100%"
         />
 
         <Group gap={5} wrap="nowrap" align="center">
@@ -106,15 +90,9 @@ export function BooksGridTopToolbar({
             onChange={(v) => onSetSorting(v ?? "")}
             placeholder="Sort by"
             allowDeselect={false}
-            data={[
-              { value: "title", label: "Title" },
-              { value: "lastRead", label: "Last read date" },
-              { value: "wordCount", label: "Word count" },
-              { value: "status", label: "Status" },
-            ]}
-            rightSection={sortingFieldRSection}
+            data={sortSelectData}
+            clearable
           />
-
           <Tooltip
             label={`Sorting direction: ${sortingDirection}`}
             disabled={!sorting}>
@@ -126,18 +104,28 @@ export function BooksGridTopToolbar({
               onClick={() =>
                 onSetSortDirection((dir) => (dir === "desc" ? "asc" : "desc"))
               }>
-              {sortingDirectionIcon}
+              {sortingDirection === "desc" ? (
+                <IconSortDescending />
+              ) : (
+                <IconSortAscending />
+              )}
             </ActionIcon>
           </Tooltip>
         </Group>
       </Stack>
+
       <Stack gap={5} flex={1} align="flex-end" maw={240}>
         <TextInput
           placeholder="Search"
           value={globalFilter}
           onChange={(e) => onSetGlobalFilter(e.currentTarget.value)}
-          leftSection={<IconSearch />}
-          rightSection={globalFilterFieldRSection}
+          leftSection={<IconSearch size={16} />}
+          rightSection={
+            <InputClearButton
+              onClick={() => onSetGlobalFilter("")}
+              style={{ display: globalFilter ? undefined : "none" }}
+            />
+          }
           spellCheck={false}
           autoCapitalize="off"
           autoCorrect="off"
@@ -148,8 +136,9 @@ export function BooksGridTopToolbar({
           onChange={(v) => setActiveLang(v ?? "")}
           placeholder="All languages"
           allowDeselect={false}
-          data={initial?.languageChoices.map((language) => language.name)}
-          rightSection={langFieldRSection}
+          data={initial.languageChoices.map((language) => language.name)}
+          clearable
+          w="100%"
         />
       </Stack>
     </Group>

@@ -11,12 +11,13 @@ import {
 import type { MRT_Row } from "mantine-react-table";
 import { deleteBookConfirm } from "../../../../../resources/modals";
 import type { BooksListItem, EditAction } from "../../../api/types";
+import type { Shelf } from "../../../resources/types";
 import { mutation } from "../../../api/mutation";
 
 interface ActionsCell {
   row: MRT_Row<BooksListItem>;
   onEditedRow: Dispatch<SetStateAction<MRT_Row<BooksListItem> | null>>;
-  onSetShelf: Dispatch<SetStateAction<"all" | "active" | "archived">>;
+  onSetShelf: Dispatch<SetStateAction<Shelf>>;
 }
 
 export function ActionsCell({ row, onEditedRow, onSetShelf }: ActionsCell) {
@@ -25,10 +26,7 @@ export function ActionsCell({ row, onEditedRow, onSetShelf }: ActionsCell) {
 
   function handleEdit(id: number, data: EditAction) {
     editBookMutation.mutate(
-      {
-        id: id,
-        data: data,
-      },
+      { id, data },
       {
         onSuccess: (response) => {
           if (response.archivedCount === 0) {
@@ -36,6 +34,14 @@ export function ActionsCell({ row, onEditedRow, onSetShelf }: ActionsCell) {
           }
         },
       }
+    );
+  }
+
+  function handleOpenDeleteModal() {
+    modals.openConfirmModal(
+      deleteBookConfirm(row.original.title, () =>
+        deleteBookMutation.mutate(row.original.id)
+      )
     );
   }
 
@@ -74,13 +80,7 @@ export function ActionsCell({ row, onEditedRow, onSetShelf }: ActionsCell) {
         <Menu.Item
           color="red"
           leftSection={<IconTrash size={20} />}
-          onClick={() =>
-            modals.openConfirmModal(
-              deleteBookConfirm(row.original.title, () =>
-                deleteBookMutation.mutate(row.original.id)
-              )
-            )
-          }>
+          onClick={handleOpenDeleteModal}>
           Delete
         </Menu.Item>
       </Menu.Dropdown>

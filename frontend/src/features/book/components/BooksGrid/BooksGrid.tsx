@@ -13,6 +13,7 @@ import { BookCards } from "./components/BookCards";
 import { TABLE_PAGE_SIZE } from "../../../../resources/constants";
 import { useMediaQuery } from "../../../../hooks/useMediaQuery";
 import { queries } from "../../api/queries";
+import type { Shelf } from "../../resources/types";
 
 const PAGINATION = {
   pageIndex: 0,
@@ -22,7 +23,7 @@ const PAGINATION = {
 export function BooksGrid() {
   const media = useMediaQuery();
 
-  const [shelf, setShelf] = useState("active");
+  const [shelf, setShelf] = useState<Shelf>("active");
   const [activePage, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGINATION.pageSize);
   const [activeLang, setActiveLang] = useState("");
@@ -60,7 +61,7 @@ export function BooksGrid() {
         onSetSortDirection={setSortDirection}
         globalFilter={globalFilter}
         onSetGlobalFilter={setGlobalFilter}
-        hasArchived={data.archivedCount > 0 ? true : false}
+        hasArchived={data.archivedCount > 0}
       />
 
       <SimpleGrid cols={{ base: 1, xs: 2 }} mt={20}>

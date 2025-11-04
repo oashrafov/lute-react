@@ -27,8 +27,8 @@ import { TABLE_PAGE_SIZE } from "../../../../resources/constants";
 import { queries as settingsQueries } from "../../../settings/api/queries";
 import { queries as bookQueries } from "../../api/queries";
 import type { BooksListItem } from "../../api/types";
+import type { Shelf } from "../../resources/types";
 
-type Shelf = "active" | "archived" | "all";
 type RowPinning = { top?: string[]; bottom?: string[] };
 
 const icons = {
@@ -181,8 +181,6 @@ export const BooksTable = memo(function BooksTable() {
       </TableTopToolbar>
     ),
   });
-
-  // if (!books) return;
 
   return (
     <>

@@ -14,13 +14,14 @@ import { TitleCell } from "./components/TitleCell";
 import { ActionsCell } from "./components/ActionsCell";
 import type { BooksListItem } from "../../api/types";
 import type { LanguageChoice } from "../../../settings/api/types";
+import type { Shelf } from "../../resources/types";
 
 export const columnDefinition = (
   languageChoices: LanguageChoice[],
   tagChoices: string[],
   onSetColumnFilters: Dispatch<SetStateAction<MRT_ColumnFiltersState>>,
   setEditedRow: Dispatch<SetStateAction<MRT_Row<BooksListItem> | null>>,
-  setShelf: Dispatch<SetStateAction<"all" | "active" | "archived">>
+  setShelf: Dispatch<SetStateAction<Shelf>>
 ): MRT_ColumnDef<BooksListItem>[] => [
   {
     header: "TITLE",

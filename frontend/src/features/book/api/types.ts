@@ -85,7 +85,7 @@ export interface Page {
 }
 
 export interface EditAction {
-  action: "active" | "archive" | "unarchive" | "markAsStale" | "edit";
+  action: "active" | "archive" | "unarchive" | "edit";
 }
 
 export interface NewBookForm {

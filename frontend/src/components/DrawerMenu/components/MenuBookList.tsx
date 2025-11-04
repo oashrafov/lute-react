@@ -1,20 +1,12 @@
-import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Box,
-  Button,
-  Group,
-  ScrollArea,
-  Text,
-  TextInput,
-  ThemeIcon,
-  Tooltip,
-} from "@mantine/core";
-import { IconCircleCheckFilled, IconSearch } from "@tabler/icons-react";
+import { Box, ScrollArea, TextInput } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
 import { useBookContext } from "../../../features/book/hooks/useBookContext";
 import { queries } from "../../../features/book/api/queries";
+import { BookLinkButton } from "./BookLinkButton";
+import type { Shelf } from "../../../features/book/resources/types";
 
-const searchParams = new URLSearchParams({ shelf: "active" });
+const searchParams = new URLSearchParams({ shelf: "active" as Shelf });
 
 export function MenuBookList() {
   const { drawer } = useBookContext();
@@ -35,35 +27,14 @@ export function MenuBookList() {
         <ul style={{ listStyle: "none" }}>
           {data?.data.map((book) => (
             <li key={book.id}>
-              <Tooltip label={book.title} openDelay={200}>
-                <Button
-                  mb={2}
-                  fullWidth
-                  variant="subtle"
-                  size="compact-sm"
-                  onClick={drawer.close}
-                  styles={{ inner: { justifyContent: "flex-start" } }}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                  renderRoot={(props) => (
-                    <Link
-                      to="/books/$bookId/pages/$pageNum"
-                      params={{ bookId: book.id, pageNum: book.currentPage }}
-                      {...props}
-                    />
-                  )}>
-                  <Group wrap="nowrap" gap={5}>
-                    <ThemeIcon
-                      size="sm"
-                      color={book.isCompleted ? "green.6" : "dark.1"}
-                      variant="transparent">
-                      <IconCircleCheckFilled />
-                    </ThemeIcon>
-                    <Text fz="sm" lineClamp={1} truncate>
-                      {book.title}
-                    </Text>
-                  </Group>
-                </Button>
-              </Tooltip>
+              <BookLinkButton
+                onClick={drawer.close}
+                bookId={book.id}
+                pageNum={book.currentPage}
+                tooltip={book.title}
+                isBookCompleted={book.isCompleted}>
+                {book.title}
+              </BookLinkButton>
             </li>
           ))}
         </ul>

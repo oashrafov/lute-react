@@ -69,7 +69,7 @@ export function Player({ audioData, source }: Player) {
       </Group>
 
       <Group justify="space-between" flex={1} wrap="nowrap" gap={5}>
-        <Text fz="xs" component="span" miw={50} ta="center">
+        <Text fz="xs" component="span" miw={50} ta="left">
           {convertSecsToDisplayString(time)}
         </Text>
         {/* TIME SLIDER */}
@@ -89,7 +89,7 @@ export function Player({ audioData, source }: Player) {
           size="md"
           thumbSize={12}
         />
-        <Text fz="xs" component="span" miw={50} ta="center">
+        <Text fz="xs" component="span" miw={50} ta="right">
           {convertSecsToDisplayString(duration)}
         </Text>
       </Group>
