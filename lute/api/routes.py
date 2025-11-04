@@ -84,20 +84,26 @@ def get_backup_list():
 
     bs = _get_backup_settings()
     service = BackupService(db.session)
-    backups = service.list_backups(bs.backup_dir)
-    backups.sort(reverse=True)
 
-    return {
-        "backups": [
-            {
-                "name": backup.name,
-                "size": backup.size,
-                "lastModified": backup.last_modified.strftime("%Y-%m-%d %H:%M:%S"),
-            }
-            for backup in backups
-        ],
-        "directory": bs.backup_dir,
-    }
+    try:
+        backups = service.list_backups(bs.backup_dir)
+        backups.sort(reverse=True)
+        return {
+            "backups": [
+                {
+                    "name": backup.name,
+                    "size": backup.size,
+                    "lastModified": backup.last_modified.strftime("%Y-%m-%d %H:%M:%S"),
+                }
+                for backup in backups
+            ],
+            "directory": bs.backup_dir,
+        }
+    except FileNotFoundError:
+        return {
+            "backups": [],
+            "directory": bs.backup_dir,
+        }
 
 
 @bp.route("/settings/form", methods=["GET"])
