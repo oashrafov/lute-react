@@ -1,6 +1,6 @@
 import { useMemo, useState, type CSSProperties } from "react";
 import { useSearch } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Modal } from "@mantine/core";
 import {
   MantineReactTable,
@@ -77,7 +77,7 @@ export function TermsTable() {
     sorting: JSON.stringify(sorting ?? []),
   });
 
-  const response = useSuspenseQuery(termQueries.list(searchParams.toString()));
+  const { data } = useQuery(termQueries.list(searchParams.toString()));
 
   const handleSaveRow = async ({
     table,
@@ -107,7 +107,6 @@ export function TermsTable() {
     setShowParentsOnly((v) => !v);
   }
 
-  const data = response.data;
   const table = useMantineReactTable({
     ...defaultOptions,
 

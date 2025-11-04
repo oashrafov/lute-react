@@ -1,5 +1,5 @@
 import { memo, useMemo, useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Box, Modal, SegmentedControl } from "@mantine/core";
 import {
   MantineReactTable,
@@ -100,16 +100,14 @@ export const BooksTable = memo(function BooksTable() {
     sorting: JSON.stringify(sorting ?? []),
   });
 
-  const { data: books } = useSuspenseQuery(
-    bookQueries.list(searchParams.toString())
-  );
+  const { data: books } = useQuery(bookQueries.list(searchParams.toString()));
 
   const table = useMantineReactTable({
     ...defaultOptions,
 
     columns: columns,
-    data: books.data || [],
-    rowCount: books.filteredCount,
+    data: books?.data ?? [],
+    rowCount: books?.filteredCount,
 
     initialState: {
       ...defaultOptions.initialState,
@@ -147,7 +145,7 @@ export const BooksTable = memo(function BooksTable() {
 
     renderEmptyRowsFallback: ({ table }) => {
       const language = table.getColumn("language").getFilterValue() as string;
-      const isLanguageFiltered = language.length > 0;
+      const isLanguageFiltered = language?.length > 0;
       return isLanguageFiltered ? (
         <EmptyRow tableName="books" language={language} />
       ) : null;
@@ -164,12 +162,12 @@ export const BooksTable = memo(function BooksTable() {
             {
               label: "All",
               value: "all",
-              disabled: books.archivedCount === 0,
+              disabled: books?.archivedCount === 0,
             },
             {
               label: "Archived",
               value: "archived",
-              disabled: books.archivedCount === 0,
+              disabled: books?.archivedCount === 0,
             },
           ]}
         />
@@ -184,7 +182,7 @@ export const BooksTable = memo(function BooksTable() {
     ),
   });
 
-  if (!books) return;
+  // if (!books) return;
 
   return (
     <>
