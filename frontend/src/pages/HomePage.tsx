@@ -26,7 +26,7 @@ export function HomePage() {
       {initial.haveBooks && (
         <PageContainer>
           <PageTitle>Books</PageTitle>
-          {media === "desktop" ? <BooksTable /> : <BooksGrid />}
+          {!media || media === "desktop" ? <BooksTable /> : <BooksGrid />}
         </PageContainer>
       )}
     </>

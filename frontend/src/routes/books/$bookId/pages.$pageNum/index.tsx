@@ -34,7 +34,7 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
       bookData = await context.queryClient.ensureQueryData(
         bookQueries.detail(params.bookId)
       );
-    } catch (_) {
+    } catch {
       redirect({
         throw: true,
         to: "/",

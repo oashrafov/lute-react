@@ -24,7 +24,8 @@ export function BookLinkButton({
   pageNum,
   tooltip,
   isBookCompleted,
-  ...props
+  children,
+  ...rest
 }: BookLinkButton) {
   return (
     <Tooltip label={tooltip} openDelay={200}>
@@ -42,7 +43,7 @@ export function BookLinkButton({
             {...props}
           />
         )}
-        {...props}>
+        {...rest}>
         <Group wrap="nowrap" gap={5}>
           <ThemeIcon
             size="sm"
@@ -51,7 +52,7 @@ export function BookLinkButton({
             <IconCircleCheckFilled />
           </ThemeIcon>
           <Text fz="sm" lineClamp={1} truncate>
-            {props.children}
+            {children}
           </Text>
         </Group>
       </Button>

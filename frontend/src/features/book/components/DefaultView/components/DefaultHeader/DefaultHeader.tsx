@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { IconMenu2 } from "@tabler/icons-react";
 import { Player } from "../../../common/Player/Player";
-import { HomeImageLink } from "../../../../../../components/common/HomeImageLink/HomeImageLink";
+import { NavLogo } from "../../../../../../components/common/NavLogo/NavLogo";
 import { PageControls } from "./components/PageControls/PageControls";
 import { useBookContext } from "../../../../hooks/useBookContext";
 import type { BookDetail } from "../../../../api/types";
@@ -34,7 +34,7 @@ export function DefaultHeader({ book }: DefaultHeader) {
 
           <Center className={classes.logoContainer}>
             {state.status === "pending" && <Loader size="sm" />}
-            {state.status === "idle" && <HomeImageLink size={48} />}
+            {state.status === "idle" && <NavLogo />}
           </Center>
 
           <Divider orientation="vertical" />
@@ -42,9 +42,9 @@ export function DefaultHeader({ book }: DefaultHeader) {
 
         <PageControls book={book} />
       </Paper>
-      {book.audio && audioSource && (
+      {book.audio && (
         <Paper withBorder shadow="sm" className={classes.playerContainer}>
-          <Player audioData={book.audio} source={audioSource} />
+          <Player source={audioSource} />
         </Paper>
       )}
     </>

@@ -10,7 +10,7 @@ export function HighlightsSwitch() {
       icon={IconHighlight}
       id="highlightsSwitch"
       defaultChecked={getFromLocalStorage("Lute.highlights", true)}
-      onChange={(e) => handleSetHighlights(Boolean(e.currentTarget.checked))}
+      onChange={(e) => handleSetHighlights(e.currentTarget.checked)}
     />
   );
 }

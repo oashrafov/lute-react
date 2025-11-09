@@ -1,6 +1,6 @@
 import { Divider, Paper, Stack } from "@mantine/core";
 import { Player } from "../../../common/Player/Player";
-import { HomeImageLink } from "../../../../../../components/common/HomeImageLink/HomeImageLink";
+import { NavLogo } from "../../../../../../components/common/NavLogo/NavLogo";
 import { BookTitle } from "../../../common/BookTitle";
 import { ThemeSelect } from "../../../../../../components/common/ThemeSelect/ThemeSelect";
 import { PageCounter } from "../../../common/PageCounter";
@@ -25,7 +25,7 @@ export function FocusHeader({ book }: FocusHeader) {
       shadow="sm"
       className={classes.header}
       h={FOCUS_HEADER_HEIGHT}>
-      <HomeImageLink size={48} />
+      <NavLogo />
 
       <Divider orientation="vertical" />
 
@@ -44,7 +44,7 @@ export function FocusHeader({ book }: FocusHeader) {
         </div>
         {book.audio && audioSource && (
           <div style={{ paddingInline: "1rem" }}>
-            <Player audioData={book.audio} source={audioSource} />
+            <Player source={audioSource} />
           </div>
         )}
       </Stack>

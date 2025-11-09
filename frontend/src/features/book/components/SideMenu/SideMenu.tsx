@@ -8,7 +8,7 @@ import { DrawerMenu } from "../../../../components/DrawerMenu/DrawerMenu";
 export function SideMenu() {
   const { drawer } = useBookContext();
   return (
-    <DrawerMenu isOpen={drawer.isOpen} onClose={drawer.close}>
+    <DrawerMenu opened={drawer.isOpen} onClose={drawer.close}>
       <Actions />
       <SegmentedSection />
       <Divider />

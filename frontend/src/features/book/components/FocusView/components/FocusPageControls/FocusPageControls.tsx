@@ -18,7 +18,7 @@ interface FocusPageControls {
 
 export function FocusPageControls({ book, show }: FocusPageControls) {
   const { pageNum } = route.useParams();
-  const { goToNextPage, goToPreviousPage } = usePageControl();
+  const { goToNextPage, goToPreviousPage, markPageAsRead } = usePageControl();
 
   return (
     <>
@@ -46,7 +46,7 @@ export function FocusPageControls({ book, show }: FocusPageControls) {
         <Stack style={{ translate: "0 -50%" }} gap={5}>
           <ActionIcon
             color="orange"
-            onClick={goToNextPage}
+            onClick={markPageAsRead}
             disabled={book.pageCount === 1}
             variant="light"
             size="xl">

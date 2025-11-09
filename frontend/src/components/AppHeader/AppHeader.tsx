@@ -1,6 +1,6 @@
-import { HomeImageLink } from "../common/HomeImageLink/HomeImageLink";
-import { Box, Group, Portal } from "@mantine/core";
+import { Box, Group, Portal, Title } from "@mantine/core";
 import { useHeadroom } from "@mantine/hooks";
+import { NavLogo } from "../common/NavLogo/NavLogo";
 import { NavigationBar } from "../NavigationBar/NavigationBar";
 import { BurgerButton } from "../BurgerButton/BurgerButton";
 import { ThemeSelect } from "../common/ThemeSelect/ThemeSelect";
@@ -19,11 +19,13 @@ export function AppHeader() {
           transform: `translate3d(0, ${pinned ? 0 : "-110px"}, 0)`,
         }}>
         <Group wrap="nowrap">
-          <HomeImageLink size={54} />
-          <h1>Lute</h1>
+          <NavLogo size={54} />
+          <Title c="#212529" fw={600}>
+            Lute
+          </Title>
         </Group>
         <NavigationBar visibleFrom="md" />
-        <Box ml={media === "desktop" ? "unset" : "auto"}>
+        <Box ml={media === "desktop" ? undefined : "auto"}>
           <ThemeSelect />
         </Box>
         <BurgerButton hiddenFrom="md" />

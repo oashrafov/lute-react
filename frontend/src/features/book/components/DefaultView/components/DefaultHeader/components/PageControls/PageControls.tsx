@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { getRouteApi } from "@tanstack/react-router";
-import { ActionIcon, Divider, Group, Stack, Tooltip } from "@mantine/core";
+import { Divider, Group, Stack, Tooltip } from "@mantine/core";
 import {
-  IconBracketsContain,
   IconRosetteDiscountCheckFilled,
   IconSquareRoundedCheckFilled,
   IconSquareRoundedChevronLeftFilled,
   IconSquareRoundedChevronRightFilled,
-  IconTypography,
 } from "@tabler/icons-react";
 import { BookmarksButton } from "../../../../../common/BookmarksButton";
 import { BookmarksMenu } from "../../../../../common/BookmarksMenu";
@@ -18,10 +16,10 @@ import { FocusSwitch } from "../../../../../common/FocusSwitch/FocusSwitch";
 import { HighlightsSwitch } from "../../../../../common/HighlightSwitch/HighlightSwitch";
 import { PageSlider } from "../PageSlider";
 import { EditButton } from "../EditButton";
+import { PageTermsButton } from "../PageTermsButton";
 import { PageActionButton } from "../PageActionButton";
 import { Toolbar } from "../../../Toolbar/Toolbar";
 import { usePageControl } from "../../../../../../hooks/usePageControl";
-import { getWords } from "../../../../../../../../helpers/text";
 import type { BookDetail } from "../../../../../../api/types";
 import classes from "./PageControls.module.css";
 
@@ -33,8 +31,6 @@ interface PageControls {
 
 export function PageControls({ book }: PageControls) {
   const { pageNum } = route.useParams();
-  const navigate = route.useNavigate();
-
   const [changeVal, setChangeVal] = useState(pageNum);
 
   const {
@@ -45,20 +41,12 @@ export function PageControls({ book }: PageControls) {
     markRestAsKnown,
   } = usePageControl(setChangeVal);
 
-  async function handleOpenTermsTable() {
-    const termIds = getWords().map((word) => Number(word.dataset.wordId));
-    navigate({ search: (prev) => ({ ...prev, termIds: termIds }) });
+  let pageReadLabel = "Mark page as read";
+  let PageReadIcon = IconSquareRoundedCheckFilled;
+  if (pageNum !== book.pageCount) {
+    pageReadLabel += " and go to next page";
+    PageReadIcon = IconSquareRoundedChevronRightFilled;
   }
-
-  const pageReadLabel =
-    pageNum === book.pageCount
-      ? "Mark page as read"
-      : "Mark page as read and go to next page";
-
-  const PageReadIcon =
-    pageNum === book.pageCount
-      ? IconSquareRoundedCheckFilled
-      : IconSquareRoundedChevronRightFilled;
 
   return (
     <>
@@ -70,16 +58,8 @@ export function PageControls({ book }: PageControls) {
       <Divider orientation="vertical" />
 
       <Stack gap={2}>
-        <Toolbar>
-          <ActionIcon size="sm" variant="subtle">
-            <IconTypography />
-          </ActionIcon>
-        </Toolbar>
-        <Tooltip label="Open table with current page terms">
-          <ActionIcon size="sm" variant="subtle" onClick={handleOpenTermsTable}>
-            <IconBracketsContain />
-          </ActionIcon>
-        </Tooltip>
+        <Toolbar />
+        <PageTermsButton />
       </Stack>
 
       <Divider orientation="vertical" />
