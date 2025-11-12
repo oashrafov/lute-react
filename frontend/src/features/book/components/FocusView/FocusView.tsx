@@ -35,7 +35,7 @@ export function FocusView() {
 
   return (
     <>
-      <Stack gap={0}>
+      <Stack gap={0} h="100vh">
         <Transition transition="slide-down" mounted={show}>
           {(styles) => (
             <Box style={styles}>
