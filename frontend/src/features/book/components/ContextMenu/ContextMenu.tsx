@@ -54,10 +54,18 @@ export function ContextMenu({ areaRef }: ContextMenu) {
   });
 
   async function handleRightClick(
-    item: (typeof menu)[number]["items"][number]
+    action: (textitem: TextitemElement) =>
+      | {
+          text: string;
+          textitems: TextitemElement[];
+        }
+      | Promise<{
+          text: string;
+          textitems: TextitemElement[];
+        }>
   ) {
     if (selectedTextItemRef.current) {
-      const { textitems } = await item.action(selectedTextItemRef.current);
+      const { textitems } = await action(selectedTextItemRef.current);
       if (textitems) {
         makeFlashing(textitems);
         clearAllFlashing();
@@ -96,20 +104,17 @@ export function ContextMenu({ areaRef }: ContextMenu) {
                 <Menu.Label>
                   <Divider label={section.label} labelPosition="left" />
                 </Menu.Label>
-                {section.items.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Menu.Item
-                      key={item.label}
-                      py={4}
-                      onClick={() => handleRightClick(item)}
-                      leftSection={<Icon size="1rem" />}>
-                      <Text span fz="xs">
-                        {item.label}
-                      </Text>
-                    </Menu.Item>
-                  );
-                })}
+                {section.items.map(({ label, icon: Icon, action }) => (
+                  <Menu.Item
+                    key={label}
+                    py={4}
+                    onClick={() => handleRightClick(action)}
+                    leftSection={<Icon size="1rem" />}>
+                    <Text span fz="xs">
+                      {label}
+                    </Text>
+                  </Menu.Item>
+                ))}
               </Fragment>
             ))}
           </Menu.Dropdown>

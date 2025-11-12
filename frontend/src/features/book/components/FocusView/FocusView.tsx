@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Box, Paper, Transition } from "@mantine/core";
+import { Box, Paper, ScrollArea, Stack, Transition } from "@mantine/core";
 import { FocusPageControls } from "./components/FocusPageControls/FocusPageControls";
 import { FocusToolbar } from "./components/FocusToolbar/FocusToolbar";
 import { FocusHeader } from "./components/FocusHeader/FocusHeader";
 import { FloatingContainer } from "../common/FloatingContainer/FloatingContainer";
 import { DictTabs } from "../../../language/components/DictTabs/DictTabs";
-import { PagePane } from "../PagePane/PagePane";
-import { FOCUS_HEADER_HEIGHT } from "../../../../resources/constants";
+import { ContextMenuArea } from "../ContextMenuArea/ContextMenuArea";
 import { useView } from "../../hooks/useView";
 import { TermForm } from "../../../term/components/TermForm/TermForm";
+import { TheTextContainer } from "../TheTextContainer/TheTextContainer";
 import { useBookQuery } from "../../hooks/useBookQuery";
 import { useTermQuery } from "../../../term/hooks/useTermQuery";
 import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
@@ -35,17 +35,27 @@ export function FocusView() {
 
   return (
     <>
-      <FloatingContainer transition="slide-down" show={show} w="100%">
-        <FocusHeader book={book} />
-      </FloatingContainer>
+      <Stack gap={0}>
+        <Transition transition="slide-down" mounted={show}>
+          {(styles) => (
+            <Box style={styles}>
+              <FocusHeader book={book} />
+            </Box>
+          )}
+        </Transition>
 
-      <Transition transition="fade" mounted={show}>
-        {(styles) => (
-          <Box style={{ ...styles, marginTop: FOCUS_HEADER_HEIGHT }}>
-            <PagePane />
-          </Box>
-        )}
-      </Transition>
+        <ScrollArea flex={1}>
+          <Transition transition="fade" mounted={show}>
+            {(styles) => (
+              <Box style={{ ...styles }}>
+                <ContextMenuArea>
+                  <TheTextContainer />
+                </ContextMenuArea>
+              </Box>
+            )}
+          </Transition>
+        </ScrollArea>
+      </Stack>
 
       <FloatingContainer
         show={show}

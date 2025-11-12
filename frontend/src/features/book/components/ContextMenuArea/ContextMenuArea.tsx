@@ -1,11 +1,14 @@
-import { useRef, type MouseEvent } from "react";
-import { ScrollArea } from "@mantine/core";
-import { TheTextContainer } from "../TheTextContainer/TheTextContainer";
+import { useRef, type MouseEvent, type ReactNode } from "react";
+import { Box } from "@mantine/core";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
 import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
 import { hasClickedOutsideText } from "../../../../helpers/interactions-desktop";
 
-export function PagePane() {
+interface ContextMenuArea {
+  children: ReactNode;
+}
+
+export function ContextMenuArea({ children }: ContextMenuArea) {
   const { clearActiveTerm } = useActiveTermContext();
   const contextMenuAreaRef = useRef(null);
 
@@ -18,13 +21,9 @@ export function PagePane() {
   return (
     <>
       <ContextMenu areaRef={contextMenuAreaRef} />
-      <ScrollArea
-        type="scroll"
-        flex={1}
-        onMouseDown={handleClickOutside}
-        ref={contextMenuAreaRef}>
-        <TheTextContainer />
-      </ScrollArea>
+      <Box onMouseDown={handleClickOutside} ref={contextMenuAreaRef}>
+        {children}
+      </Box>
     </>
   );
 }

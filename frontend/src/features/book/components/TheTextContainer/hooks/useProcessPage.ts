@@ -6,12 +6,9 @@ const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
 export function useProcessPage() {
   const { bookId, pageNum } = route.useParams();
-  const processPageMutation = mutation.useProcessPage();
+  const { mutate, isSuccess } = mutation.useProcessPage();
 
-  useEffect(
-    () => processPageMutation.mutate({ bookId, pageNum }),
-    [bookId, processPageMutation.mutate, pageNum]
-  );
+  useEffect(() => mutate({ bookId, pageNum }), [bookId, mutate, pageNum]);
 
-  return processPageMutation.isSuccess;
+  return isSuccess;
 }
