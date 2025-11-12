@@ -57,9 +57,6 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
       context.queryClient.ensureQueryData(
         bookQueries.page(params.bookId, params.pageNum)
       ),
-      context.queryClient.ensureQueryData(
-        bookQueries.audioSrc(bookData.audio?.id)
-      ),
       context.queryClient.ensureQueryData(settingsQueries.settingsForm()),
       context.queryClient.ensureQueryData(settingsQueries.shortcuts()),
       context.queryClient.ensureQueryData(settingsQueries.appInfo()),

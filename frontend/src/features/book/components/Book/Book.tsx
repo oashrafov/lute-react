@@ -3,8 +3,8 @@ import { useSetupShortcuts } from "../../hooks/useSetupShortcuts";
 import { DefaultView } from "../DefaultView/DefaultView";
 import { EditView } from "../EditView/EditView";
 import { FocusView } from "../FocusView/FocusView";
-import { PageSpinner } from "../../../../components/common/PageSpinner/PageSpinner";
 import { PlayerProvider } from "../common/Player/store/playerContext";
+import { AudioDataProvider } from "../common/Player/store/audioDataContext";
 import { useApplyInitialView } from "../../hooks/useApplyInitialView";
 
 export function Book() {
@@ -13,14 +13,16 @@ export function Book() {
   useSetupShortcuts();
 
   if (!isSuccess) {
-    return <PageSpinner />;
+    return null;
   }
 
   return (
     <>
       <PlayerProvider>
-        <DefaultView />
-        <FocusView />
+        <AudioDataProvider>
+          <DefaultView />
+          <FocusView />
+        </AudioDataProvider>
       </PlayerProvider>
       <EditView />
     </>
