@@ -161,6 +161,7 @@ def get_book(bookid):
         "textDirection": "rtl" if book.language.right_to_left else "ltr",
         "audio": (
             {
+                "id": book.id,
                 "name": book.audio_filename,
                 "position": (
                     float(book.audio_current_pos) if book.audio_current_pos else 0
@@ -288,14 +289,21 @@ def edit_book(bookid):
 
         return {"id": book.id, "title": book.title}, 200
 
-    # if action == "markAsStale":
-    #     book = _find_book(bookid)
-    #     if book is None:
-    #         return jsonify("No such book"), 404
+    if action == "updateAudioData":
+        book = _find_book(bookid)
+        position = data.get("position")
+        bookmarks = data.get("bookmarks")
 
-    #     _mark_book_as_stale(book)
+        if position:
+            book.audio_current_pos = float(position)
+        if bookmarks:
+            book.audio_bookmarks = bookmarks
 
-    #     return {"id": book.id, "title": book.title}, 200
+        if position or bookmarks:
+            db.session.add(book)
+            db.session.commit()
+
+        return {"id": book.id, "title": book.title}, 200
 
     return "", 400
 
@@ -418,12 +426,6 @@ def _find_book(bookid):
     "Find book from db."
     br = BookRepository(db.session)
     return br.find(bookid)
-
-
-def _mark_book_as_stale(dbbook):
-    "mark as stale"
-    svc = StatsService(db.session)
-    svc.mark_stale(dbbook)
 
 
 def _commit_session(dbbook, text, track_page_open=False):

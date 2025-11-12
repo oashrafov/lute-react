@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { ActionIcon, ActionIconGroup, InputLabel, Stack } from "@mantine/core";
 import {
   IconBookmark,
@@ -6,36 +7,55 @@ import {
   IconChevronRight,
 } from "@tabler/icons-react";
 import { usePlayerContext } from "../hooks/usePlayerContext";
+import { useAudioDataContext } from "../hooks/useAudioDataContext";
+import { useUpdateAudioMutate } from "../hooks/useUpdateAudioMutate";
 import classes from "../Player.module.css";
 
 export function PlayerBookmarkControls() {
-  const { state, dispatch, audio } = usePlayerContext();
+  const { player } = usePlayerContext();
+  const audioData = useAudioDataContext();
+  const [isBookmarkActive, setIsBookmarkActive] = useState(false);
+  const mutateAudioData = useUpdateAudioMutate();
+
+  const bookmarks = useMemo(() => audioData.bookmarks, [audioData.bookmarks]);
 
   function handleSaveRemoveBookmark() {
-    const roundedTime = parseFloat(audio.currentTime.toFixed(1));
-
-    if (state.bookmarks.includes(roundedTime)) {
-      dispatch({ type: "bookmarkRemoved", payload: roundedTime });
+    let newBookmarks = [];
+    const rounded = parseFloat(player.currentTime.toFixed(1));
+    if (bookmarks.includes(rounded)) {
+      newBookmarks = bookmarks.filter((b) => b !== rounded);
     } else {
-      dispatch({ type: "bookmarkSaved", payload: roundedTime });
+      newBookmarks = [...bookmarks, rounded].sort((a, b) => a - b);
     }
+
+    mutateAudioData(audioData.id, newBookmarks.join(";"));
   }
 
   function handleSkipToBookmark(direction: "next" | "prev") {
     let val;
-    const currentTime = audio.currentTime;
-
+    const currentTime = player.currentTime;
     if (direction === "next") {
-      val = state.bookmarks.find((val) => val > currentTime);
+      val = bookmarks.find((val) => val > currentTime);
     } else {
-      val = state.bookmarks.findLast((val) => val < currentTime);
+      val = bookmarks.findLast((val) => val < currentTime);
     }
 
     if (!val) return;
 
-    audio.currentTime = val;
-    dispatch({ type: "timeChanged", payload: val });
+    player.currentTime = val;
+    mutateAudioData(audioData.id, undefined, val);
   }
+
+  useEffect(() => {
+    function highlightActiveBookmark() {
+      const rounded = parseFloat(player.currentTime.toFixed(1));
+      setIsBookmarkActive(bookmarks.includes(rounded));
+    }
+
+    player.addEventListener("timeupdate", highlightActiveBookmark);
+    return () =>
+      player.removeEventListener("timeupdate", highlightActiveBookmark);
+  }, [bookmarks, player]);
 
   return (
     <Stack gap={0} align="center">
@@ -47,18 +67,18 @@ export function PlayerBookmarkControls() {
           variant="transparent"
           onClick={handleSaveRemoveBookmark}
           styles={{ root: { border: "none" } }}>
-          {state.bookmarkActive ? <IconBookmarkFilled /> : <IconBookmark />}
+          {isBookmarkActive ? <IconBookmarkFilled /> : <IconBookmark />}
         </ActionIcon>
         <ActionIconGroup>
           <ActionIcon
-            disabled={state.bookmarks.length === 0}
+            disabled={bookmarks.length === 0}
             onClick={() => handleSkipToBookmark("prev")}
             radius="50%"
             size="sm">
             <IconChevronLeft />
           </ActionIcon>
           <ActionIcon
-            disabled={state.bookmarks.length === 0}
+            disabled={bookmarks.length === 0}
             onClick={() => handleSkipToBookmark("next")}
             radius="50%"
             size="sm">

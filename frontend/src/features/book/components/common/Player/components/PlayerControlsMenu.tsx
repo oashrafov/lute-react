@@ -1,17 +1,21 @@
 import type { ReactNode } from "react";
 import { Menu } from "@mantine/core";
-import { PlayerRateControls } from "./PlayerRateControls";
+import { PlaybackRateControls } from "./PlaybackRateControls";
 import { PlayerBookmarkControls } from "./PlayerBookmarkControls";
-import { PlayerSkipAmountSelect } from "./PlayerSkipAmountSelect";
+import { SkipAmountSelect } from "./SkipAmountSelect";
 
-export function PlayerMenu({ children }: { children: ReactNode }) {
+interface PlayerControlsMenu {
+  children: ReactNode;
+}
+
+export function PlayerControlsMenu({ children }: PlayerControlsMenu) {
   return (
     <Menu position="bottom" offset={0} shadow="md" closeOnItemClick={false}>
       <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown>
         <Menu.Item component="div">
-          <PlayerRateControls />
+          <PlaybackRateControls />
         </Menu.Item>
 
         <Menu.Item component="div">
@@ -19,7 +23,7 @@ export function PlayerMenu({ children }: { children: ReactNode }) {
         </Menu.Item>
 
         <Menu.Item component="div">
-          <PlayerSkipAmountSelect />
+          <SkipAmountSelect />
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

@@ -12,7 +12,7 @@ export const MAX_TERM_SUGGESTIONS = 15;
 export const TERM_SUGGESTION_STR_MAX_LEN = 70;
 export const MIN_LANGUAGE_DICTS = 2;
 export const TABLE_PAGE_SIZE = 10;
-export const FOCUS_HEADER_HEIGHT = 80;
+export const AUDIO_SKIP_VALUES = [3, 5, 10, 30, 60];
 export const CSS_VAR = {
   fontSize: "--lute-text-font-size",
   lineHeight: "--lute-text-line-height",

@@ -1,19 +1,13 @@
-import { useRouterState } from "@tanstack/react-router";
-import {
-  ActionIcon,
-  Center,
-  Divider,
-  Group,
-  Loader,
-  Paper,
-} from "@mantine/core";
-import { IconMenu2 } from "@tabler/icons-react";
-import { Player } from "../../../common/Player/Player";
-import { NavLogo } from "../../../../../../components/common/NavLogo/NavLogo";
+import { Box, Divider, Group, Paper, Stack } from "@mantine/core";
 import { PageControls } from "./components/PageControls/PageControls";
-import { useBookContext } from "../../../../hooks/useBookContext";
+import { PlayerSection } from "../../../common/PlayerSection";
+import { LogoSection } from "./components/LogoSection/LogoSection";
+import { SideMenuButton } from "./components/SideMenuButton";
+import { FocusSwitch } from "../../../common/FocusSwitch/FocusSwitch";
+import { HighlightsSwitch } from "../../../common/HighlightSwitch/HighlightSwitch";
+import { Toolbar } from "../Toolbar/Toolbar";
+import { PageTermsButton } from "./components/PageTermsButton";
 import type { BookDetail } from "../../../../api/types";
-import { useAudioQuery } from "../../../common/Player/hooks/useAudioQuery";
 import classes from "./DefaultHeader.module.css";
 
 interface DefaultHeader {
@@ -21,31 +15,35 @@ interface DefaultHeader {
 }
 
 export function DefaultHeader({ book }: DefaultHeader) {
-  const state = useRouterState();
-  const { drawer } = useBookContext();
-  const audioSource = useAudioQuery(book);
   return (
     <>
       <Paper withBorder shadow="sm" className={`${classes.header} readpage`}>
         <Group wrap="nowrap" gap={10}>
-          <ActionIcon onClick={drawer.open} size="md" variant="subtle">
-            <IconMenu2 />
-          </ActionIcon>
-
-          <Center className={classes.logoContainer}>
-            {state.status === "pending" && <Loader size="sm" />}
-            {state.status === "idle" && <NavLogo />}
-          </Center>
-
+          <SideMenuButton />
+          <LogoSection />
           <Divider orientation="vertical" />
         </Group>
+
+        <Stack gap={4}>
+          <FocusSwitch />
+          <HighlightsSwitch />
+        </Stack>
+
+        <Divider orientation="vertical" />
+
+        <Stack gap={2}>
+          <Toolbar />
+          <PageTermsButton />
+        </Stack>
+
+        <Divider orientation="vertical" />
 
         <PageControls book={book} />
       </Paper>
       {book.audio && (
-        <Paper withBorder shadow="sm" className={classes.playerContainer}>
-          <Player source={audioSource} />
-        </Paper>
+        <Box className={classes.playerContainer}>
+          <PlayerSection />
+        </Box>
       )}
     </>
   );

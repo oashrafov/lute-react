@@ -43,9 +43,10 @@ export interface PageBookmark {
 }
 
 export interface Audio {
+  id: number;
   name: string;
   position: 0;
-  bookmarks: number[] | [];
+  bookmarks: number[];
 }
 
 export interface BookDetail {
@@ -85,7 +86,8 @@ export interface Page {
 }
 
 export interface EditAction {
-  action: "active" | "archive" | "unarchive" | "edit";
+  action: "active" | "archive" | "unarchive" | "edit" | "updateAudioData";
+  [key: string]: unknown;
 }
 
 export interface NewBookForm {

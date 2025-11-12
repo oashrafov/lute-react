@@ -70,3 +70,16 @@ export function objToFormData(obj: object) {
 
   return formData;
 }
+
+export function throttle(fn: () => void, interval: number) {
+  let lastTime = 0;
+
+  return () => {
+    const now = Date.now();
+
+    if (now - lastTime >= interval) {
+      lastTime = now;
+      fn();
+    }
+  };
+}

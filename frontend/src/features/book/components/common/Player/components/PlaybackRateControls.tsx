@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   ActionIcon,
   ActionIconGroup,
@@ -14,26 +15,33 @@ const PLAYBACK_RATE_STEP = 0.1;
 const MIN_PLAYBACK_RATE = 0.1;
 const MAX_PLAYBACK_RATE = 10.0;
 
-export function PlayerRateControls() {
-  const { state, dispatch, audio } = usePlayerContext();
+export function PlaybackRateControls() {
+  const { player } = usePlayerContext();
+  const [rate, setRate] = useState(player.playbackRate);
 
   function handlePlaybackRateChange(delta: number) {
     const playbackRate = Math.min(
-      Math.max((audio.playbackRate += delta), MIN_PLAYBACK_RATE),
+      Math.max((player.playbackRate += delta), MIN_PLAYBACK_RATE),
       MAX_PLAYBACK_RATE
     );
-    audio.playbackRate = playbackRate;
-    dispatch({ type: "rateChanged", payload: playbackRate });
+    player.playbackRate = playbackRate;
   }
 
   function handlePlaybackRateReset() {
-    audio.playbackRate = 1.0;
-    dispatch({ type: "rateChanged", payload: 1.0 });
+    player.playbackRate = 1.0;
   }
 
   function handleSetPlaybackRate(rate: number) {
     return () => handlePlaybackRateChange(rate);
   }
+
+  useEffect(() => {
+    function handleRateChange() {
+      setRate(player.playbackRate);
+    }
+    player.addEventListener("ratechange", handleRateChange);
+    return () => player.removeEventListener("ratechange", handleRateChange);
+  }, [player]);
 
   return (
     <Stack gap={0} align="center">
@@ -51,7 +59,7 @@ export function PlayerRateControls() {
               fz="sm"
               ta="center"
               onClick={handlePlaybackRateReset}>
-              {state.rate.toFixed(1)}
+              {rate.toFixed(1)}
             </UnstyledButton>
           </Tooltip>
         </ActionIconGroupSection>

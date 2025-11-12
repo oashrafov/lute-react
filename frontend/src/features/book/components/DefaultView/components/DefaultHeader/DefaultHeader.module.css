@@ -14,18 +14,14 @@
   border-inline: none;
 }
 
-.logoContainer {
-  width: 3rem;
-  height: 3rem;
-  margin-left: 0.7rem;
-  flex-shrink: 0;
-}
-
 .playerContainer {
   position: relative;
   z-index: 2;
   border-radius: 0;
+  border: 0.0625rem solid var(--paper-border-color);
   border-inline: none;
   border-top: none;
-  padding: 0.3rem 2rem;
+  padding: 0.5rem 2rem;
+  background-color: var(--lute-color-read);
+  box-shadow: var(--mantine-shadow-sm);
 }

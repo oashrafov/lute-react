@@ -29,12 +29,11 @@ export const api = {
     return apiClient.get(`${BASE_URL}/${bookId}/pages/${pageNum}`);
   },
 
-  async getAudio(bookId: number) {
+  async getAudioSrc(bookId: number) {
     const response = await fetch(`${API_BASE_URL}${BASE_URL}/${bookId}/audio`);
 
     if (!response.ok) {
       const data = await response.json();
-      console.warn(data.error);
       throw new Error(data.error);
     }
 

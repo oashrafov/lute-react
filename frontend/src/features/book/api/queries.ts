@@ -34,10 +34,10 @@ export const queries = {
       queryFn: () => api.getPage(bookId, pageNum),
       refetchOnWindowFocus: false,
     }),
-  audio: (bookId?: number) =>
+  audioSrc: (bookId?: number) =>
     queryOptions({
       queryKey: ["audio", bookId],
-      queryFn: bookId ? () => api.getAudio(bookId) : skipToken,
+      queryFn: bookId ? () => api.getAudioSrc(bookId) : skipToken,
       refetchOnWindowFocus: false,
     }),
   bookForm: () =>

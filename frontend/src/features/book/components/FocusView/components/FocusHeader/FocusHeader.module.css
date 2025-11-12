@@ -23,3 +23,8 @@
   flex: 1;
   padding-inline: 1rem;
 }
+
+.playerContainer {
+  position: relative;
+  padding: 0.4rem 1rem;
+}
