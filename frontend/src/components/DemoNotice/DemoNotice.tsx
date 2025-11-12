@@ -11,8 +11,8 @@ interface DemoNotice {
 }
 
 export function DemoNotice({ tutorialBookId }: DemoNotice) {
-  const clearDemoDataMutation = useClearDemoData();
-  const deactivateDemoMutation = useDeactivateDemoMode();
+  const { mutate: clearDemoDataMutate } = useClearDemoData();
+  const { mutate: deactiveDemoModeMutate } = useDeactivateDemoMode();
   return (
     <Alert
       styles={{ wrapper: { alignItems: "center" }, body: { gap: rem(5) } }}
@@ -41,7 +41,7 @@ export function DemoNotice({ tutorialBookId }: DemoNotice) {
         <Button
           p={0}
           styles={{ root: { verticalAlign: "unset" } }}
-          onClick={() => clearDemoDataMutation.mutate()}
+          onClick={() => clearDemoDataMutate()}
           size="compact-sm"
           variant="transparent"
           fw="normal">
@@ -51,7 +51,7 @@ export function DemoNotice({ tutorialBookId }: DemoNotice) {
         <Button
           p={0}
           styles={{ root: { verticalAlign: "unset" } }}
-          onClick={() => deactivateDemoMutation.mutate()}
+          onClick={() => deactiveDemoModeMutate()}
           size="compact-sm"
           variant="transparent"
           fw="normal">

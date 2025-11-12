@@ -21,7 +21,7 @@ interface EditBookForm {
 }
 
 export function EditBookForm({ book, bookTags, onCloseModal }: EditBookForm) {
-  const editBookMutation = mutation.useEditBook();
+  const { mutate } = mutation.useEditBook();
   const [existingAudioName, setExistingAudioName] = useState(book.audioName);
 
   const {
@@ -61,7 +61,7 @@ export function EditBookForm({ book, bookTags, onCloseModal }: EditBookForm) {
   }
 
   function handleSubmit(data: EditAction) {
-    editBookMutation.mutate({ id: book.id, data: data });
+    mutate({ id: book.id, data: data });
     onCloseModal();
   }
 

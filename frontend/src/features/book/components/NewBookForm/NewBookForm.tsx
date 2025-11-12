@@ -39,7 +39,7 @@ export function NewBookForm() {
   const { data: language } = useQuery(langQueries.userLanguageDetail(langId));
   const { data: formValues } = useSuspenseQuery(bookQueries.bookForm());
   const { data: initial } = useSuspenseQuery(settingsQueries.init());
-  const createBookMutation = mutation.useCreateBook();
+  const { mutate, isPending } = mutation.useCreateBook();
   const generateContentFromURLMutation = mutation.useGenerateContentFromURL();
   const textDirection = language?.right_to_left ? "rtl" : "ltr";
 
@@ -61,7 +61,7 @@ export function NewBookForm() {
   return (
     <form
       className={classes.container}
-      onSubmit={handleSubmit((data) => createBookMutation.mutate(data))}>
+      onSubmit={handleSubmit((data) => mutate(data))}>
       <TextInput
         name="title"
         control={control}
@@ -195,10 +195,7 @@ export function NewBookForm() {
         leftSection={<IconTags />}
       />
 
-      <FormButtons
-        okDisabled={!language}
-        okLoading={createBookMutation.isPending}
-      />
+      <FormButtons okDisabled={!language} okLoading={isPending} />
     </form>
   );
 }

@@ -21,11 +21,11 @@ interface ActionsCell {
 }
 
 export function ActionsCell({ row, onEditedRow, onSetShelf }: ActionsCell) {
-  const editBookMutation = mutation.useEditBook();
-  const deleteBookMutation = mutation.useDeleteBook();
+  const { mutate: editMutate } = mutation.useEditBook();
+  const { mutate: deleteMutate } = mutation.useDeleteBook();
 
   function handleEdit(id: number, data: EditAction) {
-    editBookMutation.mutate(
+    editMutate(
       { id, data },
       {
         onSuccess: (response) => {
@@ -39,9 +39,7 @@ export function ActionsCell({ row, onEditedRow, onSetShelf }: ActionsCell) {
 
   function handleOpenDeleteModal() {
     modals.openConfirmModal(
-      deleteBookConfirm(row.original.title, () =>
-        deleteBookMutation.mutate(row.original.id)
-      )
+      deleteBookConfirm(row.original.title, () => deleteMutate(row.original.id))
     );
   }
 

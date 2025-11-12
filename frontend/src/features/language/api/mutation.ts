@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { api } from "./api";
 import { queries as bookQueries } from "../../book/api/queries";
 import { queries as settingsQueries } from "../../settings/api/queries";
@@ -6,8 +6,6 @@ import { queries as langQueries } from "./queries";
 
 export const mutation = {
   useCreateLanguage() {
-    const queryClient = useQueryClient();
-
     return useMutation({
       mutationFn: ({
         name,
@@ -16,18 +14,18 @@ export const mutation = {
         name: string;
         loadStories?: boolean;
       }) => api.create(name, loadStories),
-      onSuccess: async () => {
-        queryClient.removeQueries({
+      onSuccess: async (...[, , , context]) => {
+        context.client.removeQueries({
           queryKey: bookQueries.all(),
         });
         await Promise.all([
-          queryClient.invalidateQueries({
+          context.client.invalidateQueries({
             queryKey: settingsQueries.init().queryKey,
           }),
-          queryClient.invalidateQueries({
+          context.client.invalidateQueries({
             queryKey: langQueries.userLanguagesList().queryKey,
           }),
-          queryClient.invalidateQueries({
+          context.client.invalidateQueries({
             queryKey: langQueries.predefinedLanguagesList().queryKey,
           }),
         ]);

@@ -6,8 +6,8 @@ import {
   IconPlayerPlayFilled,
 } from "@tabler/icons-react";
 
-export const databaseCleaned: NotificationData = {
-  title: "Database cleaned!",
+export const demoDataCleared: NotificationData = {
+  title: "Demo data cleared!",
   message: (
     <Text component="p" lineClamp={2} fz="sm">
       Have fun! Lute has also automatically enabled backups: change your

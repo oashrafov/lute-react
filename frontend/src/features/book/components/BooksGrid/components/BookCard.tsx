@@ -35,11 +35,11 @@ interface BookCard {
 }
 
 export function BookCard({ book, onEditSuccess }: BookCard) {
-  const deleteBookMutation = mutation.useDeleteBook();
-  const editBookMutation = mutation.useEditBook();
+  const { mutate: deleteMutate } = mutation.useDeleteBook();
+  const { mutate: editMutate } = mutation.useEditBook();
 
   function handleEdit(data: EditAction) {
-    editBookMutation.mutate(
+    editMutate(
       {
         id: book.id,
         data: data,
@@ -159,9 +159,7 @@ export function BookCard({ book, onEditSuccess }: BookCard) {
               leftSection={<IconTrashFilled />}
               onClick={() =>
                 modals.openConfirmModal(
-                  deleteBookConfirm(book.title, () =>
-                    deleteBookMutation.mutate(book.id)
-                  )
+                  deleteBookConfirm(book.title, () => deleteMutate(book.id))
                 )
               }>
               Delete
