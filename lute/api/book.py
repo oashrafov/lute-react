@@ -26,7 +26,52 @@ from lute.api.sql.book import sql as base_sql
 bp = Blueprint("api_books", __name__, url_prefix="/api/books")
 
 
-@bp.route("/", methods=["GET"])
+@bp.route("/", methods=["GET", "POST"])
+def books():
+    "get books list or create a new book"
+    if request.method == "POST":
+        return create_book()
+
+    return get_books()
+
+
+def create_book():
+    """
+    create new book
+    """
+    data = request.form
+    data = {k: None if v == "undefined" else v for k, v in data.items()}
+    files_dict = request.files.to_dict()
+
+    domain_book = Book()
+
+    try:
+        for key, value in data.items():
+            if hasattr(domain_book, key):
+                if value and value.isdigit():
+                    value = int(value)
+                setattr(domain_book, key, value)
+
+        text_file = files_dict.get("text_file", None)
+        audio_file = files_dict.get("audio_file", None)
+
+        if text_file:
+            setattr(domain_book, "text_stream", text_file.stream)
+            setattr(domain_book, "text_stream_filename", text_file.filename)
+        if audio_file:
+            setattr(domain_book, "audio_stream", audio_file.stream)
+            setattr(domain_book, "audio_stream_filename", audio_file.filename)
+
+        svc = BookService()
+        book = svc.import_book(domain_book, db.session)
+        response = {"id": book.id, "title": book.title}
+
+        return response, 200
+
+    except BookImportException as e:
+        return e.message, 400
+
+
 def get_books():
     "Get all books applying filters and sorting"
 
@@ -118,18 +163,18 @@ def get_books():
     final_query = f"{base_sql} {" ".join(where)} {order_by} {limit}"
     results = db.session.execute(SQLText(final_query)).fetchall()
 
-    books = []
+    books_list = []
     for row in results:
-        books.append(_book_row_to_dict(row))
+        books_list.append(_book_row_to_dict(row))
 
     pinned = json.loads(request.args.get("pinned", '{"top": [], "bottom": []}'))
     pinned_ids = pinned["top"] + pinned["bottom"]
     pinned_books = _get_pinned_books(pinned_ids)
 
-    books.extend(pinned_books)
+    books_list.extend(pinned_books)
 
     return {
-        "data": books,
+        "data": books_list,
         "totalCount": total_count,
         "filteredCount": filtered_count,
         "activeCount": active_count,
@@ -208,44 +253,6 @@ def get_book(bookid):
     }
 
     return book_dict
-
-
-@bp.route("/new", methods=["POST"])
-def create_book():
-    """
-    create new book
-    """
-    data = request.form
-    data = {k: None if v == "undefined" else v for k, v in data.items()}
-    files_dict = request.files.to_dict()
-
-    domain_book = Book()
-
-    try:
-        for key, value in data.items():
-            if hasattr(domain_book, key):
-                if value and value.isdigit():
-                    value = int(value)
-                setattr(domain_book, key, value)
-
-        text_file = files_dict.get("text_file", None)
-        audio_file = files_dict.get("audio_file", None)
-
-        if text_file:
-            setattr(domain_book, "text_stream", text_file.stream)
-            setattr(domain_book, "text_stream_filename", text_file.filename)
-        if audio_file:
-            setattr(domain_book, "audio_stream", audio_file.stream)
-            setattr(domain_book, "audio_stream_filename", audio_file.filename)
-
-        svc = BookService()
-        book = svc.import_book(domain_book, db.session)
-        response = {"id": book.id, "title": book.title}
-
-        return response, 200
-
-    except BookImportException as e:
-        return e.message, 400
 
 
 @bp.route("/<int:bookid>", methods=["PATCH"])
@@ -460,16 +467,16 @@ def _load_page_content(dbbook, pagenum):
 
 
 def _get_pinned_books(ids):
-    books = []
+    books_list = []
     if ids:
         ids_tuple = tuple(ids) if len(ids) > 1 else tuple([ids[0], ids[0]])
         query = f"{base_sql} WHERE books.BkID IN {ids_tuple}"
         result = db.session.execute(SQLText(query)).fetchall()
 
         for row in result:
-            books.append(_book_row_to_dict(row))
+            books_list.append(_book_row_to_dict(row))
 
-    return books
+    return books_list
 
 
 def _book_row_to_dict(row):

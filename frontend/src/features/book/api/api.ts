@@ -42,7 +42,7 @@ export const api = {
   },
 
   create(data: NewBookForm) {
-    return apiClient.post(`${BASE_URL}/new`, {
+    return apiClient.post(`${BASE_URL}/`, {
       body: objToFormData(data),
     });
   },

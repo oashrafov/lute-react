@@ -61,7 +61,9 @@ export function NewBookForm() {
   return (
     <form
       className={classes.container}
-      onSubmit={handleSubmit((data) => mutate(data))}>
+      onSubmit={handleSubmit((data) =>
+        mutate({ ...data, language_id: String(langId) })
+      )}>
       <TextInput
         name="title"
         control={control}
