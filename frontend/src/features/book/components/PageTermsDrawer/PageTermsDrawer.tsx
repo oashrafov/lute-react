@@ -4,7 +4,7 @@ import { TermsTable } from "../../../term/components/TermsTable/TermsTable";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
-export default function PageTermsDrawer() {
+export function PageTermsDrawer() {
   const { pageNum } = route.useParams();
   const { termIds } = route.useSearch();
   const navigate = route.useNavigate();

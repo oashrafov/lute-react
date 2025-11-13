@@ -7,14 +7,11 @@ import { FocusSwitch } from "../../../common/FocusSwitch/FocusSwitch";
 import { HighlightsSwitch } from "../../../common/HighlightSwitch/HighlightSwitch";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { PageTermsButton } from "./components/PageTermsButton";
-import type { BookDetail } from "../../../../api/types";
+import { useBookQuery } from "../../../../hooks/useBookQuery";
 import classes from "./DefaultHeader.module.css";
 
-interface DefaultHeader {
-  book: BookDetail;
-}
-
-export function DefaultHeader({ book }: DefaultHeader) {
+export function DefaultHeader() {
+  const { data: book } = useBookQuery();
   return (
     <>
       <Paper withBorder shadow="sm" className={`${classes.header} readpage`}>

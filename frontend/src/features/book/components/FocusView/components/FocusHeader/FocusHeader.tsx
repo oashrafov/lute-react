@@ -7,14 +7,11 @@ import { BookSourceButton } from "../../../common/BookSourceButton";
 import { FocusSwitch } from "../../../common/FocusSwitch/FocusSwitch";
 import { HighlightsSwitch } from "../../../common/HighlightSwitch/HighlightSwitch";
 import { PlayerSection } from "../../../common/PlayerSection";
-import type { BookDetail } from "../../../../api/types";
+import { useBookQuery } from "../../../../hooks/useBookQuery";
 import classes from "./FocusHeader.module.css";
 
-interface FocusHeader {
-  book: BookDetail;
-}
-
-export function FocusHeader({ book }: FocusHeader) {
+export function FocusHeader() {
+  const { data: book } = useBookQuery();
   return (
     <Paper withBorder radius={0} shadow="sm" className={classes.header}>
       <NavLogo />

@@ -1,6 +1,9 @@
 import { getRouteApi } from "@tanstack/react-router";
 import type { View } from "../../../resources/types";
-import { setLocalStorageItem } from "../../../helpers/general";
+import {
+  getFromLocalStorage,
+  setLocalStorageItem,
+} from "../../../helpers/general";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
@@ -19,7 +22,7 @@ export function useView() {
 
   return {
     get view() {
-      return (view ?? "default") as View;
+      return (view ?? getFromLocalStorage("Lute.view")) as View;
     },
     toggleFocus,
     setView,

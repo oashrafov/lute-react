@@ -5,26 +5,22 @@ import { EditView } from "../EditView/EditView";
 import { FocusView } from "../FocusView/FocusView";
 import { PlayerProvider } from "../common/Player/store/playerContext";
 import { AudioDataProvider } from "../common/Player/store/audioDataContext";
-import { useApplyInitialView } from "../../hooks/useApplyInitialView";
+import { useView } from "../../hooks/useView";
 
 export function Book() {
-  const isSuccess = useApplyInitialView();
+  const { view } = useView();
   usePrefetchPages();
   useSetupShortcuts();
-
-  if (!isSuccess) {
-    return null;
-  }
 
   return (
     <>
       <PlayerProvider>
         <AudioDataProvider>
-          <DefaultView />
-          <FocusView />
+          {view === "default" && <DefaultView />}
+          {view === "focus" && <FocusView />}
         </AudioDataProvider>
       </PlayerProvider>
-      <EditView />
+      {view === "edit" && <EditView />}
     </>
   );
 }
