@@ -2,7 +2,6 @@ import { useState } from "react";
 import { getRouteApi } from "@tanstack/react-router";
 import { Group, Stack, Tooltip } from "@mantine/core";
 import {
-  IconRosetteDiscountCheckFilled,
   IconSquareRoundedCheckFilled,
   IconSquareRoundedChevronLeftFilled,
   IconSquareRoundedChevronRightFilled,
@@ -15,9 +14,11 @@ import { BookTitle } from "../../../../../common/BookTitle";
 import { PageSlider } from "../PageSlider";
 import { EditButton } from "../EditButton";
 import { PageActionButton } from "../PageActionButton";
+import { MarkRestAsKnownButton } from "../../../../../common/MarkRestAsKnownButton/MarkRestAsKnownButton";
 import { usePageControl } from "../../../../../../hooks/usePageControl";
 import type { BookDetail } from "../../../../../../api/types";
 import classes from "./PageControls.module.css";
+import { useMarkPageAsRead } from "../../../../../../hooks/useMarkPageAsRead";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
@@ -25,17 +26,28 @@ interface PageControls {
   book: BookDetail;
 }
 
+function BookInfoSection({ book }: { book: BookDetail }) {
+  return (
+    <div className={classes.titleFlex}>
+      <BookTitle>{book.title}</BookTitle>
+      {book.source && <BookSourceButton source={book.source} />}
+      <PageCounter pageCount={book.pageCount} />
+    </div>
+  );
+}
+
 export function PageControls({ book }: PageControls) {
   const { pageNum } = route.useParams();
   const [changeVal, setChangeVal] = useState(pageNum);
+  const markPageAsRead = useMarkPageAsRead();
 
-  const {
-    goToPage,
-    goToNextPage,
-    goToPreviousPage,
-    markPageAsRead,
-    markRestAsKnown,
-  } = usePageControl(setChangeVal);
+  const { goToPage, goToNextPage, goToPreviousPage } =
+    usePageControl(setChangeVal);
+
+  function handleMarkPageAsReadAndNavigate() {
+    markPageAsRead();
+    goToNextPage();
+  }
 
   let pageReadLabel = "Mark page as read";
   let PageReadIcon = IconSquareRoundedCheckFilled;
@@ -48,47 +60,43 @@ export function PageControls({ book }: PageControls) {
     <Stack w="100%" gap={0}>
       <div className={classes.titleFlex}>
         <EditButton />
-        <div className={classes.titleFlex}>
-          <BookTitle>{book.title}</BookTitle>
-          {book.source && <BookSourceButton source={book.source} />}
-          <PageCounter pageCount={book.pageCount} />
-        </div>
+        <BookInfoSection book={book} />
 
         <Group gap={0} wrap="nowrap">
-          {book.bookmarks && <BookmarksMenu data={book.bookmarks} />}
-          {!book.bookmarks && <BookmarksButton disabled={true} />}
-          <Tooltip label="Mark rest as known" position="right">
-            <PageActionButton
-              onClick={markRestAsKnown}
-              icon={<IconRosetteDiscountCheckFilled />}
-              color="green.6"
-            />
-          </Tooltip>
+          {book.bookmarks ? (
+            <BookmarksMenu data={book.bookmarks}>
+              <BookmarksButton />
+            </BookmarksMenu>
+          ) : (
+            <BookmarksButton disabled />
+          )}
+          <MarkRestAsKnownButton />
         </Group>
       </div>
 
       <Group gap={2} wrap="nowrap">
         <PageActionButton
           onClick={goToPreviousPage}
-          icon={<IconSquareRoundedChevronLeftFilled />}
+          icon={IconSquareRoundedChevronLeftFilled}
           disabled={book.pageCount === 1 || pageNum === 1}
         />
         <PageSlider
-          book={book}
           value={changeVal}
           onChange={setChangeVal}
           onChangeEnd={goToPage}
+          max={book.pageCount}
+          disabled={book.pageCount === 1}
         />
         <Group gap={0} wrap="nowrap">
           <PageActionButton
             onClick={goToNextPage}
-            icon={<IconSquareRoundedChevronRightFilled />}
+            icon={IconSquareRoundedChevronRightFilled}
             disabled={book.pageCount === 1 || pageNum === book.pageCount}
           />
           <Tooltip label={pageReadLabel} position="right">
             <PageActionButton
-              onClick={markPageAsRead}
-              icon={<PageReadIcon />}
+              onClick={handleMarkPageAsReadAndNavigate}
+              icon={PageReadIcon}
               disabled={book.pageCount === 1}
               color="orange.4"
             />

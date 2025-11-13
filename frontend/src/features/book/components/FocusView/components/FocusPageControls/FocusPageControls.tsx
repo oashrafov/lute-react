@@ -8,6 +8,7 @@ import {
 import { usePageControl } from "../../../../hooks/usePageControl";
 import { FloatingContainer } from "../../../common/FloatingContainer/FloatingContainer";
 import type { BookDetail } from "../../../../api/types";
+import { useMarkPageAsRead } from "../../../../hooks/useMarkPageAsRead";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
@@ -18,7 +19,13 @@ interface FocusPageControls {
 
 export function FocusPageControls({ book, show }: FocusPageControls) {
   const { pageNum } = route.useParams();
-  const { goToNextPage, goToPreviousPage, markPageAsRead } = usePageControl();
+  const markPageAsRead = useMarkPageAsRead();
+  const { goToNextPage, goToPreviousPage } = usePageControl();
+
+  function handleMarkPageAsReadAndNavigate() {
+    markPageAsRead();
+    goToNextPage();
+  }
 
   return (
     <>
@@ -46,7 +53,7 @@ export function FocusPageControls({ book, show }: FocusPageControls) {
         <Stack style={{ translate: "0 -50%" }} gap={5}>
           <ActionIcon
             color="orange"
-            onClick={markPageAsRead}
+            onClick={handleMarkPageAsReadAndNavigate}
             disabled={book.pageCount === 1}
             variant="light"
             size="xl">

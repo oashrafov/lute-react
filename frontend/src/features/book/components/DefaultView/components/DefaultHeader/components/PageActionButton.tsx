@@ -1,27 +1,22 @@
+import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { ActionIcon } from "@mantine/core";
-import {
-  forwardRef,
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-} from "react";
+import type { TablerIcon } from "@tabler/icons-react";
 
 export const PageActionButton = forwardRef<
   HTMLButtonElement,
-  ComponentPropsWithoutRef<"button"> & { icon: ReactNode }
+  ComponentPropsWithoutRef<"button"> & { icon: TablerIcon }
 >(function PageActionButton(props, ref) {
-  const { onClick, icon, color, disabled = false } = props;
+  const { icon: Icon, ...rest } = props;
   return (
     <ActionIcon
       ref={ref}
-      onClick={onClick}
-      color={color}
-      disabled={disabled}
       size={24}
+      {...rest}
       variant="transparent"
       styles={{
         root: { border: "none", backgroundColor: "transparent" },
       }}>
-      {icon}
+      <Icon />
     </ActionIcon>
   );
 });

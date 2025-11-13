@@ -1,19 +1,18 @@
-import { useEffect } from "react";
+import { type ReactNode } from "react";
 import { getRouteApi } from "@tanstack/react-router";
-import { Accordion, Divider, Menu, Stack, Text } from "@mantine/core";
-import { BookmarksButton } from "./BookmarksButton";
-import { BookmarkButton } from "../DefaultView/components/DefaultHeader/components/BookmarkButton";
+import { Divider, Menu, Text } from "@mantine/core";
+import { BookmarksAccordion } from "./BookmarksAccordion";
 import type { PageBookmark } from "../../api/types";
-import {
-  makeBookmarked,
-  scrollSentenceIntoView,
-} from "../../../../helpers/text";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
-export function BookmarksMenu({ data }: { data: PageBookmark }) {
+interface BookmarksMenu {
+  data: PageBookmark;
+  children: ReactNode;
+}
+
+export function BookmarksMenu({ data, children }: BookmarksMenu) {
   const { pageNum } = route.useParams();
-  const { sentenceId } = route.useSearch();
 
   const bookmarkCount = Object.values(data).reduce(
     (acc, current) => acc + current.length,
@@ -21,46 +20,19 @@ export function BookmarksMenu({ data }: { data: PageBookmark }) {
   );
   const pageCount = Object.keys(data).length;
 
-  useEffect(() => {
-    if (sentenceId) {
-      makeBookmarked(scrollSentenceIntoView(sentenceId)); // class is removed with mouseOut
-    }
-  }, [sentenceId]);
-
   return (
     <Menu trigger="click" position="bottom-start" withArrow>
-      <Menu.Target>
-        <BookmarksButton />
-      </Menu.Target>
-
+      <Menu.Target>{children}</Menu.Target>
       <Menu.Dropdown p={0}>
-        <Text p="xs" fz="sm" ta="center">
-          {bookmarkCount} bookmarks in {pageCount} page(s)
-        </Text>
-        <Divider />
-        <Accordion
-          variant="filled"
-          defaultValue={String(pageNum)}
-          miw={220}
-          disableChevronRotation>
-          {Object.entries(data).map(([bookmarkPage, bookmarks]) => (
-            <Accordion.Item key={bookmarkPage} value={String(bookmarkPage)}>
-              <Accordion.Control fz="xs">Page {bookmarkPage}</Accordion.Control>
-              <Accordion.Panel>
-                <Stack gap={5} align="center">
-                  {bookmarks.map((bookmark) => (
-                    <BookmarkButton
-                      key={bookmark.id}
-                      id={bookmark.id}
-                      page={Number(bookmarkPage)}
-                      description={bookmark.description}
-                    />
-                  ))}
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-          ))}
-        </Accordion>
+        <>
+          <Text p="xs" fz="sm" ta="center">
+            {bookmarkCount} bookmarks in {pageCount} page(s)
+          </Text>
+
+          <Divider />
+
+          <BookmarksAccordion defaultValue={String(pageNum)} bookmarks={data} />
+        </>
       </Menu.Dropdown>
     </Menu>
   );

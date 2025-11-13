@@ -1,4 +1,5 @@
-import { useCallback, type MouseEvent } from "react";
+import { useCallback, useEffect, type MouseEvent } from "react";
+import { getRouteApi } from "@tanstack/react-router";
 import { Box, LoadingOverlay } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { TheText } from "../TheText/TheText";
@@ -11,8 +12,15 @@ import type { WordElement } from "../../../../resources/types";
 import { textCopied } from "../../resources/notifications";
 import { useProcessPage } from "./hooks/useProcessPage";
 import { copyToClipboard } from "../../../../utils/utils";
+import {
+  makeBookmarked,
+  scrollSentenceIntoView,
+} from "../../../../helpers/text";
+
+const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
 export function TheTextContainer() {
+  const { sentenceId } = route.useSearch();
   const { data: book } = useBookQuery();
   const { data: page } = usePageQuery();
   const { setActiveTerm, clearActiveTerm } = useActiveTermContext();
@@ -40,6 +48,12 @@ export function TheTextContainer() {
     },
     [clearActiveTerm, setActiveTerm]
   );
+
+  useEffect(() => {
+    if (sentenceId && sentenceId !== -1) {
+      makeBookmarked(scrollSentenceIntoView(sentenceId)); // class is removed with mouseOut
+    }
+  }, [sentenceId]);
 
   return (
     <Box

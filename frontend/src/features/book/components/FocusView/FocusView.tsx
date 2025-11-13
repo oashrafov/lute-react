@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Box, Paper, ScrollArea, Stack, Transition } from "@mantine/core";
+import { Affix, Paper } from "@mantine/core";
 import { FocusPageControls } from "./components/FocusPageControls/FocusPageControls";
-import { FocusToolbar } from "./components/FocusToolbar/FocusToolbar";
-import { FocusHeader } from "./components/FocusHeader/FocusHeader";
+import { FocusActions } from "./components/FocusActions/FocusActions";
 import { FloatingContainer } from "../common/FloatingContainer/FloatingContainer";
+import { FocusPagePane } from "./components/FocusPagePane/FocusPagePane";
 import { DictTabs } from "../../../language/components/DictTabs/DictTabs";
-import { ContextMenuArea } from "../ContextMenuArea/ContextMenuArea";
 import { useView } from "../../hooks/useView";
 import { TermForm } from "../../../term/components/TermForm/TermForm";
-import { TheTextContainer } from "../TheTextContainer/TheTextContainer";
 import { useBookQuery } from "../../hooks/useBookQuery";
 import { useTermQuery } from "../../../term/hooks/useTermQuery";
 import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
@@ -35,38 +33,15 @@ export function FocusView() {
 
   return (
     <>
-      <Stack gap={0} h="100vh">
-        <Transition transition="slide-down" mounted={show}>
-          {(styles) => (
-            <Box style={styles}>
-              <FocusHeader book={book} />
-            </Box>
-          )}
-        </Transition>
+      <FocusPagePane />
 
-        <ScrollArea flex={1}>
-          <Transition transition="fade" mounted={show}>
-            {(styles) => (
-              <Box style={{ ...styles }}>
-                <ContextMenuArea>
-                  <TheTextContainer />
-                </ContextMenuArea>
-              </Box>
-            )}
-          </Transition>
-        </ScrollArea>
-      </Stack>
-
-      <FloatingContainer
-        show={show}
-        position={{ top: 100, left: 20 }}
-        transition="slide-right">
-        <FocusToolbar
+      <Affix position={{ top: 100, left: 20 }}>
+        <FocusActions
           book={book}
           onShowDicts={setShowDicts}
           showDicts={showDicts}
         />
-      </FloatingContainer>
+      </Affix>
 
       <FloatingContainer
         show={!!(show && showTranslationPane)}

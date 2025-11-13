@@ -24,20 +24,9 @@ export function usePageControl(onNavigate?: (num: number) => void) {
     goToPage(pageNum - 1);
   }
 
-  function markPageAsRead() {
-    // todo: add mark as read logic
-    goToNextPage();
-  }
-
-  function markRestAsKnown() {
-    // todo: add mark rest as known logic
-  }
-
   return {
     goToPage,
     goToNextPage,
     goToPreviousPage,
-    markPageAsRead,
-    markRestAsKnown,
   };
 }
