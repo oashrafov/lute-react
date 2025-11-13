@@ -305,6 +305,13 @@ def edit_book(bookid):
 
         return {"id": book.id, "title": book.title}, 200
 
+    if action == "markPageAsRead":
+        pagenum = data.get("page")
+        mark_rest_as_known = data.get("markRestAsKnown", False)
+
+        service = ReadService(db.session)
+        service.mark_page_read(bookid, pagenum, mark_rest_as_known)
+
     return "", 400
 
 

@@ -86,7 +86,13 @@ export interface Page {
 }
 
 export interface EditAction {
-  action: "active" | "archive" | "unarchive" | "edit" | "updateAudioData";
+  action:
+    | "active"
+    | "archive"
+    | "unarchive"
+    | "edit"
+    | "updateAudioData"
+    | "markPageAsRead";
   [key: string]: unknown;
 }
 
