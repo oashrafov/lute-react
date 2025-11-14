@@ -27,7 +27,7 @@ export function TermPageLayout({
   const { t } = useTranslation("page", { keyPrefix: "newEditTerm" });
   const pageTitle = title || t("titleCreate");
   return (
-    <PageContainer width="90%">
+    <PageContainer w="90%">
       <PageTitle>{pageTitle}</PageTitle>
       {showLanguageCards && (
         <LanguageCards

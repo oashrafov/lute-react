@@ -11,7 +11,7 @@ export function LanguagesPage() {
   const { t } = useTranslation("page", { keyPrefix: "languages" });
   const { data } = useSuspenseQuery(queries.init());
   return (
-    <PageContainer width="75%">
+    <PageContainer w="75%">
       <PageTitle>{t("title")}</PageTitle>
 
       {data.haveLanguages && (

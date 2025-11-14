@@ -4,7 +4,7 @@ import { ShortcutsForm } from "../features/settings/components/ShortcutsForm/Sho
 
 export default function ShortcutsPage() {
   return (
-    <PageContainer width="75%">
+    <PageContainer w="75%">
       <PageTitle>Keyboard shortcuts</PageTitle>
       <ShortcutsForm />
     </PageContainer>

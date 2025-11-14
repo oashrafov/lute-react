@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { Menu } from "@mantine/core";
 
-interface MenuItem {
+interface LinkMenuItem {
   label: string;
   action: string;
 }
 
-export function MenuItem({ item }: { item: MenuItem }) {
+export function LinkMenuItem({ item }: { item: LinkMenuItem }) {
   return (
     <Menu.Item
       key={item.label}

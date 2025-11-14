@@ -33,7 +33,7 @@ export function NewBookPage() {
   return (
     <>
       <CreateLanguageModal isOpen={opened} onClose={close} />
-      <PageContainer width="75%">
+      <PageContainer w="75%">
         <PageTitle>{t("title")}</PageTitle>
 
         {data.haveLanguages && (

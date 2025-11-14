@@ -5,7 +5,7 @@ import { modals } from "@mantine/modals";
 import { appInfo } from "../../resources/modals";
 import { menu } from "../../resources/menus";
 import { DropdownMenu } from "./components/DropdownMenu";
-import { MenuItem } from "./components/MenuItem";
+import { LinkMenuItem } from "./components/LinkMenuItem";
 import { queries } from "../../features/settings/api/queries";
 import classes from "./NavigationBar.module.css";
 
@@ -23,13 +23,13 @@ export function NavigationBar(props: GroupProps) {
 
       <DropdownMenu label={menu.terms.label}>
         {menu.terms.children.map((child) => (
-          <MenuItem key={child.label} item={child} />
+          <LinkMenuItem key={child.label} item={child} />
         ))}
       </DropdownMenu>
 
       <DropdownMenu label={menu.settings.label}>
         {menu.settings.children.map((child) => (
-          <MenuItem key={child.label} item={child} />
+          <LinkMenuItem key={child.label} item={child} />
         ))}
       </DropdownMenu>
 
@@ -48,7 +48,7 @@ export function NavigationBar(props: GroupProps) {
               </Menu.Label>
             </>
           )}
-          <MenuItem
+          <LinkMenuItem
             key={menu.backup.children[0].label}
             item={menu.backup.children[0]}
           />

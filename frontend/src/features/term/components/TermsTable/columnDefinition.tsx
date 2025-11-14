@@ -9,7 +9,7 @@ import { TermCell } from "./components/TermCell";
 import { TranslationCell } from "./components/TranslationCell";
 import { LanguageCell } from "../../../../components/common/LanguageCell/LanguageCell";
 import { StatusCell } from "./components/StatusCell";
-import { EditButtonsCell } from "../../../../components/common/EditButtonsCell/EditButtonsCell";
+import { EditButtonsCell } from "../EditButtonsCell/EditButtonsCell";
 import { ParentEdit } from "./components/ParentEdit";
 import { TranslationEdit } from "./components/TranslationEdit";
 import { TagsEdit } from "./components/TagsEdit";
