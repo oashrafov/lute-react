@@ -15,10 +15,10 @@ export function LoadSampleBooksButton({
   onSuccess,
   onConfirm,
 }: LoadSampleBooksButton) {
-  const createLanguageMutation = mutation.useCreateLanguage();
+  const { mutate } = mutation.useCreateLanguage();
 
   function handleClick() {
-    createLanguageMutation.mutate(
+    mutate(
       {
         name: langName,
         loadStories: true,

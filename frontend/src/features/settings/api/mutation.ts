@@ -8,7 +8,7 @@ import { api } from "./api";
 export function useClearDemoData() {
   return useMutation({
     mutationFn: api.clearDemoData,
-    onSuccess: async (...[, , , context]) => {
+    onSuccess: async (_data, _variables, _onMutateResult, context) => {
       context.client.removeQueries({
         queryKey: bookQueries.all(),
       });
@@ -23,7 +23,7 @@ export function useClearDemoData() {
 export function useDeactivateDemoMode() {
   return useMutation({
     mutationFn: api.deactivateDemoMode,
-    onSuccess: (...[, , , context]) => {
+    onSuccess: (_data, _variables, _onMutateResult, context) => {
       context.client.invalidateQueries({
         queryKey: settingsQueries.init().queryKey,
       });

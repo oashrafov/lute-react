@@ -10,20 +10,31 @@ import type { EditAction } from "./types";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
+interface EditBookData {
+  id: number;
+  data: EditAction;
+  userData?: Record<string, unknown>;
+}
+
+interface ProcessPageData {
+  bookId: number;
+  pageNum: number;
+}
+
 export const mutation = {
   useCreateBook() {
     const navigate = route.useNavigate();
 
     return useMutation({
       mutationFn: api.create,
-      onSuccess: (...[response, , , context]) => {
+      onSuccess: (data, _variables, _onMutateResult, context) => {
         context.client.invalidateQueries({
           queryKey: bookQueries.list().queryKey,
         });
         context.client.invalidateQueries({
           queryKey: settingsQueries.init().queryKey,
         });
-        navigate({ params: { bookId: response.id, pageNum: 1 } });
+        navigate({ params: { bookId: data.id, pageNum: 1 } });
       },
       onError: (error) => notifications.show(errorMessage(error.message)),
     });
@@ -31,20 +42,13 @@ export const mutation = {
 
   useEditBook() {
     return useMutation({
-      mutationFn: ({
-        id,
-        data,
-      }: {
-        id: number;
-        data: EditAction;
-        userData?: Record<string, unknown>;
-      }) => api.edit(id, data),
-      onSuccess: (...[response, { userData }, , context]) => {
+      mutationFn: ({ id, data }: EditBookData) => api.edit(id, data),
+      onSuccess: (data, { userData }, _onMutateResult, context) => {
         context.client.invalidateQueries({
           queryKey: bookQueries.list().queryKey,
         });
         if (userData?.showNotification ?? true) {
-          notifications.show(bookUpdated(response.title));
+          notifications.show(bookUpdated(data.title));
         }
       },
     });
@@ -53,14 +57,14 @@ export const mutation = {
   useDeleteBook() {
     return useMutation({
       mutationFn: api.delete,
-      onSuccess: (...[response, , , context]) => {
+      onSuccess: (data, _variables, _onMutateResult, context) => {
         context.client.invalidateQueries({
           queryKey: bookQueries.list().queryKey,
         });
         context.client.invalidateQueries({
           queryKey: settingsQueries.init().queryKey,
         });
-        notifications.show(bookDeleted(response.title));
+        notifications.show(bookDeleted(data.title));
       },
     });
   },
@@ -73,12 +77,10 @@ export const mutation = {
   },
 
   useProcessPage() {
-    const { bookId, pageNum } = route.useParams();
-
     return useMutation({
-      mutationFn: ({ bookId, pageNum }: { bookId: number; pageNum: number }) =>
+      mutationFn: ({ bookId, pageNum }: ProcessPageData) =>
         api.processPage(bookId, pageNum),
-      onSuccess: (...[, , , context]) => {
+      onSuccess: (_data, { bookId, pageNum }, _onMutateResult, context) => {
         context.client.invalidateQueries({
           queryKey: bookQueries.list().queryKey,
         });

@@ -4,17 +4,17 @@ import { queries as bookQueries } from "#book/api/queries";
 import { queries as settingsQueries } from "#settings/api/queries";
 import { queries as langQueries } from "./queries";
 
+interface CreateLanguageData {
+  name: string;
+  loadStories?: boolean;
+}
+
 export const mutation = {
   useCreateLanguage() {
     return useMutation({
-      mutationFn: ({
-        name,
-        loadStories,
-      }: {
-        name: string;
-        loadStories?: boolean;
-      }) => api.create(name, loadStories),
-      onSuccess: async (...[, , , context]) => {
+      mutationFn: ({ name, loadStories }: CreateLanguageData) =>
+        api.create(name, loadStories),
+      onSuccess: async (_data, _variables, _onMutateResult, context) => {
         context.client.removeQueries({
           queryKey: bookQueries.all(),
         });

@@ -39,11 +39,22 @@ export function NewBookForm() {
   const { data: language } = useQuery(langQueries.userLanguageDetail(langId));
   const { data: formValues } = useSuspenseQuery(bookQueries.bookForm());
   const { data: initial } = useSuspenseQuery(settingsQueries.init());
-  const { mutate, isPending } = mutation.useCreateBook();
-  const generateContentFromURLMutation = mutation.useGenerateContentFromURL();
+  const { mutate: createBookMutate } = mutation.useCreateBook();
+  const {
+    mutate: generateContentFromURLMutate,
+    isPending: generateContentFromURLIsPending,
+  } = mutation.useGenerateContentFromURL();
   const textDirection = language?.right_to_left ? "rtl" : "ltr";
 
-  const { control, getValues, setValue, reset, watch, handleSubmit } = useForm({
+  const {
+    control,
+    getValues,
+    setValue,
+    reset,
+    watch,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: formValues,
   });
 
@@ -52,7 +63,7 @@ export function NewBookForm() {
   const hasImportURL = !!watch("importurl");
 
   function handlePopulateFromUrl() {
-    generateContentFromURLMutation.mutate(getValues().importurl, {
+    generateContentFromURLMutate(getValues().importurl, {
       onSuccess: (data) => reset(data),
     });
     setValue("importurl", "");
@@ -62,7 +73,7 @@ export function NewBookForm() {
     <form
       className={classes.container}
       onSubmit={handleSubmit((data) =>
-        mutate({ ...data, language_id: String(langId) })
+        createBookMutate({ ...data, language_id: String(langId) })
       )}>
       <TextInput
         name="title"
@@ -139,7 +150,7 @@ export function NewBookForm() {
             <Button
               disabled={!hasImportURL || hasTextFile}
               variant="filled"
-              loading={generateContentFromURLMutation.isPending}
+              loading={generateContentFromURLIsPending}
               onClick={handlePopulateFromUrl}>
               {t("importLabel")}
             </Button>
@@ -197,7 +208,7 @@ export function NewBookForm() {
         leftSection={<IconTags />}
       />
 
-      <FormButtons okDisabled={!language} okLoading={isPending} />
+      <FormButtons okDisabled={!language} okLoading={isSubmitting} />
     </form>
   );
 }
