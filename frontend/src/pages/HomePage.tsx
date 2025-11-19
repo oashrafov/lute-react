@@ -5,7 +5,7 @@ import { BooksGrid } from "../features/book/components/BooksGrid/BooksGrid";
 import { PageTitle } from "../components/common/PageTitle/PageTitle";
 import { PageContainer } from "../components/common/PageContainer/PageContainer";
 import { DemoNotice } from "../components/DemoNotice/DemoNotice";
-import { WelcomeModal } from "../components/Modals/WelcomeModal";
+import { WelcomeAlert } from "../components/WelcomeAlert/WelcomeAlert";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { queries } from "../features/settings/api/queries";
 
@@ -21,7 +21,7 @@ export function HomePage() {
         </Box>
       )}
 
-      <WelcomeModal opened={!initial.haveLanguages} onClose={() => {}} />
+      {!initial.haveLanguages && <WelcomeAlert />}
 
       {initial.haveBooks && (
         <PageContainer>

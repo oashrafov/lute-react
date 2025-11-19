@@ -1,19 +1,19 @@
 import { Link } from "@tanstack/react-router";
-import { Box, Button, Group, Modal, type ModalProps } from "@mantine/core";
+import { Alert, Box, Button, Group, type AlertProps } from "@mantine/core";
 import { IconBook2 } from "@tabler/icons-react";
 import { SampleBooksSelect } from "../../features/book/components/common/SampleBooksSelect/SampleBooksSelect";
+import { Logo } from "../common/Logo";
 
-export function WelcomeModal(props: ModalProps) {
+export function WelcomeAlert(props: AlertProps) {
   return (
-    <Modal
-      trapFocus={false}
+    <Alert
       title="Welcome to Lute"
-      size="auto"
-      withCloseButton={false}
-      closeOnClickOutside={false}
-      closeOnEscape={false}
+      maw="max-content"
+      m="auto"
+      styles={{ wrapper: { gap: 10 } }}
+      icon={<Logo size={40} />}
       {...props}>
-      <Box p={5}>
+      <Box p={5} maw={600}>
         <Group wrap="nowrap" mb={10} justify="space-between">
           <span>
             To get started using <strong>Lute</strong> load a short story in
@@ -31,6 +31,6 @@ export function WelcomeModal(props: ModalProps) {
           <span>with your language</span>
         </Group>
       </Box>
-    </Modal>
+    </Alert>
   );
 }
