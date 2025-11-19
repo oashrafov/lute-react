@@ -1,7 +1,7 @@
 import { getRouteApi, useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { DictTabs } from "../features/language/components/DictTabs/DictTabs";
+import { DictsPane } from "../features/language/components/DictsPane/DictsPane";
 import { TermForm } from "../features/term/components/TermForm/TermForm";
 import { queries as termQueries } from "../features/term/api/queries";
 import { queries as langQueries } from "../features/language/api/queries";
@@ -18,7 +18,7 @@ export function EditTermPage() {
 
   const show = !!termId && language && term;
   const dictTabs = show && language && (
-    <DictTabs key={term.text} language={language} termText={term.text} />
+    <DictsPane key={term.text} language={language} termText={term.text} />
   );
   const termForm = show && (
     <TermForm term={term} language={language} onAction={() => {}} />

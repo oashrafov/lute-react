@@ -5,7 +5,7 @@ import { FocusPageControls } from "./components/FocusPageControls/FocusPageContr
 import { FocusActions } from "./components/FocusActions/FocusActions";
 import { FloatingContainer } from "../common/FloatingContainer/FloatingContainer";
 import { FocusPagePane } from "./components/FocusPagePane/FocusPagePane";
-import { DictTabs } from "../../../language/components/DictTabs/DictTabs";
+import { DictsPane } from "../../../language/components/DictsPane/DictsPane";
 import { useView } from "../../hooks/useView";
 import { TermForm } from "../../../term/components/TermForm/TermForm";
 import { useBookQuery } from "../../hooks/useBookQuery";
@@ -58,7 +58,7 @@ export function FocusView() {
         transition="slide-right">
         <Paper shadow="sm" p={10} w={800} withBorder h={500}>
           {term?.text && language && (
-            <DictTabs termText={term.text} language={language} />
+            <DictsPane termText={term.text} language={language} />
           )}
         </Paper>
       </FloatingContainer>

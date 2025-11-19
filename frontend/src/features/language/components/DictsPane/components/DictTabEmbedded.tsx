@@ -2,13 +2,13 @@ import type { ElementType, ForwardedRef } from "react";
 import { Text } from "@mantine/core";
 import { DictFavicon } from "./common/DictFavicon";
 import type { Dictionary } from "../../../api/types";
-import classes from "../DictTabs.module.css";
+import classes from "../DictsPane.module.css";
 
 interface DictTabEmbedded {
   dict: Dictionary;
   value: string;
   innerRef?: ForwardedRef<HTMLElement>;
-  onClick: () => void;
+  onClick?: () => void;
   component: ElementType;
 }
 

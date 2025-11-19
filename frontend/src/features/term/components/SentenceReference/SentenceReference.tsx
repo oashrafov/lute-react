@@ -9,12 +9,9 @@ interface SentenceReference {
 export function SentenceReference({ data }: SentenceReference) {
   return (
     <>
-      <p
-        dangerouslySetInnerHTML={{
-          __html: data.sentence,
-        }}
-      />
+      <p dangerouslySetInnerHTML={{ __html: data.sentence }} />
       <Link
+        preload={false}
         to="/books/$bookId/pages/$pageNum"
         params={{ bookId: data.bookId, pageNum: data.pageNumber }}
         target="_blank"

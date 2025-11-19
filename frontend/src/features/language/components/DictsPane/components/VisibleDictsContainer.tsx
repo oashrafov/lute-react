@@ -1,6 +1,6 @@
 import { Children, type ReactNode } from "react";
 
-export function VisibleTabsContainer({ children }: { children: ReactNode }) {
+export function VisibleDictsContainer({ children }: { children: ReactNode }) {
   return (
     <div
       style={{

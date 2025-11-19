@@ -3,7 +3,7 @@ export function getLookupURL(dictURL: string, term: string) {
 }
 
 export function handleExternalUrl(url: string, inNewTab: boolean = false) {
-  const settings = !inNewTab
+  const settings = inNewTab
     ? undefined
     : "width=800, height=600, scrollbars=yes, menubar=no, resizable=yes, status=no";
 

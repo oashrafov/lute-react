@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Box, ScrollAreaAutosize } from "@mantine/core";
 import { VerticalPanels } from "../ResizablePanels/VerticalPanels";
-import { DictTabs } from "../../../../../language/components/DictTabs/DictTabs";
+import { DictsPane } from "../../../../../language/components/DictsPane/DictsPane";
 import { TermForm } from "../../../../../term/components/TermForm/TermForm";
 import { useBookQuery } from "../../../../hooks/useBookQuery";
 import { useActiveTermContext } from "../../../../../term/hooks/useActiveTermContext";
@@ -52,7 +52,7 @@ export function TranslationPane({ term }: TranslationPane) {
           <Box display="flex" h="100%">
             <Box className={classes.dictTabsContainer}>
               {language && (
-                <DictTabs
+                <DictsPane
                   language={language}
                   termText={term.text}
                   onReturnFocusToForm={handleReturnFocusToForm}

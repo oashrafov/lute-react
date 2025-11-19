@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { NoSentences } from "../NoSentences/NoSentences";
 import { SentenceReference } from "../SentenceReference/SentenceReference";
-import { PageSpinner } from "../../../../components/common/PageSpinner/PageSpinner";
+import { SentencesSkeleton } from "./SentencesSkeleton";
 import { queries } from "../../api/queries";
 import classes from "./Sentences.module.css";
 
@@ -12,15 +12,11 @@ interface Sentences {
 
 export function Sentences({ langId, termText }: Sentences) {
   const { data } = useQuery(queries.sentences(termText, langId));
-
-  if (!data) {
-    return <PageSpinner />;
-  }
-
   return (
     <div className={classes.container}>
-      {data.variations.length === 0 && <NoSentences text={data.text} />}
-      {data.variations.length > 0 && (
+      {!data && <SentencesSkeleton />}
+      {data && data.variations.length === 0 && <NoSentences text={data.text} />}
+      {data && data.variations.length > 0 && (
         <ul className={classes.mainList}>
           {data.variations.map(
             ({ term, references }) =>

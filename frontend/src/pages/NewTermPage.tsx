@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { DictTabs } from "../features/language/components/DictTabs/DictTabs";
+import { DictsPane } from "../features/language/components/DictsPane/DictsPane";
 import { TermForm } from "../features/term/components/TermForm/TermForm";
 import { TermPageLayout } from "./TermPage/TermPageLayout";
 import { queries } from "../features/language/api/queries";
@@ -12,7 +12,7 @@ export function NewTermPage() {
   const { data: language } = useQuery(queries.userLanguageDetail(langId));
 
   const dictTabs = newTerm && language && (
-    <DictTabs
+    <DictsPane
       key={`${newTerm}${langId}`}
       language={language}
       termText={newTerm}
