@@ -1,13 +1,13 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Box } from "@mantine/core";
-import { BooksTable } from "../features/book/components/BooksTable/BooksTable";
-import { BooksGrid } from "../features/book/components/BooksGrid/BooksGrid";
-import { PageTitle } from "../components/common/PageTitle/PageTitle";
-import { PageContainer } from "../components/common/PageContainer/PageContainer";
-import { DemoNotice } from "../components/DemoNotice/DemoNotice";
-import { WelcomeAlert } from "../components/WelcomeAlert/WelcomeAlert";
-import { useMediaQuery } from "../hooks/useMediaQuery";
-import { queries } from "../features/settings/api/queries";
+import { BooksTable } from "#book/components/BooksTable/BooksTable";
+import { BooksGrid } from "#book/components/BooksGrid/BooksGrid";
+import { PageTitle } from "#common/PageTitle/PageTitle";
+import { PageContainer } from "#common/PageContainer/PageContainer";
+import { DemoNotice } from "#components/DemoNotice/DemoNotice";
+import { WelcomeAlert } from "#components/WelcomeAlert/WelcomeAlert";
+import { useMediaQuery } from "#hooks/useMediaQuery";
+import { queries } from "#settings/api/queries";
 
 export function HomePage() {
   const media = useMediaQuery();

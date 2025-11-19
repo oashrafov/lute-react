@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { api } from "./api";
-import { queries as bookQueries } from "../../book/api/queries";
-import { queries as settingsQueries } from "../../settings/api/queries";
+import { queries as bookQueries } from "#book/api/queries";
+import { queries as settingsQueries } from "#settings/api/queries";
 import { queries as langQueries } from "./queries";
 
 export const mutation = {

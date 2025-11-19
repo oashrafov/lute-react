@@ -4,7 +4,7 @@ import { MarkRestAsKnownButton } from "../../../common/MarkRestAsKnownButton/Mar
 import { ShowDictionariesChip } from "./ShowDictionariesChip";
 import { FocusToolbar } from "../FocusToolbar/FocusToolbar";
 import { FocusBookmarksButton } from "../FocusBookmarksButton";
-import type { BookDetail } from "../../../../api/types";
+import type { BookDetail } from "#book/api/types";
 
 interface FocusActions {
   book: BookDetail;

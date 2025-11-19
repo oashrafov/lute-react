@@ -1,10 +1,7 @@
 import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { clsx } from "clsx";
-import type { Textitem } from "../../../api/types";
-import {
-  DEFAULT_HIGHLIGHT_TYPE,
-  TEXTITEM_CLASS,
-} from "../../../../../resources/constants";
+import type { Textitem } from "#book/api/types";
+import { DEFAULT_HIGHLIGHT_TYPE, TEXTITEM_CLASS } from "#resources/constants";
 
 export const TextItem = forwardRef<
   HTMLSpanElement,

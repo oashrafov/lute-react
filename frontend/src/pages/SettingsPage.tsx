@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { SettingsForm } from "../features/settings/components/SettingsForm/SettingsForm";
-import { PageContainer } from "../components/common/PageContainer/PageContainer";
-import { PageTitle } from "../components/common/PageTitle/PageTitle";
+import { SettingsForm } from "#settings/components/SettingsForm/SettingsForm";
+import { PageContainer } from "#common/PageContainer/PageContainer";
+import { PageTitle } from "#common/PageTitle/PageTitle";
 
 export function SettingsPage() {
   const { t } = useTranslation("page", { keyPrefix: "settings" });

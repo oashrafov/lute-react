@@ -1,6 +1,6 @@
 import { ActionIcon } from "@mantine/core";
 import { IconMenu2 } from "@tabler/icons-react";
-import { useBookContext } from "../../../../../hooks/useBookContext";
+import { useBookContext } from "#book/hooks/useBookContext";
 
 export function SideMenuButton() {
   const { drawer } = useBookContext();

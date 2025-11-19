@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { TagsInput } from "@mantine/core";
 import type { MRT_Cell, MRT_Row } from "mantine-react-table";
-import { queries } from "../../../api/queries";
-import { buildSuggestionsList } from "../../../../../helpers/term";
-import { MAX_TERM_SUGGESTIONS } from "../../../../../resources/constants";
-import type { TermsListItem } from "../../../api/types";
+import { queries } from "#term/api/queries";
+import type { TermsListItem } from "#term/api/types";
+import { buildSuggestionsList } from "#helpers/term";
+import { MAX_TERM_SUGGESTIONS } from "#resources/constants";
 
 interface ParentEdit {
   row: MRT_Row<TermsListItem>;

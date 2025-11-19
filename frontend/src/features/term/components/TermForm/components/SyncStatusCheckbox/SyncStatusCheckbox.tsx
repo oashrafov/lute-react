@@ -1,6 +1,6 @@
 import type { Control, FieldValues, Path } from "react-hook-form";
 import { rem, type CheckboxProps } from "@mantine/core";
-import { Checkbox } from "../../../../../../components/common/Checkbox/Checkbox";
+import { Checkbox } from "#common/Checkbox/Checkbox";
 
 interface SyncStatusCheckbox<T extends FieldValues> extends CheckboxProps {
   control: Control<T>;

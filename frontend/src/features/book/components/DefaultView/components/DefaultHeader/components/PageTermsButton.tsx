@@ -1,7 +1,7 @@
+import { getRouteApi } from "@tanstack/react-router";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import { IconBracketsContain } from "@tabler/icons-react";
-import { getWords } from "../../../../../../../helpers/text";
-import { getRouteApi } from "@tanstack/react-router";
+import { getWords } from "#helpers/text";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

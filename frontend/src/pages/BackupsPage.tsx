@@ -1,8 +1,8 @@
-import { PageContainer } from "../components/common/PageContainer/PageContainer";
-import { PageTitle } from "../components/common/PageTitle/PageTitle";
-import { BackupsTable } from "../features/settings/components/BackupsTable/BackupsTable";
+import { PageContainer } from "#common/PageContainer/PageContainer";
+import { PageTitle } from "#common/PageTitle/PageTitle";
+import { BackupsTable } from "#settings/components/BackupsTable/BackupsTable";
 
-export default function BackupsPage() {
+export function BackupsPage() {
   return (
     <PageContainer>
       <PageTitle>Backups</PageTitle>

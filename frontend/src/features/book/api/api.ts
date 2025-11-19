@@ -1,6 +1,6 @@
-import { API_BASE_URL } from "../../../resources/constants";
-import { apiClient } from "../../../utils/apiClient";
-import { objToFormData } from "../../../utils/utils";
+import { API_BASE_URL } from "#resources/constants";
+import { apiClient } from "#utils/apiClient";
+import { objToFormData } from "#utils/utils";
 import type {
   BookDetail,
   BooksList,

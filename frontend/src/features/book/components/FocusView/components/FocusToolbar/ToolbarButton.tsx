@@ -1,5 +1,5 @@
 import { ActionIcon, Tooltip } from "@mantine/core";
-import type { toolbar } from "../../../../../../resources/toolbar";
+import type { toolbar } from "#resources/toolbar";
 
 interface ToolbarButton {
   data: (typeof toolbar)[number][number];

@@ -1,6 +1,6 @@
 import { useRouterState } from "@tanstack/react-router";
 import { Center, Loader } from "@mantine/core";
-import { NavLogo } from "../../../../../../../../components/common/NavLogo/NavLogo";
+import { NavLogo } from "#common/NavLogo/NavLogo";
 import classes from "./LogoSection.module.css";
 
 export function LogoSection() {

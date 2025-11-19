@@ -10,10 +10,10 @@ import {
 import { IconChevronLeftPipe, IconChevronRightPipe } from "@tabler/icons-react";
 import { BooksGridTopToolbar } from "./components/BooksGridTopToolbar";
 import { BookCards } from "./components/BookCards";
-import { TABLE_PAGE_SIZE } from "../../../../resources/constants";
-import { useMediaQuery } from "../../../../hooks/useMediaQuery";
-import { queries } from "../../api/queries";
-import type { Shelf } from "../../resources/types";
+import { TABLE_PAGE_SIZE } from "#resources/constants";
+import { useMediaQuery } from "#hooks/useMediaQuery";
+import { queries } from "#book/api/queries";
+import type { Shelf } from "#book/resources/types";
 
 const PAGINATION = {
   pageIndex: 0,

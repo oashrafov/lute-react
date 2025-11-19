@@ -1,14 +1,10 @@
-import { TEXTITEM_CLASS, TEXTITEM_DATASET } from "../resources/constants";
-import type {
-  TextitemElement,
-  TextUnit,
-  WordElement,
-} from "../resources/types";
+import { TEXTITEM_CLASS, TEXTITEM_DATASET } from "#resources/constants";
+import type { TextitemElement, TextUnit, WordElement } from "#resources/types";
 import {
   addClassToElements,
   removeAllContainingClass,
   removeAllContainingClassWithTimeout,
-} from "../utils/utils";
+} from "#utils/utils";
 
 const textUnitAttr = {
   sentence: TEXTITEM_DATASET.sentenceId,

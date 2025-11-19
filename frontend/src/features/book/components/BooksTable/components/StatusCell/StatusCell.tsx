@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Progress, Tooltip } from "@mantine/core";
-import { queries } from "../../../../api/queries";
+import { queries } from "#book/api/queries";
 import classes from "./StatusCell.module.css";
 
 const labels: Record<string, string> = {

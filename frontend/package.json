@@ -3,6 +3,39 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "imports": {
+    "#book/*": [
+      "./src/features/book/*",
+      "./src/features/book/*.ts",
+      "./src/features/book/*.tsx"
+    ],
+    "#language/*": [
+      "./src/features/language/*",
+      "./src/features/language/*.ts",
+      "./src/features/language/*.tsx"
+    ],
+    "#term/*": [
+      "./src/features/term/*",
+      "./src/features/term/*.ts",
+      "./src/features/term/*.tsx"
+    ],
+    "#settings/*": [
+      "./src/features/settings/*",
+      "./src/features/settings/*.ts",
+      "./src/features/settings/*.tsx"
+    ],
+    "#pages/*": "./src/pages/*.tsx",
+    "#resources/*": [
+      "./src/resources/*",
+      "./src/resources/*.ts",
+      "./src/resources/*.tsx"
+    ],
+    "#common/*": "./src/components/common/*.tsx",
+    "#components/*": "./src/components/*.tsx",
+    "#hooks/*": "./src/hooks/*.ts",
+    "#utils/*": "./src/utils/*.ts",
+    "#helpers/*": "./src/helpers/*.ts"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

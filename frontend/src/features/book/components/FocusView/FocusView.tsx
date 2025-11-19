@@ -5,14 +5,14 @@ import { FocusPageControls } from "./components/FocusPageControls/FocusPageContr
 import { FocusActions } from "./components/FocusActions/FocusActions";
 import { FloatingContainer } from "../common/FloatingContainer/FloatingContainer";
 import { FocusPagePane } from "./components/FocusPagePane/FocusPagePane";
-import { DictsPane } from "../../../language/components/DictsPane/DictsPane";
-import { useView } from "../../hooks/useView";
-import { TermForm } from "../../../term/components/TermForm/TermForm";
-import { useBookQuery } from "../../hooks/useBookQuery";
-import { useTermQuery } from "../../../term/hooks/useTermQuery";
-import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
-import { useBookContext } from "../../hooks/useBookContext";
-import { queries } from "../../../language/api/queries";
+import { DictsPane } from "#language/components/DictsPane/DictsPane";
+import { queries } from "#language/api/queries";
+import { TermForm } from "#term/components/TermForm/TermForm";
+import { useTermQuery } from "#term/hooks/useTermQuery";
+import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
+import { useView } from "#book/hooks/useView";
+import { useBookQuery } from "#book/hooks/useBookQuery";
+import { useBookContext } from "#book/hooks/useBookContext";
 
 export function FocusView() {
   const { view } = useView();

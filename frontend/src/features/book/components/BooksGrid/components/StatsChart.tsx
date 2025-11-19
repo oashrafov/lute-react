@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { DonutChart } from "@mantine/charts";
-import { queries } from "../../../api/queries";
+import { queries } from "#book/api/queries";
 
 const labels: Record<string, string> = {
   0: "Unknown",

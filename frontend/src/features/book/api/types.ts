@@ -1,4 +1,4 @@
-import type { Status, TextDirection } from "../../../resources/types";
+import type { Status, TextDirection } from "#resources/types";
 
 export interface BookStats {
   [key: string]: {

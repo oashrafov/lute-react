@@ -1,7 +1,7 @@
 import { ActionIcon, Center, Group } from "@mantine/core";
 import { IconPalette } from "@tabler/icons-react";
-import { useBookContext } from "../../../../features/book/hooks/useBookContext";
-import { ThemeSelect } from "../../../common/ThemeSelect/ThemeSelect";
+import { useBookContext } from "#book/hooks/useBookContext";
+import { ThemeSelect } from "#common/ThemeSelect/ThemeSelect";
 
 export function Actions() {
   const { drawer, themeForm } = useBookContext();

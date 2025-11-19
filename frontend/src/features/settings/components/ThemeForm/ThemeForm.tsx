@@ -1,34 +1,30 @@
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { CloseButton, Divider, Group, Stack, Table, Text } from "@mantine/core";
-import { Select } from "../../../../components/common/Select/Select";
-import { ThemeSelect } from "../../../../components/common/ThemeSelect/ThemeSelect";
-import { ColorInput } from "../../../../components/common/ColorInput/ColorInput";
-import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
-import { getWords } from "../../../../helpers/text";
+import { Select } from "#common/Select/Select";
+import { ThemeSelect } from "#common/ThemeSelect/ThemeSelect";
+import { ColorInput } from "#common/ColorInput/ColorInput";
+import { FormButtons } from "#common/FormButtons/FormButtons";
+import { getWords } from "#helpers/text";
 import {
   setTextColor,
   setLocalStorageItem,
   getFromLocalStorage,
-} from "../../../../helpers/general";
+} from "#helpers/general";
 import {
   handleStatusHighlightChange,
   handleGeneralHighlightChange,
   handleFlashHighlight,
   type StatusHighlight,
 } from "./helpers/utils";
-import { useBookContext } from "../../../book/hooks/useBookContext";
+import { useBookContext } from "#book/hooks/useBookContext";
 import {
   DEFAULT_HIGHLIGHT_TYPE,
   STATUS_LABEL,
   TEXTITEM_CLASS,
   TEXTITEM_DATASET,
-} from "../../../../resources/constants";
-import type {
-  HighlightType,
-  Status,
-  WordElement,
-} from "../../../../resources/types";
+} from "#resources/constants";
+import type { HighlightType, Status, WordElement } from "#resources/types";
 
 const generalHighlightsLabels = [
   [TEXTITEM_CLASS.marked, "Selected"],

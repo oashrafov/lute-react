@@ -1,10 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
-import {
-  demoDataCleared,
-  demoDeactivated,
-} from "../../../resources/notifications";
-import { queries as bookQueries } from "../../book/api/queries";
+import { demoDataCleared, demoDeactivated } from "#resources/notifications";
+import { queries as bookQueries } from "#book/api/queries";
 import { queries as settingsQueries } from "./queries";
 import { api } from "./api";
 

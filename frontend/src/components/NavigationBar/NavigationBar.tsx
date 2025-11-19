@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Menu, Group, Divider, type GroupProps } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { appInfo } from "../../resources/modals";
-import { menu } from "../../resources/menus";
+import { appInfo } from "#resources/modals";
+import { menu } from "#resources/menus";
 import { DropdownMenu } from "./components/DropdownMenu";
 import { LinkMenuItem } from "./components/LinkMenuItem";
-import { queries } from "../../features/settings/api/queries";
+import { queries } from "#settings/api/queries";
 import classes from "./NavigationBar.module.css";
 
 export function NavigationBar(props: GroupProps) {

@@ -8,11 +8,11 @@ import {
   IconClipboardTypography,
   IconBookmarkPlus,
 } from "@tabler/icons-react";
-import { handleTranslate } from "../../../../../helpers/translation";
-import { handleBookmarkSentence } from "../../../../../helpers/bookmark";
-import { textCopied } from "../../../resources/notifications";
-import { handleCopy } from "../../../../../helpers/copy";
-import type { TextitemElement, TextUnit } from "../../../../../resources/types";
+import { handleTranslate } from "#helpers/translation";
+import { handleBookmarkSentence } from "#helpers/bookmark";
+import { handleCopy } from "#helpers/copy";
+import { textCopied } from "#book/resources/notifications";
+import type { TextitemElement, TextUnit } from "#resources/types";
 
 export const menu = [
   {

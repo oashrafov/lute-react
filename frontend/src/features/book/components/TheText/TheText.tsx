@@ -1,13 +1,13 @@
 import { memo, type MouseEvent } from "react";
 import { TextItem } from "./components/TextItem";
-import { TermPopup } from "../../../term/components/TermPopup/TermPopup";
+import { TermPopup } from "#term/components/TermPopup/TermPopup";
 import {
   handleMouseDown,
   handleMouseOver,
   hoverOut,
-} from "../../../../helpers/interactions-desktop";
-import type { Paragraph } from "../../api/types";
-import type { WordElement } from "../../../../resources/types";
+} from "#helpers/interactions-desktop";
+import type { Paragraph } from "#book/api/types";
+import type { WordElement } from "#resources/types";
 
 interface TheText {
   paragraphs: Paragraph[];

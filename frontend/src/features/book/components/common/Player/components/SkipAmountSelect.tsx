@@ -1,6 +1,6 @@
 import { Select } from "@mantine/core";
 import { usePlayerContext } from "../hooks/usePlayerContext";
-import { AUDIO_SKIP_VALUES } from "../../../../../../resources/constants";
+import { AUDIO_SKIP_VALUES } from "#resources/constants";
 
 const selectData = AUDIO_SKIP_VALUES.map((val) => ({
   value: String(val),

@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Alert, Box, Button, Group, type AlertProps } from "@mantine/core";
 import { IconBook2 } from "@tabler/icons-react";
-import { SampleBooksSelect } from "../../features/book/components/common/SampleBooksSelect/SampleBooksSelect";
-import { Logo } from "../common/Logo";
+import { SampleBooksSelect } from "#book/components/common/SampleBooksSelect/SampleBooksSelect";
+import { Logo } from "#common/Logo";
 
 export function WelcomeAlert(props: AlertProps) {
   return (

@@ -1,5 +1,5 @@
-import { useDisclosure } from "@mantine/hooks";
 import { createContext, type ReactNode } from "react";
+import { useDisclosure } from "@mantine/hooks";
 
 interface GlobalContextValue {
   mainSideMenu: {

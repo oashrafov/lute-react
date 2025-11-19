@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queries as termQueries } from "../../features/term/api/queries";
-import { queries as settingsQueries } from "../../features/settings/api/queries";
-import { NewTermPage } from "../../pages/NewTermPage";
+import { queries as termQueries } from "#term/api/queries";
+import { queries as settingsQueries } from "#settings/api/queries";
+import { NewTermPage } from "#pages/NewTermPage";
 
 export const Route = createFileRoute("/terms/create-new")({
   component: NewTermPage,

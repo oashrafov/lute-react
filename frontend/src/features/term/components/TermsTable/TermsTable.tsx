@@ -14,12 +14,12 @@ import {
 } from "mantine-react-table";
 import BulkTermForm from "../BulkTermForm/BulkTermForm";
 import { TopToolbar } from "./components/TopToolbar";
-import { EmptyRow } from "../../../../components/common/EmptyRow/EmptyRow";
-import { getDefaultTableOptions } from "../../../../resources/table-options-default";
+import { EmptyRow } from "#common/EmptyRow/EmptyRow";
+import { getDefaultTableOptions } from "#resources/table-options-default";
 import { columnDefinition } from "./columnDefinition";
-import { queries as termQueries } from "../../api/queries";
-import { queries as settingsQueries } from "../../../settings/api/queries";
-import type { TermsListItem } from "../../api/types";
+import { queries as termQueries } from "#term/api/queries";
+import type { TermsListItem } from "#term/api/types";
+import { queries as settingsQueries } from "#settings/api/queries";
 
 const defaultOptions = getDefaultTableOptions<TermsListItem>();
 

@@ -1,7 +1,7 @@
 import { Button, Tabs, Tooltip } from "@mantine/core";
 import { DictTabExternal } from "./DictTabExternal";
 import { DictTabEmbedded } from "./DictTabEmbedded";
-import type { Dictionary } from "../../../api/types";
+import type { Dictionary } from "#language/api/types";
 
 interface DictTab {
   dict: Dictionary;

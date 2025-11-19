@@ -1,5 +1,5 @@
 import { Divider, Drawer, Group, Text, type DrawerProps } from "@mantine/core";
-import { NavLogo } from "../common/NavLogo/NavLogo";
+import { NavLogo } from "#common/NavLogo/NavLogo";
 import classes from "./DrawerMenu.module.css";
 
 export function DrawerMenu({ children, ...rest }: DrawerProps) {

@@ -2,11 +2,11 @@ import { type KeyboardEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Fieldset, Group, InputClearButton, rem } from "@mantine/core";
-import { TextInput } from "../../../../components/common/TextInput/TextInput";
-import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
-import { getPressedKeysAsString } from "../../../../utils/utils";
-import type { ShortcutsForm } from "../../api/types";
-import { queries } from "../../api/queries";
+import { TextInput } from "#common/TextInput/TextInput";
+import { FormButtons } from "#common/FormButtons/FormButtons";
+import { getPressedKeysAsString } from "#utils/utils";
+import type { ShortcutsForm } from "#settings/api/types";
+import { queries } from "#settings/api/queries";
 
 function getShortcutsInCategory(category: string, data: ShortcutsForm) {
   return Object.entries(data!)

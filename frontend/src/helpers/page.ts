@@ -1,4 +1,4 @@
-import { clamp } from "../utils/utils";
+import { clamp } from "#utils/utils";
 import {
   getTextContainer,
   setTextSetting,

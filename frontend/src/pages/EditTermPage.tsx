@@ -1,10 +1,10 @@
 import { getRouteApi, useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { DictsPane } from "../features/language/components/DictsPane/DictsPane";
-import { TermForm } from "../features/term/components/TermForm/TermForm";
-import { queries as termQueries } from "../features/term/api/queries";
-import { queries as langQueries } from "../features/language/api/queries";
+import { DictsPane } from "#language/components/DictsPane/DictsPane";
+import { TermForm } from "#term/components/TermForm/TermForm";
+import { queries as termQueries } from "#term/api/queries";
+import { queries as langQueries } from "#language/api/queries";
 import { TermPageLayout } from "./TermPage/TermPageLayout";
 
 const route = getRouteApi("/terms/$termId");

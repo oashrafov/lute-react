@@ -1,11 +1,11 @@
+import type { RefObject } from "react";
 import type { Control, FieldValues, Path } from "react-hook-form";
 import type { TextareaProps } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
-import { Textarea } from "../../../../../../components/common/Textarea/Textarea";
-import type { TextDirection } from "../../../../../../resources/types";
-import { moveCursorToEnd } from "../../../../../../utils/utils";
+import { Textarea } from "#common/Textarea/Textarea";
+import type { TextDirection } from "#resources/types";
+import { moveCursorToEnd } from "#utils/utils";
 import classes from "../../TermForm.module.css";
-import type { RefObject } from "react";
 
 interface TranslationField<T extends FieldValues> extends TextareaProps {
   textDirection: TextDirection;

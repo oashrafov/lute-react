@@ -4,8 +4,8 @@ import { ActionIcon, Tooltip } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { modals } from "@mantine/modals";
 import { IconSquareRoundedMinusFilled } from "@tabler/icons-react";
-import { deleteLanguageConfirm } from "../../resources/modals";
-import { queries } from "../../features/settings/api/queries";
+import { deleteLanguageConfirm } from "#resources/modals";
+import { queries } from "#settings/api/queries";
 
 export function DeleteLanguageButton() {
   const { t } = useTranslation("page", { keyPrefix: "languages" });

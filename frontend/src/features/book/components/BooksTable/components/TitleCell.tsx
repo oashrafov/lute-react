@@ -6,7 +6,7 @@ import {
   IconHeadphonesFilled,
 } from "@tabler/icons-react";
 import type { MRT_Row } from "mantine-react-table";
-import type { BooksListItem } from "../../../api/types";
+import type { BooksListItem } from "#book/api/types";
 
 interface TitleCell {
   row: MRT_Row<BooksListItem>;

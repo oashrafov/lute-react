@@ -1,5 +1,5 @@
 import { Text, type TextProps } from "@mantine/core";
-import { convertSecsToDisplayString } from "../../../../../../utils/utils";
+import { convertSecsToDisplayString } from "#utils/utils";
 
 interface PlayerTimecode extends TextProps {
   time: number;

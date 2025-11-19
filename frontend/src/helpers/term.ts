@@ -1,5 +1,5 @@
-import type { TermSuggestion } from "../features/term/api/types";
-import { TERM_SUGGESTION_STR_MAX_LEN } from "../resources/constants";
+import type { TermSuggestion } from "#term/api/types";
+import { TERM_SUGGESTION_STR_MAX_LEN } from "#resources/constants";
 
 function _createSuggestionString(suggestion: TermSuggestion) {
   const txt = decodeURIComponent(suggestion.text);

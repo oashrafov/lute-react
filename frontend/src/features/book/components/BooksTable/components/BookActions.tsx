@@ -4,7 +4,7 @@ import { ActionIcon, Button, Group, Popover } from "@mantine/core";
 import { IconChevronDown, IconPlus } from "@tabler/icons-react";
 import type { MRT_TableInstance } from "mantine-react-table";
 import { SampleBooksSelect } from "../../common/SampleBooksSelect/SampleBooksSelect";
-import type { BooksListItem } from "../../../api/types";
+import type { BooksListItem } from "#book/api/types";
 import classes from "../BooksTable.module.css";
 
 interface BookActions {

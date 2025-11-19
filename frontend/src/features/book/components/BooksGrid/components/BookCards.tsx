@@ -1,5 +1,5 @@
 import { BookCard } from "./BookCard";
-import type { BooksListItem } from "../../../api/types";
+import type { BooksListItem } from "#book/api/types";
 
 interface BookCards {
   books: BooksListItem[];

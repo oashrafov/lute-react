@@ -1,6 +1,6 @@
-import { PageTitle } from "../components/common/PageTitle/PageTitle";
-import { PageContainer } from "../components/common/PageContainer/PageContainer";
-import { TermsTable } from "../features/term/components/TermsTable/TermsTable";
+import { PageTitle } from "#common/PageTitle/PageTitle";
+import { PageContainer } from "#common/PageContainer/PageContainer";
+import { TermsTable } from "#term/components/TermsTable/TermsTable";
 
 export function TermsPage() {
   return (

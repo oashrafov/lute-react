@@ -8,13 +8,13 @@ import {
   IconNotes,
   IconSpeakerphone,
 } from "@tabler/icons-react";
-import { Checkbox } from "../../../../components/common/Checkbox/Checkbox";
-import { TextInput } from "../../../../components/common/TextInput/TextInput";
-import { NumberInput } from "../../../../components/common/NumberInput/NumberInput";
-import { Select } from "../../../../components/common/Select/Select";
-import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
+import { Checkbox } from "#common/Checkbox/Checkbox";
+import { TextInput } from "#common/TextInput/TextInput";
+import { NumberInput } from "#common/NumberInput/NumberInput";
+import { Select } from "#common/Select/Select";
+import { FormButtons } from "#common/FormButtons/FormButtons";
 import { MeCabInfo } from "./MeCabInfo";
-import { queries } from "../../api/queries";
+import { queries } from "#settings/api/queries";
 
 export function SettingsForm() {
   const { t } = useTranslation("form", { keyPrefix: "settings" });

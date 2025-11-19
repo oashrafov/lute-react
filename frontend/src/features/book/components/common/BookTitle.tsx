@@ -1,5 +1,5 @@
-import { Title, type TitleProps } from "@mantine/core";
 import { getRouteApi } from "@tanstack/react-router";
+import { Title, type TitleProps } from "@mantine/core";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

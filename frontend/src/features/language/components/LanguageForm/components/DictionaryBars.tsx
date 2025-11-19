@@ -17,8 +17,8 @@ import {
 import { RemoveDictionaryButton } from "./DictionaryBar/components/RemoveDictionaryButton";
 import { DraggableContainer } from "./DraggableContainer";
 import { DictionaryBar } from "./DictionaryBar/DictionaryBar";
-import { MIN_LANGUAGE_DICTS } from "../../../../../resources/constants";
-import type { Dictionary } from "../../../api/types";
+import { MIN_LANGUAGE_DICTS } from "#resources/constants";
+import type { Dictionary } from "#language/api/types";
 
 interface DictionaryBars<T extends FieldValues> {
   control: Control<T>;

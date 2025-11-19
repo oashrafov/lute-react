@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { EditTermPage } from "../../pages/EditTermPage";
+import { EditTermPage } from "#pages/EditTermPage";
 
 export const Route = createFileRoute("/terms/$termId")({
   component: EditTermPage,

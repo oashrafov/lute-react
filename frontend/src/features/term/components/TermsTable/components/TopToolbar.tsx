@@ -4,9 +4,9 @@ import { Link } from "@tanstack/react-router";
 import { IconPlus } from "@tabler/icons-react";
 import type { MRT_TableInstance } from "mantine-react-table";
 import { TermActions } from "./TermActions";
-import { TableTopToolbar } from "../../../../../components/common/TableTopToolbar/TableTopToolbar";
-import { TableTopToolbarDefaultItems } from "../../../../../components/common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
-import type { TermsListItem } from "../../../api/types";
+import { TableTopToolbar } from "#common/TableTopToolbar/TableTopToolbar";
+import { TableTopToolbarDefaultItems } from "#common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
+import type { TermsListItem } from "#term/api/types";
 
 interface TopToolbar {
   table: MRT_TableInstance<TermsListItem>;

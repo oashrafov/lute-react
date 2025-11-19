@@ -1,7 +1,7 @@
 import type { Control, FieldValues, Path } from "react-hook-form";
 import type { TextareaProps } from "@mantine/core";
 import { IconNote } from "@tabler/icons-react";
-import { Textarea } from "../../../../../../components/common/Textarea/Textarea";
+import { Textarea } from "#common/Textarea/Textarea";
 import classes from "../../TermForm.module.css";
 
 interface NotesField<T extends FieldValues> extends TextareaProps {

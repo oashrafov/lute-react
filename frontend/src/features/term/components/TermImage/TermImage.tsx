@@ -6,14 +6,13 @@ import {
   type PopoverProps,
 } from "@mantine/core";
 
-interface TermImage {
+interface TermImage extends PopoverProps {
   src: ImageProps["src"];
-  position?: PopoverProps["position"];
 }
 
-export function TermImage({ src, position = "left" }: TermImage) {
+export function TermImage({ src, ...props }: TermImage) {
   return (
-    <Popover position={position}>
+    <Popover position="left" {...props}>
       <Popover.Target>
         <UnstyledButton display="block">
           <Image radius={5} w={50} h={50} src={src} />

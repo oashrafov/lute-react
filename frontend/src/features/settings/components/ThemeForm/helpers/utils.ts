@@ -1,14 +1,11 @@
-import { setTextColor } from "../../../../../helpers/general";
+import { setTextColor } from "#helpers/general";
 import {
   clearAllFlashing,
   getMatchedTextitems,
   makeFlashing,
-} from "../../../../../helpers/text";
-import type {
-  HighlightType,
-  TextitemElement,
-} from "../../../../../resources/types";
-import { TEXTITEM_DATASET } from "../../../../../resources/constants";
+} from "#helpers/text";
+import type { HighlightType, TextitemElement } from "#resources/types";
+import { TEXTITEM_DATASET } from "#resources/constants";
 
 export interface StatusHighlight {
   key: `status${number | string}`;

@@ -1,5 +1,5 @@
-import type { TextitemElement, TextUnit } from "../resources/types";
-import { copyToClipboard } from "../utils/utils";
+import type { TextitemElement, TextUnit } from "#resources/types";
+import { copyToClipboard } from "#utils/utils";
 import {
   clearAllFlashing,
   getMatchedTextitems,

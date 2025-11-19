@@ -2,9 +2,9 @@ import { getRouteApi } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { bookDeleted, bookUpdated } from "../resources/notifications";
-import { errorMessage } from "../../../resources/notifications";
+import { errorMessage } from "#resources/notifications";
 import { queries as bookQueries } from "./queries";
-import { queries as settingsQueries } from "../../settings/api/queries";
+import { queries as settingsQueries } from "#settings/api/queries";
 import { api } from "./api";
 import type { EditAction } from "./types";
 

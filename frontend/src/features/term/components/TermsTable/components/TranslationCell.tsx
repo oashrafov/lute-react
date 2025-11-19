@@ -1,8 +1,8 @@
 import { Text } from "@mantine/core";
 import type { MRT_Row } from "mantine-react-table";
-import type { TermsListItem } from "../../../api/types";
+import type { TermsListItem } from "#term/api/types";
 import { TermImage } from "../../TermImage/TermImage";
-import { BACKEND_URL } from "../../../../../resources/constants";
+import { BACKEND_URL } from "#resources/constants";
 
 interface TranslationCell {
   row: MRT_Row<TermsListItem>;

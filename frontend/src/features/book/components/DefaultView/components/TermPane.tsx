@@ -1,16 +1,16 @@
+import { lazy, Suspense } from "react";
 import { Box, LoadingOverlay } from "@mantine/core";
 import { TranslationPane } from "./TranslationPane/TranslationPane";
-import { lazy, Suspense } from "react";
-import { PageSpinner } from "../../../../../components/common/PageSpinner/PageSpinner";
-import { useTermQuery } from "../../../../term/hooks/useTermQuery";
-import { useBookContext } from "../../../hooks/useBookContext";
-import { useActiveTermContext } from "../../../../term/hooks/useActiveTermContext";
+import { PageSpinner } from "#common/PageSpinner/PageSpinner";
+import { useTermQuery } from "#term/hooks/useTermQuery";
+import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
+import { useBookContext } from "#book/hooks/useBookContext";
 
 const ThemeForm = lazy(
-  () => import("../../../../settings/components/ThemeForm/ThemeForm")
+  () => import("#settings/components/ThemeForm/ThemeForm")
 );
 const BulkTermForm = lazy(
-  () => import("../../../../term/components/BulkTermForm/BulkTermForm")
+  () => import("#term/components/BulkTermForm/BulkTermForm")
 );
 
 export function TermPane() {

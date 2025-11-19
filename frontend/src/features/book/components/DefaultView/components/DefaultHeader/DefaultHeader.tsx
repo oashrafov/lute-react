@@ -1,13 +1,13 @@
 import { Box, Divider, Group, Paper, Stack } from "@mantine/core";
+import { PlayerSection } from "#book/components/common/PlayerSection";
+import { FocusSwitch } from "#book/components/common/FocusSwitch/FocusSwitch";
+import { HighlightsSwitch } from "#book/components/common/HighlightSwitch/HighlightSwitch";
 import { PageControls } from "./components/PageControls/PageControls";
-import { PlayerSection } from "../../../common/PlayerSection";
 import { LogoSection } from "./components/LogoSection/LogoSection";
 import { SideMenuButton } from "./components/SideMenuButton";
-import { FocusSwitch } from "../../../common/FocusSwitch/FocusSwitch";
-import { HighlightsSwitch } from "../../../common/HighlightSwitch/HighlightSwitch";
-import { Toolbar } from "../Toolbar/Toolbar";
 import { PageTermsButton } from "./components/PageTermsButton";
-import { useBookQuery } from "../../../../hooks/useBookQuery";
+import { Toolbar } from "../Toolbar/Toolbar";
+import { useBookQuery } from "#book/hooks/useBookQuery";
 import classes from "./DefaultHeader.module.css";
 
 export function DefaultHeader() {

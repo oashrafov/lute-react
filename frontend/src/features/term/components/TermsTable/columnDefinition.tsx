@@ -4,19 +4,19 @@ import type {
   MRT_ColumnFiltersState,
 } from "mantine-react-table";
 import { StatusRadio } from "../StatusRadio/StatusRadio";
-import { TagsGroup } from "../../../../components/common/TagsGroup/TagsGroup";
+import { TagsGroup } from "#common/TagsGroup/TagsGroup";
+import { LanguageCell } from "#common/LanguageCell/LanguageCell";
 import { TermCell } from "./components/TermCell";
 import { TranslationCell } from "./components/TranslationCell";
-import { LanguageCell } from "../../../../components/common/LanguageCell/LanguageCell";
 import { StatusCell } from "./components/StatusCell";
 import { EditButtonsCell } from "../EditButtonsCell/EditButtonsCell";
 import { ParentEdit } from "./components/ParentEdit";
 import { TranslationEdit } from "./components/TranslationEdit";
 import { TagsEdit } from "./components/TagsEdit";
-import { STATUS_LABEL } from "../../../../resources/constants";
-import type { TermsListItem } from "../../api/types";
-import type { LanguageChoice } from "../../../settings/api/types";
-import type { Status } from "../../../../resources/types";
+import { STATUS_LABEL } from "#resources/constants";
+import type { Status } from "#resources/types";
+import type { TermsListItem } from "#term/api/types";
+import type { LanguageChoice } from "#settings/api/types";
 
 const statusLabel = {
   ...STATUS_LABEL,

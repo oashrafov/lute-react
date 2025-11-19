@@ -14,7 +14,7 @@ import {
   getSentence,
   makeBookmarked,
   scrollSentenceIntoView,
-} from "../../../../../../../helpers/text";
+} from "#helpers/text";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

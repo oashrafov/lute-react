@@ -1,11 +1,11 @@
 import { createContext, useMemo, useState, type ReactNode } from "react";
-import type { TextitemElement } from "../../../resources/types";
+import type { TextitemElement } from "#resources/types";
 import {
   focusActiveSentence as fas,
   resetFocusActiveSentence,
   startHoverMode,
-} from "../../../helpers/interactions-desktop";
-import { getTextContainer } from "../../../helpers/general";
+} from "#helpers/interactions-desktop";
+import { getTextContainer } from "#helpers/general";
 
 interface SingleTerm {
   data: number;

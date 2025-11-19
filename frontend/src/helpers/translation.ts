@@ -1,4 +1,4 @@
-import type { TextitemElement, TextUnit } from "../resources/types";
+import type { TextitemElement, TextUnit } from "#resources/types";
 import { getMatchedTextitems, getTextContent } from "./text";
 
 /** Show the translation using the next dictionary. */

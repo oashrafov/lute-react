@@ -14,7 +14,7 @@ import {
   useCombobox,
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
-import { queries } from "../../../api/queries";
+import { queries } from "#language/api/queries";
 
 export const LanguageSelect = memo(function LanguageSelect() {
   const { langId, langName } = useSearch({ strict: false });

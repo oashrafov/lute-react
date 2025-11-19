@@ -1,4 +1,4 @@
-import type { TextDirection } from "../../../resources/types";
+import type { TextDirection } from "#resources/types";
 
 export interface SentenceRef {
   id: number;

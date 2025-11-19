@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { NoSentences } from "../NoSentences/NoSentences";
 import { SentenceReference } from "../SentenceReference/SentenceReference";
 import { SentencesSkeleton } from "./SentencesSkeleton";
-import { queries } from "../../api/queries";
+import { queries } from "#term/api/queries";
 import classes from "./Sentences.module.css";
 
 interface Sentences {

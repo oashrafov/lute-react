@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 import { ActionIcon, Group, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSquareRoundedPlusFilled } from "@tabler/icons-react";
-import { NewBookForm } from "../../features/book/components/NewBookForm/NewBookForm";
-import { LanguageCards } from "../../features/language/components/LanguageCards/LanguageCards";
-import { PageContainer } from "../../components/common/PageContainer/PageContainer";
-import { PageTitle } from "../../components/common/PageTitle/PageTitle";
-import { queries } from "../../features/settings/api/queries";
+import { NewBookForm } from "#book/components/NewBookForm/NewBookForm";
+import { LanguageCards } from "#language/components/LanguageCards/LanguageCards";
+import { queries } from "#settings/api/queries";
+import { PageContainer } from "#common/PageContainer/PageContainer";
+import { PageTitle } from "#common/PageTitle/PageTitle";
 import { CreateLanguageModal } from "./CreateLanguageModal";
 
 export function NewBookPage() {

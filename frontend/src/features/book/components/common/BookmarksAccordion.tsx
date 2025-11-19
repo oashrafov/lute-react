@@ -1,6 +1,6 @@
 import { Accordion, Stack, type AccordionProps } from "@mantine/core";
-import { BookmarkButton } from "../DefaultView/components/DefaultHeader/components/BookmarkButton";
-import type { PageBookmark } from "../../api/types";
+import { BookmarkButton } from "./BookmarkButton";
+import type { PageBookmark } from "#book/api/types";
 
 interface BookmarksAccordion extends AccordionProps {
   bookmarks: PageBookmark;

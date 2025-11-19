@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { DictsPane } from "../features/language/components/DictsPane/DictsPane";
-import { TermForm } from "../features/term/components/TermForm/TermForm";
+import { DictsPane } from "#language/components/DictsPane/DictsPane";
+import { TermForm } from "#term/components/TermForm/TermForm";
+import { queries } from "#language/api/queries";
 import { TermPageLayout } from "./TermPage/TermPageLayout";
-import { queries } from "../features/language/api/queries";
 
 export function NewTermPage() {
   const [newTerm, setNewTerm] = useState("");

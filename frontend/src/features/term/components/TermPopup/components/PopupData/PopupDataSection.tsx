@@ -1,6 +1,6 @@
 import { Group } from "@mantine/core";
-import { TagsGroup } from "../../../../../../components/common/TagsGroup/TagsGroup";
-import type { TermPopupSection } from "../../../../api/types";
+import { TagsGroup } from "#common/TagsGroup/TagsGroup";
+import type { TermPopupSection } from "#term/api/types";
 import classes from "./PopupData.module.css";
 
 export function PopupDataSection({ data }: { data: TermPopupSection[] }) {

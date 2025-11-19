@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queries } from "../features/settings/api/queries";
-import BackupsPage from "../pages/BackupsPage";
+import { queries } from "#settings/api/queries";
+import { BackupsPage } from "#pages/BackupsPage";
 
 export const Route = createFileRoute("/backups")({
   component: BackupsPage,

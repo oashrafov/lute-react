@@ -16,9 +16,9 @@ import {
   InputClearButton,
   type PillsInputProps,
 } from "@mantine/core";
-import { MAX_TERM_SUGGESTIONS } from "../../../../../../resources/constants";
-import { buildSuggestionsList } from "../../../../../../helpers/term";
-import { queries } from "../../../../api/queries";
+import { MAX_TERM_SUGGESTIONS } from "#resources/constants";
+import { buildSuggestionsList } from "#helpers/term";
+import { queries } from "#term/api/queries";
 
 interface TagsField extends PillsInputProps {
   termText: string;

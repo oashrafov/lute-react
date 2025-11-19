@@ -1,7 +1,7 @@
 import type { ElementType, ForwardedRef } from "react";
 import { Text } from "@mantine/core";
 import { DictFavicon } from "./common/DictFavicon";
-import type { Dictionary } from "../../../api/types";
+import type { Dictionary } from "#language/api/types";
 import classes from "../DictsPane.module.css";
 
 interface DictTabEmbedded {

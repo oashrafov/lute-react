@@ -1,8 +1,8 @@
 import { useRef, type MouseEvent, type ReactNode } from "react";
 import { Box } from "@mantine/core";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
-import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
-import { hasClickedOutsideText } from "../../../../helpers/interactions-desktop";
+import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
+import { hasClickedOutsideText } from "#helpers/interactions-desktop";
 
 interface ContextMenuArea {
   children: ReactNode;

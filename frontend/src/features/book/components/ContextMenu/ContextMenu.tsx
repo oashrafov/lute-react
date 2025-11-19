@@ -1,10 +1,10 @@
 import { Fragment, useEffect, useRef, useState, type RefObject } from "react";
 import { Affix, Divider, Menu, Text } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
-import { clearAllFlashing, makeFlashing } from "../../../../helpers/text";
+import { clearAllFlashing, makeFlashing } from "#helpers/text";
 import { menu } from "./resources/menu";
-import { TEXTITEM_CLASS } from "../../../../resources/constants";
-import type { TextitemElement } from "../../../../resources/types";
+import { TEXTITEM_CLASS } from "#resources/constants";
+import type { TextitemElement } from "#resources/types";
 
 interface ContextMenu {
   areaRef: RefObject<HTMLDivElement>;

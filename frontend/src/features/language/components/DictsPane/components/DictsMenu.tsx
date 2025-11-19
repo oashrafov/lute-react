@@ -3,7 +3,7 @@ import { ActionIcon, Menu } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { DictTabExternal } from "./DictTabExternal";
 import { DictTabEmbedded } from "./DictTabEmbedded";
-import type { Dictionary } from "../../../api/types";
+import type { Dictionary } from "#language/api/types";
 
 interface DictsMenu {
   termText: string;

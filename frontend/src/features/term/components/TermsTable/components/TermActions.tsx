@@ -8,10 +8,10 @@ import {
   IconTrashFilled,
   IconUpload,
 } from "@tabler/icons-react";
-import { TermImportForm } from "./TermImportForm";
-import { API_BASE_URL } from "../../../../../resources/constants";
 import type { MRT_TableInstance } from "mantine-react-table";
-import type { TermsListItem } from "../../../api/types";
+import { TermImportForm } from "./TermImportForm";
+import { API_BASE_URL } from "#resources/constants";
+import type { TermsListItem } from "#term/api/types";
 
 interface TermActions {
   table: MRT_TableInstance<TermsListItem>;

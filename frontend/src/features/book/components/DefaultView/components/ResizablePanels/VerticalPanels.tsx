@@ -5,7 +5,7 @@ import {
   PanelResizeHandle,
   type ImperativePanelHandle,
 } from "react-resizable-panels";
-import { paneResizeStorage } from "../../../../../../helpers/general";
+import { paneResizeStorage } from "#helpers/general";
 import classes from "./ResizablePanels.module.css";
 
 interface VerticalPanels {

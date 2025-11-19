@@ -1,13 +1,13 @@
 import { Box, Divider, Paper, Stack } from "@mantine/core";
-import { NavLogo } from "../../../../../../components/common/NavLogo/NavLogo";
-import { BookTitle } from "../../../common/BookTitle";
-import { ThemeSelect } from "../../../../../../components/common/ThemeSelect/ThemeSelect";
-import { PageCounter } from "../../../common/PageCounter";
-import { BookSourceButton } from "../../../common/BookSourceButton";
-import { FocusSwitch } from "../../../common/FocusSwitch/FocusSwitch";
-import { HighlightsSwitch } from "../../../common/HighlightSwitch/HighlightSwitch";
-import { PlayerSection } from "../../../common/PlayerSection";
-import { useBookQuery } from "../../../../hooks/useBookQuery";
+import { NavLogo } from "#common/NavLogo/NavLogo";
+import { ThemeSelect } from "#common/ThemeSelect/ThemeSelect";
+import { BookTitle } from "#book/components/common/BookTitle";
+import { PageCounter } from "#book/components/common/PageCounter";
+import { BookSourceButton } from "#book/components/common/BookSourceButton";
+import { FocusSwitch } from "#book/components/common/FocusSwitch/FocusSwitch";
+import { HighlightsSwitch } from "#book/components/common/HighlightSwitch/HighlightSwitch";
+import { PlayerSection } from "#book/components/common/PlayerSection";
+import { useBookQuery } from "#book/hooks/useBookQuery";
 import classes from "./FocusHeader.module.css";
 
 export function FocusHeader() {

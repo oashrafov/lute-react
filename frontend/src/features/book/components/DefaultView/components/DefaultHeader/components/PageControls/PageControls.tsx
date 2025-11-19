@@ -6,19 +6,19 @@ import {
   IconSquareRoundedChevronLeftFilled,
   IconSquareRoundedChevronRightFilled,
 } from "@tabler/icons-react";
-import { BookmarksButton } from "../../../../../common/BookmarksButton";
-import { BookmarksMenu } from "../../../../../common/BookmarksMenu";
-import { BookSourceButton } from "../../../../../common/BookSourceButton";
-import { PageCounter } from "../../../../../common/PageCounter";
-import { BookTitle } from "../../../../../common/BookTitle";
+import { BookmarksButton } from "#book/components/common/BookmarksButton";
+import { BookmarksMenu } from "#book/components/common/BookmarksMenu";
+import { BookSourceButton } from "#book/components/common/BookSourceButton";
+import { PageCounter } from "#book/components/common/PageCounter";
+import { BookTitle } from "#book/components/common/BookTitle";
+import { PageActionButton } from "#book/components/common/PageActionButton";
+import { MarkRestAsKnownButton } from "#book/components/common/MarkRestAsKnownButton/MarkRestAsKnownButton";
 import { PageSlider } from "../PageSlider";
 import { EditButton } from "../EditButton";
-import { PageActionButton } from "../PageActionButton";
-import { MarkRestAsKnownButton } from "../../../../../common/MarkRestAsKnownButton/MarkRestAsKnownButton";
-import { usePageControl } from "../../../../../../hooks/usePageControl";
-import type { BookDetail } from "../../../../../../api/types";
+import { usePageControl } from "#book/hooks/usePageControl";
+import { useMarkPageAsRead } from "#book/hooks/useMarkPageAsRead";
+import type { BookDetail } from "#book/api/types";
 import classes from "./PageControls.module.css";
-import { useMarkPageAsRead } from "../../../../../../hooks/useMarkPageAsRead";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

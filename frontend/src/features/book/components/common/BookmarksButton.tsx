@@ -1,6 +1,6 @@
 import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { IconBookmarksFilled } from "@tabler/icons-react";
-import { PageActionButton } from "../DefaultView/components/DefaultHeader/components/PageActionButton";
+import { PageActionButton } from "./PageActionButton";
 
 export const BookmarksButton = forwardRef<
   HTMLButtonElement,

@@ -7,14 +7,14 @@ import type {
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
-import { TagsGroup } from "../../../../components/common/TagsGroup/TagsGroup";
+import { TagsGroup } from "#common/TagsGroup/TagsGroup";
+import { LanguageCell } from "#common/LanguageCell/LanguageCell";
 import { StatusCell } from "./components/StatusCell/StatusCell";
-import { LanguageCell } from "../../../../components/common/LanguageCell/LanguageCell";
 import { TitleCell } from "./components/TitleCell";
 import { ActionsCell } from "./components/ActionsCell";
-import type { BooksListItem } from "../../api/types";
-import type { LanguageChoice } from "../../../settings/api/types";
-import type { Shelf } from "../../resources/types";
+import type { BooksListItem } from "#book/api/types";
+import type { Shelf } from "#book/resources/types";
+import type { LanguageChoice } from "#settings/api/types";
 
 export const columnDefinition = (
   languageChoices: LanguageChoice[],

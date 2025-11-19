@@ -1,4 +1,4 @@
-import type { Status } from "../resources/types";
+import type { Status } from "#resources/types";
 import { clearAllHovered, getHovered, getMarked, makeMarked } from "./text";
 
 export function updateStatusForMarked(new_status: Status) {

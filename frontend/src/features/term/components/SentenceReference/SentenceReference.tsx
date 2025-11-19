@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { SentenceRef } from "../../api/types";
+import type { SentenceRef } from "#term/api/types";
 import classes from "./SentenceReference.module.css";
 
 interface SentenceReference {

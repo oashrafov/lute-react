@@ -1,6 +1,6 @@
 import { ActionIcon, Group, Menu, rem, Stack, Tooltip } from "@mantine/core";
 import { IconTypography } from "@tabler/icons-react";
-import { toolbar } from "../../../../../../resources/toolbar";
+import { toolbar } from "#resources/toolbar";
 
 export function Toolbar() {
   return (

@@ -14,8 +14,8 @@ import {
   IconFileXFilled,
 } from "@tabler/icons-react";
 import { PageCounter } from "../../../common/PageCounter";
-import type { BookDetail } from "../../../../api/types";
-import { useView } from "../../../../hooks/useView";
+import type { BookDetail } from "#book/api/types";
+import { useView } from "#book/hooks/useView";
 
 interface EditHeader {
   book: BookDetail;

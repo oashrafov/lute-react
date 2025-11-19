@@ -3,7 +3,7 @@ import { Slider, type SliderProps } from "@mantine/core";
 import { usePlayerContext } from "../hooks/usePlayerContext";
 import { useAudioDataContext } from "../hooks/useAudioDataContext";
 import { useUpdateAudioMutate } from "../hooks/useUpdateAudioMutate";
-import { throttle } from "../../../../../../utils/utils";
+import { throttle } from "#utils/utils";
 import classes from "../Player.module.css";
 
 export function TimeSlider(props: SliderProps) {

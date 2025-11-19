@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import { Group, Box } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { PageContainer } from "../../components/common/PageContainer/PageContainer";
-import { PageTitle } from "../../components/common/PageTitle/PageTitle";
-import { LanguageCards } from "../../features/language/components/LanguageCards/LanguageCards";
+import { PageContainer } from "#common/PageContainer/PageContainer";
+import { PageTitle } from "#common/PageTitle/PageTitle";
+import { LanguageCards } from "#language/components/LanguageCards/LanguageCards";
 import { Placeholder } from "./Placeholder";
-import type { TextDirection } from "../../resources/types";
+import type { TextDirection } from "#resources/types";
 
 interface TermPageLayout {
   textDirection: TextDirection;

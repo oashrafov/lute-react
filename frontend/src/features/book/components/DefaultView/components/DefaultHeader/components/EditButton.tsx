@@ -1,7 +1,7 @@
 import { ActionIcon } from "@mantine/core";
 import { IconEdit } from "@tabler/icons-react";
-import { useActiveTermContext } from "../../../../../../term/hooks/useActiveTermContext";
-import { useView } from "../../../../../hooks/useView";
+import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
+import { useView } from "#book/hooks/useView";
 
 export function EditButton() {
   const { clearActiveTerm } = useActiveTermContext();

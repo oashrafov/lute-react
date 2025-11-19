@@ -1,7 +1,7 @@
 import { Button, Text } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import type { MRT_Row } from "mantine-react-table";
-import type { TermsListItem } from "../../../api/types";
+import type { TermsListItem } from "#term/api/types";
 
 interface TermCell {
   row: MRT_Row<TermsListItem>;

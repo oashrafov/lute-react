@@ -3,19 +3,16 @@ import { getRouteApi } from "@tanstack/react-router";
 import { Box, LoadingOverlay } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { TheText } from "../TheText/TheText";
-import { useActiveTermContext } from "../../../term/hooks/useActiveTermContext";
-import { useBookQuery } from "../../hooks/useBookQuery";
-import { usePageQuery } from "../../hooks/usePageQuery";
-import { handleMouseUp } from "../../../../helpers/interactions-desktop";
-import { applyTextSettings } from "../../../../helpers/general";
-import type { WordElement } from "../../../../resources/types";
-import { textCopied } from "../../resources/notifications";
+import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
+import { useBookQuery } from "#book/hooks/useBookQuery";
+import { usePageQuery } from "#book/hooks/usePageQuery";
+import { handleMouseUp } from "#helpers/interactions-desktop";
+import { applyTextSettings } from "#helpers/general";
+import type { WordElement } from "#resources/types";
+import { textCopied } from "#book/resources/notifications";
 import { useProcessPage } from "./hooks/useProcessPage";
-import { copyToClipboard } from "../../../../utils/utils";
-import {
-  makeBookmarked,
-  scrollSentenceIntoView,
-} from "../../../../helpers/text";
+import { copyToClipboard } from "#utils/utils";
+import { makeBookmarked, scrollSentenceIntoView } from "#helpers/text";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

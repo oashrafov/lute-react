@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { Box, ScrollArea, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
-import { useBookContext } from "../../../features/book/hooks/useBookContext";
-import { queries } from "../../../features/book/api/queries";
+import { useBookContext } from "#book/hooks/useBookContext";
+import { queries } from "#book/api/queries";
+import type { Shelf } from "#book/resources/types";
 import { BookLinkButton } from "./BookLinkButton";
-import type { Shelf } from "../../../features/book/resources/types";
 
 const searchParams = new URLSearchParams({ shelf: "active" as Shelf });
 

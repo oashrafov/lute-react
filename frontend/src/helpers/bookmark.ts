@@ -1,5 +1,5 @@
-import { TEXTITEM_DATASET } from "../resources/constants";
-import type { TextitemElement } from "../resources/types";
+import { TEXTITEM_DATASET } from "#resources/constants";
+import type { TextitemElement } from "#resources/types";
 import {
   clearAllFlashing,
   getMatchedTextitems,

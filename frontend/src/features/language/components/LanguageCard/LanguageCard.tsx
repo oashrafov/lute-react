@@ -1,5 +1,5 @@
 import { Group, Stack, Text } from "@mantine/core";
-import type { UserLanguagesItem } from "../../api/types";
+import type { UserLanguagesItem } from "#language/api/types";
 import classes from "./LanguageCard.module.css";
 
 export function LanguageCard({ data }: { data: UserLanguagesItem }) {

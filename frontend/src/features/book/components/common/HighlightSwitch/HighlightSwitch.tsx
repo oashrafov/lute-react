@@ -1,7 +1,7 @@
 import { IconHighlight } from "@tabler/icons-react";
 import { ModeSwitch } from "../ModeSwitch/ModeSwitch";
-import { handleSetHighlights } from "../../../../../helpers/page";
-import { getFromLocalStorage } from "../../../../../helpers/general";
+import { handleSetHighlights } from "#helpers/page";
+import { getFromLocalStorage } from "#helpers/general";
 
 export function HighlightsSwitch() {
   return (

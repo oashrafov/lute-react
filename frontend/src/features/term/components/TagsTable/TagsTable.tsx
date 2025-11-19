@@ -4,12 +4,12 @@ import { Button, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { IconPlus } from "@tabler/icons-react";
 import { NewTagForm } from "./components/NewTagForm";
-import { TableTopToolbar } from "../../../../components/common/TableTopToolbar/TableTopToolbar";
-import { TableTopToolbarDefaultItems } from "../../../../components/common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
-import { getDefaultTableOptions } from "../../../../resources/table-options-default";
+import { TableTopToolbar } from "#common/TableTopToolbar/TableTopToolbar";
+import { TableTopToolbarDefaultItems } from "#common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
+import { getDefaultTableOptions } from "#resources/table-options-default";
 import { columnDefinition } from "./columnDefinition";
-import { queries } from "../../api/queries";
-import type { Tag } from "../../api/types";
+import { queries } from "#term/api/queries";
+import type { Tag } from "#term/api/types";
 
 const defaultOptions = getDefaultTableOptions<Tag>();
 

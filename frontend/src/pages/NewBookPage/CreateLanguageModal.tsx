@@ -1,8 +1,8 @@
 import { Drawer, ScrollAreaAutosize } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { PageContainer } from "../../components/common/PageContainer/PageContainer";
-import { PageTitle } from "../../components/common/PageTitle/PageTitle";
-import { LanguageForm } from "../../features/language/components/LanguageForm/LanguageForm";
+import { PageContainer } from "#common/PageContainer/PageContainer";
+import { PageTitle } from "#common/PageTitle/PageTitle";
+import { LanguageForm } from "#language/components/LanguageForm/LanguageForm";
 
 interface CreateLanguageModal {
   isOpen: boolean;

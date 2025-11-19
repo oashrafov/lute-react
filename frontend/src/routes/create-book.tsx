@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queries as langQueries } from "../features/language/api/queries";
-import { queries as settingsQueries } from "../features/settings/api/queries";
-import { queries as bookQueries } from "../features/book/api/queries";
-import { NewBookPage } from "../pages/NewBookPage/NewBookPage";
+import { queries as langQueries } from "#language/api/queries";
+import { queries as settingsQueries } from "#settings/api/queries";
+import { queries as bookQueries } from "#book/api/queries";
+import { NewBookPage } from "#pages/NewBookPage/NewBookPage";
 
 export const Route = createFileRoute("/create-book")({
   component: NewBookPage,

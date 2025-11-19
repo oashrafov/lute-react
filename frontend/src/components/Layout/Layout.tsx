@@ -1,10 +1,10 @@
 import { Outlet } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigationProgress } from "../../hooks/useNavigationProgress";
+import { useNavigationProgress } from "#hooks/useNavigationProgress";
+import { useMediaQuery } from "#hooks/useMediaQuery";
+import { queries } from "#settings/api/queries";
 import { MainSideMenu } from "../MainSideMenu/MainSideMenu";
 import { AppHeader } from "../AppHeader/AppHeader";
-import { useMediaQuery } from "../../hooks/useMediaQuery";
-import { queries } from "../../features/settings/api/queries";
 
 export function Layout() {
   const media = useMediaQuery();

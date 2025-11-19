@@ -1,8 +1,8 @@
 import { Group, Text, Tooltip } from "@mantine/core";
-import { TagsGroup } from "../../../../../../components/common/TagsGroup/TagsGroup";
+import { TagsGroup } from "#common/TagsGroup/TagsGroup";
 import { PopupDataSection } from "./PopupDataSection";
-import type { TermPopup } from "../../../../api/types";
-import { BACKEND_URL } from "../../../../../../resources/constants";
+import type { TermPopup } from "#term/api/types";
+import { BACKEND_URL } from "#resources/constants";
 import classes from "./PopupData.module.css";
 
 export function PopupData({ data }: { data: TermPopup }) {

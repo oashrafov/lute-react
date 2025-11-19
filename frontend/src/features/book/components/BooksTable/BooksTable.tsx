@@ -12,22 +12,19 @@ import {
 } from "mantine-react-table";
 import type { RowPinningState, Updater } from "@tanstack/react-table";
 import { IconPin, IconPinnedOff } from "@tabler/icons-react";
-import { EmptyRow } from "../../../../components/common/EmptyRow/EmptyRow";
+import { EmptyRow } from "#common/EmptyRow/EmptyRow";
+import { TableTopToolbar } from "#common/TableTopToolbar/TableTopToolbar";
+import { TableTopToolbarDefaultItems } from "#common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
 import { EditBookForm } from "../EditBookForm/EditBookForm";
 import { BookActions } from "./components/BookActions";
-import { TableTopToolbar } from "../../../../components/common/TableTopToolbar/TableTopToolbar";
-import { TableTopToolbarDefaultItems } from "../../../../components/common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
-import { getDefaultTableOptions } from "../../../../resources/table-options-default";
+import { getDefaultTableOptions } from "#resources/table-options-default";
 import { columnDefinition } from "./columnDefinition";
-import {
-  setLocalStorageItem,
-  getFromLocalStorage,
-} from "../../../../helpers/general";
-import { TABLE_PAGE_SIZE } from "../../../../resources/constants";
-import { queries as settingsQueries } from "../../../settings/api/queries";
-import { queries as bookQueries } from "../../api/queries";
-import type { BooksListItem } from "../../api/types";
-import type { Shelf } from "../../resources/types";
+import { setLocalStorageItem, getFromLocalStorage } from "#helpers/general";
+import { TABLE_PAGE_SIZE } from "#resources/constants";
+import { queries as settingsQueries } from "#settings/api/queries";
+import { queries as bookQueries } from "#book/api/queries";
+import type { BooksListItem } from "#book/api/types";
+import type { Shelf } from "#book/resources/types";
 
 type RowPinning = { top?: string[]; bottom?: string[] };
 

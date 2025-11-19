@@ -1,8 +1,8 @@
 import { ActionIcon } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck } from "@tabler/icons-react";
-import { sampleBooksAdded } from "../../../resources/notifications";
-import { mutation } from "../../../../language/api/mutation";
+import { sampleBooksAdded } from "#book/resources/notifications";
+import { mutation } from "#language/api/mutation";
 
 interface LoadSampleBooksButton {
   langName: string;

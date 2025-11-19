@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TagsInput } from "@mantine/core";
 import type { MRT_Cell } from "mantine-react-table";
-import type { TermsListItem } from "../../../api/types";
+import type { TermsListItem } from "#term/api/types";
 
 interface TagsEdit {
   cell: MRT_Cell<TermsListItem, unknown>;

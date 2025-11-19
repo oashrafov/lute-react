@@ -14,8 +14,8 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons-react";
-import { queries } from "../../../../settings/api/queries";
-import type { Shelf } from "../../../resources/types";
+import { queries } from "#settings/api/queries";
+import type { Shelf } from "#book/resources/types";
 
 interface BooksGridTopToolbar {
   activeLang: string;

@@ -2,12 +2,12 @@ import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Box, ScrollAreaAutosize } from "@mantine/core";
 import { VerticalPanels } from "../ResizablePanels/VerticalPanels";
-import { DictsPane } from "../../../../../language/components/DictsPane/DictsPane";
-import { TermForm } from "../../../../../term/components/TermForm/TermForm";
-import { useBookQuery } from "../../../../hooks/useBookQuery";
-import { useActiveTermContext } from "../../../../../term/hooks/useActiveTermContext";
-import { queries } from "../../../../../language/api/queries";
-import type { TermDetail } from "../../../../../term/api/types";
+import { DictsPane } from "#language/components/DictsPane/DictsPane";
+import { queries } from "#language/api/queries";
+import { TermForm } from "#term/components/TermForm/TermForm";
+import type { TermDetail } from "#term/api/types";
+import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
+import { useBookQuery } from "#book/hooks/useBookQuery";
 import classes from "./TranslationPane.module.css";
 
 interface TranslationPane {

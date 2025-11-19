@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Box, Tabs, Text } from "@mantine/core";
 import { IconPhoto } from "@tabler/icons-react";
-import { MAX_VISIBLE_DICT_TABS } from "../../../../resources/constants";
-import { Sentences } from "../../../term/components/Sentences/Sentences";
+import { MAX_VISIBLE_DICT_TABS } from "#resources/constants";
+import { getLookupURL } from "#helpers/language";
+import { Sentences } from "#term/components/Sentences/Sentences";
 import { DictsMenu } from "./components/DictsMenu";
 import { VisibleDictsContainer } from "./components/VisibleDictsContainer";
 import { DictsTabs } from "./components/DictsTabs";
@@ -10,8 +11,7 @@ import { IFramePanel } from "./components/IFramePanel";
 import { TabPanel } from "./components/common/TabPanel";
 import { DictTab } from "./components/DictTab";
 import { Tab } from "./components/Tab";
-import type { UserLanguageDetail } from "../../api/types";
-import { getLookupURL } from "../../../../helpers/language";
+import type { UserLanguageDetail } from "#language/api/types";
 import classes from "./DictsPane.module.css";
 
 interface DictsPane {

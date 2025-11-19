@@ -1,7 +1,7 @@
 import { Stack, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { PageSpinner } from "../common/PageSpinner/PageSpinner";
-import { queries } from "../../features/settings/api/queries";
+import { PageSpinner } from "#common/PageSpinner/PageSpinner";
+import { queries } from "#settings/api/queries";
 
 export function AppInfo() {
   const { data } = useQuery(queries.appInfo());

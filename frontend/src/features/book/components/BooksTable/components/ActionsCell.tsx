@@ -9,10 +9,10 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import type { MRT_Row } from "mantine-react-table";
-import { deleteBookConfirm } from "../../../../../resources/modals";
-import type { BooksListItem, EditAction } from "../../../api/types";
-import type { Shelf } from "../../../resources/types";
-import { mutation } from "../../../api/mutation";
+import { deleteBookConfirm } from "#resources/modals";
+import type { BooksListItem, EditAction } from "#book/api/types";
+import type { Shelf } from "#book/resources/types";
+import { mutation } from "#book/api/mutation";
 
 interface ActionsCell {
   row: MRT_Row<BooksListItem>;

@@ -1,11 +1,8 @@
 import type { ElementType } from "react";
 import { IconExternalLink } from "@tabler/icons-react";
 import { DictFavicon } from "./common/DictFavicon";
-import type { Dictionary } from "../../../api/types";
-import {
-  getLookupURL,
-  handleExternalUrl,
-} from "../../../../../helpers/language";
+import type { Dictionary } from "#language/api/types";
+import { getLookupURL, handleExternalUrl } from "#helpers/language";
 
 interface DictTabExternal {
   termText: string;

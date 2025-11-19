@@ -1,6 +1,6 @@
 import { IconFocus2 } from "@tabler/icons-react";
 import { ModeSwitch } from "../ModeSwitch/ModeSwitch";
-import { useView } from "../../../hooks/useView";
+import { useView } from "#book/hooks/useView";
 
 export function FocusSwitch() {
   const { view, toggleFocus } = useView();

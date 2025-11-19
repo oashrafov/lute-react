@@ -1,5 +1,5 @@
-import { Badge } from "@mantine/core";
 import { getRouteApi } from "@tanstack/react-router";
+import { Badge } from "@mantine/core";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

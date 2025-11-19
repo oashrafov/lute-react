@@ -6,14 +6,11 @@ import {
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
-import { TableTopToolbar } from "../../../../components/common/TableTopToolbar/TableTopToolbar";
-import { getDefaultTableOptions } from "../../../../resources/table-options-default";
-import {
-  DOWNLOAD_BACKUP_URL,
-  MANUAL_BACKUP_URL,
-} from "../../../../resources/constants";
-import { queries } from "../../api/queries";
-import type { Backup } from "../../api/types";
+import { TableTopToolbar } from "#common/TableTopToolbar/TableTopToolbar";
+import { getDefaultTableOptions } from "#resources/table-options-default";
+import { DOWNLOAD_BACKUP_URL, MANUAL_BACKUP_URL } from "#resources/constants";
+import { queries } from "#settings/api/queries";
+import type { Backup } from "#settings/api/types";
 
 const defaultOptions = getDefaultTableOptions<Backup>();
 

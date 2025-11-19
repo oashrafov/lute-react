@@ -19,18 +19,18 @@ import {
   IconTags,
   IconWorldWww,
 } from "@tabler/icons-react";
-import { TextInput } from "../../../../components/common/TextInput/TextInput";
-import { FileInput } from "../../../../components/common/FileInput/FileInput";
-import { TagsInput } from "../../../../components/common/TagsInput/TagsInput";
-import { NumberInput } from "../../../../components/common/NumberInput/NumberInput";
-import { Select } from "../../../../components/common/Select/Select";
-import { Textarea } from "../../../../components/common/Textarea/Textarea";
-import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
+import { TextInput } from "#common/TextInput/TextInput";
+import { FileInput } from "#common/FileInput/FileInput";
+import { TagsInput } from "#common/TagsInput/TagsInput";
+import { NumberInput } from "#common/NumberInput/NumberInput";
+import { Select } from "#common/Select/Select";
+import { Textarea } from "#common/Textarea/Textarea";
+import { FormButtons } from "#common/FormButtons/FormButtons";
 import { ImportURLInfoPopup } from "./components/ImportURLInfoPopup";
-import { queries as settingsQueries } from "../../../settings/api/queries";
-import { queries as bookQueries } from "../../api/queries";
-import { queries as langQueries } from "../../../language/api/queries";
-import { mutation } from "../../api/mutation";
+import { queries as settingsQueries } from "#settings/api/queries";
+import { queries as bookQueries } from "#book/api/queries";
+import { queries as langQueries } from "#language/api/queries";
+import { mutation } from "#book/api/mutation";
 import classes from "./NewBookForm.module.css";
 
 export function NewBookForm() {

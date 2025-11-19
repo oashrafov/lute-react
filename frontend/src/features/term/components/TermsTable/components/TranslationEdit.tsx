@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Image, Textarea } from "@mantine/core";
 import type { MRT_Cell, MRT_Row } from "mantine-react-table";
-import { BACKEND_URL } from "../../../../../resources/constants";
-import type { TermsListItem } from "../../../api/types";
+import { BACKEND_URL } from "#resources/constants";
+import type { TermsListItem } from "#term/api/types";
 
 interface TranslationEdit {
   row: MRT_Row<TermsListItem>;

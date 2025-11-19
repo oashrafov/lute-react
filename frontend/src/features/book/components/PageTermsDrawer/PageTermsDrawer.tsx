@@ -1,6 +1,6 @@
-import { Drawer } from "@mantine/core";
 import { getRouteApi } from "@tanstack/react-router";
-import { TermsTable } from "../../../term/components/TermsTable/TermsTable";
+import { Drawer } from "@mantine/core";
+import { TermsTable } from "#term/components/TermsTable/TermsTable";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

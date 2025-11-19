@@ -1,8 +1,8 @@
 import { IconBubbleText } from "@tabler/icons-react";
 import type { TextInputProps } from "@mantine/core";
-import { TextInput } from "../../../../../../components/common/TextInput/TextInput";
 import type { Control, FieldValues, Path } from "react-hook-form";
-import type { TextDirection } from "../../../../../../resources/types";
+import { TextInput } from "#common/TextInput/TextInput";
+import type { TextDirection } from "#resources/types";
 import classes from "../../TermForm.module.css";
 
 interface TermField<T extends FieldValues> extends TextInputProps {

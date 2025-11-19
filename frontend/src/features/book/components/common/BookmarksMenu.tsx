@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { getRouteApi } from "@tanstack/react-router";
 import { Divider, Menu, Text } from "@mantine/core";
 import { BookmarksAccordion } from "./BookmarksAccordion";
-import type { PageBookmark } from "../../api/types";
+import type { PageBookmark } from "#book/api/types";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

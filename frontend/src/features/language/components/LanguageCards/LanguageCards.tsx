@@ -8,7 +8,7 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Group, Radio, rem, ScrollArea } from "@mantine/core";
 import { LanguageCard } from "../LanguageCard/LanguageCard";
-import { queries } from "../../api/queries";
+import { queries } from "#language/api/queries";
 import classes from "./LanguageCards.module.css";
 
 interface LanguageCards {

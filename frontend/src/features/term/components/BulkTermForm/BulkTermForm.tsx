@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { Divider, Group, Stack, Text } from "@mantine/core";
-import { Checkbox } from "../../../../components/common/Checkbox/Checkbox";
-import { TagsInput } from "../../../../components/common/TagsInput/TagsInput";
+import { Checkbox } from "#common/Checkbox/Checkbox";
+import { TagsInput } from "#common/TagsInput/TagsInput";
+import { FormButtons } from "#common/FormButtons/FormButtons";
 import { StatusRadio } from "../StatusRadio/StatusRadio";
-import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
-import { queries } from "../../api/queries";
+import { queries } from "#term/api/queries";
 
 function BulkTermForm({ terms }: { terms: number[] }) {
   const { data: tags } = useQuery(queries.tagSuggestions());

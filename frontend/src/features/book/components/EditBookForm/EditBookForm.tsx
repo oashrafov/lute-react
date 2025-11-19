@@ -7,12 +7,12 @@ import {
   IconLink,
   IconTags,
 } from "@tabler/icons-react";
-import { FileInput } from "../../../../components/common/FileInput/FileInput";
-import { TextInput } from "../../../../components/common/TextInput/TextInput";
-import { TagsInput } from "../../../../components/common/TagsInput/TagsInput";
-import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
-import { mutation } from "../../api/mutation";
-import type { BooksListItem, EditAction } from "../../api/types";
+import { FileInput } from "#common/FileInput/FileInput";
+import { TextInput } from "#common/TextInput/TextInput";
+import { TagsInput } from "#common/TagsInput/TagsInput";
+import { FormButtons } from "#common/FormButtons/FormButtons";
+import { mutation } from "#book/api/mutation";
+import type { BooksListItem, EditAction } from "#book/api/types";
 
 interface EditBookForm {
   book: BooksListItem;

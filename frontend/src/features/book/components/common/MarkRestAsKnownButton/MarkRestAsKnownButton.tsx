@@ -1,7 +1,7 @@
 import { Tooltip } from "@mantine/core";
 import { IconRosetteDiscountCheckFilled } from "@tabler/icons-react";
-import { PageActionButton } from "../../DefaultView/components/DefaultHeader/components/PageActionButton";
-import { useMarkPageAsRead } from "../../../hooks/useMarkPageAsRead";
+import { PageActionButton } from "../PageActionButton";
+import { useMarkPageAsRead } from "#book/hooks/useMarkPageAsRead";
 
 export function MarkRestAsKnownButton() {
   const markPageAsRead = useMarkPageAsRead();

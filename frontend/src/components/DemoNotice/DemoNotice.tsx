@@ -4,7 +4,7 @@ import { IconInfoCircle } from "@tabler/icons-react";
 import {
   useDeactivateDemoMode,
   useClearDemoData,
-} from "../../features/settings/api/mutation";
+} from "#settings/api/mutation";
 
 interface DemoNotice {
   tutorialBookId: number;

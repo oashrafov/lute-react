@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { mutation } from "../../../../api/mutation";
-import { queries } from "../../../../api/queries";
+import { mutation } from "#book/api/mutation";
+import { queries } from "#book/api/queries";
 
 export function useUpdateAudioMutate() {
   const { mutate } = mutation.useEditBook();

@@ -1,9 +1,9 @@
 import { ActionIcon, Group, Stack, Tooltip } from "@mantine/core";
 import { useForm } from "react-hook-form";
 import { IconCsv, IconQuestionMark } from "@tabler/icons-react";
-import { FormButtons } from "../../../../../components/common/FormButtons/FormButtons";
-import { Checkbox } from "../../../../../components/common/Checkbox/Checkbox";
-import { FileInput } from "../../../../../components/common/FileInput/FileInput";
+import { FormButtons } from "#common/FormButtons/FormButtons";
+import { Checkbox } from "#common/Checkbox/Checkbox";
+import { FileInput } from "#common/FileInput/FileInput";
 
 export function TermImportForm() {
   const { control } = useForm({

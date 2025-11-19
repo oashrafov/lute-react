@@ -1,7 +1,7 @@
 import type { Control, FieldValues, Path } from "react-hook-form";
 import type { TagsInputProps } from "@mantine/core";
 import { IconTags } from "@tabler/icons-react";
-import { TagsInput } from "../../../../../../components/common/TagsInput/TagsInput";
+import { TagsInput } from "#common/TagsInput/TagsInput";
 import classes from "../../TermForm.module.css";
 
 interface TermTagsField<T extends FieldValues> extends TagsInputProps {

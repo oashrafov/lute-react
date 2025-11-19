@@ -1,10 +1,10 @@
 import { Box, Group, Portal, Title } from "@mantine/core";
 import { useHeadroom } from "@mantine/hooks";
-import { NavLogo } from "../common/NavLogo/NavLogo";
-import { NavigationBar } from "../NavigationBar/NavigationBar";
-import { BurgerButton } from "../BurgerButton/BurgerButton";
-import { ThemeSelect } from "../common/ThemeSelect/ThemeSelect";
-import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { NavLogo } from "#common/NavLogo/NavLogo";
+import { NavigationBar } from "#components/NavigationBar/NavigationBar";
+import { BurgerButton } from "#components/BurgerButton/BurgerButton";
+import { ThemeSelect } from "#common/ThemeSelect/ThemeSelect";
+import { useMediaQuery } from "#hooks/useMediaQuery";
 import classes from "./AppHeader.module.css";
 
 export function AppHeader() {

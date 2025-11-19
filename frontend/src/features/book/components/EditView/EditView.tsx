@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { EditHeader } from "./components/EditHeader/EditHeader";
-import { useBookQuery } from "../../hooks/useBookQuery";
-import { usePageQuery } from "../../hooks/usePageQuery";
-import { Textarea } from "../../../../components/common/Textarea/Textarea";
+import { useBookQuery } from "#book/hooks/useBookQuery";
+import { usePageQuery } from "#book/hooks/usePageQuery";
+import { Textarea } from "#common/Textarea/Textarea";
 import classes from "./EditView.module.css";
 
 export function EditView() {

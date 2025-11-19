@@ -1,5 +1,5 @@
-import { apiClient } from "../../../utils/apiClient";
-import { objToFormData } from "../../../utils/utils";
+import { apiClient } from "#utils/apiClient";
+import { objToFormData } from "#utils/utils";
 import type {
   SentencesResponse,
   Tag,

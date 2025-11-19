@@ -1,11 +1,11 @@
-import { BookContextProvider } from "../features/book/store/bookContext";
-import { useDocumentTitle } from "../hooks/useDocumentTitle";
-import { useNavigationProgress } from "../hooks/useNavigationProgress";
-import { Book } from "../features/book/components/Book/Book";
-import { SideMenu } from "../features/book/components/SideMenu/SideMenu";
-import { PageTermsDrawer } from "../features/book/components/PageTermsDrawer/PageTermsDrawer";
-import { ActiveTermProvider } from "../features/term/store/activeTermContext";
-import { useBookQuery } from "../features/book/hooks/useBookQuery";
+import { BookContextProvider } from "#book/store/bookContext";
+import { Book } from "#book/components/Book/Book";
+import { SideMenu } from "#book/components/SideMenu/SideMenu";
+import { PageTermsDrawer } from "#book/components/PageTermsDrawer/PageTermsDrawer";
+import { useBookQuery } from "#book/hooks/useBookQuery";
+import { ActiveTermProvider } from "#term/store/activeTermContext";
+import { useDocumentTitle } from "#hooks/useDocumentTitle";
+import { useNavigationProgress } from "#hooks/useNavigationProgress";
 
 export function BookPage() {
   const { data: book } = useBookQuery();

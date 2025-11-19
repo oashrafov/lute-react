@@ -1,6 +1,6 @@
 import type { MRT_ColumnDef } from "mantine-react-table";
 import { EditButtonsCell } from "../EditButtonsCell/EditButtonsCell";
-import type { Tag } from "../../api/types";
+import type { Tag } from "#term/api/types";
 
 export const columnDefinition = (): MRT_ColumnDef<Tag>[] => [
   {

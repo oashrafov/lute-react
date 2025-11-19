@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { getRouteApi } from "@tanstack/react-router";
-import { mutation } from "../../../api/mutation";
+import { mutation } from "#book/api/mutation";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

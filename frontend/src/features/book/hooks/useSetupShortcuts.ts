@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getPressedKeysAsString } from "../../../utils/utils";
-import { handleCopy } from "../../../helpers/copy";
-import { handleTranslate } from "../../../helpers/translation";
-import { handleMoveCursor } from "../../../helpers/interactions-desktop";
-import { handleToggleHighlights } from "../../../helpers/page";
+import { getPressedKeysAsString } from "#utils/utils";
+import { handleCopy } from "#helpers/copy";
+import { handleTranslate } from "#helpers/translation";
+import { handleMoveCursor } from "#helpers/interactions-desktop";
+import { handleToggleHighlights } from "#helpers/page";
 import { useBookContext } from "./useBookContext";
-import { useActiveTermContext } from "../../term/hooks/useActiveTermContext";
-import { queries as settingsQueries } from "../../settings/api/queries";
-import { TEXTITEM_CLASS, TEXTITEM_DATASET } from "../../../resources/constants";
+import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
+import { queries as settingsQueries } from "#settings/api/queries";
+import { TEXTITEM_CLASS, TEXTITEM_DATASET } from "#resources/constants";
+import type { TextitemElement } from "#resources/types";
 import { useBookQuery } from "./useBookQuery";
 import { useView } from "./useView";
-import type { TextitemElement } from "../../../resources/types";
 
 export function useSetupShortcuts() {
   const { themeForm } = useBookContext();

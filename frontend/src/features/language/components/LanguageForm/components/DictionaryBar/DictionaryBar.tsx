@@ -1,10 +1,10 @@
 import { Tooltip } from "@mantine/core";
 import type { Control, FieldValues, Path } from "react-hook-form";
-import { TextInput } from "../../../../../../components/common/TextInput/TextInput";
-import { Checkbox } from "../../../../../../components/common/Checkbox/Checkbox";
-import { Select } from "../../../../../../components/common/Select/Select";
+import { TextInput } from "#common/TextInput/TextInput";
+import { Checkbox } from "#common/Checkbox/Checkbox";
+import { Select } from "#common/Select/Select";
 import { TestDictionaryButton } from "./components/TestDictionaryButton";
-import type { Dictionary } from "../../../../api/types";
+import type { Dictionary } from "#language/api/types";
 
 export interface DictionaryBar<T extends FieldValues> {
   control: Control<T>;

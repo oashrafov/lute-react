@@ -18,8 +18,8 @@ import {
   clearGhosted,
   isTextitem,
 } from "./text";
-import type { ActiveTerm } from "../features/term/store/activeTermContext";
-import type { TextitemElement, WordElement } from "../resources/types";
+import type { ActiveTerm } from "#term/store/activeTermContext";
+import type { TextitemElement, WordElement } from "#resources/types";
 
 let selectionStart: WordElement | null = null;
 let selectionStartShiftHeld = false;

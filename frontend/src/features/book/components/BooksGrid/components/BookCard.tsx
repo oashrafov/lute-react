@@ -24,10 +24,10 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import { StatsChart } from "./StatsChart";
-import { TagsGroup } from "../../../../../components/common/TagsGroup/TagsGroup";
-import { deleteBookConfirm } from "../../../../../resources/modals";
-import { mutation } from "../../../api/mutation";
-import type { EditAction, BooksListItem } from "../../../api/types";
+import { TagsGroup } from "#common/TagsGroup/TagsGroup";
+import { deleteBookConfirm } from "#resources/modals";
+import { mutation } from "#book/api/mutation";
+import type { EditAction, BooksListItem } from "#book/api/types";
 
 interface BookCard {
   book: BooksListItem;

@@ -3,8 +3,8 @@ import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { PopupData } from "./components/PopupData/PopupData";
-import { queries } from "../../api/queries";
-import type { TermPopup } from "../../api/types";
+import { queries } from "#term/api/queries";
+import type { TermPopup } from "#term/api/types";
 
 interface TermPopupProps {
   id: number | null;

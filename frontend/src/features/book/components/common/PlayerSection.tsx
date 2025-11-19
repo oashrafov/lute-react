@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { Player } from "./Player/Player";
 import { MediaNotFoundOverlay } from "./Player/components/MediaNotFoundOverlay/MediaNotFoundOverlay";
-import { errorMessage } from "../../../../resources/notifications";
-import { queries } from "../../api/queries";
+import { errorMessage } from "#resources/notifications";
+import { queries } from "#book/api/queries";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

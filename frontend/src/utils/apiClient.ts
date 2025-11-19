@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../resources/constants";
+import { API_BASE_URL } from "#resources/constants";
 
 export const apiClient = {
   get(endpoint: string, options?: RequestInit) {

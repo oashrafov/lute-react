@@ -13,8 +13,8 @@ import {
   handleSetFontSize,
   handleSetLineHeight,
   handleSetTextWidth,
-} from "../helpers/page";
-import { text } from "../helpers/general";
+} from "#helpers/page";
+import { text } from "#helpers/general";
 
 export const toolbar = [
   [

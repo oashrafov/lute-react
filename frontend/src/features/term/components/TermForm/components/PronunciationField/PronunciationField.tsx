@@ -1,7 +1,7 @@
 import type { Control, FieldValues, Path } from "react-hook-form";
 import type { TextInputProps } from "@mantine/core";
 import { IconSpeakerphone } from "@tabler/icons-react";
-import { TextInput } from "../../../../../../components/common/TextInput/TextInput";
+import { TextInput } from "#common/TextInput/TextInput";
 import classes from "../../TermForm.module.css";
 
 interface PronunciationField<T extends FieldValues> extends TextInputProps {

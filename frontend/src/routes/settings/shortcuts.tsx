@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queries } from "../../features/settings/api/queries";
-import ShortcutsPage from "../../pages/ShortcutsPage";
+import { queries } from "#settings/api/queries";
+import { ShortcutsPage } from "#pages/ShortcutsPage";
 
 export const Route = createFileRoute("/settings/shortcuts")({
   component: ShortcutsPage,

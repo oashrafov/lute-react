@@ -1,9 +1,6 @@
 import { getRouteApi } from "@tanstack/react-router";
-import type { View } from "../../../resources/types";
-import {
-  getFromLocalStorage,
-  setLocalStorageItem,
-} from "../../../helpers/general";
+import type { View } from "#resources/types";
+import { getFromLocalStorage, setLocalStorageItem } from "#helpers/general";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

@@ -3,9 +3,9 @@ import {
   redirect,
   stripSearchParams,
 } from "@tanstack/react-router";
-import { HomePage } from "../pages/HomePage";
-import { queries as langQueries } from "../features/language/api/queries";
-import { queries as settingsQueries } from "../features/settings/api/queries";
+import { HomePage } from "#pages/HomePage";
+import { queries as langQueries } from "#language/api/queries";
+import { queries as settingsQueries } from "#settings/api/queries";
 
 interface Search {
   langId?: number;

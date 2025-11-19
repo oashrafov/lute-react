@@ -1,6 +1,6 @@
 import { ActionIcon } from "@mantine/core";
 import { ToolbarButton } from "./ToolbarButton";
-import { toolbar } from "../../../../../../resources/toolbar";
+import { toolbar } from "#resources/toolbar";
 import classes from "./FocusToolbar.module.css";
 
 export function FocusToolbar() {

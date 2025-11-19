@@ -3,11 +3,11 @@ import {
   redirect,
   stripSearchParams,
 } from "@tanstack/react-router";
-import type { View } from "../../../../resources/types";
-import { BookPage } from "../../../../pages/BookPage";
-import { queries as bookQueries } from "../../../../features/book/api/queries";
-import { queries as langQueries } from "../../../../features/language/api/queries";
-import { queries as settingsQueries } from "../../../../features/settings/api/queries";
+import type { View } from "#resources/types";
+import { BookPage } from "#pages/BookPage";
+import { queries as bookQueries } from "#book/api/queries";
+import { queries as langQueries } from "#language/api/queries";
+import { queries as settingsQueries } from "#settings/api/queries";
 
 type TermIds = number[];
 

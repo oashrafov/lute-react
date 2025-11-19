@@ -11,25 +11,23 @@ import {
   IconAnalyzeFilled,
   IconCut,
 } from "@tabler/icons-react";
-import { Checkbox } from "../../../../components/common/Checkbox/Checkbox";
-import { Select } from "../../../../components/common/Select/Select";
-import { TextInput } from "../../../../components/common/TextInput/TextInput";
-import { FormButtons } from "../../../../components/common/FormButtons/FormButtons";
+import { Checkbox } from "#common/Checkbox/Checkbox";
+import { Select } from "#common/Select/Select";
+import { TextInput } from "#common/TextInput/TextInput";
+import { FormButtons } from "#common/FormButtons/FormButtons";
 import { LanguageSelect } from "./components/LanguageSelect";
 import { DictionaryBars } from "./components/DictionaryBars";
 import { AddDictionaryButton } from "./components/AddDictionaryButton";
-import { useSelectedLanguage } from "../../hooks/useSelectedLanguage";
-import { queries as langQueries } from "../../api/queries";
-import type { Dictionary, LanguageForm } from "../../api/types";
+import { useSelectedLanguage } from "#language/hooks/useSelectedLanguage";
+import { queries } from "#language/api/queries";
+import type { Dictionary, LanguageForm } from "#language/api/types";
 import classes from "./LanguageForm.module.css";
 
 export function LanguageForm() {
   const { t } = useTranslation("form", { keyPrefix: "language" });
   const { langId, langName } = useSearch({ strict: false });
-  const { data: initialValues, isSuccess } = useQuery(
-    langQueries.languageForm()
-  );
-  const { data: parsers } = useQuery(langQueries.parsers());
+  const { data: initialValues, isSuccess } = useQuery(queries.languageForm());
+  const { data: parsers } = useQuery(queries.parsers());
   const { language, isSuccess: isLanguageSuccess } = useSelectedLanguage();
 
   const { control, setValue, reset } = useForm({

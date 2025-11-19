@@ -3,12 +3,12 @@ import {
   CSS_VAR,
   DEFAULT_TEXT_SETTINGS,
   TEXTITEM_DATASET,
-} from "../resources/constants";
+} from "#resources/constants";
 import {
   type HighlightType,
   type LocalStorageItem,
   type WordElement,
-} from "../resources/types";
+} from "#resources/types";
 
 export function setTextColor(id: string, color: string) {
   document.documentElement.style.setProperty(
