@@ -5,7 +5,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconSquareRoundedPlusFilled } from "@tabler/icons-react";
 import { NewBookForm } from "#book/components/NewBookForm/NewBookForm";
 import { LanguageCards } from "#language/components/LanguageCards/LanguageCards";
-import { queries } from "#settings/api/queries";
+import { query } from "#settings/api/query";
 import { PageContainer } from "#common/PageContainer/PageContainer";
 import { PageTitle } from "#common/PageTitle/PageTitle";
 import { CreateLanguageModal } from "./CreateLanguageModal";
@@ -13,7 +13,7 @@ import { CreateLanguageModal } from "./CreateLanguageModal";
 export function NewBookPage() {
   const { t } = useTranslation("page", { keyPrefix: "newBook" });
   const [opened, { open, close }] = useDisclosure(false);
-  const { data } = useSuspenseQuery(queries.init());
+  const { data } = useSuspenseQuery(query.init());
 
   const cardsRadioLabel = (
     <Group wrap="nowrap" gap={5} align="center">

@@ -14,13 +14,13 @@ import {
   useCombobox,
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
-import { queries } from "#language/api/queries";
+import { query } from "#language/api/query.js";
 
 export const LanguageSelect = memo(function LanguageSelect() {
   const { langId, langName } = useSearch({ strict: false });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate({ from: pathname as ValidateFromPath });
-  const { data: languages } = useQuery(queries.predefinedLanguagesList());
+  const { data: languages } = useQuery(query.predefinedLanguagesList());
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),

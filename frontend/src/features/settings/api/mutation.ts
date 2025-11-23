@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { demoDataCleared, demoDeactivated } from "#resources/notifications";
-import { queries as bookQueries } from "#book/api/queries";
-import { queries as settingsQueries } from "./queries";
+import { query as bookQuery } from "#book/api/query";
+import { query as settingsQuery } from "./query";
 import { api } from "./api";
 
 export function useClearDemoData() {
@@ -10,10 +10,10 @@ export function useClearDemoData() {
     mutationFn: api.clearDemoData,
     onSuccess: async (_data, _variables, _onMutateResult, context) => {
       context.client.removeQueries({
-        queryKey: bookQueries.all(),
+        queryKey: bookQuery.all(),
       });
       await context.client.invalidateQueries({
-        queryKey: settingsQueries.init().queryKey,
+        queryKey: settingsQuery.init().queryKey,
       });
       notifications.show(demoDataCleared);
     },
@@ -25,7 +25,7 @@ export function useDeactivateDemoMode() {
     mutationFn: api.deactivateDemoMode,
     onSuccess: (_data, _variables, _onMutateResult, context) => {
       context.client.invalidateQueries({
-        queryKey: settingsQueries.init().queryKey,
+        queryKey: settingsQuery.init().queryKey,
       });
       notifications.show(demoDeactivated);
     },

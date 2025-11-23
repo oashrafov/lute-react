@@ -3,8 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { bookDeleted, bookUpdated } from "../resources/notifications";
 import { errorMessage } from "#resources/notifications";
-import { queries as bookQueries } from "./queries";
-import { queries as settingsQueries } from "#settings/api/queries";
+import { query as bookQuery } from "./query";
+import { query as settingsQuery } from "#settings/api/query";
 import { api } from "./api";
 import type { EditAction } from "./types";
 
@@ -29,10 +29,10 @@ export const mutation = {
       mutationFn: api.create,
       onSuccess: (data, _variables, _onMutateResult, context) => {
         context.client.invalidateQueries({
-          queryKey: bookQueries.list().queryKey,
+          queryKey: bookQuery.list().queryKey,
         });
         context.client.invalidateQueries({
-          queryKey: settingsQueries.init().queryKey,
+          queryKey: settingsQuery.init().queryKey,
         });
         navigate({ params: { bookId: data.id, pageNum: 1 } });
       },
@@ -45,7 +45,7 @@ export const mutation = {
       mutationFn: ({ id, data }: EditBookData) => api.edit(id, data),
       onSuccess: (data, { userData }, _onMutateResult, context) => {
         context.client.invalidateQueries({
-          queryKey: bookQueries.list().queryKey,
+          queryKey: bookQuery.list().queryKey,
         });
         if (userData?.showNotification ?? true) {
           notifications.show(bookUpdated(data.title));
@@ -59,10 +59,10 @@ export const mutation = {
       mutationFn: api.delete,
       onSuccess: (data, _variables, _onMutateResult, context) => {
         context.client.invalidateQueries({
-          queryKey: bookQueries.list().queryKey,
+          queryKey: bookQuery.list().queryKey,
         });
         context.client.invalidateQueries({
-          queryKey: settingsQueries.init().queryKey,
+          queryKey: settingsQuery.init().queryKey,
         });
         notifications.show(bookDeleted(data.title));
       },
@@ -82,10 +82,10 @@ export const mutation = {
         api.processPage(bookId, pageNum),
       onSuccess: (_data, { bookId, pageNum }, _onMutateResult, context) => {
         context.client.invalidateQueries({
-          queryKey: bookQueries.list().queryKey,
+          queryKey: bookQuery.list().queryKey,
         });
         context.client.invalidateQueries({
-          queryKey: bookQueries.page(bookId, pageNum).queryKey,
+          queryKey: bookQuery.page(bookId, pageNum).queryKey,
         });
       },
     });

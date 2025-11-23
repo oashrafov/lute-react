@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Text } from "@mantine/core";
-import { queries } from "../../../features/settings/api/queries";
+import { query } from "#settings/api/query";
 
 interface EmptyRow {
   tableName: "terms" | "books";
@@ -9,7 +9,7 @@ interface EmptyRow {
 }
 
 export function EmptyRow({ tableName, language }: EmptyRow) {
-  const { data: initial } = useSuspenseQuery(queries.init());
+  const { data: initial } = useSuspenseQuery(query.init());
   const langId = initial.languageChoices.filter(
     (lang) => lang.name === language
   )[0].id;

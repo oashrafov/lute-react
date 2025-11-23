@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Progress, Tooltip } from "@mantine/core";
-import { queries } from "#book/api/queries";
+import { query } from "#book/api/query";
 import classes from "./StatusCell.module.css";
 
 const labels: Record<string, string> = {
@@ -14,7 +14,7 @@ const labels: Record<string, string> = {
 };
 
 export function StatusCell({ bookId }: { bookId: number }) {
-  const { data } = useQuery(queries.stats(bookId));
+  const { data } = useQuery(query.stats(bookId));
 
   if (!data) {
     return (

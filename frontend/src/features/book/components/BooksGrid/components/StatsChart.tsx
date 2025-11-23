@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { DonutChart } from "@mantine/charts";
-import { queries } from "#book/api/queries";
+import { query } from "#book/api/query";
 
 const labels: Record<string, string> = {
   0: "Unknown",
@@ -13,7 +13,7 @@ const labels: Record<string, string> = {
 };
 
 export function StatsChart({ bookId }: { bookId: number }) {
-  const { data } = useQuery(queries.stats(bookId));
+  const { data } = useQuery(query.stats(bookId));
 
   if (!data) return;
 

@@ -5,32 +5,32 @@ import {
 } from "@tanstack/react-query";
 import { api } from "./api";
 
-export const queries = {
+export const query = {
   all: () => ["books"],
-  allStats: () => [...queries.all(), "stats"],
-  allDetails: () => [...queries.all(), "detail"],
-  allPages: () => [...queries.all(), "page"],
+  allStats: () => [...query.all(), "stats"],
+  allDetails: () => [...query.all(), "detail"],
+  allPages: () => [...query.all(), "page"],
   list: (filters?: string) =>
     queryOptions({
-      queryKey: [...queries.all(), filters],
+      queryKey: [...query.all(), filters],
       queryFn: () => api.getAll(filters),
       placeholderData: keepPreviousData,
     }),
   detail: (bookId: number) =>
     queryOptions({
-      queryKey: [...queries.allDetails(), bookId],
+      queryKey: [...query.allDetails(), bookId],
       queryFn: () => api.getById(bookId),
       refetchOnWindowFocus: false,
     }),
   stats: (bookId: number) =>
     queryOptions({
-      queryKey: [...queries.allStats(), bookId],
+      queryKey: [...query.allStats(), bookId],
       queryFn: () => api.getStats(bookId),
       enabled: bookId !== null,
     }),
   page: (bookId: number, pageNum: number) =>
     queryOptions({
-      queryKey: [...queries.allPages(), bookId, pageNum],
+      queryKey: [...query.allPages(), bookId, pageNum],
       queryFn: () => api.getPage(bookId, pageNum),
       refetchOnWindowFocus: false,
     }),

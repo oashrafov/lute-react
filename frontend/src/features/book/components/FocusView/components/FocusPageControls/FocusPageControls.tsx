@@ -8,7 +8,7 @@ import {
 import { usePageControl } from "#book/hooks/usePageControl";
 import type { BookDetail } from "#book/api/types";
 import { useMarkPageAsRead } from "#book/hooks/useMarkPageAsRead";
-import { FloatingContainer } from "../../../common/FloatingContainer/FloatingContainer";
+import { FloatingContainer } from "#book/components/common/FloatingContainer/FloatingContainer";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 

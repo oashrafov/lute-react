@@ -5,10 +5,10 @@ import { Checkbox } from "#common/Checkbox/Checkbox";
 import { TagsInput } from "#common/TagsInput/TagsInput";
 import { FormButtons } from "#common/FormButtons/FormButtons";
 import { StatusRadio } from "../StatusRadio/StatusRadio";
-import { queries } from "#term/api/queries";
+import { query } from "#term/api/query";
 
 function BulkTermForm({ terms }: { terms: number[] }) {
-  const { data: tags } = useQuery(queries.tagSuggestions());
+  const { data: tags } = useQuery(query.tagSuggestions());
 
   const { control } = useForm({
     defaultValues: {

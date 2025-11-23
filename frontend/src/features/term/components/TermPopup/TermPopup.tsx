@@ -3,7 +3,7 @@ import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { PopupData } from "./components/PopupData/PopupData";
-import { queries } from "#term/api/queries";
+import { query } from "#term/api/query";
 import type { TermPopup } from "#term/api/types";
 
 interface TermPopupProps {
@@ -18,7 +18,7 @@ export function TermPopup({ children, id }: TermPopupProps) {
 
   async function fetchPopupData() {
     if (id !== null) {
-      setPopupData(await queryClient.fetchQuery(queries.popup(id)));
+      setPopupData(await queryClient.fetchQuery(query.popup(id)));
     }
   }
 

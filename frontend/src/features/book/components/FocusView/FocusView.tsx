@@ -6,7 +6,7 @@ import { FocusActions } from "./components/FocusActions/FocusActions";
 import { FloatingContainer } from "../common/FloatingContainer/FloatingContainer";
 import { FocusPagePane } from "./components/FocusPagePane/FocusPagePane";
 import { DictsPane } from "#language/components/DictsPane/DictsPane";
-import { queries } from "#language/api/queries";
+import { query } from "#language/api/query.js";
 import { TermForm } from "#term/components/TermForm/TermForm";
 import { useTermQuery } from "#term/hooks/useTermQuery";
 import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
@@ -21,7 +21,7 @@ export function FocusView() {
   const { data: term } = useTermQuery();
   const { activeTerm } = useActiveTermContext();
   const { data: language } = useQuery(
-    queries.userLanguageDetail(book.languageId)
+    query.userLanguageDetail(book.languageId)
   );
   const [showDicts, setShowDicts] = useState(false);
 

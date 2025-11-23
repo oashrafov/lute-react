@@ -5,13 +5,13 @@ import { notifications } from "@mantine/notifications";
 import { Player } from "./Player/Player";
 import { MediaNotFoundOverlay } from "./Player/components/MediaNotFoundOverlay/MediaNotFoundOverlay";
 import { errorMessage } from "#resources/notifications";
-import { queries } from "#book/api/queries";
+import { query } from "#book/api/query";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
 export function PlayerSection() {
   const { bookId } = route.useParams();
-  const { data, isError, error } = useQuery(queries.audioSrc(bookId));
+  const { data, isError, error } = useQuery(query.audioSrc(bookId));
 
   useEffect(() => {
     if (error) {

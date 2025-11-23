@@ -7,11 +7,11 @@ import { PageContainer } from "#common/PageContainer/PageContainer";
 import { DemoNotice } from "#components/DemoNotice/DemoNotice";
 import { WelcomeAlert } from "#components/WelcomeAlert/WelcomeAlert";
 import { useMediaQuery } from "#hooks/useMediaQuery";
-import { queries } from "#settings/api/queries";
+import { query } from "#settings/api/query";
 
 export function HomePage() {
   const media = useMediaQuery();
-  const { data: initial } = useSuspenseQuery(queries.init());
+  const { data: initial } = useSuspenseQuery(query.init());
   return (
     <>
       {/* after user wipes off or deactivates demo mode tutorialBookId is set to null */}

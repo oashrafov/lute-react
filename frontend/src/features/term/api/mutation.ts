@@ -6,7 +6,7 @@ import {
   termUpdated,
 } from "../resources/notifications";
 import { api } from "./api";
-import { queries } from "#book/api/queries";
+import { query } from "#book/api/query";
 import type { TermDetail } from "./types";
 
 export const mutation = {
@@ -16,10 +16,10 @@ export const mutation = {
       onSuccess(_data, _variables, _onMutateResult, context) {
         notifications.show(termCreated);
         context.client.invalidateQueries({
-          queryKey: queries.allPages(),
+          queryKey: query.allPages(),
         });
         context.client.invalidateQueries({
-          queryKey: queries.allStats(),
+          queryKey: query.allStats(),
         });
       },
     });
@@ -32,10 +32,10 @@ export const mutation = {
       onSuccess: (_data, _variables, _onMutateResult, context) => {
         notifications.show(termUpdated);
         context.client.invalidateQueries({
-          queryKey: queries.allPages(),
+          queryKey: query.allPages(),
         });
         context.client.invalidateQueries({
-          queryKey: queries.allStats(),
+          queryKey: query.allStats(),
         });
       },
     });
@@ -47,10 +47,10 @@ export const mutation = {
       onSuccess: (_data, _variables, _onMutateResult, context) => {
         notifications.show(termDeleted);
         context.client.invalidateQueries({
-          queryKey: queries.allPages(),
+          queryKey: query.allPages(),
         });
         context.client.invalidateQueries({
-          queryKey: queries.allStats(),
+          queryKey: query.allStats(),
         });
       },
     });

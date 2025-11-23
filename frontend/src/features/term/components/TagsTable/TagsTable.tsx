@@ -8,13 +8,13 @@ import { TableTopToolbar } from "#common/TableTopToolbar/TableTopToolbar";
 import { TableTopToolbarDefaultItems } from "#common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
 import { getDefaultTableOptions } from "#resources/table-options-default";
 import { columnDefinition } from "./columnDefinition";
-import { queries } from "#term/api/queries";
+import { query } from "#term/api/query";
 import type { Tag } from "#term/api/types";
 
 const defaultOptions = getDefaultTableOptions<Tag>();
 
 export function TagsTable() {
-  const { data } = useQuery(queries.tags());
+  const { data } = useQuery(query.tags());
   const [openCreateTagModal, setOpenCreateTagModal] = useState(false);
   const columns = useMemo(() => columnDefinition(), []);
 

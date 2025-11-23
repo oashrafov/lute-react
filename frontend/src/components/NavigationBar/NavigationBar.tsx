@@ -6,11 +6,11 @@ import { appInfo } from "#resources/modals";
 import { menu } from "#resources/menus";
 import { DropdownMenu } from "./components/DropdownMenu";
 import { LinkMenuItem } from "./components/LinkMenuItem";
-import { queries } from "#settings/api/queries";
+import { query } from "#settings/api/query";
 import classes from "./NavigationBar.module.css";
 
 export function NavigationBar(props: GroupProps) {
-  const { data: settings } = useSuspenseQuery(queries.settingsForm());
+  const { data: settings } = useSuspenseQuery(query.settingsForm());
   const createBackupMenu = settings.backup_enabled && settings.backup_dir != "";
 
   return (

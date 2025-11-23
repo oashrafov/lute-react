@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { DictsPane } from "#language/components/DictsPane/DictsPane";
 import { TermForm } from "#term/components/TermForm/TermForm";
-import { queries as termQueries } from "#term/api/queries";
-import { queries as langQueries } from "#language/api/queries";
+import { query as termQuery } from "#term/api/query";
+import { query as langQuery } from "#language/api/query.js";
 import { TermPageLayout } from "./TermPage/TermPageLayout";
 
 const route = getRouteApi("/terms/$termId");
@@ -13,8 +13,8 @@ export function EditTermPage() {
   const { t } = useTranslation("page", { keyPrefix: "newEditTerm" });
   const { langId } = route.useSearch();
   const { termId } = route.useParams();
-  const { data: language } = useQuery(langQueries.userLanguageDetail(langId));
-  const { data: term } = useQuery(termQueries.detail({ id: termId }));
+  const { data: language } = useQuery(langQuery.userLanguageDetail(langId));
+  const { data: term } = useQuery(termQuery.detail({ id: termId }));
 
   const show = !!termId && language && term;
   const dictTabs = show && language && (

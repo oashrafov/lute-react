@@ -14,7 +14,7 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons-react";
-import { queries } from "#settings/api/queries";
+import { query } from "#settings/api/query";
 import type { Shelf } from "#book/resources/types";
 
 interface BooksGridTopToolbar {
@@ -44,7 +44,7 @@ export function BooksGridTopToolbar({
   onSetGlobalFilter,
   hasArchived,
 }: BooksGridTopToolbar) {
-  const { data: initial } = useSuspenseQuery(queries.init());
+  const { data: initial } = useSuspenseQuery(query.init());
 
   const shelfSelectData = [
     { label: "Show: Active", value: "active" },

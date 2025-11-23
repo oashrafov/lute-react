@@ -1,17 +1,15 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { HomePage } from "#pages/HomePage";
-import { queries as langQueries } from "#language/api/queries";
-import { queries as settingsQueries } from "#settings/api/queries";
+import { query as langQuery } from "#language/api/query.js";
+import { query as settingsQuery } from "#settings/api/query";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
   loader: async ({ context }) => {
     const responses = await Promise.all([
-      context.queryClient.ensureQueryData(settingsQueries.appInfo()),
-      context.queryClient.ensureQueryData(settingsQueries.init()),
-      context.queryClient.ensureQueryData(
-        langQueries.predefinedLanguagesList()
-      ),
+      context.queryClient.ensureQueryData(settingsQuery.appInfo()),
+      context.queryClient.ensureQueryData(settingsQuery.init()),
+      context.queryClient.ensureQueryData(langQuery.predefinedLanguagesList()),
     ]);
 
     const initial = responses[1];

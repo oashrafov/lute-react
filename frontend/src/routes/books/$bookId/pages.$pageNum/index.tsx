@@ -5,9 +5,9 @@ import {
 } from "@tanstack/react-router";
 import type { View } from "#resources/types";
 import { BookPage } from "#pages/BookPage";
-import { queries as bookQueries } from "#book/api/queries";
-import { queries as langQueries } from "#language/api/queries";
-import { queries as settingsQueries } from "#settings/api/queries";
+import { query as bookQuery } from "#book/api/query";
+import { query as langQuery } from "#language/api/query.js";
+import { query as settingsQuery } from "#settings/api/query";
 
 type TermIds = number[];
 
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
     let bookData;
     try {
       bookData = await context.queryClient.ensureQueryData(
-        bookQueries.detail(params.bookId)
+        bookQuery.detail(params.bookId)
       );
     } catch {
       redirect({
@@ -53,14 +53,14 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
 
     const responses = await Promise.all([
       context.queryClient.ensureQueryData(
-        langQueries.userLanguageDetail(bookData.languageId)
+        langQuery.userLanguageDetail(bookData.languageId)
       ),
       context.queryClient.ensureQueryData(
-        bookQueries.page(params.bookId, params.pageNum)
+        bookQuery.page(params.bookId, params.pageNum)
       ),
-      context.queryClient.ensureQueryData(settingsQueries.settingsForm()),
-      context.queryClient.ensureQueryData(settingsQueries.shortcuts()),
-      context.queryClient.ensureQueryData(settingsQueries.appInfo()),
+      context.queryClient.ensureQueryData(settingsQuery.settingsForm()),
+      context.queryClient.ensureQueryData(settingsQuery.shortcuts()),
+      context.queryClient.ensureQueryData(settingsQuery.appInfo()),
     ]);
 
     return [bookData, ...responses];

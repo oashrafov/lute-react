@@ -5,12 +5,12 @@ import { useTranslation } from "react-i18next";
 import { modals } from "@mantine/modals";
 import { IconSquareRoundedMinusFilled } from "@tabler/icons-react";
 import { deleteLanguageConfirm } from "#resources/modals";
-import { queries } from "#settings/api/queries";
+import { query } from "#settings/api/query";
 
 export function DeleteLanguageButton() {
   const { t } = useTranslation("page", { keyPrefix: "languages" });
   const { langId } = useSearch({ strict: false });
-  const { data: initial } = useSuspenseQuery(queries.init());
+  const { data: initial } = useSuspenseQuery(query.init());
   const selectedLangName = initial.languageChoices.filter(
     (lang) => lang.id === langId
   )[0]?.name;

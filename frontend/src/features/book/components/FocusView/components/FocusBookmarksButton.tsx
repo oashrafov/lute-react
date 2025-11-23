@@ -1,6 +1,6 @@
-import type { PageBookmark } from "../../../api/types";
-import { BookmarksButton } from "../../common/BookmarksButton";
-import { BookmarksMenu } from "../../common/BookmarksMenu";
+import type { PageBookmark } from "#book/api/types";
+import { BookmarksButton } from "#book/components/common/BookmarksButton";
+import { BookmarksMenu } from "#book/components/common/BookmarksMenu";
 
 interface FocusBookmarksButton {
   bookmarks: PageBookmark | null;

@@ -19,7 +19,7 @@ import {
 } from "@mantine/core";
 import { MAX_TERM_SUGGESTIONS } from "#resources/constants";
 import { buildSuggestionsList } from "#helpers/term";
-import { queries } from "#term/api/queries";
+import { query } from "#term/api/query";
 
 interface TagsField extends PillsInputProps {
   termText: string;
@@ -45,9 +45,7 @@ export function TagsField({
   });
   const { langId } = useSearch({ strict: false });
   const [search, setSearch] = useState("");
-  const { data, isFetching } = useQuery(
-    queries.termSuggestions(search, langId)
-  );
+  const { data, isFetching } = useQuery(query.termSuggestions(search, langId));
 
   const suggestions = data
     ? buildSuggestionsList(data.filter((d) => d.text !== termText))

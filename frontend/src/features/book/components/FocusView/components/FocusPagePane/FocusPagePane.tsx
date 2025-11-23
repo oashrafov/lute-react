@@ -1,7 +1,7 @@
 import { ScrollArea, Stack } from "@mantine/core";
 import { FocusHeader } from "../FocusHeader/FocusHeader";
-import { ContextMenuArea } from "../../../ContextMenuArea/ContextMenuArea";
-import { TheTextContainer } from "../../../TheTextContainer/TheTextContainer";
+import { ContextMenuArea } from "#book/components/ContextMenuArea/ContextMenuArea";
+import { TheTextContainer } from "#book/components/TheTextContainer/TheTextContainer";
 
 export function FocusPagePane() {
   return (

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { getRouteApi } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useBookQuery } from "./useBookQuery";
-import { queries } from "../api/queries";
+import { query } from "../api/query";
 
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
@@ -25,7 +25,7 @@ export function usePrefetchPages() {
     }
 
     if (pageToFetch) {
-      queryClient.prefetchQuery(queries.page(bookId, pageToFetch));
+      queryClient.prefetchQuery(query.page(bookId, pageToFetch));
     }
   }, [book.pageCount, bookId, pageNum, queryClient]);
 }

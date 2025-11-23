@@ -19,15 +19,15 @@ import { LanguageSelect } from "./components/LanguageSelect";
 import { DictionaryBars } from "./components/DictionaryBars";
 import { AddDictionaryButton } from "./components/AddDictionaryButton";
 import { useSelectedLanguage } from "#language/hooks/useSelectedLanguage";
-import { queries } from "#language/api/queries";
+import { query } from "#language/api/query.js";
 import type { Dictionary, LanguageForm } from "#language/api/types";
 import classes from "./LanguageForm.module.css";
 
 export function LanguageForm() {
   const { t } = useTranslation("form", { keyPrefix: "language" });
   const { langId, langName } = useSearch({ strict: false });
-  const { data: initialValues, isSuccess } = useQuery(queries.languageForm());
-  const { data: parsers } = useQuery(queries.parsers());
+  const { data: initialValues, isSuccess } = useQuery(query.languageForm());
+  const { data: parsers } = useQuery(query.parsers());
   const { language, isSuccess: isLanguageSuccess } = useSelectedLanguage();
 
   const { control, setValue, reset } = useForm({

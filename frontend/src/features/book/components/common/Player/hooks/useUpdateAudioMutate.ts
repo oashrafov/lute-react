@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { mutation } from "#book/api/mutation";
-import { queries } from "#book/api/queries";
+import { query } from "#book/api/query";
 
 export function useUpdateAudioMutate() {
   const { mutate } = mutation.useEditBook();
@@ -22,7 +22,7 @@ export function useUpdateAudioMutate() {
           onSuccess: (...[, , , context]) => {
             if (position == undefined) {
               context.client.invalidateQueries({
-                queryKey: queries.detail(id).queryKey,
+                queryKey: query.detail(id).queryKey,
               });
             }
           },

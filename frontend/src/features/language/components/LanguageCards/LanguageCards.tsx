@@ -8,7 +8,7 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Group, Radio, rem, ScrollArea } from "@mantine/core";
 import { LanguageCard } from "../LanguageCard/LanguageCard";
-import { queries } from "#language/api/queries";
+import { query } from "#language/api/query.js";
 import classes from "./LanguageCards.module.css";
 
 interface LanguageCards {
@@ -17,7 +17,7 @@ interface LanguageCards {
 }
 
 export function LanguageCards({ label, description }: LanguageCards) {
-  const { data: languages } = useSuspenseQuery(queries.userLanguagesList());
+  const { data: languages } = useSuspenseQuery(query.userLanguagesList());
   const { langId } = useSearch({ strict: false });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate({ from: pathname as ValidateFromPath });

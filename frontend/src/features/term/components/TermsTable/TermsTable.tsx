@@ -17,9 +17,9 @@ import { TopToolbar } from "./components/TopToolbar";
 import { EmptyRow } from "#common/EmptyRow/EmptyRow";
 import { getDefaultTableOptions } from "#resources/table-options-default";
 import { columnDefinition } from "./columnDefinition";
-import { queries as termQueries } from "#term/api/queries";
+import { query as termQuery } from "#term/api/query";
 import type { TermsListItem } from "#term/api/types";
-import { queries as settingsQueries } from "#settings/api/queries";
+import { query as settingsQuery } from "#settings/api/query";
 
 const defaultOptions = getDefaultTableOptions<TermsListItem>();
 
@@ -39,8 +39,8 @@ const COLUMN_FILTERS = [{ id: "status", value: [0, 6] }];
 
 export function TermsTable() {
   const { termIds } = useSearch({ strict: false });
-  const { data: initial } = useSuspenseQuery(settingsQueries.init());
-  const { data: termTags } = useSuspenseQuery(termQueries.tagSuggestions());
+  const { data: initial } = useSuspenseQuery(settingsQuery.init());
+  const { data: termTags } = useSuspenseQuery(termQuery.tagSuggestions());
   const [editModalOpened, setEditModalOpened] = useState(false);
 
   const [showParentsOnly, setShowParentsOnly] = useState(false);
@@ -77,7 +77,7 @@ export function TermsTable() {
     sorting: JSON.stringify(sorting ?? []),
   });
 
-  const { data } = useQuery(termQueries.list(searchParams.toString()));
+  const { data } = useQuery(termQuery.list(searchParams.toString()));
 
   const handleSaveRow = async ({
     table,

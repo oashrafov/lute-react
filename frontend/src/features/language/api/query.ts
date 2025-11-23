@@ -1,39 +1,39 @@
 import { queryOptions, skipToken } from "@tanstack/react-query";
 import { api } from "./api";
 
-export const queries = {
+export const query = {
   all: () => ["languages"],
-  allUser: () => [...queries.all(), "user"],
-  allPredefined: () => [...queries.all(), "predefined"],
-  allUserLangDetails: () => [...queries.allUser(), "detail"],
-  allPredefinedLangDetails: () => [...queries.allPredefined(), "detail"],
+  allUser: () => [...query.all(), "user"],
+  allPredefined: () => [...query.all(), "predefined"],
+  allUserLangDetails: () => [...query.allUser(), "detail"],
+  allPredefinedLangDetails: () => [...query.allPredefined(), "detail"],
   userLanguagesList: () =>
     queryOptions({
-      queryKey: [...queries.allUser()],
+      queryKey: [...query.allUser()],
       queryFn: api.getUserLanguages,
     }),
   predefinedLanguagesList: () =>
     queryOptions({
-      queryKey: [...queries.allPredefined()],
+      queryKey: [...query.allPredefined()],
       queryFn: api.getPredefinedLanguages,
       staleTime: Infinity,
     }),
   parsers: () =>
     queryOptions({
-      queryKey: [...queries.all(), "parsers"],
+      queryKey: [...query.all(), "parsers"],
       queryFn: api.getParsers,
       staleTime: Infinity,
     }),
   userLanguageDetail: (id?: number) =>
     queryOptions({
-      queryKey: [...queries.allUserLangDetails(), id],
+      queryKey: [...query.allUserLangDetails(), id],
       queryFn:
         id != null && id !== 0 ? () => api.getUserLanguage(id) : skipToken,
       refetchOnWindowFocus: false,
     }),
   predefinedLanguageDetail: (name?: string) =>
     queryOptions({
-      queryKey: [...queries.allPredefinedLangDetails(), name],
+      queryKey: [...query.allPredefinedLangDetails(), name],
       queryFn: name ? () => api.getPredefinedLanguage(name) : skipToken,
       staleTime: Infinity,
     }),

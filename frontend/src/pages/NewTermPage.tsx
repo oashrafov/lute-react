@@ -3,13 +3,13 @@ import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { DictsPane } from "#language/components/DictsPane/DictsPane";
 import { TermForm } from "#term/components/TermForm/TermForm";
-import { queries } from "#language/api/queries";
+import { query } from "#language/api/query.js";
 import { TermPageLayout } from "./TermPage/TermPageLayout";
 
 export function NewTermPage() {
   const [newTerm, setNewTerm] = useState("");
   const { langId } = useSearch({ strict: false });
-  const { data: language } = useQuery(queries.userLanguageDetail(langId));
+  const { data: language } = useQuery(query.userLanguageDetail(langId));
 
   const dictTabs = newTerm && language && (
     <DictsPane

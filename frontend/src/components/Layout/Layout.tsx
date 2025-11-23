@@ -2,13 +2,13 @@ import { Outlet } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigationProgress } from "#hooks/useNavigationProgress";
 import { useMediaQuery } from "#hooks/useMediaQuery";
-import { queries } from "#settings/api/queries";
+import { query } from "#settings/api/query";
 import { MainSideMenu } from "../MainSideMenu/MainSideMenu";
 import { AppHeader } from "../AppHeader/AppHeader";
 
 export function Layout() {
   const media = useMediaQuery();
-  const { data: initial } = useSuspenseQuery(queries.init());
+  const { data: initial } = useSuspenseQuery(query.init());
   useNavigationProgress();
   return (
     <>

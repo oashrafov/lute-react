@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { TagsInput } from "@mantine/core";
 import type { MRT_Cell, MRT_Row } from "mantine-react-table";
-import { queries } from "#term/api/queries";
+import { query } from "#term/api/query";
 import type { TermsListItem } from "#term/api/types";
 import { buildSuggestionsList } from "#helpers/term";
 import { MAX_TERM_SUGGESTIONS } from "#resources/constants";
@@ -20,7 +20,7 @@ export function ParentEdit({ row, cell }: ParentEdit) {
   const [search, setSearch] = useState("");
   const [value, setValue] = useState(parentsList);
   const { data } = useQuery(
-    queries.termSuggestions(search, row.original.languageId)
+    query.termSuggestions(search, row.original.languageId)
   );
 
   const suggestions = data

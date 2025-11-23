@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Select, type SelectProps } from "@mantine/core";
 import { IconSelector } from "@tabler/icons-react";
 import { LoadSampleBooksButton } from "./LoadSampleBooksButton";
-import { queries as langQueries } from "#language/api/queries";
-import { queries as settingsQueries } from "#settings/api/queries";
+import { query as langQuery } from "#language/api/query.js";
+import { query as settingsQuery } from "#settings/api/query";
 
 interface SampleBooksSelect extends SelectProps {
   onSuccess?: (arg: string) => void;
@@ -16,8 +16,8 @@ export function SampleBooksSelect({
   onConfirm,
   ...props
 }: SampleBooksSelect) {
-  const { data: initial } = useQuery(settingsQueries.init());
-  const { data: predefined } = useQuery(langQueries.predefinedLanguagesList());
+  const { data: initial } = useQuery(settingsQuery.init());
+  const { data: predefined } = useQuery(langQuery.predefinedLanguagesList());
   const [langName, setLangName] = useState<string | null>("");
 
   const rightSection = langName ? (

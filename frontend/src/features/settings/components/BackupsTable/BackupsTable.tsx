@@ -9,7 +9,7 @@ import {
 import { TableTopToolbar } from "#common/TableTopToolbar/TableTopToolbar";
 import { getDefaultTableOptions } from "#resources/table-options-default";
 import { DOWNLOAD_BACKUP_URL, MANUAL_BACKUP_URL } from "#resources/constants";
-import { queries } from "#settings/api/queries";
+import { query } from "#settings/api/query";
 import type { Backup } from "#settings/api/types";
 
 const defaultOptions = getDefaultTableOptions<Backup>();
@@ -43,7 +43,7 @@ const columns: MRT_ColumnDef<Backup>[] = [
 ];
 
 export function BackupsTable() {
-  const { data } = useQuery(queries.backups());
+  const { data } = useQuery(query.backups());
 
   const table = useMantineReactTable({
     ...defaultOptions,

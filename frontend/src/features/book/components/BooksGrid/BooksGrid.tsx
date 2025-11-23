@@ -12,7 +12,7 @@ import { BooksGridTopToolbar } from "./components/BooksGridTopToolbar";
 import { BookCards } from "./components/BookCards";
 import { TABLE_PAGE_SIZE } from "#resources/constants";
 import { useMediaQuery } from "#hooks/useMediaQuery";
-import { queries } from "#book/api/queries";
+import { query } from "#book/api/query";
 import type { Shelf } from "#book/resources/types";
 
 const PAGINATION = {
@@ -44,7 +44,7 @@ export function BooksGrid() {
     ),
   });
 
-  const { data } = useQuery(queries.list(searchParams.toString()));
+  const { data } = useQuery(query.list(searchParams.toString()));
 
   if (!data) return;
 

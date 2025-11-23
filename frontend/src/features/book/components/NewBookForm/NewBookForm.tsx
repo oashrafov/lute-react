@@ -27,18 +27,18 @@ import { Select } from "#common/Select/Select";
 import { Textarea } from "#common/Textarea/Textarea";
 import { FormButtons } from "#common/FormButtons/FormButtons";
 import { ImportURLInfoPopup } from "./components/ImportURLInfoPopup";
-import { queries as settingsQueries } from "#settings/api/queries";
-import { queries as bookQueries } from "#book/api/queries";
-import { queries as langQueries } from "#language/api/queries";
+import { query as settingsQuery } from "#settings/api/query";
+import { query as bookQuery } from "#book/api/query";
+import { query as langQuery } from "#language/api/query";
 import { mutation } from "#book/api/mutation";
 import classes from "./NewBookForm.module.css";
 
 export function NewBookForm() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
   const { langId, textDir } = useSearch({ strict: false });
-  const { data: language } = useQuery(langQueries.userLanguageDetail(langId));
-  const { data: formValues } = useSuspenseQuery(bookQueries.bookForm());
-  const { data: initial } = useSuspenseQuery(settingsQueries.init());
+  const { data: language } = useQuery(langQuery.userLanguageDetail(langId));
+  const { data: formValues } = useSuspenseQuery(bookQuery.bookForm());
+  const { data: initial } = useSuspenseQuery(settingsQuery.init());
   const { mutate: createBookMutate } = mutation.useCreateBook();
   const {
     mutate: generateContentFromURLMutate,

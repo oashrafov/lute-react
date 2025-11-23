@@ -14,7 +14,7 @@ import { PronunciationButton } from "./components/PronunciationButton";
 import { NotesButton } from "./components/NotesButton";
 import { TermImagePopover } from "../TermImagePopover/TermImagePopover";
 import { deleteTermConfirm } from "#resources/modals";
-import { queries } from "#term/api/queries";
+import { query } from "#term/api/query";
 import type { TermDetail } from "#term/api/types";
 import { TranslationField } from "./components/TranslationField/TranslationField";
 import { TermField } from "./components/TermField/TermField";
@@ -73,7 +73,7 @@ export function TermForm({
   const hasText = !!watch("text");
   const numOfParents = watch("parents", []).length;
 
-  const { data: tags } = useQuery(queries.tagSuggestions());
+  const { data: tags } = useQuery(query.tagSuggestions());
 
   const editMode = !!(term && term.id !== null);
   const prefilledMode = !!(term && term.id === null && term.originalText);

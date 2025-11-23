@@ -1,15 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queries as termQueries } from "#term/api/queries";
-import { queries as settingsQueries } from "#settings/api/queries";
+import { query as termQuery } from "#term/api/query";
+import { query as settingsQuery } from "#settings/api/query";
 import { NewTermPage } from "#pages/NewTermPage";
 
 export const Route = createFileRoute("/terms/create-new")({
   component: NewTermPage,
   loader: async ({ context }) => {
     return await Promise.all([
-      context.queryClient.ensureQueryData(termQueries.tagSuggestions()),
-      context.queryClient.ensureQueryData(termQueries.tags()),
-      context.queryClient.ensureQueryData(settingsQueries.init()),
+      context.queryClient.ensureQueryData(termQuery.tagSuggestions()),
+      context.queryClient.ensureQueryData(termQuery.tags()),
+      context.queryClient.ensureQueryData(settingsQuery.init()),
     ]);
   },
 });

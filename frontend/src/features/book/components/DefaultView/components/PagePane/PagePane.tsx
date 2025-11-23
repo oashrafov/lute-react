@@ -1,7 +1,7 @@
 import { Box, ScrollArea } from "@mantine/core";
 import { DefaultHeader } from "../DefaultHeader/DefaultHeader";
-import { ContextMenuArea } from "../../../ContextMenuArea/ContextMenuArea";
-import { TheTextContainer } from "../../../TheTextContainer/TheTextContainer";
+import { ContextMenuArea } from "#book/components/ContextMenuArea/ContextMenuArea";
+import { TheTextContainer } from "#book/components/TheTextContainer/TheTextContainer";
 import classes from "./PagePane.module.css";
 
 export function PagePane() {

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Box, ScrollAreaAutosize } from "@mantine/core";
 import { VerticalPanels } from "../ResizablePanels/VerticalPanels";
 import { DictsPane } from "#language/components/DictsPane/DictsPane";
-import { queries } from "#language/api/queries";
+import { query } from "#language/api/query.js";
 import { TermForm } from "#term/components/TermForm/TermForm";
 import type { TermDetail } from "#term/api/types";
 import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
@@ -16,7 +16,7 @@ interface TranslationPane {
 
 export function TranslationPane({ term }: TranslationPane) {
   const { langId } = useSearch({ strict: false });
-  const { data: language } = useQuery(queries.userLanguageDetail(langId));
+  const { data: language } = useQuery(query.userLanguageDetail(langId));
   const { clearActiveTerm } = useActiveTermContext();
   const translationFieldRef = useRef<HTMLTextAreaElement>(null);
 

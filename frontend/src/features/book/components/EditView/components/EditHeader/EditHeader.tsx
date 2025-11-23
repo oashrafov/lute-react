@@ -13,7 +13,7 @@ import {
   IconFileCheck,
   IconFileXFilled,
 } from "@tabler/icons-react";
-import { PageCounter } from "../../../common/PageCounter";
+import { PageCounter } from "#book/components/common/PageCounter";
 import { useView } from "#book/hooks/useView";
 import { useBookQuery } from "#book/hooks/useBookQuery";
 

@@ -7,7 +7,7 @@ import { handleMoveCursor } from "#helpers/interactions-desktop";
 import { handleToggleHighlights } from "#helpers/page";
 import { useBookContext } from "./useBookContext";
 import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
-import { queries as settingsQueries } from "#settings/api/queries";
+import { query as settingsQuery } from "#settings/api/query";
 import { TEXTITEM_CLASS, TEXTITEM_DATASET } from "#resources/constants";
 import type { TextitemElement } from "#resources/types";
 import { useBookQuery } from "./useBookQuery";
@@ -17,7 +17,7 @@ export function useSetupShortcuts() {
   const { themeForm } = useBookContext();
   const { view, setView, toggleFocus } = useView();
   const { clearActiveTerm } = useActiveTermContext();
-  const { data: shortcut } = useSuspenseQuery(settingsQueries.shortcuts());
+  const { data: shortcut } = useSuspenseQuery(settingsQuery.shortcuts());
   const { data: book } = useBookQuery();
 
   useEffect(() => {

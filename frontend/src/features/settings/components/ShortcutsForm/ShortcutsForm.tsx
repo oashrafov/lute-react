@@ -6,7 +6,7 @@ import { TextInput } from "#common/TextInput/TextInput";
 import { FormButtons } from "#common/FormButtons/FormButtons";
 import { getPressedKeysAsString } from "#utils/utils";
 import type { ShortcutsForm } from "#settings/api/types";
-import { queries } from "#settings/api/queries";
+import { query } from "#settings/api/query";
 
 function getShortcutsInCategory(category: string, data: ShortcutsForm) {
   return Object.entries(data!)
@@ -15,7 +15,7 @@ function getShortcutsInCategory(category: string, data: ShortcutsForm) {
 }
 
 export function ShortcutsForm() {
-  const { data } = useQuery(queries.shortcuts());
+  const { data } = useQuery(query.shortcuts());
   const { setValue, control, watch } = useForm({
     defaultValues: Object.fromEntries(
       Object.entries(data!).map(([key, value]) => [key, value.key])

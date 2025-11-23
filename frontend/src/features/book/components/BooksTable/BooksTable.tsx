@@ -21,8 +21,8 @@ import { getDefaultTableOptions } from "#resources/table-options-default";
 import { columnDefinition } from "./columnDefinition";
 import { setLocalStorageItem, getFromLocalStorage } from "#helpers/general";
 import { TABLE_PAGE_SIZE } from "#resources/constants";
-import { queries as settingsQueries } from "#settings/api/queries";
-import { queries as bookQueries } from "#book/api/queries";
+import { query as settingsQuery } from "#settings/api/query";
+import { query as bookQuery } from "#book/api/query";
 import type { BooksListItem } from "#book/api/types";
 import type { Shelf } from "#book/resources/types";
 
@@ -48,7 +48,7 @@ const COLUMN_FILTER_FNS = {
 };
 
 export const BooksTable = memo(function BooksTable() {
-  const { data: initial } = useSuspenseQuery(settingsQueries.init());
+  const { data: initial } = useSuspenseQuery(settingsQuery.init());
   const [editedRow, setEditedRow] = useState<MRT_Row<BooksListItem> | null>(
     null
   );
@@ -97,7 +97,7 @@ export const BooksTable = memo(function BooksTable() {
     sorting: JSON.stringify(sorting ?? []),
   });
 
-  const { data: books } = useQuery(bookQueries.list(searchParams.toString()));
+  const { data: books } = useQuery(bookQuery.list(searchParams.toString()));
 
   const table = useMantineReactTable({
     ...defaultOptions,

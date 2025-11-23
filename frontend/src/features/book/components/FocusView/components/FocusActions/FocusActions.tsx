@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import { Divider, Group, Paper, Stack } from "@mantine/core";
-import { MarkRestAsKnownButton } from "../../../common/MarkRestAsKnownButton/MarkRestAsKnownButton";
+import { MarkRestAsKnownButton } from "#book/components/common/MarkRestAsKnownButton/MarkRestAsKnownButton";
 import { ShowDictionariesChip } from "./ShowDictionariesChip";
 import { FocusToolbar } from "../FocusToolbar/FocusToolbar";
 import { FocusBookmarksButton } from "../FocusBookmarksButton";

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { NoSentences } from "../NoSentences/NoSentences";
 import { SentenceReference } from "../SentenceReference/SentenceReference";
 import { SentencesSkeleton } from "./SentencesSkeleton";
-import { queries } from "#term/api/queries";
+import { query } from "#term/api/query";
 import classes from "./Sentences.module.css";
 
 interface Sentences {
@@ -12,7 +12,7 @@ interface Sentences {
 
 export function Sentences({ termText }: Sentences) {
   const { langId } = useSearch({ strict: false });
-  const { data, isFetching } = useQuery(queries.sentences(termText, langId));
+  const { data, isFetching } = useQuery(query.sentences(termText, langId));
   return (
     <div className={classes.container}>
       {isFetching && <SentencesSkeleton />}

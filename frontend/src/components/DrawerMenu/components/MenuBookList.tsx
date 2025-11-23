@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Box, ScrollArea, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useBookContext } from "#book/hooks/useBookContext";
-import { queries } from "#book/api/queries";
+import { query } from "#book/api/query";
 import type { Shelf } from "#book/resources/types";
 import { BookLinkButton } from "./BookLinkButton";
 
@@ -10,7 +10,7 @@ const searchParams = new URLSearchParams({ shelf: "active" as Shelf });
 
 export function MenuBookList() {
   const { drawer } = useBookContext();
-  const { data } = useQuery(queries.list(searchParams.toString()));
+  const { data } = useQuery(query.list(searchParams.toString()));
 
   return (
     <>

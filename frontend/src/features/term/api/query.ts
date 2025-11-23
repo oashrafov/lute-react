@@ -6,20 +6,20 @@ import {
 import { api } from "./api";
 import type { TermQueryParams } from "./types";
 
-export const queries = {
+export const query = {
   all: () => ["terms"],
-  allDetails: () => [...queries.all(), "detail"],
-  allTags: () => [...queries.all(), "tags"],
-  allSuggestions: () => [...queries.all(), "suggestions"],
+  allDetails: () => [...query.all(), "detail"],
+  allTags: () => [...query.all(), "tags"],
+  allSuggestions: () => [...query.all(), "suggestions"],
   list: (filters?: string) =>
     queryOptions({
-      queryKey: [...queries.all(), filters],
+      queryKey: [...query.all(), filters],
       queryFn: () => api.getAll(filters),
       placeholderData: keepPreviousData,
     }),
   detail: ({ id, text, langId }: TermQueryParams) =>
     queryOptions({
-      queryKey: [...queries.allDetails(), id, text, langId],
+      queryKey: [...query.allDetails(), id, text, langId],
       queryFn: id
         ? () => api.getById(id)
         : text && langId
@@ -30,12 +30,12 @@ export const queries = {
     }),
   popup: (id: number) =>
     queryOptions({
-      queryKey: [...queries.all(), "popup", id],
+      queryKey: [...query.all(), "popup", id],
       queryFn: () => api.getPopup(id),
     }),
   sentences: (termText: string, langId?: number) =>
     queryOptions({
-      queryKey: [...queries.all(), "sentences", langId, termText],
+      queryKey: [...query.all(), "sentences", langId, termText],
       queryFn:
         langId != undefined
           ? () => api.getSentences(termText, langId)
@@ -43,12 +43,12 @@ export const queries = {
     }),
   tags: () =>
     queryOptions({
-      queryKey: [...queries.allTags()],
+      queryKey: [...query.allTags()],
       queryFn: api.getTags,
     }),
   termSuggestions: (searchText: string, langId?: number) =>
     queryOptions({
-      queryKey: [...queries.allSuggestions(), langId, searchText],
+      queryKey: [...query.allSuggestions(), langId, searchText],
       queryFn:
         searchText !== "" && langId != undefined
           ? () => api.getSuggestions(searchText, langId)
@@ -56,7 +56,7 @@ export const queries = {
     }),
   tagSuggestions: () =>
     queryOptions({
-      queryKey: [...queries.allTags(), "suggestions"],
+      queryKey: [...query.allTags(), "suggestions"],
       queryFn: api.getTagSuggestions,
     }),
 } as const;

@@ -14,11 +14,11 @@ import { NumberInput } from "#common/NumberInput/NumberInput";
 import { Select } from "#common/Select/Select";
 import { FormButtons } from "#common/FormButtons/FormButtons";
 import { MeCabInfo } from "./MeCabInfo";
-import { queries } from "#settings/api/queries";
+import { query } from "#settings/api/query";
 
 export function SettingsForm() {
   const { t } = useTranslation("form", { keyPrefix: "settings" });
-  const { data: settings } = useQuery(queries.settingsForm());
+  const { data: settings } = useQuery(query.settingsForm());
 
   const { control, watch } = useForm({
     defaultValues: settings,
