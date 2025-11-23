@@ -12,7 +12,7 @@ export function usePageControl(onNavigate?: (num: number) => void) {
   function goToPage(num: number) {
     if (num > book.pageCount || num < 1) return;
 
-    navigate({ params: { bookId: book.id, pageNum: num } });
+    navigate({ params: { bookId: book.id, pageNum: num }, search: true });
     onNavigate?.(num);
   }
 

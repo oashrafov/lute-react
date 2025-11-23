@@ -16,7 +16,7 @@ export const Route = createFileRoute("/books/$bookId")({
       redirect({
         throw: true,
         to: "/books/$bookId/pages/$pageNum",
-        params: () => ({ bookId: params.bookId, pageNum: 1 }),
+        params: { bookId: params.bookId, pageNum: 1 },
       });
     }
   },

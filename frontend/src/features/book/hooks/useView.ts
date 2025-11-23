@@ -10,7 +10,7 @@ export function useView() {
 
   function setView(view: View) {
     setLocalStorageItem("Lute.view", view);
-    navigate({ search: { view } });
+    navigate({ search: (s) => ({ ...s, view }) });
   }
 
   function toggleFocus() {

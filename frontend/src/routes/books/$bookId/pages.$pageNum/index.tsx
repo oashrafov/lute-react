@@ -45,7 +45,8 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
     if (params.pageNum > bookData.pageCount) {
       redirect({
         throw: true,
-        params: () => ({ bookId: params.bookId, pageNum: bookData.pageCount }),
+        params: { bookId: params.bookId, pageNum: bookData.pageCount },
+        search: true,
       });
       return;
     }
