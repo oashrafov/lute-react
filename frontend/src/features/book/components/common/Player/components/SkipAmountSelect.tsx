@@ -16,6 +16,7 @@ export function SkipAmountSelect() {
       data={selectData}
       allowDeselect={false}
       styles={{ root: { width: "5rem" } }}
+      comboboxProps={{ withinPortal: false }}
       checkIconPosition="right"
       size="xs"
     />
