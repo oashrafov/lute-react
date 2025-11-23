@@ -33,21 +33,24 @@ export const queries = {
       queryKey: [...queries.all(), "popup", id],
       queryFn: () => api.getPopup(id),
     }),
-  sentences: (termText: string, langId: number) =>
+  sentences: (termText: string, langId?: number) =>
     queryOptions({
       queryKey: [...queries.all(), "sentences", langId, termText],
-      queryFn: () => api.getSentences(termText, langId),
+      queryFn:
+        langId != undefined
+          ? () => api.getSentences(termText, langId)
+          : skipToken,
     }),
   tags: () =>
     queryOptions({
       queryKey: [...queries.allTags()],
       queryFn: api.getTags,
     }),
-  termSuggestions: (searchText: string, langId: number) =>
+  termSuggestions: (searchText: string, langId?: number) =>
     queryOptions({
       queryKey: [...queries.allSuggestions(), langId, searchText],
       queryFn:
-        searchText !== "" && langId != null
+        searchText !== "" && langId != undefined
           ? () => api.getSuggestions(searchText, langId)
           : skipToken,
     }),
