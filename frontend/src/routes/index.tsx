@@ -1,28 +1,10 @@
-import {
-  createFileRoute,
-  redirect,
-  stripSearchParams,
-} from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { HomePage } from "#pages/HomePage";
 import { queries as langQueries } from "#language/api/queries";
 import { queries as settingsQueries } from "#settings/api/queries";
 
-interface Search {
-  langId?: number;
-  langName?: string;
-}
-
-const defaultSearch = {
-  langId: 0,
-  langName: "",
-};
-
 export const Route = createFileRoute("/")({
   component: HomePage,
-  validateSearch: (search: Record<string, unknown>): Search => ({
-    langId: Number(search?.langId ?? defaultSearch.langId),
-    langName: String(search?.langName ?? defaultSearch.langName),
-  }),
   loader: async ({ context }) => {
     const responses = await Promise.all([
       context.queryClient.ensureQueryData(settingsQueries.appInfo()),
@@ -39,8 +21,5 @@ export const Route = createFileRoute("/")({
     }
 
     return responses;
-  },
-  search: {
-    middlewares: [stripSearchParams(defaultSearch)],
   },
 });
