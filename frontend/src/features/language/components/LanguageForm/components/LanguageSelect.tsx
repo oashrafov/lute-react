@@ -14,7 +14,7 @@ import {
   useCombobox,
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
-import { query } from "#language/api/query.js";
+import { query } from "#language/api/query";
 
 export const LanguageSelect = memo(function LanguageSelect() {
   const { langId, langName } = useSearch({ strict: false });
@@ -47,7 +47,7 @@ export const LanguageSelect = memo(function LanguageSelect() {
   function handleClearField() {
     setSearch("");
     setValue(null);
-    navigate({ search: { langId: 0, langName: "" } });
+    navigate({ search: { langId: undefined, langName: undefined } });
   }
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -67,7 +67,7 @@ export const LanguageSelect = memo(function LanguageSelect() {
     } else {
       setValue(val);
       setSearch(val);
-      navigate({ search: { langId: 0, langName: val } });
+      navigate({ search: { langId: undefined, langName: val } });
     }
 
     combobox.closeDropdown();
@@ -87,7 +87,7 @@ export const LanguageSelect = memo(function LanguageSelect() {
       setSearch(langName);
       setValue(langName);
     }
-    if (langId !== 0) {
+    if (langId !== undefined) {
       setSearch("");
       setValue(null);
     }

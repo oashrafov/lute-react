@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Select, type SelectProps } from "@mantine/core";
 import { IconSelector } from "@tabler/icons-react";
 import { LoadSampleBooksButton } from "./LoadSampleBooksButton";
-import { query as langQuery } from "#language/api/query.js";
+import { query as langQuery } from "#language/api/query";
 import { query as settingsQuery } from "#settings/api/query";
 
 interface SampleBooksSelect extends SelectProps {

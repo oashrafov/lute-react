@@ -6,7 +6,7 @@ import { Textarea } from "#common/Textarea/Textarea";
 import classes from "./EditView.module.css";
 
 export function EditView() {
-  const { textDir } = useSearch({ strict: false });
+  const { textDir } = useSearch({ from: "/books/$bookId/pages/$pageNum/" });
   const { data: page } = usePageQuery();
   const { control } = useForm({ defaultValues: { text: page.text } });
 

@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Affix, Paper } from "@mantine/core";
 import { FocusPageControls } from "./components/FocusPageControls/FocusPageControls";
 import { FocusActions } from "./components/FocusActions/FocusActions";
 import { FloatingContainer } from "../common/FloatingContainer/FloatingContainer";
 import { FocusPagePane } from "./components/FocusPagePane/FocusPagePane";
 import { DictsPane } from "#language/components/DictsPane/DictsPane";
-import { query } from "#language/api/query.js";
 import { TermForm } from "#term/components/TermForm/TermForm";
-import { useTermQuery } from "#term/hooks/useTermQuery";
 import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
 import { useView } from "#book/hooks/useView";
 import { useBookQuery } from "#book/hooks/useBookQuery";
+import { useTermQuery } from "#term/hooks/useTermQuery";
+import { useUserLanguageQuery } from "#language/hooks/useUserLanguageQuery";
 import { useBookContext } from "#book/hooks/useBookContext";
 
 export function FocusView() {
@@ -19,10 +18,8 @@ export function FocusView() {
   const { themeForm } = useBookContext();
   const { data: book } = useBookQuery();
   const { data: term } = useTermQuery();
+  const { data: language } = useUserLanguageQuery();
   const { activeTerm } = useActiveTermContext();
-  const { data: language } = useQuery(
-    query.userLanguageDetail(book.languageId)
-  );
   const [showDicts, setShowDicts] = useState(false);
 
   const show = view === "focus";
@@ -48,7 +45,12 @@ export function FocusView() {
         position={{ top: 100, right: 20 }}
         transition="slide-left">
         <Paper shadow="sm" p={10} w={300} withBorder>
-          {term && <TermForm term={term} />}
+          {term && (
+            <TermForm
+              term={term}
+              showPronunciation={language?.show_romanization}
+            />
+          )}
         </Paper>
       </FloatingContainer>
 

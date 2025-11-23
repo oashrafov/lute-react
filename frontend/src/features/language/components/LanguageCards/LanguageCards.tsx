@@ -8,7 +8,7 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Group, Radio, rem, ScrollArea } from "@mantine/core";
 import { LanguageCard } from "../LanguageCard/LanguageCard";
-import { query } from "#language/api/query.js";
+import { query } from "#language/api/query";
 import classes from "./LanguageCards.module.css";
 
 interface LanguageCards {
@@ -26,7 +26,7 @@ export function LanguageCards({ label, description }: LanguageCards) {
 
   function handleLanguageChange(id: number) {
     navigate({
-      search: { langId: langId === id ? 0 : id, langName: "" },
+      search: { langId: langId === id ? undefined : id, langName: undefined },
     });
   }
 

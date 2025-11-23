@@ -4,7 +4,7 @@ import {
   Image,
   type PopoverProps,
 } from "@mantine/core";
-import { BACKEND_URL } from "#resources/constants.ts";
+import { BACKEND_URL } from "#resources/constants";
 
 interface TermImagePopover extends PopoverProps {
   imageName: string;

@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { HomePage } from "#pages/HomePage";
-import { query as langQuery } from "#language/api/query.js";
+import { query as langQuery } from "#language/api/query";
 import { query as settingsQuery } from "#settings/api/query";
 
 export const Route = createFileRoute("/")({

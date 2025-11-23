@@ -19,7 +19,7 @@ import { LanguageSelect } from "./components/LanguageSelect";
 import { DictionaryBars } from "./components/DictionaryBars";
 import { AddDictionaryButton } from "./components/AddDictionaryButton";
 import { useSelectedLanguage } from "#language/hooks/useSelectedLanguage";
-import { query } from "#language/api/query.js";
+import { query } from "#language/api/query";
 import type { Dictionary, LanguageForm } from "#language/api/types";
 import classes from "./LanguageForm.module.css";
 

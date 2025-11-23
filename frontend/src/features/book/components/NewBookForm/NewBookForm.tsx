@@ -1,5 +1,5 @@
 import { useSearch } from "@tanstack/react-router";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import {
   Button,
@@ -29,14 +29,12 @@ import { FormButtons } from "#common/FormButtons/FormButtons";
 import { ImportURLInfoPopup } from "./components/ImportURLInfoPopup";
 import { query as settingsQuery } from "#settings/api/query";
 import { query as bookQuery } from "#book/api/query";
-import { query as langQuery } from "#language/api/query";
 import { mutation } from "#book/api/mutation";
 import classes from "./NewBookForm.module.css";
 
 export function NewBookForm() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
-  const { langId, textDir } = useSearch({ strict: false });
-  const { data: language } = useQuery(langQuery.userLanguageDetail(langId));
+  const { langId, textDir } = useSearch({ from: "/create-book" });
   const { data: formValues } = useSuspenseQuery(bookQuery.bookForm());
   const { data: initial } = useSuspenseQuery(settingsQuery.init());
   const { mutate: createBookMutate } = mutation.useCreateBook();
@@ -78,7 +76,7 @@ export function NewBookForm() {
         name="title"
         control={control}
         wrapperProps={{ dir: textDir }}
-        disabled={!language}
+        disabled={!langId}
         required
         withAsterisk
         label={t("titleLabel")}
@@ -86,7 +84,7 @@ export function NewBookForm() {
       />
 
       <Fieldset
-        disabled={!language}
+        disabled={!langId}
         variant="filled"
         legend={t("contentLabel")}
         flex={1}
@@ -207,7 +205,7 @@ export function NewBookForm() {
         leftSection={<IconTags />}
       />
 
-      <FormButtons okDisabled={!language} okLoading={isSubmitting} />
+      <FormButtons okDisabled={!langId} okLoading={isSubmitting} />
     </form>
   );
 }

@@ -4,19 +4,18 @@ import { useTranslation } from "react-i18next";
 import { DictsPane } from "#language/components/DictsPane/DictsPane";
 import { TermForm } from "#term/components/TermForm/TermForm";
 import { query as termQuery } from "#term/api/query";
-import { query as langQuery } from "#language/api/query.js";
 import { TermPageLayout } from "./TermPage/TermPageLayout";
+import { useUserLanguageQuery } from "#language/hooks/useUserLanguageQuery";
 
 const route = getRouteApi("/terms/$termId");
 
 export function EditTermPage() {
   const { t } = useTranslation("page", { keyPrefix: "newEditTerm" });
-  const { langId } = route.useSearch();
-  const { termId } = route.useParams();
-  const { data: language } = useQuery(langQuery.userLanguageDetail(langId));
-  const { data: term } = useQuery(termQuery.detail({ id: termId }));
+  const { termId: id } = route.useParams();
+  const { data: language } = useUserLanguageQuery();
+  const { data: term } = useQuery(termQuery.detail({ id }));
 
-  const show = !!termId && language && term;
+  const show = !!id && language && term;
   const dictTabs = show && language && (
     <DictsPane
       key={term.text}
@@ -30,12 +29,11 @@ export function EditTermPage() {
 
   return (
     <TermPageLayout
+      title={t("titleEdit")}
       showAll={!!show}
       dictTabs={dictTabs}
       termForm={termForm}
-      // textDirection={language?.right_to_left ? "rtl" : "ltr"}
       showLanguageCards={false}
-      title={t("titleEdit")}
     />
   );
 }
