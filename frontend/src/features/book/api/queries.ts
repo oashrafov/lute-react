@@ -9,28 +9,28 @@ export const queries = {
   all: () => ["books"],
   allStats: () => [...queries.all(), "stats"],
   allDetails: () => [...queries.all(), "detail"],
-  bookPages: (bookId: number) => [queries.all(), "page", bookId],
+  allPages: () => [...queries.all(), "page"],
   list: (filters?: string) =>
     queryOptions({
       queryKey: [...queries.all(), filters],
       queryFn: () => api.getAll(filters),
       placeholderData: keepPreviousData,
     }),
-  detail: (id: number) =>
+  detail: (bookId: number) =>
     queryOptions({
-      queryKey: [...queries.allDetails(), id],
-      queryFn: () => api.getById(id),
+      queryKey: [...queries.allDetails(), bookId],
+      queryFn: () => api.getById(bookId),
       refetchOnWindowFocus: false,
     }),
-  stats: (id: number) =>
+  stats: (bookId: number) =>
     queryOptions({
-      queryKey: [...queries.allStats(), id],
-      queryFn: () => api.getStats(id),
-      enabled: id !== null,
+      queryKey: [...queries.allStats(), bookId],
+      queryFn: () => api.getStats(bookId),
+      enabled: bookId !== null,
     }),
   page: (bookId: number, pageNum: number) =>
     queryOptions({
-      queryKey: [...queries.bookPages(bookId), pageNum],
+      queryKey: [...queries.allPages(), bookId, pageNum],
       queryFn: () => api.getPage(bookId, pageNum),
       refetchOnWindowFocus: false,
     }),
