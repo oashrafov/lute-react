@@ -6,7 +6,6 @@ import {
 import type { View } from "#resources/types";
 import { BookPage } from "#pages/BookPage";
 import { query as bookQuery } from "#book/api/query";
-import { query as langQuery } from "#language/api/query.js";
 import { query as settingsQuery } from "#settings/api/query";
 
 type TermIds = number[];
@@ -19,8 +18,8 @@ interface Search {
 
 const defaultSearch = {
   view: "default" as View,
-  termIds: [],
-  sentenceId: -1,
+  termIds: undefined,
+  sentenceId: undefined,
 };
 
 export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
@@ -28,7 +27,8 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
   params: {
     parse: (params) => ({ pageNum: Number(params.pageNum) }),
   },
-  loader: async ({ context, params }) => {
+  loaderDeps: ({ search: { langId, textDir } }) => ({ langId, textDir }),
+  loader: async ({ context, params, deps: { langId, textDir } }) => {
     let bookData;
     try {
       bookData = await context.queryClient.ensureQueryData(
@@ -51,10 +51,19 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
       return;
     }
 
+    if (langId === undefined || textDir === undefined) {
+      redirect({
+        throw: true,
+        search: (prev) => ({
+          ...prev,
+          langId: bookData.languageId,
+          textDir: bookData.textDirection,
+        }),
+      });
+      return;
+    }
+
     const responses = await Promise.all([
-      context.queryClient.ensureQueryData(
-        langQuery.userLanguageDetail(bookData.languageId)
-      ),
       context.queryClient.ensureQueryData(
         bookQuery.page(params.bookId, params.pageNum)
       ),
@@ -65,12 +74,17 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
 
     return [bookData, ...responses];
   },
-  validateSearch: (search: Record<string, unknown>): Search => {
-    return {
-      view: (search?.view as View) ?? defaultSearch.view,
-      termIds: (search?.termIds as TermIds) ?? defaultSearch.termIds,
-    };
-  },
+  validateSearch: (search: Record<string, unknown>): Search => ({
+    view: (search?.view as View) ?? defaultSearch.view,
+    termIds:
+      search.termIds !== undefined
+        ? (search.termIds as TermIds)
+        : defaultSearch.termIds,
+    sentenceId:
+      search.sentenceId !== undefined
+        ? Number(search.sentenceId)
+        : defaultSearch.sentenceId,
+  }),
   search: {
     middlewares: [stripSearchParams(defaultSearch)],
   },

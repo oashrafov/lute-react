@@ -1,7 +1,6 @@
 import {
   createRootRouteWithContext,
   Outlet,
-  retainSearchParams,
   stripSearchParams,
   useParams,
 } from "@tanstack/react-router";
@@ -9,7 +8,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Layout } from "../components/Layout/Layout";
-import type { TextDirection } from "#resources/types.ts";
+import type { TextDirection } from "#resources/types";
 
 interface Search {
   langId?: number;
@@ -18,9 +17,9 @@ interface Search {
 }
 
 const defaultSearch: Search = {
-  langId: 0,
-  langName: "",
-  textDir: "ltr",
+  langId: undefined,
+  langName: undefined,
+  textDir: undefined,
 };
 
 export const Route = createRootRouteWithContext<{
@@ -28,15 +27,21 @@ export const Route = createRootRouteWithContext<{
 }>()({
   component: RouteComponent,
   validateSearch: (search: Record<string, unknown>): Search => ({
-    langId: Number(search?.langId ?? defaultSearch.langId),
-    langName: String(search?.langName ?? defaultSearch.langName),
-    textDir: String(search?.textDir ?? defaultSearch.textDir) as TextDirection,
+    langId:
+      search.langId !== undefined
+        ? Number(search.langId)
+        : defaultSearch.langId,
+    langName:
+      search.langName !== undefined
+        ? String(search.langName)
+        : defaultSearch.langName,
+    textDir:
+      search.textDir !== undefined
+        ? (search.textDir as TextDirection)
+        : defaultSearch.textDir,
   }),
   search: {
-    middlewares: [
-      stripSearchParams(defaultSearch),
-      retainSearchParams(["langId", "textDir"]),
-    ],
+    middlewares: [stripSearchParams(defaultSearch)],
   },
 });
 

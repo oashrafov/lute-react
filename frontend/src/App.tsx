@@ -28,7 +28,7 @@ const bookPageRouteMask = createRouteMask({
   routeTree,
   from: "/books/$bookId/pages/$pageNum",
   to: "/books/$bookId/pages/$pageNum",
-  search: { view: "default", termIds: [] },
+  search: { view: "default", termIds: undefined },
 });
 
 const router = createRouter({
