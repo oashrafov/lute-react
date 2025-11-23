@@ -1,5 +1,5 @@
 export function getLookupURL(dictURL: string, term: string) {
-  return dictURL.replace("###", _getCleanTermString(term));
+  return dictURL.replace(/###|\[LUTE\]/, _getCleanTermString(term));
 }
 
 export function handleExternalUrl(url: string, inNewTab: boolean = false) {
