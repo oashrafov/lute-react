@@ -1,3 +1,4 @@
+import { useSearch } from "@tanstack/react-router";
 import {
   useState,
   type ChangeEvent,
@@ -22,7 +23,6 @@ import { queries } from "#term/api/queries";
 
 interface TagsField extends PillsInputProps {
   termText: string;
-  languageId: number;
   values: string[];
   placeholder?: string;
   onSetValues: (values: string[]) => void;
@@ -32,7 +32,6 @@ interface TagsField extends PillsInputProps {
 
 export function TagsField({
   termText,
-  languageId,
   values,
   placeholder,
   onSetValues,
@@ -44,9 +43,10 @@ export function TagsField({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
   });
+  const { langId } = useSearch({ strict: false });
   const [search, setSearch] = useState("");
   const { data, isFetching } = useQuery(
-    queries.termSuggestions(search, languageId)
+    queries.termSuggestions(search, langId)
   );
 
   const suggestions = data

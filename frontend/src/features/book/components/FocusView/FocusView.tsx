@@ -37,7 +37,7 @@ export function FocusView() {
 
       <Affix position={{ top: 100, left: 20 }}>
         <FocusActions
-          book={book}
+          bookmarks={book.bookmarks}
           onShowDicts={setShowDicts}
           showDicts={showDicts}
         />
@@ -48,7 +48,7 @@ export function FocusView() {
         position={{ top: 100, right: 20 }}
         transition="slide-left">
         <Paper shadow="sm" p={10} w={300} withBorder>
-          {term && <TermForm term={term} language={language} />}
+          {term && <TermForm term={term} />}
         </Paper>
       </FloatingContainer>
 
@@ -58,12 +58,20 @@ export function FocusView() {
         transition="slide-right">
         <Paper shadow="sm" p={10} w={800} withBorder h={500}>
           {term?.text && language && (
-            <DictsPane termText={term.text} language={language} />
+            <DictsPane
+              termText={term.text}
+              dictionaries={language.dictionaries.filter(
+                (dict) => dict.for === "terms"
+              )}
+            />
           )}
         </Paper>
       </FloatingContainer>
 
-      <FocusPageControls book={book} show={show && !showTranslationPane} />
+      <FocusPageControls
+        pageCount={book.pageCount}
+        show={show && !showTranslationPane}
+      />
     </>
   );
 }

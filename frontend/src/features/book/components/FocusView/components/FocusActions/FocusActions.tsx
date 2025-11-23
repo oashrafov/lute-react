@@ -4,21 +4,25 @@ import { MarkRestAsKnownButton } from "../../../common/MarkRestAsKnownButton/Mar
 import { ShowDictionariesChip } from "./ShowDictionariesChip";
 import { FocusToolbar } from "../FocusToolbar/FocusToolbar";
 import { FocusBookmarksButton } from "../FocusBookmarksButton";
-import type { BookDetail } from "#book/api/types";
+import type { PageBookmark } from "#book/api/types";
 
 interface FocusActions {
-  book: BookDetail;
+  bookmarks: PageBookmark | null;
   showDicts: boolean;
   onShowDicts: Dispatch<SetStateAction<boolean>>;
 }
 
-export function FocusActions({ book, showDicts, onShowDicts }: FocusActions) {
+export function FocusActions({
+  bookmarks,
+  showDicts,
+  onShowDicts,
+}: FocusActions) {
   return (
     <Paper shadow="md" withBorder radius={10} p={10}>
       <Stack gap={10}>
         <Group wrap="nowrap" gap={5} justify="center">
           <MarkRestAsKnownButton />
-          <FocusBookmarksButton bookmarks={book.bookmarks} />
+          <FocusBookmarksButton bookmarks={bookmarks} />
         </Group>
 
         <Divider />

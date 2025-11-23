@@ -14,14 +14,11 @@ import {
   IconFileXFilled,
 } from "@tabler/icons-react";
 import { PageCounter } from "../../../common/PageCounter";
-import type { BookDetail } from "#book/api/types";
 import { useView } from "#book/hooks/useView";
+import { useBookQuery } from "#book/hooks/useBookQuery";
 
-interface EditHeader {
-  book: BookDetail;
-}
-
-export function EditHeader({ book }: EditHeader) {
+export function EditHeader() {
+  const { data: book } = useBookQuery();
   const { setView } = useView();
   function handleAddBefore() {}
   function handleAddAfter() {}

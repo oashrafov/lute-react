@@ -1,19 +1,19 @@
-import type { MouseEventHandler } from "react";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Tooltip,
+  type ActionIconProps,
+  type ElementProps,
+} from "@mantine/core";
 import { IconNote } from "@tabler/icons-react";
 
-interface NotesButton {
-  onToggle: MouseEventHandler<HTMLButtonElement>;
-  active: boolean;
-}
+interface NotesButton
+  extends ActionIconProps,
+    ElementProps<"button", keyof ActionIconProps> {}
 
-export function NotesButton({ onToggle, active }: NotesButton) {
+export function NotesButton(props: NotesButton) {
   return (
     <Tooltip label="Show notes">
-      <ActionIcon
-        size="md"
-        variant={active ? "light" : "subtle"}
-        onClick={onToggle}>
+      <ActionIcon size="md" {...props}>
         <IconNote />
       </ActionIcon>
     </Tooltip>

@@ -1,4 +1,4 @@
-import { getRouteApi, useSearch } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { DictsPane } from "#language/components/DictsPane/DictsPane";
@@ -11,25 +11,29 @@ const route = getRouteApi("/terms/$termId");
 
 export function EditTermPage() {
   const { t } = useTranslation("page", { keyPrefix: "newEditTerm" });
-  const { langId } = useSearch({ strict: false });
+  const { langId } = route.useSearch();
   const { termId } = route.useParams();
   const { data: language } = useQuery(langQueries.userLanguageDetail(langId));
   const { data: term } = useQuery(termQueries.detail({ id: termId }));
 
   const show = !!termId && language && term;
   const dictTabs = show && language && (
-    <DictsPane key={term.text} language={language} termText={term.text} />
+    <DictsPane
+      key={term.text}
+      dictionaries={language.dictionaries.filter(
+        (dict) => dict.for === "terms"
+      )}
+      termText={term.text}
+    />
   );
-  const termForm = show && (
-    <TermForm term={term} language={language} onAction={() => {}} />
-  );
+  const termForm = show && <TermForm term={term} />;
 
   return (
     <TermPageLayout
       showAll={!!show}
       dictTabs={dictTabs}
       termForm={termForm}
-      textDirection={language?.right_to_left ? "rtl" : "ltr"}
+      // textDirection={language?.right_to_left ? "rtl" : "ltr"}
       showLanguageCards={false}
       title={t("titleEdit")}
     />

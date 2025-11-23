@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Box, ScrollAreaAutosize } from "@mantine/core";
 import { VerticalPanels } from "../ResizablePanels/VerticalPanels";
@@ -7,7 +8,6 @@ import { queries } from "#language/api/queries";
 import { TermForm } from "#term/components/TermForm/TermForm";
 import type { TermDetail } from "#term/api/types";
 import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
-import { useBookQuery } from "#book/hooks/useBookQuery";
 import classes from "./TranslationPane.module.css";
 
 interface TranslationPane {
@@ -15,10 +15,8 @@ interface TranslationPane {
 }
 
 export function TranslationPane({ term }: TranslationPane) {
-  const { data: book } = useBookQuery();
-  const { data: language } = useQuery(
-    queries.userLanguageDetail(book.languageId)
-  );
+  const { langId } = useSearch({ strict: false });
+  const { data: language } = useQuery(queries.userLanguageDetail(langId));
   const { clearActiveTerm } = useActiveTermContext();
   const translationFieldRef = useRef<HTMLTextAreaElement>(null);
 
@@ -41,9 +39,9 @@ export function TranslationPane({ term }: TranslationPane) {
               <TermForm
                 key={term.text}
                 term={term}
-                language={language}
+                showPronunciation={language?.show_romanization}
                 translationFieldRef={translationFieldRef}
-                onAction={clearActiveTerm}
+                onSubmitSuccess={clearActiveTerm}
               />
             </Box>
           </ScrollAreaAutosize>
@@ -53,7 +51,9 @@ export function TranslationPane({ term }: TranslationPane) {
             <Box className={classes.dictTabsContainer}>
               {language && (
                 <DictsPane
-                  language={language}
+                  dictionaries={language.dictionaries.filter(
+                    (dict) => dict.for === "terms"
+                  )}
                   termText={term.text}
                   onReturnFocusToForm={handleReturnFocusToForm}
                 />

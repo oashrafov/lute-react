@@ -32,7 +32,7 @@ export interface TermPopup extends TermPopupSection {
 }
 
 export interface TermDetail {
-  id: number;
+  id: number | null;
   originalText: string;
   text: string;
   textLC: string;

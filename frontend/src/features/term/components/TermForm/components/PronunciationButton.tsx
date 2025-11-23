@@ -1,19 +1,19 @@
-import type { MouseEventHandler } from "react";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Tooltip,
+  type ActionIconProps,
+  type ElementProps,
+} from "@mantine/core";
 import { IconSpeakerphone } from "@tabler/icons-react";
 
-interface PronunciationButton {
-  onToggle: MouseEventHandler<HTMLButtonElement>;
-  active: boolean;
-}
+interface PronunciationButton
+  extends ActionIconProps,
+    ElementProps<"button", keyof ActionIconProps> {}
 
-export function PronunciationButton({ onToggle, active }: PronunciationButton) {
+export function PronunciationButton(props: PronunciationButton) {
   return (
     <Tooltip label="Show pronunciation">
-      <ActionIcon
-        size="md"
-        variant={active ? "light" : "subtle"}
-        onClick={onToggle}>
+      <ActionIcon size="md" {...props}>
         <IconSpeakerphone />
       </ActionIcon>
     </Tooltip>

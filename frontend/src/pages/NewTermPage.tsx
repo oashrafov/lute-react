@@ -14,7 +14,9 @@ export function NewTermPage() {
   const dictTabs = newTerm && language && (
     <DictsPane
       key={`${newTerm}${langId}`}
-      language={language}
+      dictionaries={language.dictionaries.filter(
+        (dict) => dict.for === "terms"
+      )}
       termText={newTerm}
     />
   );
@@ -23,14 +25,7 @@ export function NewTermPage() {
     <TermPageLayout
       showAll={!!language}
       dictTabs={dictTabs}
-      termForm={
-        <TermForm
-          language={language}
-          onSetTerm={setNewTerm}
-          onAction={() => {}}
-        />
-      }
-      textDirection={language?.right_to_left ? "rtl" : "ltr"}
+      termForm={<TermForm onSetTermText={setNewTerm} />}
     />
   );
 }

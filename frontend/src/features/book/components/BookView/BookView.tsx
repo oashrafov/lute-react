@@ -7,7 +7,7 @@ import { usePrefetchPages } from "#book/hooks/usePrefetchPages";
 import { useSetupShortcuts } from "#book/hooks/useSetupShortcuts";
 import { useView } from "#book/hooks/useView";
 
-export function Book() {
+export function BookView() {
   const { view } = useView();
   usePrefetchPages();
   useSetupShortcuts();

@@ -9,9 +9,10 @@ interface DictsMenu {
   termText: string;
   dicts: Dictionary[];
   onClick: (url: string) => void;
+  tabValue: string;
 }
 
-export function DictsMenu({ termText, dicts, onClick }: DictsMenu) {
+export function DictsMenu({ termText, dicts, tabValue, onClick }: DictsMenu) {
   return (
     <Menu>
       <Menu.Target>
@@ -35,7 +36,7 @@ export function DictsMenu({ termText, dicts, onClick }: DictsMenu) {
             ) : (
               <DictTabEmbedded
                 dict={dict}
-                value={String("dropdownTab")}
+                value={tabValue}
                 onClick={() => onClick(dict.url)}
                 component={Menu.Item}
               />

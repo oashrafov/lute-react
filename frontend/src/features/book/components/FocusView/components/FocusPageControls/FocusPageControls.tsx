@@ -13,11 +13,11 @@ import { FloatingContainer } from "../../../common/FloatingContainer/FloatingCon
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
 interface FocusPageControls {
-  book: BookDetail;
+  pageCount: BookDetail["pageCount"];
   show: boolean;
 }
 
-export function FocusPageControls({ book, show }: FocusPageControls) {
+export function FocusPageControls({ pageCount, show }: FocusPageControls) {
   const { pageNum } = route.useParams();
   const markPageAsRead = useMarkPageAsRead();
   const { goToNextPage, goToPreviousPage } = usePageControl();
@@ -36,7 +36,7 @@ export function FocusPageControls({ book, show }: FocusPageControls) {
         zIndex={198}>
         <ActionIcon
           onClick={goToPreviousPage}
-          disabled={book.pageCount === 1 || pageNum === 1}
+          disabled={pageCount === 1 || pageNum === 1}
           variant="light"
           size="xl"
           h={100}
@@ -54,14 +54,14 @@ export function FocusPageControls({ book, show }: FocusPageControls) {
           <ActionIcon
             color="orange"
             onClick={handleMarkPageAsReadAndNavigate}
-            disabled={book.pageCount === 1}
+            disabled={pageCount === 1}
             variant="light"
             size="xl">
-            {book.pageCount ? <IconCheck /> : <IconChevronRight />}
+            {pageNum === pageCount ? <IconCheck /> : <IconChevronRight />}
           </ActionIcon>
           <ActionIcon
             onClick={goToNextPage}
-            disabled={book.pageCount === 1 || pageNum === book.pageCount}
+            disabled={pageCount === 1 || pageNum === pageCount}
             variant="light"
             size="xl"
             h={100}>

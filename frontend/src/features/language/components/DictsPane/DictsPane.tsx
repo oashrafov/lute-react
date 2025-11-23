@@ -11,27 +11,23 @@ import { IFramePanel } from "./components/IFramePanel";
 import { TabPanel } from "./components/common/TabPanel";
 import { DictTab } from "./components/DictTab";
 import { Tab } from "./components/Tab";
-import type { UserLanguageDetail } from "#language/api/types";
+import type { Dictionary } from "#language/api/types";
 import classes from "./DictsPane.module.css";
 
 interface DictsPane {
   termText: string;
-  language: UserLanguageDetail;
+  dictionaries: Dictionary[];
   onReturnFocusToForm?: () => void;
 }
 
 export function DictsPane({
   termText,
-  language,
+  dictionaries,
   onReturnFocusToForm,
 }: DictsPane) {
   const [activeDropdownUrl, setActiveDropdownUrl] = useState("");
-
-  const termDicts = language.dictionaries.filter(
-    (dict) => dict.for === "terms"
-  );
-  const visibleDicts = termDicts.slice(0, MAX_VISIBLE_DICT_TABS);
-  const dropdownDicts = termDicts.slice(MAX_VISIBLE_DICT_TABS);
+  const visibleDicts = dictionaries.slice(0, MAX_VISIBLE_DICT_TABS);
+  const dropdownDicts = dictionaries.slice(MAX_VISIBLE_DICT_TABS);
   const embeddedVisibleDicts = visibleDicts.filter(
     (dict) => dict.type === "embedded"
   );
@@ -67,6 +63,7 @@ export function DictsPane({
             termText={termText}
             dicts={dropdownDicts}
             onClick={setActiveDropdownUrl}
+            tabValue={tabs.dropdown}
           />
         )}
 
@@ -99,7 +96,7 @@ export function DictsPane({
       <TabPanel
         value={tabs.sentences}
         style={{ overflowY: "auto", flexGrow: 1 }}>
-        <Sentences langId={language.id} termText={encodedTermText} />
+        <Sentences termText={encodedTermText} />
       </TabPanel>
 
       <IFramePanel frameSrc="" value={tabs.images} />

@@ -1,3 +1,4 @@
+import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { NoSentences } from "../NoSentences/NoSentences";
 import { SentenceReference } from "../SentenceReference/SentenceReference";
@@ -6,15 +7,15 @@ import { queries } from "#term/api/queries";
 import classes from "./Sentences.module.css";
 
 interface Sentences {
-  langId: number;
   termText: string;
 }
 
-export function Sentences({ langId, termText }: Sentences) {
-  const { data } = useQuery(queries.sentences(termText, langId));
+export function Sentences({ termText }: Sentences) {
+  const { langId } = useSearch({ strict: false });
+  const { data, isFetching } = useQuery(queries.sentences(termText, langId));
   return (
     <div className={classes.container}>
-      {!data && <SentencesSkeleton />}
+      {isFetching && <SentencesSkeleton />}
       {data && data.variations.length === 0 && <NoSentences text={data.text} />}
       {data && data.variations.length > 0 && (
         <ul className={classes.mainList}>

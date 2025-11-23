@@ -35,7 +35,7 @@ import classes from "./NewBookForm.module.css";
 
 export function NewBookForm() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
-  const { langId } = useSearch({ strict: false });
+  const { langId, textDir } = useSearch({ strict: false });
   const { data: language } = useQuery(langQueries.userLanguageDetail(langId));
   const { data: formValues } = useSuspenseQuery(bookQueries.bookForm());
   const { data: initial } = useSuspenseQuery(settingsQueries.init());
@@ -44,7 +44,6 @@ export function NewBookForm() {
     mutate: generateContentFromURLMutate,
     isPending: generateContentFromURLIsPending,
   } = mutation.useGenerateContentFromURL();
-  const textDirection = language?.right_to_left ? "rtl" : "ltr";
 
   const {
     control,
@@ -78,8 +77,8 @@ export function NewBookForm() {
       <TextInput
         name="title"
         control={control}
-        wrapperProps={{ dir: textDirection }}
-        disabled={language ? false : true}
+        wrapperProps={{ dir: textDir }}
+        disabled={!language}
         required
         withAsterisk
         label={t("titleLabel")}
@@ -87,7 +86,7 @@ export function NewBookForm() {
       />
 
       <Fieldset
-        disabled={language ? false : true}
+        disabled={!language}
         variant="filled"
         legend={t("contentLabel")}
         flex={1}
@@ -100,7 +99,7 @@ export function NewBookForm() {
             control={control}
             label={t("textLabel")}
             disabled={hasTextFile}
-            wrapperProps={{ dir: textDirection }}
+            wrapperProps={{ dir: textDir }}
             spellCheck={false}
             autoCapitalize="off"
             autoCorrect="off"

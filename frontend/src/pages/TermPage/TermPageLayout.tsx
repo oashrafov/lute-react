@@ -1,14 +1,13 @@
 import type { ReactNode } from "react";
+import { useSearch } from "@tanstack/react-router";
 import { Group, Box } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { PageContainer } from "#common/PageContainer/PageContainer";
 import { PageTitle } from "#common/PageTitle/PageTitle";
 import { LanguageCards } from "#language/components/LanguageCards/LanguageCards";
 import { Placeholder } from "./Placeholder";
-import type { TextDirection } from "#resources/types";
 
 interface TermPageLayout {
-  textDirection: TextDirection;
   showAll: boolean;
   termForm: ReactNode;
   dictTabs: ReactNode;
@@ -20,10 +19,10 @@ export function TermPageLayout({
   showAll,
   termForm,
   dictTabs,
-  textDirection,
   title,
   showLanguageCards = true,
 }: TermPageLayout) {
+  const { textDir } = useSearch({ strict: false });
   const { t } = useTranslation("page", { keyPrefix: "newEditTerm" });
   const pageTitle = title || t("titleCreate");
   return (
@@ -36,7 +35,7 @@ export function TermPageLayout({
         />
       )}
       {showAll ? (
-        <Group justify="center" align="flex-start" dir={textDirection}>
+        <Group justify="center" align="flex-start" dir={textDir}>
           <Box flex={0.3}>{termForm}</Box>
           <Box flex={0.7} h={600}>
             {dictTabs ?? <Placeholder label={t("dictTabsPlaceholderLabel")} />}
