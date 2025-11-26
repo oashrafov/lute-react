@@ -1,22 +1,20 @@
-import type { Control, FieldValues, Path } from "react-hook-form";
+import type { Control } from "react-hook-form";
 import { rem, type CheckboxProps } from "@mantine/core";
 import { Checkbox } from "#common/Checkbox/Checkbox";
+import type { TermDetail } from "#term/api/types";
 
-interface SyncStatusCheckbox<T extends FieldValues> extends CheckboxProps {
-  control: Control<T>;
+interface SyncStatusCheckbox extends CheckboxProps {
+  control: Control<TermDetail>;
 }
-export function SyncStatusCheckbox<T extends FieldValues>({
-  control,
-  ...props
-}: SyncStatusCheckbox<T>) {
+export function SyncStatusCheckbox({ control, ...props }: SyncStatusCheckbox) {
   return (
     <Checkbox
-      {...props}
-      name={"syncStatus" as Path<T>}
-      control={control}
       label="Link to parent"
       styles={{ label: { paddingInlineStart: rem(5) } }}
       size="xs"
+      {...props}
+      name="syncStatus"
+      control={control}
     />
   );
 }

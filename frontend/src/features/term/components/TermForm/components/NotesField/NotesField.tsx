@@ -1,17 +1,18 @@
-import type { Control, FieldValues, Path } from "react-hook-form";
+import type { Control } from "react-hook-form";
 import type { TextareaProps } from "@mantine/core";
 import { IconNote } from "@tabler/icons-react";
 import { Textarea } from "#common/Textarea/Textarea";
+import type { TermDetail } from "#term/api/types";
 import classes from "../../TermForm.module.css";
 
-interface NotesField<T extends FieldValues> extends TextareaProps {
-  control: Control<T>;
+interface NotesField extends TextareaProps {
+  control: Control<TermDetail>;
 }
 
-export function NotesField<T extends FieldValues>({ control }: NotesField<T>) {
+export function NotesField({ control }: NotesField) {
   return (
     <Textarea
-      name={"notes" as Path<T>}
+      name="notes"
       control={control}
       placeholder="Notes"
       resize="vertical"

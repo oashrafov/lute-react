@@ -1,19 +1,18 @@
-import type { Control, FieldValues, Path } from "react-hook-form";
+import type { Control } from "react-hook-form";
 import type { TextInputProps } from "@mantine/core";
 import { IconSpeakerphone } from "@tabler/icons-react";
 import { TextInput } from "#common/TextInput/TextInput";
+import type { TermDetail } from "#term/api/types";
 import classes from "../../TermForm.module.css";
 
-interface PronunciationField<T extends FieldValues> extends TextInputProps {
-  control: Control<T>;
+interface PronunciationField extends TextInputProps {
+  control: Control<TermDetail>;
 }
 
-export function PronunciationField<T extends FieldValues>({
-  control,
-}: PronunciationField<T>) {
+export function PronunciationField({ control }: PronunciationField) {
   return (
     <TextInput
-      name={"romanization" as Path<T>}
+      name="romanization"
       control={control}
       placeholder="Pronunciation"
       leftSection={<IconSpeakerphone size={20} />}

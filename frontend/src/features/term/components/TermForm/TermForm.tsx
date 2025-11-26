@@ -41,6 +41,7 @@ const initialValues: TermDetail = {
   textLC: "",
   parents: [],
   romanization: "",
+  notes: "",
   status: 1,
   syncStatus: false,
   termTags: [],

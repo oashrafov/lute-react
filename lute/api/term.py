@@ -379,6 +379,7 @@ def _term_to_dict(term):
         "status": term.status,
         "translation": term.translation or "",
         "romanization": term.romanization or "",
+        "notes": "placeholder note",
         "syncStatus": term.sync_status,
         "termTags": term.term_tags,
         "parents": term.parents,

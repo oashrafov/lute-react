@@ -37,11 +37,12 @@ export interface TermDetail {
   text: string;
   textLC: string;
   parents: string[];
+  translation: string;
   romanization: string;
+  notes: string;
   status: number;
   syncStatus: boolean;
   termTags: string[];
-  translation: string;
   currentImg: string | null;
 }
 
