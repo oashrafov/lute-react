@@ -209,9 +209,8 @@ export function TermForm({
         )}
       </div>
       <ParentTagsField
+        control={control}
         termText={getValues().originalText}
-        value={getValues().parents || []}
-        onChange={(parents) => setValue("parents", parents)}
         onOptionSubmit={handleParentSubmit}
         onTagClick={handleParentClick}
       />

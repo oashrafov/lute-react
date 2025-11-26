@@ -8,24 +8,26 @@ import { buildSuggestionsList } from "#helpers/term";
 import { query } from "#term/api/query";
 import { TagsField } from "#common/TagsField/TagsField";
 import classes from "../../TermForm.module.css";
+import { useController, type Control } from "react-hook-form";
+import type { TermDetail } from "#term/api/types.ts";
 
 interface ParentTagsField {
+  control: Control<TermDetail>;
   termText: string;
-  value: string[];
-  onChange: (values: string[]) => void;
   onOptionSubmit: (parent: string) => void;
   onTagClick?: (item: string) => void;
 }
 
 export function ParentTagsField({
   termText,
-  value,
-  onChange,
   onTagClick,
   onOptionSubmit,
+  control,
 }: ParentTagsField) {
   const { langId } = useSearch({ strict: false });
+  const { field } = useController({ name: "parents", control });
   const [search, setSearch] = useState("");
+  const { value, onChange } = field;
   const { data, isFetching } = useQuery(query.termSuggestions(search, langId));
 
   const suggestions = data
