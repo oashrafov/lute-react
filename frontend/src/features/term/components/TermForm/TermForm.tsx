@@ -4,24 +4,23 @@ import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { Group, rem, Collapse, InputClearButton } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconSitemap } from "@tabler/icons-react";
-import { StatusRadio } from "../StatusRadio/StatusRadio";
-import { TagsField } from "./components/TagsField/TagsField";
-import { FormButtons } from "#common/FormButtons/FormButtons";
-import { LoadDictsButton } from "./components/LoadDictsButton";
-import { ToLowerCaseButton } from "./components/ToLowerCaseButton";
-import { PronunciationButton } from "./components/PronunciationButton";
-import { NotesButton } from "./components/NotesButton";
-import { TermImagePopover } from "../TermImagePopover/TermImagePopover";
-import { deleteTermConfirm } from "#resources/modals";
-import { query } from "#term/api/query";
-import type { TermDetail } from "#term/api/types";
+import { ParentTagsField } from "./components/ParentTagsField/ParentTagsField";
 import { TranslationField } from "./components/TranslationField/TranslationField";
 import { TermField } from "./components/TermField/TermField";
 import { TermTagsField } from "./components/TermTagsField/TermTagsField";
 import { NotesField } from "./components/NotesField/NotesField";
 import { SyncStatusCheckbox } from "./components/SyncStatusCheckbox/SyncStatusCheckbox";
 import { PronunciationField } from "./components/PronunciationField/PronunciationField";
+import { LoadDictsButton } from "./components/LoadDictsButton";
+import { ToLowerCaseButton } from "./components/ToLowerCaseButton";
+import { PronunciationButton } from "./components/PronunciationButton";
+import { NotesButton } from "./components/NotesButton";
+import { TermImagePopover } from "../TermImagePopover/TermImagePopover";
+import { FormButtons } from "#common/FormButtons/FormButtons";
+import { StatusRadio } from "../StatusRadio/StatusRadio";
+import { deleteTermConfirm } from "#resources/modals";
+import { query } from "#term/api/query";
+import type { TermDetail } from "#term/api/types";
 import { mutation } from "#term/api/mutation";
 import classes from "./TermForm.module.css";
 
@@ -209,16 +208,12 @@ export function TermForm({
           </>
         )}
       </div>
-      <TagsField
-        placeholder="Parents"
+      <ParentTagsField
         termText={getValues().originalText}
-        values={getValues().parents || []}
-        onSetValues={(parents) => setValue("parents", parents)}
+        value={getValues().parents || []}
+        onChange={(parents) => setValue("parents", parents)}
         onOptionSubmit={handleParentSubmit}
         onTagClick={handleParentClick}
-        leftSection={<IconSitemap size={20} />}
-        leftSectionProps={{ className: classes.leftSection }}
-        mb={5}
       />
       <Collapse in={pronunciationOpened}>
         <PronunciationField control={control} />
@@ -232,7 +227,7 @@ export function TermForm({
         {termImage && <TermImagePopover imageName={termImage} />}
       </div>
       <Collapse in={notesOpened}>
-        <NotesField control={control} />
+        <NotesField control={control} disabled />
       </Collapse>
       <Group dir="ltr" gap="md" style={{ rowGap: rem(7) }} mb={5}>
         <Controller

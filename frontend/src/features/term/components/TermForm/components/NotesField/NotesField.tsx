@@ -5,11 +5,11 @@ import { Textarea } from "#common/Textarea/Textarea";
 import type { TermDetail } from "#term/api/types";
 import classes from "../../TermForm.module.css";
 
-interface NotesField extends TextareaProps {
+interface NotesField extends Omit<TextareaProps, "name"> {
   control: Control<TermDetail>;
 }
 
-export function NotesField({ control }: NotesField) {
+export function NotesField({ control, ...props }: NotesField) {
   return (
     <Textarea
       name="notes"
@@ -23,6 +23,7 @@ export function NotesField({ control }: NotesField) {
       leftSection={<IconNote size={20} />}
       leftSectionProps={{ className: classes.leftSection }}
       mb={5}
+      {...props}
     />
   );
 }
