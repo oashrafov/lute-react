@@ -27,11 +27,12 @@ export function ParentTagsField({
 
   const { data, isFetching } = useParentOptionsQuery(search, termText, value);
 
-  const inputRightSection = value.length ? (
-    <InputClearButton onClick={() => onChange([])} />
-  ) : (
-    isFetching && <Loader size="sm" />
-  );
+  const inputRightSection =
+    value.length > 0 ? (
+      <InputClearButton onClick={() => onChange([])} />
+    ) : (
+      isFetching && <Loader size="sm" />
+    );
 
   return (
     <TagsField

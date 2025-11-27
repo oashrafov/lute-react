@@ -1,7 +1,7 @@
 import { Group } from "@mantine/core";
 import { TagsGroup } from "#common/TagsGroup/TagsGroup";
 import type { TermPopupSection } from "#term/api/types";
-import classes from "./PopupData.module.css";
+import classes from "./TermPopupContent.module.css";
 
 interface TermPopupContentSection {
   data: TermPopupSection[];

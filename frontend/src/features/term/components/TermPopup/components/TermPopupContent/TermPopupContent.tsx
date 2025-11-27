@@ -3,7 +3,7 @@ import { TagsGroup } from "#common/TagsGroup/TagsGroup";
 import { TermPopupContentSection } from "./TermPopupContentSection";
 import type { TermPopup } from "#term/api/types";
 import { BACKEND_URL } from "#resources/constants";
-import classes from "./PopupData.module.css";
+import classes from "./TermPopupContent.module.css";
 
 interface TermPopupContent {
   data: TermPopup;
