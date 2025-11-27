@@ -15,7 +15,7 @@ interface Variation {
 
 export interface SentencesResponse {
   text: string;
-  variations: Variation[] | [];
+  variations: Variation[];
 }
 
 export interface TermPopupSection {
@@ -74,10 +74,15 @@ export interface Tag {
   termCount: number;
 }
 
-export interface TermQueryParams {
-  id?: number;
-  text?: string;
-  langId?: number;
+export type TermQueryParams = TermByIdQueryParams | TermByTextParams;
+
+interface TermByIdQueryParams {
+  id: number;
+}
+
+interface TermByTextParams {
+  text: string;
+  langId: number;
 }
 
 export interface TermSuggestion {

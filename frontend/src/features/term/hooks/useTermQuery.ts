@@ -6,15 +6,13 @@ import type { TermQueryParams } from "../api/types";
 export function useTermQuery() {
   const { activeTerm } = useActiveTermContext();
 
-  const params: TermQueryParams = {};
+  let params: TermQueryParams | undefined;
 
   if (activeTerm) {
     if (activeTerm.type === "single") {
-      params.id = activeTerm.data;
-    }
-    if (activeTerm.type === "multi") {
-      params.text = activeTerm.data;
-      params.langId = activeTerm.langId;
+      params = { id: activeTerm.data };
+    } else if (activeTerm.type === "multi") {
+      params = { text: activeTerm.data, langId: activeTerm.langId };
     }
   }
 

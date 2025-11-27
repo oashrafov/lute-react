@@ -20,7 +20,7 @@ export const api = {
     return apiClient.get(`${BASE_URL}/${id}`);
   },
 
-  getByText(text: string, langId: number) {
+  getByText(text: string, langId: number): Promise<TermDetail> {
     return apiClient.get(`${BASE_URL}/${text}/${langId}`);
   },
 

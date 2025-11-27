@@ -17,14 +17,18 @@ export const query = {
       queryFn: () => api.getAll(filters),
       placeholderData: keepPreviousData,
     }),
-  detail: ({ id, text, langId }: TermQueryParams) =>
+  detail: (data: TermQueryParams | undefined) =>
     queryOptions({
-      queryKey: [...query.allDetails(), id, text, langId],
-      queryFn: id
-        ? () => api.getById(id)
-        : text && langId
-          ? () => api.getByText(text, langId)
-          : skipToken,
+      queryKey: [...query.allDetails(), ...Object.values(data ?? {})],
+      queryFn: () => {
+        if (!data) return skipToken;
+
+        if ("id" in data) {
+          return () => api.getById(data.id);
+        } else {
+          return () => api.getByText(data.text, data.langId);
+        }
+      },
       refetchOnWindowFocus: false,
       placeholderData: keepPreviousData,
     }),
