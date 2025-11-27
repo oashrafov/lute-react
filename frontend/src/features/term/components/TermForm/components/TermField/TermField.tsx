@@ -5,20 +5,20 @@ import { TextInput } from "#common/TextInput/TextInput";
 import type { TermDetail } from "#term/api/types";
 import classes from "../../TermForm.module.css";
 
-interface TermField extends TextInputProps {
+interface TermField extends Omit<TextInputProps, "name"> {
   control: Control<TermDetail>;
 }
 
 export function TermField({ control, ...props }: TermField) {
   return (
     <TextInput
+      name="originalText"
+      control={control}
       placeholder="Term"
       flex={1}
       leftSection={<IconBubbleText size={20} />}
       leftSectionProps={{ className: classes.leftSection }}
       {...props}
-      name="originalText"
-      control={control}
     />
   );
 }

@@ -7,7 +7,7 @@ import type { TermDetail } from "#term/api/types";
 import { moveCursorToEnd } from "#utils/utils";
 import classes from "../../TermForm.module.css";
 
-interface TranslationField extends TextareaProps {
+interface TranslationField extends Omit<TextareaProps, "name"> {
   control: Control<TermDetail>;
   inputRef?: RefObject<HTMLTextAreaElement>;
 }
@@ -19,6 +19,8 @@ export function TranslationField({
 }: TranslationField) {
   return (
     <Textarea
+      name="translation"
+      control={control}
       placeholder="Translation"
       resize="vertical"
       flex={1}
@@ -32,8 +34,6 @@ export function TranslationField({
       leftSection={<IconLanguage size={20} />}
       leftSectionProps={{ className: classes.leftSection }}
       {...props}
-      name="translation"
-      control={control}
     />
   );
 }
