@@ -42,11 +42,7 @@ export function TermPopup({ children, id }: TermPopupProps) {
           {children}
         </span>
       </Popover.Target>
-      <Popover.Dropdown
-        style={{
-          pointerEvents: "none",
-          visibility: popupData ? "visible" : "hidden",
-        }}>
+      <Popover.Dropdown hidden={!popupData} style={{ pointerEvents: "none" }}>
         {popupData && <PopupData data={popupData} />}
       </Popover.Dropdown>
     </Popover>
