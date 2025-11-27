@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQueryClient } from "@tanstack/react-query";
-import { PopupData } from "./components/PopupData/PopupData";
+import { TermPopupContent } from "./components/TermPopupContent/TermPopupContent";
 import { query } from "#term/api/query";
 import type { TermPopup } from "#term/api/types";
 
@@ -43,7 +43,7 @@ export function TermPopup({ children, id }: TermPopupProps) {
         </span>
       </Popover.Target>
       <Popover.Dropdown hidden={!popupData} style={{ pointerEvents: "none" }}>
-        {popupData && <PopupData data={popupData} />}
+        {popupData && <TermPopupContent data={popupData} />}
       </Popover.Dropdown>
     </Popover>
   );

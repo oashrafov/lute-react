@@ -1,11 +1,15 @@
 import { Group, Text, Tooltip } from "@mantine/core";
 import { TagsGroup } from "#common/TagsGroup/TagsGroup";
-import { PopupDataSection } from "./PopupDataSection";
+import { TermPopupContentSection } from "./TermPopupContentSection";
 import type { TermPopup } from "#term/api/types";
 import { BACKEND_URL } from "#resources/constants";
 import classes from "./PopupData.module.css";
 
-export function PopupData({ data }: { data: TermPopup }) {
+interface TermPopupContent {
+  data: TermPopup;
+}
+
+export function TermPopupContent({ data }: TermPopupContent) {
   return (
     <div className={classes.container}>
       <Group gap={5} wrap="nowrap">
@@ -24,20 +28,20 @@ export function PopupData({ data }: { data: TermPopup }) {
       {data.translation && (
         <p
           className={classes.translation}
-          dangerouslySetInnerHTML={{
-            __html: data.translation,
-          }}
+          dangerouslySetInnerHTML={{ __html: data.translation }}
         />
       )}
 
-      {data.parents.length > 0 && <PopupDataSection data={data.parents} />}
+      {data.parents.length > 0 && (
+        <TermPopupContentSection data={data.parents} />
+      )}
 
       {data.components.length > 0 && (
         <>
           <Text component="p" mt="sm" fs="italic">
             Components
           </Text>
-          <PopupDataSection data={data.components} />
+          <TermPopupContentSection data={data.components} />
         </>
       )}
     </div>
