@@ -4,7 +4,6 @@ import { Box, LoadingOverlay } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { TheText } from "../TheText/TheText";
 import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
-import { useBookQuery } from "#book/hooks/useBookQuery";
 import { usePageQuery } from "#book/hooks/usePageQuery";
 import { handleMouseUp } from "#helpers/interactions-desktop";
 import { applyTextSettings } from "#helpers/general";
@@ -17,8 +16,7 @@ import { makeBookmarked, scrollSentenceIntoView } from "#helpers/text";
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
 export function TheTextContainer() {
-  const { sentenceId } = route.useSearch();
-  const { data: book } = useBookQuery();
+  const { sentenceId, textDir } = route.useSearch();
   const { data: page } = usePageQuery();
   const { setActiveTerm, clearActiveTerm } = useActiveTermContext();
   const pageProcessed = useProcessPage();
@@ -55,7 +53,7 @@ export function TheTextContainer() {
   return (
     <Box
       pos="relative"
-      dir={book.textDirection}
+      dir={textDir}
       className="textcontainer"
       ref={applyTextSettings}>
       <LoadingOverlay visible={!pageProcessed} zIndex={199} />
