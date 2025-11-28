@@ -1,11 +1,6 @@
-import { memo, type MouseEvent } from "react";
+import { Fragment, memo, type MouseEvent } from "react";
 import { TextItem } from "./components/TextItem";
-import { TermPopup } from "#term/components/TermPopup/TermPopup";
-import {
-  handleMouseDown,
-  handleMouseOver,
-  hoverOut,
-} from "#helpers/interactions-desktop";
+import { WordTextItem } from "./components/WordTextItem";
 import type { Paragraph } from "#book/api/types";
 import type { WordElement } from "#resources/types";
 
@@ -23,22 +18,16 @@ export const TheText = memo(function TheText({
       {paragraphs.map((paragraph, index) => (
         <p key={index} className="textparagraph">
           {paragraph.map((sentence, index) => (
-            <span key={`sent_${index + 1}`} id={`sent_${index + 1}`}>
-              {sentence.map((textitem) =>
-                textitem.isWord ? (
-                  <TermPopup id={textitem.wordId} key={textitem.id}>
-                    <TextItem
-                      data={textitem}
-                      onMouseDown={handleMouseDown}
-                      onMouseUp={onSelectEnd}
-                      onMouseOver={handleMouseOver}
-                      onMouseOut={hoverOut}
-                    />
-                  </TermPopup>
-                ) : (
-                  <TextItem data={textitem} key={textitem.id} />
-                )
-              )}
+            <span key={index}>
+              {sentence.map((textitem) => (
+                <Fragment key={textitem.id}>
+                  {textitem.isWord ? (
+                    <WordTextItem data={textitem} onMouseUp={onSelectEnd} />
+                  ) : (
+                    <TextItem data={textitem} />
+                  )}
+                </Fragment>
+              ))}
             </span>
           ))}
         </p>
