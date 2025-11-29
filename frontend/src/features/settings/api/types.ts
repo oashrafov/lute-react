@@ -58,7 +58,7 @@ export interface InitialResponse {
   haveBooks: boolean;
   tutorialBookId: number | null;
   languageChoices: LanguageChoice[];
-  bookTags: string[] | [];
+  bookTags: string[];
 }
 
 export interface Backup {

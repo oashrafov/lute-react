@@ -516,6 +516,7 @@ def _paragraphs_to_dict_array(paragraphs):
                     "status": textitem.wo_status,
                     "isOverlapped": textitem.is_overlapped,
                     "isSentenceStart": textitem.is_sentence_start,
+                    "isSentenceEnd": textitem.is_sentence_end,
                 }
                 for textitem in sentence
             ]

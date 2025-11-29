@@ -6,6 +6,7 @@ export interface SentenceRef {
   bookId: number;
   bookTitle: string;
   pageNumber: number;
+  sentenceId: number;
 }
 
 interface Variation {

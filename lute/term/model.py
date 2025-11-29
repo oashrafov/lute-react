@@ -49,13 +49,14 @@ class TermReference:
     "Where a Term has been used in books."
 
     def __init__(
-        self, bookid, txid, pgnum, title, sentence=None
+        self, bookid, txid, pgnum, title, sentence_id, sentence=None
     ):  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self.book_id = bookid
         self.text_id = txid
         self.page_number = pgnum
         self.title = title
         self.sentence = sentence
+        self.sentence_id = sentence_id
 
 
 class Repository:
@@ -406,7 +407,7 @@ class Repository:
         ret = []
         zws = chr(0x200B)  # zero-width space
         for row in rows:
-            sentence = row[4].strip()
+            sentence = row[5].strip()
             pattern = f"{zws}({term_lc}){zws}"
 
             def replace_match(m):
@@ -414,7 +415,9 @@ class Repository:
 
             sentence = re.sub(pattern, replace_match, sentence, flags=re.IGNORECASE)
             sentence = sentence.replace(zws, "").replace("¶", "")
-            ret.append(TermReference(row[0], row[1], row[2], row[3], sentence))
+            ret.append(
+                TermReference(row[0], row[1], row[2], row[3], row[4] - 1, sentence)
+            )
         return ret
 
     def _get_references(self, term):
@@ -437,6 +440,7 @@ class Repository:
                 TxID,
                 TxOrder,
                 BkTitle || ' (' || TxOrder || '/' || pc.c || ')' AS TxTitle,
+                SeOrder,
                 SeText
             FROM sentences
             INNER JOIN texts ON TxID = SeTxID

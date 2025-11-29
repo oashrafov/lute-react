@@ -326,6 +326,7 @@ def get_sentences(langid, text):
                     "bookId": dto.book_id,
                     "bookTitle": dto.title,
                     "pageNumber": dto.page_number,
+                    "sentenceId": dto.sentence_id,
                 }
                 for dto in dtos
             ],

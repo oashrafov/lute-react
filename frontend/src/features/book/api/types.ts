@@ -75,6 +75,7 @@ export interface Textitem {
   isWord: boolean;
   status: Status | null;
   isSentenceStart: boolean;
+  isSentenceEnd: boolean;
   isOverlapped: boolean;
 }
 

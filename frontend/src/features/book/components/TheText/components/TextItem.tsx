@@ -17,20 +17,21 @@ export const TextItem = forwardRef<
   return (
     <span
       ref={ref}
-      {...restProps}
       id={String(data.id)}
       className={classes}
       data-lang-id={data.langId}
       data-paragraph-id={data.paragraphId}
       data-sentence-id={data.sentenceId}
       data-sentence-start={data.isSentenceStart}
+      data-sentence-end={data.isSentenceEnd}
       data-highlight-type={
         data.status !== null && DEFAULT_HIGHLIGHT_TYPE[data.status]
       }
       data-text={data.text}
       data-status={data.status}
       data-order={data.order}
-      data-word-id={data.wordId}>
+      data-word-id={data.wordId}
+      {...restProps}>
       {data.displayText}
     </span>
   );

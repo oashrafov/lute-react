@@ -20,6 +20,7 @@ class TextItem:  # pylint: disable=too-many-instance-attributes
         self.text_lc: str
         self.is_word: int
         self._is_sentence_start: bool = False
+        self._is_sentence_end: bool = False
 
         # Number of tokens originally in the Text item.
         self.token_count: int = 1
@@ -124,6 +125,14 @@ class TextItem:  # pylint: disable=too-many-instance-attributes
     @is_sentence_start.setter
     def is_sentence_start(self, value):
         self._is_sentence_start = value
+
+    @property
+    def is_sentence_end(self):
+        return self._is_sentence_end
+
+    @is_sentence_end.setter
+    def is_sentence_end(self, value):
+        self._is_sentence_end = value
 
     @property
     def html_class_string(self):
