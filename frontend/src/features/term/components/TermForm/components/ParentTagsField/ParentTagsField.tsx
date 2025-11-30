@@ -4,7 +4,7 @@ import { InputClearButton, Loader } from "@mantine/core";
 import { IconSitemap } from "@tabler/icons-react";
 import { MAX_TERM_SUGGESTIONS } from "#resources/constants";
 import { TagsField } from "#common/TagsField/TagsField";
-import { useParentOptionsQuery } from "./useParentOptionsQuery";
+import { useParentTagsFieldOptionsQuery } from "./useParentTagsFieldOptionsQuery";
 import type { TermDetail } from "#term/api/types";
 import classes from "../../TermForm.module.css";
 
@@ -25,7 +25,11 @@ export function ParentTagsField({
   const [search, setSearch] = useState("");
   const { value, onChange } = field;
 
-  const { data, isFetching } = useParentOptionsQuery(search, termText, value);
+  const { data, isFetching } = useParentTagsFieldOptionsQuery(
+    search,
+    termText,
+    value
+  );
 
   const inputRightSection =
     value.length > 0 ? (

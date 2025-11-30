@@ -1,10 +1,10 @@
 import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { buildSuggestionsList } from "#helpers/term";
-import { MAX_TERM_SUGGESTIONS } from "#resources/constants.ts";
+import { MAX_TERM_SUGGESTIONS } from "#resources/constants";
 import { query } from "#term/api/query";
 
-export function useParentOptionsQuery(
+export function useParentTagsFieldOptionsQuery(
   search: string,
   termText: string,
   existingParents: string[]
