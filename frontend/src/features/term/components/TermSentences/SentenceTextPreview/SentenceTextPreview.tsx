@@ -1,7 +1,7 @@
 import { TextItem } from "#book/components/TheText/components/TextItem";
 import type { Paragraph } from "#book/api/types";
 import type { TextDirection } from "#resources/types";
-import { scrollSentenceIntoView } from "#helpers/text";
+import { TEXTITEM_DATASET } from "#resources/constants";
 import classes from "./SentenceTextPreview.module.css";
 
 interface SentenceTextPreview {
@@ -21,7 +21,11 @@ export function SentenceTextPreview({
       dir={textDir}
       ref={(element) => {
         if (element) {
-          scrollSentenceIntoView(sentenceId);
+          // append classname, so content on the page doesn't get selected
+          const textitem = document.querySelector(
+            `[data-${TEXTITEM_DATASET.sentenceId}="${sentenceId}"].${classes.textitem}`
+          );
+          textitem?.scrollIntoView({ behavior: "smooth" });
         }
       }}>
       {paragraphs.map((paragraph, index) => (

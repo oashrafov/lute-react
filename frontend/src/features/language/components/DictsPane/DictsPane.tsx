@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { Box, Tabs, Text } from "@mantine/core";
+import { Tabs } from "@mantine/core";
 import { IconPhoto } from "@tabler/icons-react";
 import { MAX_VISIBLE_DICT_TABS } from "#resources/constants";
 import { getLookupURL } from "#helpers/language";
-import { Sentences } from "#term/components/Sentences/Sentences";
 import { DictsMenu } from "./components/DictsMenu";
 import { VisibleDictsContainer } from "./components/VisibleDictsContainer";
 import { DictsTabs } from "./components/DictsTabs";
 import { IFramePanel } from "./components/IFramePanel";
-import { TabPanel } from "./components/common/TabPanel";
 import { DictTab } from "./components/DictTab";
 import { Tab } from "./components/Tab";
 import type { Dictionary } from "#language/api/types";
@@ -19,6 +17,11 @@ interface DictsPane {
   dictionaries: Dictionary[];
   onReturnFocusToForm?: () => void;
 }
+
+const tabValues = {
+  dropdown: "dropdownTab",
+  images: "imagesTab",
+};
 
 export function DictsPane({
   termText,
@@ -31,18 +34,6 @@ export function DictsPane({
   const embeddedVisibleDicts = visibleDicts.filter(
     (dict) => dict.type === "embedded"
   );
-  // %E2%80%8B is the zero-width string. The term is reparsed
-  // on the server, so this doesn't need to be sent.
-  const encodedTermText = encodeURIComponent(termText).replaceAll(
-    "%E2%80%8B",
-    ""
-  );
-
-  const tabs = {
-    dropdown: "dropdownTab",
-    sentences: "sentencesTab",
-    images: "imagesTab",
-  };
 
   return (
     <DictsTabs defaultValue={String(visibleDicts[0].id)}>
@@ -63,19 +54,11 @@ export function DictsPane({
             termText={termText}
             dicts={dropdownDicts}
             onClick={setActiveDropdownUrl}
-            tabValue={tabs.dropdown}
+            tabValue={tabValues.dropdown}
           />
         )}
 
-        <Box display="flex">
-          <Tab value={tabs.sentences}>
-            <Text size="sm" style={{ overflow: "hidden" }}>
-              Sentences
-            </Text>
-          </Tab>
-
-          <Tab value={tabs.images} leftSection={<IconPhoto />} />
-        </Box>
+        <Tab value={tabValues.images} leftSection={<IconPhoto />} />
       </Tabs.List>
 
       {embeddedVisibleDicts.map((dict) => (
@@ -90,16 +73,10 @@ export function DictsPane({
       <IFramePanel
         frameSrc={getLookupURL(activeDropdownUrl, termText)}
         onFrameLoad={onReturnFocusToForm}
-        value={tabs.dropdown}
+        value={tabValues.dropdown}
       />
 
-      <TabPanel
-        value={tabs.sentences}
-        style={{ overflowY: "auto", flexGrow: 1 }}>
-        <Sentences termText={encodedTermText} />
-      </TabPanel>
-
-      <IFramePanel frameSrc="" value={tabs.images} />
+      <IFramePanel frameSrc="" value={tabValues.images} />
     </DictsTabs>
   );
 }

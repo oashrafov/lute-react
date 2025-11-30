@@ -2,13 +2,13 @@ import type { ReactNode } from "react";
 import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { HoverCard, ScrollAreaAutosize } from "@mantine/core";
-import { SentenceTextPreview } from "#term/components/SentenceTextPreview/SentenceTextPreview.tsx";
+import { SentenceTextPreview } from "../SentenceTextPreview/SentenceTextPreview";
 import { query } from "#book/api/query";
-import type { SentenceRef } from "#term/api/types";
+import type { SentenceReferenceData } from "#term/api/types";
 
 interface SentenceReferenceHoverCard {
   children: ReactNode;
-  referenceData: SentenceRef;
+  referenceData: SentenceReferenceData;
 }
 
 export function SentenceReferenceHoverCard({

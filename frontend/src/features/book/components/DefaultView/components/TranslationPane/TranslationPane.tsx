@@ -2,10 +2,9 @@ import { useRef } from "react";
 import { Box, ScrollAreaAutosize } from "@mantine/core";
 import { VerticalPanels } from "../ResizablePanels/VerticalPanels";
 import { DictsPane } from "#language/components/DictsPane/DictsPane";
-import { TermForm } from "#term/components/TermForm/TermForm";
-import type { TermDetail } from "#term/api/types";
-import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
 import { useUserLanguageQuery } from "#language/hooks/useUserLanguageQuery";
+import { TermInfoPane } from "#book/components/TermInfoPane/TermInfoPane";
+import type { TermDetail } from "#term/api/types";
 import classes from "./TranslationPane.module.css";
 
 interface TranslationPane {
@@ -14,7 +13,6 @@ interface TranslationPane {
 
 export function TranslationPane({ term }: TranslationPane) {
   const { data: language } = useUserLanguageQuery();
-  const { clearActiveTerm } = useActiveTermContext();
   const translationFieldRef = useRef<HTMLTextAreaElement>(null);
 
   function handleReturnFocusToForm() {
@@ -32,15 +30,12 @@ export function TranslationPane({ term }: TranslationPane) {
       <VerticalPanels
         topPanel={
           <ScrollAreaAutosize mah="100%">
-            <Box p={20}>
-              <TermForm
-                key={term.text}
-                term={term}
-                showPronunciation={language?.show_romanization}
-                translationFieldRef={translationFieldRef}
-                onSubmitSuccess={clearActiveTerm}
-              />
-            </Box>
+            <TermInfoPane
+              key={term.text}
+              term={term}
+              translationFieldRef={translationFieldRef}
+              showPronunciationField={language?.show_romanization}
+            />
           </ScrollAreaAutosize>
         }
         bottomPanel={

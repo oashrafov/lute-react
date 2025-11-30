@@ -1,6 +1,6 @@
 import type { TextDirection } from "#resources/types";
 
-export interface SentenceRef {
+export interface SentenceReferenceData {
   id: number;
   sentence: string;
   bookId: number;
@@ -9,14 +9,14 @@ export interface SentenceRef {
   sentenceId: number;
 }
 
-interface Variation {
+export interface TermVariation {
   term: string;
-  references: SentenceRef[];
+  references: SentenceReferenceData[];
 }
 
 export interface SentencesResponse {
   text: string;
-  variations: Variation[];
+  variations: TermVariation[];
 }
 
 export interface TermPopupSection {

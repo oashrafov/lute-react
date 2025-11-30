@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import type { SentenceRef } from "#term/api/types";
+import type { SentenceReferenceData } from "#term/api/types";
 import { SentenceReferenceHoverCard } from "../SentenceReferenceHoverCard/SentenceReferenceHoverCard";
 import classes from "./SentenceReference.module.css";
 
 interface SentenceReference {
-  data: SentenceRef;
+  data: SentenceReferenceData;
 }
 
 export function SentenceReference({ data }: SentenceReference) {

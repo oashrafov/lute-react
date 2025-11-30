@@ -28,7 +28,6 @@ export const query = {
             : () => api.getByText(data.text, data.langId),
 
       refetchOnWindowFocus: false,
-      placeholderData: keepPreviousData,
     }),
   popup: (id: number) =>
     queryOptions({
