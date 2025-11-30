@@ -1,22 +1,19 @@
 import type { MouseEvent } from "react";
 import {
+  getTextitemsInRange,
   clearAllHovered,
   clearAllMarked,
   clearAllMultiterm,
   clearHovered,
   clearMarked,
   getMarked,
-  getTextitems,
   getTextContent,
   getWords,
+  isMarked,
+  isTextitem,
   makeHovered,
   makeMarked,
   makeMultiterm,
-  isMarked,
-  getSentence,
-  makeGhosted,
-  clearGhosted,
-  isTextitem,
 } from "./text";
 import type { ActiveTerm } from "#term/store/activeTermContext";
 import type { TextitemElement, WordElement } from "#resources/types";
@@ -56,7 +53,7 @@ export function handleMouseOver(e: MouseEvent) {
   const textitem = e.target as WordElement;
   if (selectionStart) {
     clearAllMultiterm();
-    makeMultiterm(_getSelectedInRange(selectionStart, textitem));
+    makeMultiterm(getTextitemsInRange(selectionStart, textitem));
   } else {
     clearAllHovered();
     if (getMarked().length === 0) {
@@ -74,7 +71,7 @@ export function handleMouseUp(e: MouseEvent<WordElement>): ActiveTerm {
 
   clearAllMarked();
 
-  const selected = _getSelectedInRange(selectionStart!, textitem);
+  const selected = getTextitemsInRange(selectionStart!, textitem);
   // return selected text for copy
   if (selectionStartShiftHeld) {
     const text = getTextContent(selected);
@@ -107,22 +104,6 @@ export function hasClickedOutsideText(e: MouseEvent) {
     }
   }
   return false;
-}
-
-export function focusActiveSentence(textitems: TextitemElement[]) {
-  // make all textitems ghosted, then remove it from active sentence
-  makeGhosted(getTextitems());
-
-  const first = Number(textitems[0].dataset.sentenceId);
-  const last = Number(textitems.at(-1)?.dataset.sentenceId);
-
-  Array.from({ length: last - first + 1 }, (_, index) => first + index).forEach(
-    (id) => clearGhosted(getSentence(id))
-  );
-}
-
-export function resetFocusActiveSentence() {
-  clearGhosted(getTextitems());
 }
 
 /** Move to the next/prev candidate determined by the selector.
@@ -246,18 +227,4 @@ function _getSelectedMultiTerm(selected: TextitemElement[]) {
   const langId = Number(selected[0].dataset.langId);
 
   return { text, langId };
-}
-
-function _getSelectedInRange(startEl: WordElement, endEl: WordElement) {
-  const [startord, endord] = [
-    Number(startEl.dataset.order),
-    Number(endEl.dataset.order),
-  ].sort((a, b) => a - b);
-
-  const selected = getTextitems().filter((textitem) => {
-    const ord = Number(textitem.dataset.order);
-    return ord >= startord && ord <= endord;
-  });
-
-  return selected;
 }

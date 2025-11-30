@@ -1,10 +1,10 @@
 import { createContext, useMemo, useState, type ReactNode } from "react";
 import type { TextitemElement } from "#resources/types";
+import { startHoverMode } from "#helpers/interactions-desktop";
 import {
   focusActiveSentence as fas,
   resetFocusActiveSentence,
-  startHoverMode,
-} from "#helpers/interactions-desktop";
+} from "#helpers/text";
 import { getTextContainer } from "#helpers/general";
 
 interface SingleTerm {

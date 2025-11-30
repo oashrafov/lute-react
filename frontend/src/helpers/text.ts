@@ -66,10 +66,40 @@ export function getMatchedTextitems(
   return Array.from(selected);
 }
 
+export function getTextitemsInRange(startEl: WordElement, endEl: WordElement) {
+  const [startord, endord] = [
+    Number(startEl.dataset.order),
+    Number(endEl.dataset.order),
+  ].sort((a, b) => a - b);
+
+  const selected = getTextitems().filter((textitem) => {
+    const ord = Number(textitem.dataset.order);
+    return ord >= startord && ord <= endord;
+  });
+
+  return selected;
+}
+
 export function scrollSentenceIntoView(id: number) {
   const textitems = getSentence(id);
   textitems[0].scrollIntoView({ behavior: "smooth" });
   return textitems;
+}
+
+export function focusActiveSentence(textitems: TextitemElement[]) {
+  // make all textitems ghosted, then remove it from active sentence
+  makeGhosted(getTextitems());
+
+  const first = Number(textitems[0].dataset.sentenceId);
+  const last = Number(textitems.at(-1)?.dataset.sentenceId);
+
+  Array.from({ length: last - first + 1 }, (_, index) => first + index).forEach(
+    (id) => clearGhosted(getSentence(id))
+  );
+}
+
+export function resetFocusActiveSentence() {
+  clearGhosted(getTextitems());
 }
 
 export function getMarked() {
