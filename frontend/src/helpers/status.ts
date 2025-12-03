@@ -1,143 +1,75 @@
-import type { Status } from "#resources/types";
-import { clearAllHovered, getHovered, getMarked, makeMarked } from "./text";
+import type { Status, TextitemElement } from "#resources/types";
+import type { TermDetail } from "#term/api/types";
+import { clamp } from "#utils/utils";
+import { getHovered, getMarked } from "./text";
 
-export function updateStatusForMarked(new_status: Status) {
-  const termids = getMarked()
-    .concat(getHovered())
-    .map((el) => Number(el.dataset.wordId));
-  const updates = [createStatusUpdateHash(new_status, termids)];
-  post_bulk_update(updates);
-}
+function _getTextitemsStatusData(textitems: TextitemElement[]) {
+  type Data = Record<string, number[]>;
 
-/**
- * Change status using arrow keys for selected or hovered elements.
- */
-export function incrementStatusForMarked(shiftBy: number) {
-  const elements = Array.from(
-    document.querySelectorAll("span.kwordmarked, span.wordhover")
-  );
-  if (elements.length == 0) return;
+  const statuses = ["0", "1", "2", "3", "4", "5", "99"];
+  const data: Data = Object.fromEntries(statuses.map((status) => [status, []]));
 
-  const statuses = [
-    "status0",
-    "status1",
-    "status2",
-    "status3",
-    "status4",
-    "status5",
-    "status99",
-  ];
-
-  // Build payloads to update for each unique status that will be changing
-  const status_elements = statuses.reduce((obj, status) => {
-    obj[status] = [];
-    return obj;
-  }, {});
-
-  elements.forEach((element) => {
-    const s = element.dataset.statusClass ?? "missing";
-    if (s in status_elements) status_elements[s].push(element);
+  textitems.forEach((textitem) => {
+    const status = textitem.dataset.status;
+    if (status !== undefined && statuses.includes(status)) {
+      const wordId = Number(textitem.dataset.wordId);
+      data[status].push(wordId);
+    }
   });
 
-  // Convert map to update hashes.
-  const updates = [];
+  return data;
+}
 
-  Object.entries(status_elements).forEach(([status, update_elements]) => {
-    if (update_elements.length == 0) return;
+function _getShiftedStatusData(
+  initialData: Record<string, number[]>,
+  shiftBy: number
+) {
+  const statusArray = Object.keys(initialData);
+  const result: Record<string, number[]> = {};
 
-    const status_index = statuses.indexOf(status);
-    let new_index = status_index + shiftBy;
-    new_index = Math.max(0, Math.min(statuses.length - 1, new_index));
-    const new_status = Number(statuses[new_index].replace(/\D/g, ""));
-
+  Object.entries(initialData).forEach(([status, termIds]) => {
+    const statusIndex = statusArray.indexOf(status);
+    const updatedIndex = clamp(statusIndex + shiftBy, 0, 6);
+    const updatedStatus = Number(statusArray[updatedIndex]);
     // Can't set status to 0 (that is for deleted/non-existent terms only).
     // TODO delete term from reading screen: setting to 0 could equal deleting term.
-    if (new_index != status_index && new_status != 0) {
-      updates.push(createStatusUpdateHash(new_status, update_elements));
+    if (updatedIndex !== statusIndex && updatedStatus !== 0) {
+      result[updatedStatus] = termIds;
     }
   });
 
-  post_bulk_update(updates);
+  return result;
 }
 
-function post_bulk_update(updates) {
-  if (updates.length == 0) {
-    // console.log("No updates.");
-    return;
-  }
-  const elements = Array.from(
-    document.querySelectorAll("span.kwordmarked, span.wordhover")
-  );
-  if (elements.length == 0) return;
-  const firstEl = elements[0];
-  const firstStatus = updates[0].new_status;
-  const selectedIds = getMarked().map((el) => el.getAttribute("id"));
+export function shiftStatusForSelected(
+  shiftBy: number
+): Pick<TermDetail, "id" | "status">[] | undefined {
+  const textitems = getMarked().concat(getHovered());
+  if (!textitems.length) return;
 
-  const data = JSON.stringify({ updates: updates });
+  const initial = _getTextitemsStatusData(textitems);
+  const updated = _getShiftedStatusData(initial, shiftBy);
 
-  function remarkSelectedIds() {
-    selectedIds.forEach((id) => makeMarked(document.getElementById(id)));
+  const res = Object.entries(updated).flatMap(([status, termIds]) => {
+    return termIds.map((id) => ({ id, status: Number(status) }));
+  });
 
-    if (selectedIds.length > 0) {
-      clearAllHovered();
-    }
-  }
-
-  const reload_text_div = function () {
-    const bookid = "";
-    const pagenum = "";
-    const url = `/read/renderpage/${bookid}/${pagenum}`;
-    const repel = "";
-    repel.load(url, remarkSelectedIds);
-  };
-
-  fetch("/term/bulk_update_status", {
-    method: "POST", // Set the HTTP method to POST
-    headers: {
-      "Content-Type": "application/json", // Indicate the content type as JSON
-    },
-    body: JSON.stringify(data), // Convert the data object to a JSON string
-  })
-    .then((response) => {
-      if (!response.ok) {
-        // Check if the response is successful
-        return Promise.reject("Failed to update status");
-      }
-      return response.json(); // Parse JSON from the response
-    })
-    .then(() => {
-      reload_text_div();
-      if (elements.length === 1) {
-        _updateTermForm(firstStatus);
-      }
-    })
-    .catch((error) => {
-      const msg = {
-        error: error,
-      };
-      console.log(`failed: ${JSON.stringify(msg, null, 2)}`);
-    });
+  return res;
 }
 
-/**
- * If the term editing form is visible when reading, and a hotkey is hit,
- * the form status should also update.
- */
-function _updateTermForm(new_status: number) {
-  const sel = 'input[name="status"][value="' + new_status + '"]';
-  const radioButton = top.frames.wordframe.document.querySelector(sel);
-  if (radioButton) {
-    radioButton.click();
-  } else {
-    // Not found - user might just be hovering over the element,
-    // or multiple elements selected.
-    // console.log("Radio button with value " + new_status + " not found.");
-  }
-}
+export function setStatusForSelected(
+  status: Status
+): Pick<TermDetail, "id" | "status">[] | undefined {
+  const termIds = getMarked()
+    .concat(getHovered())
+    .map((textitem) => Number(textitem.dataset.wordId));
 
-function createStatusUpdateHash(new_status: number, termids: number[]) {
-  return {
-    new_status: new_status,
-    termids: termids,
-  };
+  if (!termIds.length) return;
+
+  const res = termIds.map((id) => ({
+    id,
+    status,
+  })) as Pick<TermDetail, "id" | "status">[];
+
+  return res;
 }

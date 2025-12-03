@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import { TEXTITEM_CLASS, TEXTITEM_DATASET } from "#resources/constants";
 import type { TextitemElement, TextUnit, WordElement } from "#resources/types";
 import {
@@ -66,6 +67,20 @@ export function getMatchedTextitems(
   return Array.from(selected);
 }
 
+export async function markTextitemsRange(textitems: TextitemElement[]) {
+  const start = getSelectionStart();
+  const end = getSelectionEnd();
+
+  makeSelectionStart(textitems[0]);
+  makeSelectionEnd(textitems[textitems.length - 1]);
+
+  makeFlashing(textitems);
+  clearAllFlashing();
+
+  if (start) makeSelectionStart(start);
+  if (end) makeSelectionEnd(end);
+}
+
 export function getTextitemsInRange(startEl: WordElement, endEl: WordElement) {
   const [startord, endord] = [
     Number(startEl.dataset.order),
@@ -102,6 +117,16 @@ export function resetFocusActiveSentence() {
   clearGhosted(getTextitems());
 }
 
+export function hasClickedOutsideText(e: MouseEvent) {
+  const target = e.target;
+  if (target instanceof HTMLElement) {
+    if (!isTextitem(target) && e.button === 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function getMarked() {
   return Array.from(
     document.querySelectorAll<WordElement>(`.${TEXTITEM_CLASS.marked}`)
@@ -116,7 +141,7 @@ export function getHovered() {
 
 export function getMultiSelection() {
   return Array.from(
-    document.querySelectorAll<TextitemElement>(`.${TEXTITEM_CLASS.multi}`)
+    document.querySelectorAll<TextitemElement>(`.${TEXTITEM_CLASS.selected}`)
   );
 }
 
@@ -141,7 +166,7 @@ export function clearAllMarked() {
 }
 
 export function clearAllMultiterm() {
-  removeAllContainingClass(TEXTITEM_CLASS.multi);
+  removeAllContainingClass(TEXTITEM_CLASS.selected);
 }
 
 export function makeMarked(textitem: WordElement) {
@@ -161,7 +186,7 @@ export function clearAllHovered() {
 }
 
 export function makeMultiterm(textitems: TextitemElement[]) {
-  addClassToElements(textitems, TEXTITEM_CLASS.multi);
+  addClassToElements(textitems, TEXTITEM_CLASS.selected);
 }
 
 export function isMarked(textitem: TextitemElement) {
@@ -203,11 +228,39 @@ export function getSentence(id: number) {
 export function makeGhosted(
   textitems: TextitemElement[] | NodeListOf<HTMLElement>
 ) {
-  return addClassToElements(textitems, TEXTITEM_CLASS.ghosted);
+  addClassToElements(textitems, TEXTITEM_CLASS.ghosted);
 }
 
 export function clearGhosted(
   textitems: TextitemElement[] | NodeListOf<HTMLElement>
 ) {
   textitems.forEach((t) => t.classList.remove(TEXTITEM_CLASS.ghosted));
+}
+
+export function makeSelectionStart(textitem: TextitemElement) {
+  clearSelectionStart();
+  addClassToElements([textitem], TEXTITEM_CLASS.selectionStart);
+}
+
+export function makeSelectionEnd(textitem: TextitemElement) {
+  clearSelectionEnd();
+  addClassToElements([textitem], TEXTITEM_CLASS.selectionEnd);
+}
+
+export function clearSelectionStart() {
+  removeAllContainingClass(TEXTITEM_CLASS.selectionStart);
+}
+
+export function clearSelectionEnd() {
+  removeAllContainingClass(TEXTITEM_CLASS.selectionEnd);
+}
+
+export function getSelectionStart() {
+  return document.querySelector<WordElement>(
+    `.${TEXTITEM_CLASS.selectionStart}`
+  );
+}
+
+export function getSelectionEnd() {
+  return document.querySelector<WordElement>(`.${TEXTITEM_CLASS.selectionEnd}`);
 }

@@ -3,7 +3,7 @@ import type { Textitem } from "#book/api/types";
 import {
   handleMouseDown,
   handleMouseOver,
-  hoverOut,
+  handleMouseOut,
 } from "#helpers/interactions-desktop";
 import { TermPopup } from "#term/components/TermPopup/TermPopup";
 import { TextItem } from "./TextItem";
@@ -20,7 +20,7 @@ export function WordTextItem({ data, ...props }: WordTextItem) {
         data={data}
         onMouseDown={handleMouseDown}
         onMouseOver={handleMouseOver}
-        onMouseOut={hoverOut}
+        onMouseOut={handleMouseOut}
       />
     </TermPopup>
   );

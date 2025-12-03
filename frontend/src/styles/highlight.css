@@ -39,45 +39,44 @@
 }
 
 [data-show-highlights="true"]:not(.term-active) [data-highlight-type="bg"],
-[data-highlight-type="bg"].wordhover {
+[data-highlight-type="bg"].hovered {
   background-color: var(--lute-color-highlight-status);
   color: var(--lute-color-text-status);
 }
 
 [data-show-highlights="true"]:not(.term-active) [data-highlight-type="text"],
-[data-highlight-type="text"].wordhover {
+[data-highlight-type="text"].hovered {
   color: var(--lute-color-highlight-status);
   background-color: transparent;
 }
 
 [data-show-highlights="true"]:not(.term-active) [data-highlight-type="dashed"],
-[data-highlight-type="dashed"].wordhover {
+[data-highlight-type="dashed"].hovered {
   text-decoration: 2px underline dashed var(--lute-color-highlight-status);
   text-underline-offset: 2px;
   background-color: transparent;
 }
 
 [data-show-highlights="true"]:not(.term-active) [data-highlight-type="solid"],
-[data-highlight-type="solid"].wordhover {
+[data-highlight-type="solid"].hovered {
   text-decoration: 2px underline solid var(--lute-color-highlight-status);
   text-underline-offset: 2px;
   background-color: transparent;
 }
 
-.textitem.wordhover {
-  text-decoration: underline 2px solid var(--lute-color-highlight-wordhover);
+.textitem.hovered {
+  text-decoration: underline 2px solid var(--lute-color-highlight-hovered);
   text-underline-offset: 2px;
 }
 
-.textitem.kwordmarked {
-  text-decoration: underline 2px solid var(--lute-color-highlight-kwordmarked);
+.textitem.marked {
+  text-decoration: underline 2px solid var(--lute-color-highlight-marked);
   text-underline-offset: 2px;
 }
 /* data property for equal specificity with above styles */
-.textitem.newmultiterm[data-order] {
-  background: var(--lute-color-highlight-newmultiterm);
-  border-radius: 0;
-  color: var(--lute-text-color-newmultiterm);
+.textitem.selected[data-order] {
+  background: var(--lute-color-highlight-selected);
+  color: var(--lute-text-color-selected);
   text-decoration: none;
 }
 

@@ -8,9 +8,10 @@ import {
   IconClipboardTypography,
   IconBookmarkPlus,
 } from "@tabler/icons-react";
-import { handleTranslate } from "#helpers/translation";
+import { translateTextContent } from "#helpers/translation";
 import { handleBookmarkSentence } from "#helpers/bookmark";
-import { handleCopy } from "#helpers/copy";
+import { markTextitemsRange } from "#helpers/text";
+import { copyUnitText } from "#helpers/copy";
 import { textCopied } from "#book/resources/notifications";
 import type { TextitemElement, TextUnit } from "#resources/types";
 
@@ -21,19 +22,19 @@ export const menu = [
       {
         label: "Selection",
         icon: IconClick,
-        action: (textitem: TextitemElement) => handleTranslate(textitem),
+        action: (textitem: TextitemElement) => translateTextContent(textitem),
       },
       {
         label: "Sentence",
         icon: IconAlignLeft,
         action: (textitem: TextitemElement) =>
-          handleTranslate(textitem, "sentence"),
+          translateTextContent(textitem, "sentence"),
       },
       {
         label: "Paragraph",
         icon: IconPilcrow,
         action: (textitem: TextitemElement) =>
-          handleTranslate(textitem, "paragraph"),
+          translateTextContent(textitem, "paragraph"),
       },
     ],
   },
@@ -79,7 +80,8 @@ export const menu = [
 ] as const;
 
 async function handleTextCopy(textitem: TextitemElement, unit?: TextUnit) {
-  const { text, textitems } = await handleCopy(textitem, unit);
+  const { text, textitems } = await copyUnitText(textitem, unit);
+  markTextitemsRange(textitems);
   notifications.show(textCopied(text));
 
   return { text, textitems };

@@ -4,7 +4,6 @@ export function clamp(num: number, min: number, max: number) {
   return Math.min(Math.max(num, min), max);
 }
 
-// Get the pressed keys as a string, eg 'meta-KeyC', 'shift-KeyA'
 export function getPressedKeysAsString(
   event: KeyboardEvent | ReactKeyboardEvent
 ) {
@@ -15,7 +14,7 @@ export function getPressedKeysAsString(
   if (event.altKey) keys.push("alt");
   if (event.metaKey) keys.push("meta");
 
-  keys.push(event.code);
+  keys.push(event.key.toLowerCase());
 
   return keys.join("+");
 }

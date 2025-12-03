@@ -23,11 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"],
-  //temporary
-  "exclude": [
-    "src/helpers/status.ts",
-    "src/features/book/hooks/useSetupShortcuts.ts",
-    "src/features/term/components/TermForm/TermForm.tsx"
-  ]
+  "include": ["src"]
 }

@@ -8,9 +8,9 @@
   --lute-color-highlight-status98: #ee8577;
   --lute-color-highlight-status99: #72da88;
 
-  --lute-color-highlight-kwordmarked: #f56767;
-  --lute-color-highlight-wordhover: #228be6;
-  --lute-color-highlight-newmultiterm: #ffe066;
+  --lute-color-highlight-marked: #f56767;
+  --lute-color-highlight-hovered: #228be6;
+  --lute-color-highlight-selected: #ffe066;
   --lute-color-highlight-flash: #ff6868;
 
   --lute-color-read: var(--mantine-color-body);
@@ -26,9 +26,9 @@
   --lute-color-highlight-status98: #bc6b60;
   --lute-color-highlight-status99: #38924c;
 
-  --lute-color-highlight-kwordmarked: #ff0000;
-  --lute-color-highlight-wordhover: #0000ff;
-  --lute-color-highlight-newmultiterm: #ffe066;
+  --lute-color-highlight-marked: #ff0000;
+  --lute-color-highlight-hovered: #0000ff;
+  --lute-color-highlight-selected: #ffe066;
   --lute-color-highlight-flash: #ff6868;
 
   --lute-color-read: var(--mantine-color-body);
@@ -44,9 +44,9 @@
   --lute-color-highlight-status98: #ee8577;
   --lute-color-highlight-status99: #72da88;
 
-  --lute-color-highlight-kwordmarked: #f56767;
-  --lute-color-highlight-wordhover: #228be6;
-  --lute-color-highlight-newmultiterm: #ffe066;
+  --lute-color-highlight-marked: #f56767;
+  --lute-color-highlight-hovered: #228be6;
+  --lute-color-highlight-selected: #ffe066;
   --lute-color-highlight-flash: #ff6868;
 
   --lute-color-read: var(--mantine-color-body);

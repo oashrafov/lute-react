@@ -6,9 +6,9 @@ interface HighlightOptions {
 
 export interface GeneralHighlights {
   flash: HighlightOptions;
-  kwordmarked: HighlightOptions;
-  multiterm: HighlightOptions;
-  wordhover: HighlightOptions;
+  marked: HighlightOptions;
+  selected: HighlightOptions;
+  hovered: HighlightOptions;
 }
 
 export interface StatusHighlights {

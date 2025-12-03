@@ -22,13 +22,15 @@ export const CSS_VAR = {
 export const TEXTITEM_CLASS = {
   textitem: "textitem",
   word: "word",
-  marked: "kwordmarked",
-  hovered: "wordhover",
-  multi: "newmultiterm",
+  marked: "marked",
+  hovered: "hovered",
+  selected: "selected",
   flashing: "flash",
   overlapped: "overlapped",
   bookmarked: "bookmarked",
   ghosted: "ghosted",
+  selectionStart: "selection-start",
+  selectionEnd: "selection-end",
 } as const;
 export const TEXTITEM_DATASET = {
   status: "status",

@@ -7,7 +7,7 @@ import {
 } from "#helpers/text";
 import { getTextContainer } from "#helpers/general";
 
-interface SingleTerm {
+export interface SingleTerm {
   data: number;
   type: "single";
   textitems: TextitemElement[];

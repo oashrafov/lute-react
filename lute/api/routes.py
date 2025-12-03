@@ -7,7 +7,7 @@ from flask import Blueprint, current_app
 from lute import __version__
 from lute.db import db
 
-from lute.settings.current import current_settings
+from lute.settings.current import current_settings, current_hotkeys
 from lute.models.book import Book
 from lute.models.language import Language
 from lute.models.setting import UserSetting
@@ -161,15 +161,15 @@ def highlights():
                 99: {"light": "#51cf66", "dark": "#51cf66", "type": "none"},
             },
             "general": {
-                "kwordmarked": {
+                "marked": {
                     "light": "#228be6",
                     "dark": "#228be6",
                 },
-                "wordhover": {
+                "hovered": {
                     "light": "#f56767",
                     "dark": "#f56767",
                 },
-                "multiterm": {"light": "#ffe066", "dark": "#ffe066"},
+                "selected": {"light": "#ffe066", "dark": "#ffe066"},
                 "flash": {"light": "#ff6868", "dark": "#ff6868"},
             },
         }
@@ -186,7 +186,11 @@ def shortcuts():
     settings = {h.key: h.value for h in db.session.query(UserSetting).all()}
 
     return {
-        id: {"key": settings[id], "category": category, "description": descriptions[id]}
+        id: {
+            "key": settings[id],
+            "category": category,
+            "description": descriptions[id],
+        }
         for category, ids in categorized.items()
         for id in ids
     }

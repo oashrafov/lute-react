@@ -29,7 +29,7 @@ import type { HighlightType, Status, WordElement } from "#resources/types";
 const generalHighlightsLabels = [
   [TEXTITEM_CLASS.marked, "Selected"],
   [TEXTITEM_CLASS.hovered, "Hovered"],
-  [TEXTITEM_CLASS.multi, "Multi selection"],
+  [TEXTITEM_CLASS.selected, "Multi selection"],
   [TEXTITEM_CLASS.flashing, "Flashing highlight"],
 ] as const;
 

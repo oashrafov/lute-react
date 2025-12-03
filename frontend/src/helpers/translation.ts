@@ -1,8 +1,7 @@
 import type { TextitemElement, TextUnit } from "#resources/types";
 import { getMatchedTextitems, getTextContent } from "./text";
 
-/** Show the translation using the next dictionary. */
-export function handleTranslate(
+export function translateTextContent(
   textitem: TextitemElement,
   unit?: Exclude<TextUnit, "page">
 ) {
@@ -52,7 +51,10 @@ let LUTE_CURR_SENTENCE_TRANSLATION_DICT_INDEX = 0;
  * move to the next sentence dictionary; otherwise start the cycle
  * again (from index 0).
  */
-const _get_translation_dict_index = function (sentence: any, dicts: any) {
+const _get_translation_dict_index = function (
+  sentence: string,
+  dicts: string[]
+) {
   const dict_count = dicts.length;
   if (dict_count == 0) return 0;
   let new_index = LUTE_CURR_SENTENCE_TRANSLATION_DICT_INDEX;
