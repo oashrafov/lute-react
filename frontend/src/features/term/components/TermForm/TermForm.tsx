@@ -130,7 +130,7 @@ export function TermForm({
 
   function handleSubmit(data: TermDetail) {
     if (editMode) {
-      editTerm(term.id!, data);
+      editTerm(data);
     } else {
       createTerm(data);
     }
@@ -147,15 +147,12 @@ export function TermForm({
     });
   }
 
-  function editTerm(id: number, data: TermDetail) {
-    editTermMutation.mutate(
-      { data, id },
-      {
-        onSuccess: () => {
-          onSubmitSuccess?.();
-        },
-      }
-    );
+  function editTerm(data: TermDetail) {
+    editTermMutation.mutate(data, {
+      onSuccess: () => {
+        onSubmitSuccess?.();
+      },
+    });
   }
 
   function handleDeleteTerm() {

@@ -7,7 +7,6 @@ import {
 } from "../resources/notifications";
 import { api } from "./api";
 import { query } from "#book/api/query";
-import type { TermDetail } from "./types";
 
 export const mutation = {
   useCreateTerm() {
@@ -27,8 +26,7 @@ export const mutation = {
 
   useEditTerm() {
     return useMutation({
-      mutationFn: ({ id, data }: { id: number; data: TermDetail }) =>
-        api.edit(id, data),
+      mutationFn: api.edit,
       onSuccess: (_data, _variables, _onMutateResult, context) => {
         notifications.show(termUpdated);
         context.client.invalidateQueries({

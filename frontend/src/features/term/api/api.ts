@@ -50,13 +50,30 @@ export const api = {
     });
   },
 
-  edit(id: number, data: TermDetail) {
-    return apiClient.patch(`${BASE_URL}/${id}`, {
-      body: objToFormData(data),
-    });
+  edit(data: TermDetail | Partial<TermDetail>[]) {
+    if (Array.isArray(data)) {
+      return _editMultiple(data);
+    } else {
+      return _editById(data);
+    }
   },
 
   delete(id: number) {
     return apiClient.delete(`${BASE_URL}/${id}`);
   },
 };
+
+function _editById(data: TermDetail) {
+  return apiClient.patch(`${BASE_URL}/${data.id}`, {
+    body: objToFormData(data),
+  });
+}
+
+function _editMultiple(data: Partial<TermDetail>[]) {
+  return apiClient.patch(`${BASE_URL}/`, {
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+}

@@ -254,6 +254,27 @@ def edit_term(termid):
     return {"id": termid}
 
 
+@bp.route("/", methods=["PATCH"])
+def bulk_edit():
+    """
+    bulk edit (update status)
+    """
+    repo = Repository(db.session)
+
+    data = request.get_json()
+
+    for term in data:
+        term_id = term["id"]
+        status = term["status"]
+        term = repo.load(term_id)
+        term.status = status
+        repo.add(term)
+
+    repo.commit()
+
+    return jsonify("ok")
+
+
 @bp.route("/<int:termid>", methods=["DELETE"])
 def delete_term(termid):
     "delete term"
