@@ -14,6 +14,7 @@ from lute.book.model import Book, Repository
 from lute.book.service import (
     Service as BookService,
     BookImportException,
+    FileTextExtraction,
 )
 from lute.read.service import Service as ReadService
 from lute.read.render.service import Service as RenderService
@@ -43,30 +44,40 @@ def create_book():
     data = {k: None if v == "undefined" else v for k, v in data.items()}
     files_dict = request.files.to_dict()
 
-    domain_book = Book()
+    book = Book()
 
     try:
+        book_service = BookService()
+
         for key, value in data.items():
-            if hasattr(domain_book, key):
+            if hasattr(book, key):
                 if value and value.isdigit():
                     value = int(value)
-                setattr(domain_book, key, value)
+                setattr(book, key, value)
 
-        text_file = files_dict.get("text_file", None)
         audio_file = files_dict.get("audio_file", None)
-
-        if text_file:
-            setattr(domain_book, "text_stream", text_file.stream)
-            setattr(domain_book, "text_stream_filename", text_file.filename)
         if audio_file:
-            setattr(domain_book, "audio_stream", audio_file.stream)
-            setattr(domain_book, "audio_stream_filename", audio_file.filename)
+            if audio_file.filename is None:
+                raise BookImportException("Must set audio name")
+            new_name = book_service.unique_fname(audio_file.filename)
+            fp = os.path.join(current_app.env_config.useraudiopath, new_name)
+            with open(fp, mode="wb") as fcopy:  # Use "wb" to write in binary mode
+                while chunk := audio_file.stream.read(
+                    8192
+                ):  # Read the stream in chunks (e.g., 8 KB)
+                    fcopy.write(chunk)
+            book.audio_filename = new_name
 
-        svc = BookService()
-        book = svc.import_book(domain_book, db.session)
-        response = {"id": book.id, "title": book.title}
+        repo = Repository(db.session)
 
-        return response, 200
+        dbbook = repo.add(book)
+        repo.commit()
+
+        return {
+            "id": dbbook.id,
+            "title": dbbook.title,
+            "languageId": dbbook.language.id,
+        }, 201
 
     except BookImportException as e:
         return e.message, 400
@@ -334,7 +345,7 @@ def delete_book(bookid):
     return {"title": b.title}, 200
 
 
-@bp.route("/url", methods=["POST"])
+@bp.route("/parse/url", methods=["POST"])
 def parse_content_from_url():
     "Get data for a new book, or flash an error if can't parse."
     service = BookService()
@@ -345,6 +356,21 @@ def parse_content_from_url():
         return e.message, 400
 
     return {"title": b.title, "source_uri": b.source_uri, "text": b.text}
+
+
+@bp.route("/parse/file", methods=["POST"])
+def parse_file_contents():
+    "parse file"
+
+    files_dict = request.files.to_dict()
+    fte = FileTextExtraction()
+
+    file = files_dict.get("file", None)
+    text = ""
+    if file:
+        text = fte.get_file_content(file.filename, file.stream)
+
+    return {"text": text}
 
 
 @bp.route("/<int:bookid>/pages/<int:pagenum>", methods=["GET"])

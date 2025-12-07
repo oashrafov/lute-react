@@ -6,7 +6,7 @@ import type {
   BooksList,
   BookStats,
   EditAction,
-  NewBookForm,
+  CreateBookForm,
   Page,
 } from "./types";
 
@@ -41,7 +41,7 @@ export const api = {
     return URL.createObjectURL(blob);
   },
 
-  create(data: NewBookForm) {
+  create(data: CreateBookForm) {
     return apiClient.post(`${BASE_URL}/`, {
       body: objToFormData(data),
     });
@@ -58,11 +58,17 @@ export const api = {
   },
 
   generateContentFromURL(url: string) {
-    return apiClient.post(`${BASE_URL}/url`, {
+    return apiClient.post(`${BASE_URL}/parse/url`, {
       headers: {
         "Content-Type": "text/plain",
       },
       body: url,
+    });
+  },
+
+  generateContentFromFile(file: File) {
+    return apiClient.post(`${BASE_URL}/parse/file`, {
+      body: objToFormData({ file }),
     });
   },
 
@@ -75,7 +81,7 @@ export const api = {
     });
   },
 
-  getFormValues(): Promise<NewBookForm> {
+  getFormValues(): Promise<CreateBookForm> {
     return apiClient.get(`${BASE_URL}/form`);
   },
 };

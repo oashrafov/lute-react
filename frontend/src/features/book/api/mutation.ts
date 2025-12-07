@@ -1,4 +1,3 @@
-import { getRouteApi } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { bookDeleted, bookUpdated } from "../resources/notifications";
@@ -7,8 +6,6 @@ import { query as bookQuery } from "./query";
 import { query as settingsQuery } from "#settings/api/query";
 import { api } from "./api";
 import type { EditAction } from "./types";
-
-const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
 interface EditBookData {
   id: number;
@@ -23,18 +20,15 @@ interface ProcessPageData {
 
 export const mutation = {
   useCreateBook() {
-    const navigate = route.useNavigate();
-
     return useMutation({
       mutationFn: api.create,
-      onSuccess: (data, _variables, _onMutateResult, context) => {
+      onSuccess: (_data, _variables, _onMutateResult, context) => {
         context.client.invalidateQueries({
           queryKey: bookQuery.list().queryKey,
         });
         context.client.invalidateQueries({
           queryKey: settingsQuery.init().queryKey,
         });
-        navigate({ params: { bookId: data.id, pageNum: 1 } });
       },
       onError: (error) => notifications.show(errorMessage(error.message)),
     });
@@ -72,6 +66,13 @@ export const mutation = {
   useGenerateContentFromURL() {
     return useMutation({
       mutationFn: api.generateContentFromURL,
+      onError: (error) => notifications.show(errorMessage(error.message)),
+    });
+  },
+
+  useParseContentFromFile() {
+    return useMutation({
+      mutationFn: api.generateContentFromFile,
       onError: (error) => notifications.show(errorMessage(error.message)),
     });
   },

@@ -97,7 +97,7 @@ export interface EditAction {
   [key: string]: unknown;
 }
 
-export interface NewBookForm {
+export interface CreateBookForm {
   language_id: string;
   title: string;
   text: string;

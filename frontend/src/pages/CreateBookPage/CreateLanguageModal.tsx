@@ -1,22 +1,24 @@
+import { getRouteApi } from "@tanstack/react-router";
 import { Drawer, ScrollAreaAutosize } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { PageContainer } from "#common/PageContainer/PageContainer";
 import { PageTitle } from "#common/PageTitle/PageTitle";
 import { LanguageForm } from "#language/components/LanguageForm/LanguageForm";
 
-interface CreateLanguageModal {
-  isOpen: boolean;
-  onClose: () => void;
-}
+const route = getRouteApi("/create-book");
 
-export function CreateLanguageModal({ isOpen, onClose }: CreateLanguageModal) {
+export function CreateLanguageModal() {
   const { t } = useTranslation("page", { keyPrefix: "newBook" });
+  const { langForm } = route.useSearch();
+  const navigate = route.useNavigate();
   return (
     <Drawer.Root
       returnFocus
       transitionProps={{ duration: 150 }}
-      opened={isOpen}
-      onClose={onClose}
+      opened={!!langForm}
+      onClose={() =>
+        navigate({ search: (prev) => ({ ...prev, langForm: false }) })
+      }
       position="bottom"
       size="75%">
       <Drawer.Overlay />

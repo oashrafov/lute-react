@@ -13,7 +13,13 @@
     "audioFileLabel": "Audio file",
     "sourceURLLabel": "Source URL",
     "tagsLabel": "Tags",
-    "or": "or"
+    "step1Label": "Pick language",
+    "step2Label": "Add Content",
+    "step3Label": "Configure settings",
+    "nextStepButtonLabel": "Next",
+    "backButtonLabel": "Back",
+    "reviewButtonLabel": "Review",
+    "languageNameLabel": "Language"
   },
   "language": {
     "dictionariesLabel": "Dictionaries",

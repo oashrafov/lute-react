@@ -47,7 +47,9 @@ export const LanguageSelect = memo(function LanguageSelect() {
   function handleClearField() {
     setSearch("");
     setValue(null);
-    navigate({ search: { langId: undefined, langName: undefined } });
+    navigate({
+      search: (prev) => ({ ...prev, langId: undefined, langName: undefined }),
+    });
   }
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -67,7 +69,9 @@ export const LanguageSelect = memo(function LanguageSelect() {
     } else {
       setValue(val);
       setSearch(val);
-      navigate({ search: { langId: undefined, langName: val } });
+      navigate({
+        search: (prev) => ({ ...prev, langId: undefined, langName: val }),
+      });
     }
 
     combobox.closeDropdown();
