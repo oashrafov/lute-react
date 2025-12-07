@@ -1,5 +1,4 @@
 import { forwardRef, type ComponentPropsWithoutRef } from "react";
-import { clsx } from "clsx";
 import type { Textitem } from "#book/api/types";
 import { DEFAULT_HIGHLIGHT_TYPE, TEXTITEM_CLASS } from "#resources/constants";
 
@@ -9,10 +8,10 @@ export const TextItem = forwardRef<
 >(function TextItem(props, ref) {
   const { data, ...restProps } = props;
 
-  const classes = clsx("textitem", {
-    [TEXTITEM_CLASS.word]: data.isWord,
-    [TEXTITEM_CLASS.overlapped]: data.isOverlapped,
-  });
+  const classes =
+    "textitem" +
+    (data.isWord ? ` ${TEXTITEM_CLASS.word}` : "") +
+    (data.isOverlapped ? ` ${TEXTITEM_CLASS.overlapped}` : "");
 
   return (
     <span
