@@ -20,7 +20,7 @@ def get_user_languages():
     "get user defined languages"
 
     sql = """
-        select LgID, LgName, book_count, term_count from languages
+        select LgID, LgName, LgRightToLeft, book_count, term_count from languages
         left outer join (
         select BkLgID, count(BkLgID) as book_count from books
         group by BkLgID
@@ -38,8 +38,9 @@ def get_user_languages():
         {
             "id": row[0],
             "name": row[1],
-            "bookCount": row[2] or 0,
-            "termCount": row[3] or 0,
+            "textDirection": "rtl" if row[2] == 1 else "ltr",
+            "bookCount": row[3] or 0,
+            "termCount": row[4] or 0,
         }
         for row in result
     ]

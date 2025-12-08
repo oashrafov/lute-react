@@ -20,6 +20,7 @@ export function UserLanguageSelect(props: SelectProps) {
       search: (prev) => ({
         ...prev,
         langId: langId === id ? undefined : id,
+        textDir: languages.find((lang) => lang.id === id)?.textDirection,
         langName: undefined,
       }),
     });
@@ -34,7 +35,7 @@ export function UserLanguageSelect(props: SelectProps) {
   return (
     <Select
       label="Language"
-      value={String(langId)}
+      value={langId ? String(langId) : null}
       onChange={(id, option) => {
         handleLanguageChange(Number(id));
         props.onChange?.(id, option);

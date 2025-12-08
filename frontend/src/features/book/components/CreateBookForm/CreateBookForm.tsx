@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearch } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -18,9 +18,12 @@ import { query as bookQuery } from "#book/api/query";
 import { mutation } from "#book/api/mutation";
 import classes from "./CreateBookForm.module.css";
 
+const route = getRouteApi("/create-book");
+
 export function CreateBookForm() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
-  const { langId } = useSearch({ from: "/create-book" });
+  const { langId } = route.useSearch();
+  const navigate = route.useNavigate();
   const [active, setActive] = useState(0);
   const {
     mutate,
@@ -46,15 +49,19 @@ export function CreateBookForm() {
 
   function handleResetForm() {
     setActive(0);
-    resetMutation();
     resetForm();
+    navigate({ search: (prev) => ({ ...prev, langId: undefined }) });
   }
 
   return (
     <>
       <form
         id="create-book-form"
-        onSubmit={handleSubmit((data) => mutate(data))}>
+        onSubmit={handleSubmit((data) =>
+          mutate(data, {
+            onSuccess: handleResetForm,
+          })
+        )}>
         <FormProvider {...methods}>
           <Stepper
             active={active}
@@ -80,12 +87,6 @@ export function CreateBookForm() {
         </FormProvider>
       </form>
 
-      <BookCreatedModal
-        opened={isSuccess}
-        book={{ id: data?.id }}
-        onClose={handleResetForm}
-      />
-
       <Group justify="center" mt="xl" gap={5}>
         {active <= 3 && (
           <Button variant="default" onClick={goToPrevStep} disabled={isSuccess}>
@@ -110,6 +111,12 @@ export function CreateBookForm() {
           </Button>
         )}
       </Group>
+
+      <BookCreatedModal
+        opened={isSuccess}
+        book={{ id: data?.id }}
+        onClose={resetMutation}
+      />
     </>
   );
 }

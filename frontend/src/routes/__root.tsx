@@ -27,18 +27,19 @@ export const Route = createRootRouteWithContext<{
 }>()({
   component: RouteComponent,
   validateSearch: (search: Record<string, unknown>): Search => ({
+    // language id should be defined with text direction
     langId:
-      search.langId !== undefined
+      search.langId !== undefined && search.textDir !== undefined
         ? Number(search.langId)
         : defaultSearch.langId,
+    textDir:
+      search.langId !== undefined && search.textDir !== undefined
+        ? (search.textDir as TextDirection)
+        : defaultSearch.textDir,
     langName:
       search.langName !== undefined
         ? String(search.langName)
         : defaultSearch.langName,
-    textDir:
-      search.textDir !== undefined
-        ? (search.textDir as TextDirection)
-        : defaultSearch.textDir,
   }),
   search: {
     middlewares: [stripSearchParams(defaultSearch)],

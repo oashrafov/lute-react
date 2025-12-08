@@ -1,9 +1,12 @@
+import type { TextDirection } from "#resources/types";
+
 export type UserLanguagesList = UserLanguagesItem[];
 
 export interface UserLanguagesItem {
-  bookCount: number;
   id: number;
   name: string;
+  textDirection: TextDirection;
+  bookCount: number;
   termCount: number;
 }
 
