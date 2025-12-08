@@ -10,28 +10,30 @@ import type {
 const BASE_URL = "/languages";
 
 export const api = {
-  getUserLanguages(): Promise<UserLanguagesList> {
-    return apiClient.get(`${BASE_URL}/user`);
+  getUserLanguages() {
+    return apiClient.get<UserLanguagesList>(`${BASE_URL}/user`);
   },
 
-  getPredefinedLanguages(): Promise<string[]> {
-    return apiClient.get(`${BASE_URL}/predefined`);
+  getPredefinedLanguages() {
+    return apiClient.get<string[]>(`${BASE_URL}/predefined`);
   },
 
-  getUserLanguage(id: number): Promise<UserLanguageDetail> {
-    return apiClient.get(`${BASE_URL}/user/${id}`);
+  getUserLanguage(id: number) {
+    return apiClient.get<UserLanguageDetail>(`${BASE_URL}/user/${id}`);
   },
 
-  getPredefinedLanguage(langName: string): Promise<PredefinedLanguageDetail> {
-    return apiClient.get(`${BASE_URL}/predefined/${langName}`);
+  getPredefinedLanguage(langName: string) {
+    return apiClient.get<PredefinedLanguageDetail>(
+      `${BASE_URL}/predefined/${langName}`
+    );
   },
 
-  getParsers(): Promise<LanguageParser[]> {
-    return apiClient.get(`${BASE_URL}/parsers`);
+  getParsers() {
+    return apiClient.get<LanguageParser[]>(`${BASE_URL}/parsers`);
   },
 
-  getFormValues(): Promise<LanguageForm> {
-    return apiClient.get(`${BASE_URL}/form`);
+  getFormValues() {
+    return apiClient.get<LanguageForm>(`${BASE_URL}/form`);
   },
 
   create(name: string, loadStories?: boolean) {

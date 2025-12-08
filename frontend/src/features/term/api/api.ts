@@ -12,36 +12,42 @@ import type {
 const BASE_URL = "/terms";
 
 export const api = {
-  getAll(filters?: string): Promise<TermsList> {
-    return apiClient.get(filters ? `${BASE_URL}/?${filters}` : `${BASE_URL}/`);
+  getAll(filters?: string) {
+    return apiClient.get<TermsList>(
+      filters ? `${BASE_URL}/?${filters}` : `${BASE_URL}/`
+    );
   },
 
-  getById(id: number): Promise<TermDetail> {
-    return apiClient.get(`${BASE_URL}/${id}`);
+  getById(id: number) {
+    return apiClient.get<TermDetail>(`${BASE_URL}/${id}`);
   },
 
-  getByText(text: string, langId: number): Promise<TermDetail> {
-    return apiClient.get(`${BASE_URL}/${text}/${langId}`);
+  getByText(text: string, langId: number) {
+    return apiClient.get<TermDetail>(`${BASE_URL}/${text}/${langId}`);
   },
 
-  getPopup(id: number): Promise<TermPopup> {
-    return apiClient.get(`${BASE_URL}/${id}/popup`);
+  getPopup(id: number) {
+    return apiClient.get<TermPopup>(`${BASE_URL}/${id}/popup`);
   },
 
-  getSuggestions(text: string, langId: number): Promise<TermSuggestion[]> {
-    return apiClient.get(`${BASE_URL}/${text}/${langId}/suggestions`);
+  getSuggestions(text: string, langId: number) {
+    return apiClient.get<TermSuggestion[]>(
+      `${BASE_URL}/${text}/${langId}/suggestions`
+    );
   },
 
-  getSentences(text: string, langId: number): Promise<SentencesResponse> {
-    return apiClient.get(`${BASE_URL}/${text}/${langId}/sentences`);
+  getSentences(text: string, langId: number) {
+    return apiClient.get<SentencesResponse>(
+      `${BASE_URL}/${text}/${langId}/sentences`
+    );
   },
 
-  getTags(): Promise<Tag[]> {
-    return apiClient.get(`${BASE_URL}/tags`);
+  getTags() {
+    return apiClient.get<Tag[]>(`${BASE_URL}/tags`);
   },
 
-  getTagSuggestions(): Promise<string[]> {
-    return apiClient.get(`${BASE_URL}/tags/suggestions`);
+  getTagSuggestions() {
+    return apiClient.get<string[]>(`${BASE_URL}/tags/suggestions`);
   },
 
   create(data: TermDetail) {

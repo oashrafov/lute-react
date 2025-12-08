@@ -330,6 +330,8 @@ def edit_book(bookid):
         service = ReadService(db.session)
         service.mark_page_read(bookid, pagenum, mark_rest_as_known)
 
+        return {"id": book.id, "title": book.title}, 200
+
     return "", 400
 
 

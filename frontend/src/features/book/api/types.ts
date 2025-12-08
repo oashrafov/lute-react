@@ -97,6 +97,32 @@ export interface EditAction {
   [key: string]: unknown;
 }
 
+export interface CreateBookResponse {
+  id: number;
+  title: string;
+  languageId: number;
+}
+
+export interface EditBookResponse {
+  id: number;
+  title: string;
+  archivedCount?: number;
+}
+
+export interface DeleteBookResponse {
+  title: string;
+}
+
+export interface GenerateContentFromURLResponse {
+  title: string;
+  source_uri: string;
+  text: string;
+}
+
+export interface GenerateContentFromFileResponse {
+  text: string;
+}
+
 export interface CreateBookForm {
   language_id: string;
   title: string;

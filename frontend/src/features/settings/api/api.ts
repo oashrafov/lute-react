@@ -11,28 +11,28 @@ import type {
 const BASE_URL = "";
 
 export const api = {
-  getInitialState(): Promise<InitialResponse> {
-    return apiClient.get(`${BASE_URL}/initial`);
+  getInitialState() {
+    return apiClient.get<InitialResponse>(`${BASE_URL}/initial`);
   },
 
-  getAppInfo(): Promise<AppInfoResponse> {
-    return apiClient.get(`${BASE_URL}/appinfo`);
+  getAppInfo() {
+    return apiClient.get<AppInfoResponse>(`${BASE_URL}/appinfo`);
   },
 
-  getShortcuts(): Promise<ShortcutsForm> {
-    return apiClient.get(`${BASE_URL}/shortcuts`);
+  getShortcuts() {
+    return apiClient.get<ShortcutsForm>(`${BASE_URL}/shortcuts`);
   },
 
-  getBackupInfo(): Promise<BackupsResponse> {
-    return apiClient.get(`${BASE_URL}/backups`);
+  getBackupInfo() {
+    return apiClient.get<BackupsResponse>(`${BASE_URL}/backups`);
   },
 
-  getSettingsFormValues(): Promise<SettingsForm> {
-    return apiClient.get(`${BASE_URL}/settings/form`);
+  getSettingsFormValues() {
+    return apiClient.get<SettingsForm>(`${BASE_URL}/settings/form`);
   },
 
-  getThemeFormValues(): Promise<Highlights> {
-    return apiClient.get(`${BASE_URL}/theme/form`);
+  getThemeFormValues() {
+    return apiClient.get<Highlights>(`${BASE_URL}/theme/form`);
   },
 
   clearDemoData() {

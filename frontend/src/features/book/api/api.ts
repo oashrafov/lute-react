@@ -8,25 +8,33 @@ import type {
   EditAction,
   CreateBookForm,
   Page,
+  CreateBookResponse,
+  EditBookResponse,
+  DeleteBookResponse,
+  GenerateContentFromURLResponse,
+  GenerateContentFromFileResponse,
 } from "./types";
 
 const BASE_URL = "/books";
+import { createBookFormSchema } from "./schemas";
 
 export const api = {
-  getById(id: number): Promise<BookDetail> {
-    return apiClient.get(`${BASE_URL}/${id}`);
+  getById(id: number) {
+    return apiClient.get<BookDetail>(`${BASE_URL}/${id}`);
   },
 
-  getAll(filters?: string): Promise<BooksList> {
-    return apiClient.get(filters ? `${BASE_URL}/?${filters}` : `${BASE_URL}/`);
+  getAll(filters?: string) {
+    return apiClient.get<BooksList>(
+      filters ? `${BASE_URL}/?${filters}` : `${BASE_URL}/`
+    );
   },
 
-  getStats(id: number): Promise<BookStats> {
-    return apiClient.get(`${BASE_URL}/${id}/stats`);
+  getStats(id: number) {
+    return apiClient.get<BookStats>(`${BASE_URL}/${id}/stats`);
   },
 
-  getPage(bookId: number, pageNum: number): Promise<Page> {
-    return apiClient.get(`${BASE_URL}/${bookId}/pages/${pageNum}`);
+  getPage(bookId: number, pageNum: number) {
+    return apiClient.get<Page>(`${BASE_URL}/${bookId}/pages/${pageNum}`);
   },
 
   async getAudioSrc(bookId: number) {
@@ -42,46 +50,43 @@ export const api = {
   },
 
   create(data: CreateBookForm) {
-    return apiClient.post(`${BASE_URL}/`, {
+    return apiClient.post<CreateBookResponse>(`${BASE_URL}/`, {
       body: objToFormData(data),
     });
   },
 
   edit(id: number, data: EditAction) {
-    return apiClient.patch(`${BASE_URL}/${id}`, {
+    return apiClient.patch<EditBookResponse>(`${BASE_URL}/${id}`, {
       body: objToFormData(data),
     });
   },
 
   delete(id: number) {
-    return apiClient.delete(`${BASE_URL}/${id}`);
+    return apiClient.delete<DeleteBookResponse>(`${BASE_URL}/${id}`);
   },
 
   generateContentFromURL(url: string) {
-    return apiClient.post(`${BASE_URL}/parse/url`, {
-      headers: {
-        "Content-Type": "text/plain",
-      },
-      body: url,
-    });
+    return apiClient.post<GenerateContentFromURLResponse>(
+      `${BASE_URL}/parse/url`,
+      { headers: { "Content-Type": "text/plain" }, body: url }
+    );
   },
 
   generateContentFromFile(file: File) {
-    return apiClient.post(`${BASE_URL}/parse/file`, {
-      body: objToFormData({ file }),
-    });
+    return apiClient.post<GenerateContentFromFileResponse>(
+      `${BASE_URL}/parse/file`,
+      { body: objToFormData({ file }) }
+    );
   },
 
   processPage(bookId: number, pageNum: number) {
     return apiClient.post(`${BASE_URL}/${bookId}/pages/${pageNum}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ shouldTrack: true }),
     });
   },
 
-  getFormValues(): Promise<CreateBookForm> {
-    return apiClient.get(`${BASE_URL}/form`);
+  getFormValues() {
+    return apiClient.get<typeof createBookFormSchema>(`${BASE_URL}/form`);
   },
 };
