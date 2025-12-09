@@ -24,7 +24,7 @@ from lute.models.repositories import (
 )
 from lute.utils.data_tables import DataTablesFlaskParamParser
 from lute.term.datatables import get_data_tables_list
-from lute.term.model import Repository, Term
+from lute.term.model import Repository, Term, ReferencesRepository
 from lute.term.service import (
     Service as TermService,
     TermServiceException,
@@ -46,13 +46,20 @@ def index(search):
     languages = db.session.query(Language).order_by(Language.name).all()
     langopts = [(lang.id, lang.name) for lang in languages]
     langopts = [(0, "(all)")] + langopts
-    statuses = [s for s in db.session.query(Status).all() if s.id != Status.UNKNOWN]
+    all_statuses = db.session.query(Status).all()
+    filter_statuses = [s for s in all_statuses if s.id != Status.IGNORED]
+    # Add ignored to the end of the list ... annoying that the numbers
+    # are "out of order" (i.e., IGNORED comes before WELLKNOWN).
+    update_statuses = filter_statuses + [
+        s for s in all_statuses if s.id == Status.IGNORED
+    ]
     r = Repository(db.session)
     return render_template(
         "term/index.html",
         initial_search=search,
         language_options=langopts,
-        statuses=statuses,
+        filter_statuses=filter_statuses,
+        update_statuses=update_statuses,
         tags=r.get_term_tags(),
         in_term_index_listing=True,
     )
@@ -68,6 +75,7 @@ def _load_term_custom_filters(request_form, parameters):
         "filtStatusMin",
         "filtStatusMax",
         "filtIncludeIgnored",
+        "filtTermIDs",
     ]
     request_params = request_form.to_dict(flat=True)
     for p in filter_param_names:
@@ -140,6 +148,36 @@ def bulk_edit_from_reading_pane():
         flash(f"Error: {str(ex)}", "notice")
         return redirect("/read/term_bulk_edit_form", 302)
     return render_template("/read/updated.html", term_text=None)
+
+
+@bp.route("/ajax_edit_from_index", methods=["POST"])
+def ajax_edit_from_index():
+    """
+    Ajax edit from the term index listing.
+
+    If successful, returns the term's new status.  Only the status is
+    returned, as that is the only thing that might change as a result
+    of an ajax update (e.g., if a parent is assigned.
+    """
+    svc = TermService(db.session)
+    updated_term = None
+    try:
+        data = request.get_json()
+        term_id = int(data.get("term_id", 0))
+        update_type = data.get("update_type", "")
+        values = data.get("values")
+        svc.apply_ajax_update(term_id, update_type, values)
+        repo = TermRepository(db.session)
+        updated_term = repo.find(term_id)
+    except TermServiceException as ex:
+        return jsonify({"error": str(ex)}), 400
+    except ValueError as ex:
+        print(ex, flush=True)
+        return jsonify({"error": f"Invalid input ({ex})"}), 400
+    except Exception as ex:  # pylint: disable=broad-exception-caught
+        return jsonify({"error": f"An unexpected error occurred ({ex})"}), 500
+
+    return jsonify({"status": updated_term.status})
 
 
 @bp.route("/export_terms", methods=["POST"])
@@ -314,7 +352,8 @@ def sentences(langid, text):
     # in the term form, and the parent does not exist yet, then
     # we're creating a new term.
     t = repo.find_or_new(langid, text)
-    refs = repo.find_references(t)
+    refsrepo = ReferencesRepository(db.session)
+    refs = refsrepo.find_references(t)
 
     # Transform data for output, to
     # { "term": [refs], "children": [refs], "parent1": [refs], "parent2" ... }

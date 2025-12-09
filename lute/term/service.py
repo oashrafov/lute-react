@@ -96,3 +96,39 @@ class Service:
 
             self.session.add(term)
             self.session.commit()
+
+    def apply_ajax_update(self, term_id, update_type, value):
+        "Apply single update from datatables updatable cells interactions."
+
+        repo = Repository(self.session)
+        term = None
+        try:
+            term = repo.load(term_id)
+        except ValueError as exc:
+            raise TermServiceException(f"No term with id {term_id}") from exc
+
+        if update_type == "translation":
+            trans = (value or "").strip()
+            if trans == "":
+                trans = None
+            term.translation = trans
+
+        elif update_type == "parents":
+            term.parents = value
+            if len(term.parents) == 1:
+                term.sync_status = True
+
+        elif update_type == "term_tags":
+            term.term_tags = value
+
+        elif update_type == "status":
+            sval = int(value)
+            if sval not in Status.ALLOWED:
+                raise TermServiceException("Bad status value")
+            term.status = sval
+
+        else:
+            raise TermServiceException("Bad update type")
+
+        repo.add(term)
+        repo.commit()

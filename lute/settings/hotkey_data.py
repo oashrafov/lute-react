@@ -17,6 +17,8 @@ Copy:
   desc: Copy the full page
 
 Misc:
+- hotkey: hotkey_PageTermList
+  desc: Show the term listing for the current page
 - hotkey: hotkey_Bookmark
   desc: Bookmark the current page
 - hotkey: hotkey_EditPage
@@ -29,6 +31,8 @@ Misc:
   desc: Toggle focus mode
 - hotkey: hotkey_SaveTerm
   desc: Save term in term form
+- hotkey: hotkey_PostTermsToAnki
+  desc: Post selected terms to Anki
 
 Navigation:
 - hotkey: hotkey_StartHover

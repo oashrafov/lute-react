@@ -1,4 +1,37 @@
 
+# 3.10.1 (2025-03-10)
+
+* #594: add parents.pronunciation to anki mapping.
+* Update built-in language definitions (Turkish, wordreference dictionary as popup)
+* Add AAC, FLAC, and WebM support: by @imamcr in #589
+
+
+# 3.10.0 (2025-02-23)
+
+* #579: Add flexible Anki export.
+
+
+# 3.9.5 (2025-02-15)
+
+Tweaks:
+
+* #563: don't block image search page load if Bing is slow (asynchronous search).  By @parradam in #570.
+* Fix how term image data is stored.
+* Allow reference lookup by Term ID.
+
+
+# 3.9.4 (2025-01-26)
+
+* #573: make term listing editable, with "term list" menu entry to show the terms on the current page.  Brief usage notes are in [the manual](https://luteorg.github.io/lute-manual/usage/terms/edit-using-term-listing.html).
+* Add configurable hotkey for opening the Term list from the reading page.
+
+
+# 3.9.3 (2025-01-18)
+
+* add "Quick set status" mode for mobile - tap sets a word to status 1
+* clean up reading slide-out menu for mobile
+* Data fix for subsequent migration script.
+
 # 3.9.2 (2025-01-09)
 
 * Issue #475: allow split by sentences or by paragraphs.

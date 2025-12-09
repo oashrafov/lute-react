@@ -30,33 +30,45 @@ class Term:  # pylint: disable=too-many-instance-attributes
         self.text_lc = None
         # The original text given to the DTO, to track changes.
         self.original_text = None
-        self.status = 1
         self.translation = None
         self.romanization = None
-        self.sync_status = False
         self.term_tags = []
         self.flash_message = None
         self.parents = []
         self.current_image = None
 
+        # When loading the Term from a DBTerm,
+        # assign to properties starting with "_" directly.
+        self._status = 1
+        self._status_explicitly_set = False
+        self._sync_status = False
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self, v):
+        """
+        If the status is specifically set,
+        any sync'd parent should get that status.
+        """
+        self._status = v
+        self._status_explicitly_set = True
+
+    @property
+    def sync_status(self):
+        "Can only sync if one parent."
+        if len(self.parents) != 1:
+            return False
+        return self._sync_status
+
+    @sync_status.setter
+    def sync_status(self, v):
+        self._sync_status = v
+
     def __repr__(self):
-        return (
-            f'<Term BO "{self.text}" lang_id={self.language_id} lang={self.language}>'
-        )
-
-
-class TermReference:
-    "Where a Term has been used in books."
-
-    def __init__(
-        self, bookid, txid, pgnum, title, sentence_id, sentence=None
-    ):  # pylint: disable=too-many-arguments,too-many-positional-arguments
-        self.book_id = bookid
-        self.text_id = txid
-        self.page_number = pgnum
-        self.title = title
-        self.sentence = sentence
-        self.sentence_id = sentence_id
+        return f'<Term BO "{self.text}" lang_id={self.language_id}>'
 
 
 class Repository:
@@ -265,7 +277,7 @@ class Repository:
 
     def _build_db_term(self, term):
         "Convert a term business object to a DBTerm."
-        # print(f"in _build_db_term, term id = {term.id}", flush=True)
+        # pylint: disable=too-many-branches
         if term.text is None:
             raise ValueError("Text not set for term")
 
@@ -320,7 +332,14 @@ class Repository:
         if len(termparents) != 1:
             t.sync_status = False
 
-        # print(f"in _build_db_term, returning db term with term id = {t.id}", flush=True)
+        if t.sync_status and len(termparents) == 1:
+            p = termparents[0]
+            # pylint: disable=protected-access
+            if term._status_explicitly_set or p.status == 0:
+                p.status = t.status
+            else:
+                t.status = p.status
+
         return t
 
     def _find_or_create_parent(self, pt, language, term, termtags) -> DBTerm:
@@ -372,19 +391,58 @@ class Repository:
         term.original_text = text
         term.text = text
 
-        term.status = dbterm.status
         term.translation = dbterm.translation
         term.romanization = dbterm.romanization
-        term.sync_status = dbterm.sync_status
         term.current_image = dbterm.get_current_image()
         term.flash_message = dbterm.get_flash_message()
         term.parents = [p.text for p in dbterm.parents]
         term.romanization = dbterm.romanization
         term.term_tags = [tt.text for tt in dbterm.term_tags]
 
+        # pylint: disable=protected-access
+        term._status = dbterm.status
+        term._sync_status = dbterm.sync_status
+
         return term
 
-    ## References.
+
+## References.
+
+
+class TermReference:
+    "Where a Term has been used in books."
+
+    def __init__(
+        self, bookid, txid, pgnum, sentence_id, title, sentence=None
+    ):  # pylint: disable=too-many-arguments,too-many-positional-arguments
+        self.book_id = bookid
+        self.text_id = txid
+        self.page_number = pgnum
+        self.title = title
+        self.sentence = sentence
+        self.sentence_id = sentence_id
+
+
+class ReferencesRepository:
+    """
+    Lookup terms.
+    """
+
+    def __init__(self, _session, limit=20, include_unread=False):
+        "Init."
+        self.session = _session
+        self.limit = limit
+        self.include_unread = include_unread
+
+    def _search_spec_term(self, langid, text):
+        """
+        Make a term to get the correct text_lc to search for.
+        This ensures that the spec term is properly parsed
+        and downcased.
+        """
+        lang_repo = LanguageRepository(self.session)
+        lang = lang_repo.find(langid)
+        return DBTerm(lang, text)
 
     def find_references(self, term):
         """
@@ -395,7 +453,16 @@ class Repository:
         searchterm = term_repo.find_by_spec(spec)
         if searchterm is None:
             searchterm = spec
+        return self._find_references(searchterm)
 
+    def find_references_by_id(self, term_id):
+        "Find references for the given term."
+        term_repo = TermRepository(self.session)
+        searchterm = term_repo.find(term_id)
+        return self._find_references(searchterm)
+
+    def _find_references(self, searchterm):
+        "Find refs."
         references = {
             "term": self._get_references(searchterm),
             "children": self._get_child_references(searchterm),
@@ -432,6 +499,10 @@ class Repository:
         if term is None:
             return []
 
+        only_include_read = "TxReadDate IS NOT NULL"
+        if self.include_unread:
+            only_include_read = "1=1"  # include everything.
+
         term_lc = term.text_lc
         query = sqlalchemy.text(
             f"""
@@ -450,13 +521,15 @@ class Repository:
                 FROM texts
                 GROUP BY TxBkID
             ) pc ON pc.TxBkID = texts.TxBkID
-            WHERE TxReadDate IS NOT NULL
+            WHERE { only_include_read }
             AND SeText IS NOT NULL
             AND CASE WHEN SeTextLC == '*' THEN SeText ELSE SeTextLC END LIKE :pattern
             AND BkLgID = {term.language.id}
-            LIMIT 20
+            ORDER BY TxReadDate desc, TxID desc
+            LIMIT {self.limit}
         """
         )
+        # print(query)
 
         pattern = f"%{chr(0x200B)}{term_lc}{chr(0x200B)}%"
         params = {"pattern": pattern}

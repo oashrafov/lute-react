@@ -435,7 +435,6 @@ span.hamburger {
 .text-options-button:hover {
     background-color: #d5e9fa;
     cursor: pointer;
-    /* color: var(--background-color); */
 }
 
 .close-btn {
@@ -466,7 +465,6 @@ span.hamburger {
 }
 
 .text-options-btn-container {
-  /* background-color: #d3ebffc9; */
   padding: 0.2rem;
   border-radius: 5px;
 }
@@ -487,14 +485,21 @@ span.hamburger {
   padding: 0.9rem 1.5rem;
 }
 
-#focus-container {
+#focus-container,
+#tap_sets_status-container {
     display: flex;
     justify-content: center;
     gap: 1rem;
     align-items: center;
 }
 
-#focus {
+#tap_sets_status-container {
+    /* Toggled later in mobile media check. */
+    display:none;
+}
+
+#focus,
+#tap_sets_status {
     appearance: none;
     display: block;
     background-color: #ffffff;
@@ -507,11 +512,13 @@ span.hamburger {
     transition: background-color 0.2s
 }
 
-#focus-container label {
+#focus-container label,
+#tap_sets_status-container label {
     font-weight: bold;
 }
 
-#focus::after {
+#focus::after,
+#tap_sets_status::after {
     content: "";
     display: block;
     background-color: #616161;
@@ -522,14 +529,22 @@ span.hamburger {
     transition: transform 0.2s;
 }
 
-.focus-mode-active #focus::after {
+.focus-mode-active #focus::after,
+.tap_sets_status-active #tap_sets_status::after {
     transform: translate(100%, 0);
     background-color: #7950f2;
 }
 
-.focus-mode-active #focus{
+.focus-mode-active #focus,
+.tap_sets_status-active #tap_sets_status {
     background-color: #b197fc;
     border-color: #b197fc;
+}
+
+#tap_sets_status-container label,
+#tap_sets_status-container input {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .focus-mode-active #read_pane_right {
@@ -561,7 +576,6 @@ span.hamburger {
 .reading-menu-sublist {
     display: none;
     position: absolute;
-
     left: 100%;
     width: 100%;
     background-color: #d5e9fa;
@@ -572,14 +586,80 @@ span.hamburger {
     border-bottom-right-radius: 4px;
 }
 
-#page-operations-li:hover #page-operations-menu, #screen-interactions-li:hover #screen-interactions-menu {
+#page-operations-li:hover #page-operations-menu,
+#bookmark-operations-li:hover #bookmark-operations-menu,
+#screen-interactions-li:hover #screen-interactions-menu {
     display: block;
 }
 
-#page-operations-menu .reading-menu-item:hover, #screen-interactions-menu .reading-menu-item:hover {
+#page-operations-menu .reading-menu-item:hover,
+#bookmark-operations-menu .reading-menu-item:hover,
+#screen-interactions-menu .reading-menu-item:hover {
     background-color: #e4f2fe;
 }
 
+/* Reading menu, mobile */
+@media screen and (max-width: 980px) {
+
+    #reading_menu {
+        width: 90%;
+    }
+
+    .reading_menu_logo_container {
+        margin-bottom: 2.2rem;
+    }
+
+    #focus-container {
+        display: none;
+    }
+
+    #tap_sets_status-container {
+        display: flex;
+    }
+
+    .text-options-container {
+        gap: 0.3rem !important;
+        grid-template-columns: max-content max-content !important;
+    }
+
+    .text-options-button {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .text-options-btn-container:nth-child(3),
+    .text-options-btn-container:nth-child(4) {
+        display: none;
+    }
+
+    .reading-menu-item {
+        font-size: 1.2rem;
+        padding: 0.5rem 0.5rem;
+    }
+
+    .reading-menu-sublist {
+        position: relative; /* relative to the parent */
+        left: 0; /* below the parent */
+        top: 0; /* at the same level as the parent */
+        width: 100%; /* Full width of the parent container */
+        border-right: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 4px; /* Optional: Adjust corners */
+        border-bottom-left-radius: 4px;
+    }
+
+    .reading-menu-sublist.active {
+        display: block;
+    }
+
+    #page-operations-li:hover #page-operations-menu,
+    #screen-interactions-li:hover #screen-interactions-menu {
+        position: relative; /* Prevent overflow issues */
+    }
+
+}
+/* End reading menu, mobile */
 
 /* End reader slide-in hamburger menu. *********************/
 
@@ -823,6 +903,23 @@ img
 {
     white-space: nowrap;
     margin-left: 20pt;
+}
+
+/* Tooltip shown on copy or anki card creation. */
+.manual-tooltip {
+    position: absolute;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 12pt;
+    white-space: pre-line;  /* break if the text contains "\n" */
+    z-index: 500;  /* Initial z-index */
+}
+
+.manual-tooltip.hovered {
+    z-index: 10000;  /* Higher z-index when hovered */
 }
 
 /* Widening the tooltip. */
@@ -1136,6 +1233,15 @@ textarea {
     font-family: inherit;
 }
 
+.arrow_only_dropdown {
+    appearance: none; /* Hides default styling */
+    width: 20px; /* Only show the dropdown arrow */
+    overflow: hidden;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
 textarea {
     width: 100%;
     resize: both;
@@ -1187,6 +1293,10 @@ tbody {
 
 table input:not([type="checkbox"]) {
     width: 100%;
+}
+
+div#mappingContainer input:not([type="checkbox"]) {
+    width: 40%;
 }
 
 .statsWordsRead th, 
@@ -1842,14 +1952,6 @@ input[name='status']:disabled + label {
         padding: 0 1rem;
     }
 
-    .reading-menu-item {
-        font-size: 1.6rem;
-    }
-
-    .reading_menu_logo_container {
-        margin-bottom: 2.2rem;
-    }
-
     div#reading-footer span {
         margin-right: 30px;
     }
@@ -1859,27 +1961,8 @@ input[name='status']:disabled + label {
         height: 2rem;
     }
 
-    .text-options-button {
-        width: 3rem;
-        height: 3rem;
-    }
-
-    .text-options-btn-container:nth-child(3),
-    .text-options-btn-container:nth-child(4) {
-        display: none;
-    }
-
-    .text-options-container {
-        gap: 0.3rem !important;
-        grid-template-columns: max-content max-content !important;
-    }
-
     .close-btn {
         padding: 1.3rem;
-    }
-
-    #focus-container {
-        display: none;
     }
 
     .read-pane-right-close-btn {
@@ -2129,18 +2212,20 @@ input[name='status']:disabled + label {
 
 /** Term listing (/term) action dropdown. ********************/
 
+table#termtable .tagify,
+table#termtable .translationDiv {
+    border: 1px solid transparent;  /* Prevent elements pushing others around on hover. */
+    box-sizing: border-box;
+}
+
+table#termtable .tagify:hover,
+table#termtable .translationDiv:hover {
+    border: 1px solid;
+}
+
 .term-action-container {
     display: flex;
 }
-
-/*
-.term-action-dropdown,
-.actionDiv {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-}
-*/
 
 #bulkEditDiv {
     margin: 0.5rem;
@@ -2201,6 +2286,19 @@ div#termtable_wrapper div.dt-buttons {
     display: none;
 }
 
+.ajax-saved-checkmark {
+    position: absolute;
+    width: 1.5em; /* Define the size of the circle */
+    height: 1.5em; /* Make it a perfect circle */
+    background: green;
+    color: white;
+    border-radius: 50%; /* Turns the square into a circle */
+    font-size: 1em; /* Adjust size of the checkmark */
+    text-align: center;
+    line-height: 1.5em; /* Vertically center the checkmark */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 2004;
+}
 
 /** Term image search ****************/
 

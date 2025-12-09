@@ -266,20 +266,12 @@ class Term(
         if len(self.parents) > 1:
             self.sync_status = False
 
-    def get_current_image(self, strip_jpeg=True):
+    def get_current_image(self):
         "Get the current (first) image for the term."
         if len(self.images) == 0:
             return None
         i = self.images[0]
-
-        src = i.source
-
-        if not strip_jpeg:
-            return src
-
-        # Ugly hack: we have to remove the .jpeg at the end because
-        # Flask doesn't handle params with periods.
-        return src.replace(".jpeg", "")
+        return i.source
 
     def set_current_image(self, s):
         "Set the current image for this term."
@@ -322,6 +314,7 @@ class Status(db.Model):  # pylint: disable=too-few-public-methods
     UNKNOWN = 0
     WELLKNOWN = 99
     IGNORED = 98
+    ALLOWED = [UNKNOWN, 1, 2, 3, 4, 5, IGNORED, WELLKNOWN]
 
     __tablename__ = "statuses"
 

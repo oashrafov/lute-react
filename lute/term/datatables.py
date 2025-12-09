@@ -11,7 +11,7 @@ def get_data_tables_list(parameters, session):
     base_sql = """SELECT
     w.WoID as WoID, LgName, L.LgID as LgID, w.WoText as WoText, parents.parentlist as ParentText, w.WoTranslation,
     w.WoRomanization,
-    replace(wi.WiSource, '.jpeg', '') as WiSource,
+    WiSource,
     ifnull(tags.taglist, '') as TagList,
     StText,
     StID,
@@ -23,7 +23,8 @@ def get_data_tables_list(parameters, session):
     INNER JOIN languages L on L.LgID = w.WoLgID
     INNER JOIN statuses S on S.StID = w.WoStatus
     LEFT OUTER JOIN (
-      SELECT WpWoID as WoID, GROUP_CONCAT(PText, ', ') AS parentlist
+      /* Special concat used for easy parsing on client. */
+      SELECT WpWoID as WoID, GROUP_CONCAT(PText, ';;') AS parentlist
       FROM
       (
         select WpWoID, WoText as PText
@@ -34,7 +35,8 @@ def get_data_tables_list(parameters, session):
       GROUP BY WpWoID
     ) AS parents on parents.WoID = w.WoID
     LEFT OUTER JOIN (
-      SELECT WtWoID as WoID, GROUP_CONCAT(TgText, ', ') AS taglist
+      /* Special concat used for easy parsing on client. */
+      SELECT WtWoID as WoID, GROUP_CONCAT(TgText, ';;') AS taglist
       FROM
       (
         select WtWoID, TgText
@@ -87,6 +89,11 @@ def get_data_tables_list(parameters, session):
     if parameters["filtIncludeIgnored"] == "true":
         st_where = f"({st_where} OR StID = 98)"
     wheres.append(st_where)
+
+    termids = parameters["filtTermIDs"].strip()
+    if termids != "":
+        parentsql = f"select WpParentWoID from wordparents where WpWoID in ({termids})"
+        wheres.append(f"((w.WoID in ({termids})) OR (w.WoID in ({parentsql})))")
 
     # Phew.
     return DataTablesSqliteQuery.get_data(
