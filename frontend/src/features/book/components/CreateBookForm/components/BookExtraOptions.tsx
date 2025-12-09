@@ -15,13 +15,29 @@ import { Select } from "#common/Select/Select";
 import { TagsInput } from "#common/TagsInput/TagsInput";
 import { TextInput } from "#common/TextInput/TextInput";
 import { query } from "#settings/api/query";
+import type { CreateBookForm } from "#book/api/types";
 
 export function BookExtraOptions() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
   const { data: initial } = useSuspenseQuery(query.init());
-  const { control, setValue, watch } = useFormContext();
+  const {
+    control,
+    setValue,
+    watch,
+    clearErrors,
+    formState: { errors },
+  } = useFormContext<CreateBookForm>();
 
   const hasAudioFile = !!watch("audio_file");
+  const clearButton = hasAudioFile && (
+    <InputClearButton
+      onClick={() => {
+        setValue("audio_file", null);
+        clearErrors("audio_file");
+      }}
+    />
+  );
+
   return (
     <>
       <FileInput
@@ -31,11 +47,8 @@ export function BookExtraOptions() {
         description=".mp3, .m4a, .wav, .ogg, .opus"
         accept="audio/mpeg,audio/ogg,audio/mp4"
         leftSection={<IconHeadphones />}
-        rightSection={
-          hasAudioFile && (
-            <InputClearButton onClick={() => setValue("audio_file", null)} />
-          )
-        }
+        rightSection={clearButton}
+        error={errors.audio_file?.message}
       />
 
       <NumberInput
@@ -43,13 +56,18 @@ export function BookExtraOptions() {
         control={control}
         label={t("wordCountLabel")}
         leftSection={<IconBracketsContain />}
+        min={1}
+        max={1500}
+        error={errors.threshold_page_tokens?.message}
       />
 
       <TextInput
         name="source_uri"
         control={control}
+        placeholder="http://"
         label={t("sourceURLLabel")}
         leftSection={<IconLink />}
+        error={errors.source_uri?.message}
       />
 
       <Select
@@ -61,9 +79,9 @@ export function BookExtraOptions() {
           { value: "sentences", label: t("sentencesOption") },
         ]}
         leftSection={<IconCut />}
-        withCheckIcon={false}
         searchable={false}
         allowDeselect={false}
+        error={errors.split_by?.message}
       />
 
       <TagsInput
@@ -71,7 +89,9 @@ export function BookExtraOptions() {
         control={control}
         label="Tags"
         data={initial.bookTags}
+        clearable
         leftSection={<IconTags />}
+        error={errors.book_tags?.message}
       />
     </>
   );

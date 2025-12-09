@@ -1,13 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Button, Group, Modal, Stack, type ModalProps } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons-react";
-
-interface TempResponse {
-  id: number;
-}
+import type { CreateBookResponse } from "#book/api/types";
 
 interface BookCreatedModal extends ModalProps {
-  book: TempResponse;
+  book?: CreateBookResponse;
 }
 
 export function BookCreatedModal({ book, ...props }: BookCreatedModal) {

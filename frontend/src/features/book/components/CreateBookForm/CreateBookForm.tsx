@@ -2,13 +2,10 @@ import { useState } from "react";
 import { getRouteApi } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { Stepper, Button, Group } from "@mantine/core";
-import {
-  IconAdjustmentsHorizontal,
-  IconBook2,
-  IconLanguage,
-} from "@tabler/icons-react";
+import { IconBook2, IconFileSettings, IconLanguage } from "@tabler/icons-react";
 import { Step1 } from "./steps/Step1";
 import { Step2 } from "./steps/Step2";
 import { Step3 } from "./steps/Step3";
@@ -16,9 +13,23 @@ import { StepCompleted } from "./steps/StepCompleted";
 import { BookCreatedModal } from "./components/BookCreatedModal";
 import { query as bookQuery } from "#book/api/query";
 import { mutation } from "#book/api/mutation";
+import { createBookFormSchema } from "#book/api/schemas";
+import type { CreateBookForm } from "#book/api/types";
 import classes from "./CreateBookForm.module.css";
 
 const route = getRouteApi("/create-book");
+
+const fieldsByStep: Array<keyof CreateBookForm>[] = [
+  ["language_id"],
+  ["title", "text"],
+  [
+    "audio_file",
+    "threshold_page_tokens",
+    "split_by",
+    "source_uri",
+    "book_tags",
+  ],
+];
 
 export function CreateBookForm() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
@@ -35,16 +46,26 @@ export function CreateBookForm() {
 
   const { data: formValues } = useSuspenseQuery(bookQuery.bookForm());
   const methods = useForm({
-    defaultValues: { ...formValues, language_id: String(langId) },
+    defaultValues: {
+      ...formValues,
+      language_id: langId !== undefined ? langId : -1,
+    },
+    resolver: zodResolver(createBookFormSchema),
+    mode: "onBlur",
   });
-  const { reset: resetForm, handleSubmit } = methods;
+  const { reset: resetForm, handleSubmit, trigger, clearErrors } = methods;
+  const currentFields = fieldsByStep[active];
 
-  function goToNextStep() {
-    setActive((step) => (step < 3 ? step + 1 : step));
+  async function goToNextStep() {
+    const valid = await trigger(currentFields);
+    if (valid) {
+      setActive((step) => (step < 3 ? step + 1 : step));
+    }
   }
 
   function goToPrevStep() {
     setActive((step) => (step > 0 ? step - 1 : step));
+    clearErrors(currentFields);
   }
 
   function handleResetForm() {
@@ -58,9 +79,7 @@ export function CreateBookForm() {
       <form
         id="create-book-form"
         onSubmit={handleSubmit((data) =>
-          mutate(data, {
-            onSuccess: handleResetForm,
-          })
+          mutate(data, { onSuccess: handleResetForm })
         )}>
         <FormProvider {...methods}>
           <Stepper
@@ -75,9 +94,7 @@ export function CreateBookForm() {
             <Stepper.Step label={t("step2Label")} icon={<IconBook2 />}>
               <Step2 />
             </Stepper.Step>
-            <Stepper.Step
-              label={t("step3Label")}
-              icon={<IconAdjustmentsHorizontal />}>
+            <Stepper.Step label={t("step3Label")} icon={<IconFileSettings />}>
               <Step3 />
             </Stepper.Step>
             <Stepper.Completed>
@@ -114,7 +131,7 @@ export function CreateBookForm() {
 
       <BookCreatedModal
         opened={isSuccess}
-        book={{ id: data?.id }}
+        book={data}
         onClose={resetMutation}
       />
     </>

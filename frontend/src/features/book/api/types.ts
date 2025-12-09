@@ -1,4 +1,6 @@
+import type z from "zod";
 import type { Status, TextDirection } from "#resources/types";
+import type { createBookFormSchema } from "./schemas";
 
 export interface BookStats {
   [key: string]: {
@@ -123,15 +125,4 @@ export interface GenerateContentFromFileResponse {
   text: string;
 }
 
-export interface CreateBookForm {
-  language_id: string;
-  title: string;
-  text: string;
-  importurl: string;
-  text_file: File | null;
-  audio_file: File | null;
-  threshold_page_tokens: number;
-  split_by: "paragraphs" | "sentences";
-  source_uri: string;
-  book_tags: string[];
-}
+export type CreateBookForm = z.infer<typeof createBookFormSchema>;

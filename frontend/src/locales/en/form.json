@@ -3,6 +3,7 @@
     "titleLabel": "Title",
     "contentLabel": "Content",
     "textLabel": "Text",
+    "textDescription": "Use for short texts, e.g. up to a few thousand words. For longer texts, you can import content from a file.",
     "textFileLabel": "Import from file",
     "importfromURLLabel": "Import from URL",
     "importLabel": "Import",

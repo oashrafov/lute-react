@@ -7,7 +7,7 @@ interface InfoRow {
 
 export function InfoRow({ children }: InfoRow) {
   return (
-    <Text display="flex" style={{ justifyContent: "space-between" }}>
+    <Text display="flex" style={{ justifyContent: "space-between", gap: 16 }}>
       {children}
     </Text>
   );

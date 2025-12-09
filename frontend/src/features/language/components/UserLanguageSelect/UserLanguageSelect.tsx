@@ -13,7 +13,7 @@ export function UserLanguageSelect(props: SelectProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate({ from: pathname as ValidateFromPath });
   const { data: languages } = useSuspenseQuery(query.userLanguagesList());
-  const { onChange, ...rest } = props;
+  const { onChange, value, ...rest } = props;
 
   function handleLanguageChange(id: number) {
     navigate({
@@ -35,10 +35,10 @@ export function UserLanguageSelect(props: SelectProps) {
   return (
     <Select
       label="Language"
-      value={langId ? String(langId) : null}
+      value={value ? value : langId ? String(langId) : ""}
       onChange={(id, option) => {
         handleLanguageChange(Number(id));
-        props.onChange?.(id, option);
+        onChange?.(id, option);
       }}
       data={data}
       placeholder="Select book language"

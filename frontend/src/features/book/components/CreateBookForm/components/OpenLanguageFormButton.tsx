@@ -1,19 +1,25 @@
 import { useNavigate } from "@tanstack/react-router";
-import { ActionIcon } from "@mantine/core";
+import {
+  ActionIcon,
+  type ActionIconProps,
+  type ElementProps,
+} from "@mantine/core";
 import { IconSquareRoundedPlusFilled } from "@tabler/icons-react";
 
-export function OpenLanguageFormButton() {
+interface OpenLanguageFormButton
+  extends ActionIconProps,
+    ElementProps<"button", keyof ActionIconProps> {}
+
+export function OpenLanguageFormButton(props: OpenLanguageFormButton) {
   const navigate = useNavigate({ from: "/create-book" });
   return (
     <ActionIcon
-      size="input-sm"
       variant="transparent"
       color="green.6"
       onClick={() =>
-        navigate({
-          search: (prev) => ({ ...prev, langForm: true }),
-        })
-      }>
+        navigate({ search: (prev) => ({ ...prev, langForm: true }) })
+      }
+      {...props}>
       <IconSquareRoundedPlusFilled />
     </ActionIcon>
   );
