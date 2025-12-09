@@ -1,7 +1,6 @@
-import { Group } from "@mantine/core";
+import { Box, Group, Text } from "@mantine/core";
 import { TagsGroup } from "#common/TagsGroup/TagsGroup";
 import type { TermPopupSection } from "#term/api/types";
-import classes from "./TermPopupContent.module.css";
 
 interface TermPopupContentSection {
   data: TermPopupSection[];
@@ -9,18 +8,15 @@ interface TermPopupContentSection {
 
 export function TermPopupContentSection({ data }: TermPopupContentSection) {
   return data.map((d, index) => (
-    <div key={index} className={classes.section}>
+    <Box key={index} mt={5}>
       <Group gap={5} wrap="nowrap">
-        <span
-          className={classes.term}
-          dangerouslySetInnerHTML={{ __html: d.text }}
-        />
+        <Text span fw={700} dangerouslySetInnerHTML={{ __html: d.text }} />
         {d.pronunciation && <em>({d.pronunciation})</em>}
         {d.tags.length > 0 && <TagsGroup tags={d.tags} />}
       </Group>
       {d.translation && (
-        <span dangerouslySetInnerHTML={{ __html: d.translation }} />
+        <Text span dangerouslySetInnerHTML={{ __html: d.translation }} />
       )}
-    </div>
+    </Box>
   ));
 }

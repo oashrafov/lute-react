@@ -24,8 +24,17 @@ export const createBookFormSchema = z.object({
   audio_file: z
     .file()
     .mime(
-      ["audio/mpeg", "audio/mp4", "audio/wav", "audio/ogg", "audio/opus"],
-      "Valid file formats are: mp3, m4a, wav, ogg, opus"
+      [
+        "audio/mpeg",
+        "audio/mp4",
+        "audio/wav",
+        "audio/ogg",
+        "audio/opus",
+        "audio/aac",
+        "audio/flac",
+        "audio/webm",
+      ],
+      "Valid file formats are: mp3, m4a, wav, ogg, opus, aac, flac, webm"
     )
     .nullable(),
   threshold_page_tokens: z

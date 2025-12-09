@@ -8,7 +8,7 @@ terms = """
           parents.parentlist AS ParentText,
           w.WoTranslation,
           w.WoRomanization,
-          replace(wi.WiSource, '.jpeg', '') AS WiSource,
+          WiSource,
           ifnull(tags.taglist, '') AS TagList,
           StText,
           StID,

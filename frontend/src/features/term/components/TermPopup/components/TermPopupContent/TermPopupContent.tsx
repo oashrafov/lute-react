@@ -1,9 +1,8 @@
-import { Group, Text, Tooltip } from "@mantine/core";
+import { Box, Group, Image, Text, Tooltip } from "@mantine/core";
 import { TagsGroup } from "#common/TagsGroup/TagsGroup";
 import { TermPopupContentSection } from "./TermPopupContentSection";
 import type { TermPopup } from "#term/api/types";
 import { BACKEND_URL } from "#resources/constants";
-import classes from "./TermPopupContent.module.css";
 
 interface TermPopupContent {
   data: TermPopup;
@@ -11,9 +10,11 @@ interface TermPopupContent {
 
 export function TermPopupContent({ data }: TermPopupContent) {
   return (
-    <div className={classes.container}>
+    <Box maw={400} fz={15}>
       <Group gap={5} wrap="nowrap">
-        <span className={classes.term}>{data.text}</span>
+        <Text span fw={700}>
+          {data.text}
+        </Text>
         {data.tags.length > 0 && <TagsGroup tags={data.tags} />}
       </Group>
 
@@ -21,15 +22,12 @@ export function TermPopupContent({ data }: TermPopupContent) {
 
       {Object.entries(data.images).map(([img, tooltip]) => (
         <Tooltip key={img} label={tooltip}>
-          <img className={classes.image} src={`${BACKEND_URL}${img}`} />
+          <Image fit="cover" w={150} h={150} src={`${BACKEND_URL}${img}`} />
         </Tooltip>
       ))}
 
       {data.translation && (
-        <p
-          className={classes.translation}
-          dangerouslySetInnerHTML={{ __html: data.translation }}
-        />
+        <Text mt="sm" dangerouslySetInnerHTML={{ __html: data.translation }} />
       )}
 
       {data.parents.length > 0 && (
@@ -38,12 +36,12 @@ export function TermPopupContent({ data }: TermPopupContent) {
 
       {data.components.length > 0 && (
         <>
-          <Text component="p" mt="sm" fs="italic">
+          <Text mt="sm" fs="italic">
             Components
           </Text>
           <TermPopupContentSection data={data.components} />
         </>
       )}
-    </div>
+    </Box>
   );
 }

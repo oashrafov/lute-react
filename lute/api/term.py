@@ -9,7 +9,7 @@ from sqlalchemy import text as SQLText
 
 from lute.db import db
 from lute.read.service import Service as ReadService
-from lute.term.model import Repository
+from lute.term.model import Repository, ReferencesRepository
 from lute.utils.data_tables import supported_parser_type_criteria
 from lute.api.utils.utils import get_filter, parse_url_params
 from lute.api.sql.term import terms as terms_base_sql
@@ -327,8 +327,12 @@ def get_sentences(langid, text):
     "Get sentences for terms."
 
     repo = Repository(db.session)
+    refs_repo = ReferencesRepository(db.session)
+    # Use find_or_new(): if the user clicks on a parent tag
+    # in the term form, and the parent does not exist yet, then
+    # we're creating a new term.
     t = repo.find_or_new(langid, text)
-    refs = repo.find_references(t)
+    refs = refs_repo.find_references(t)
 
     # Transform data for output, to
     # { "term": [refs], "children": [refs], "parent1": [refs], "parent2" ... }

@@ -9,12 +9,18 @@ interface TranslationCell {
 
 export function TranslationCell({ row }: TranslationCell) {
   const img = row.original.image;
+  const langId = row.original.languageId;
   return (
     <>
       <Text size="sm" component="span" style={{ whiteSpace: "pre" }}>
         {row.original.translation}
       </Text>
-      {img && <TermImagePopover position="right" imageName={img} />}
+      {img && (
+        <TermImagePopover
+          position="right"
+          imageName={`userimages/${langId}/${img}`}
+        />
+      )}
     </>
   );
 }

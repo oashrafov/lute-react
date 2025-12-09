@@ -413,7 +413,7 @@ class TermReference:
     "Where a Term has been used in books."
 
     def __init__(
-        self, bookid, txid, pgnum, sentence_id, title, sentence=None
+        self, bookid, txid, pgnum, title, sentence_id, sentence=None
     ):  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self.book_id = bookid
         self.text_id = txid

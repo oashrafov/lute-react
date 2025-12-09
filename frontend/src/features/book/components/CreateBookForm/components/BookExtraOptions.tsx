@@ -44,8 +44,8 @@ export function BookExtraOptions() {
         name="audio_file"
         control={control}
         label={t("audioFileLabel")}
-        description=".mp3, .m4a, .wav, .ogg, .opus"
-        accept="audio/mpeg,audio/ogg,audio/mp4"
+        description=".mp3, .m4a, .wav, .ogg, .opus, .aac, .flac, .webm"
+        accept="audio/mpeg,audio/ogg,audio/mp4,audio/aac,audio/flac,audio/webm"
         leftSection={<IconHeadphones />}
         rightSection={clearButton}
         error={errors.audio_file?.message}

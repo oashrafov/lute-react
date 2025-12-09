@@ -11,7 +11,7 @@ interface TermImagePopover extends PopoverProps {
 }
 
 export function TermImagePopover({ imageName, ...props }: TermImagePopover) {
-  const imageSrc = `${BACKEND_URL}${imageName}`;
+  const imageSrc = `${BACKEND_URL}/${imageName}`;
   return (
     <Popover position="left" {...props}>
       <Popover.Target>
