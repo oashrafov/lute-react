@@ -2,10 +2,10 @@ import { queryOptions } from "@tanstack/react-query";
 import { api } from "./api";
 
 export const query = {
-  init: () =>
+  globalData: () =>
     queryOptions({
-      queryKey: ["init"],
-      queryFn: api.getInitialState,
+      queryKey: ["globalData"],
+      queryFn: api.getGlobalData,
       staleTime: Infinity,
     }),
   settingsForm: () =>
@@ -25,10 +25,10 @@ export const query = {
     }),
   appInfo: () =>
     queryOptions({
-      queryKey: ["appinfo"],
+      queryKey: ["appInfo"],
       queryFn: api.getAppInfo,
       staleTime: Infinity,
     }),
   backups: () =>
-    queryOptions({ queryKey: ["backups"], queryFn: api.getBackupInfo }),
+    queryOptions({ queryKey: ["backups"], queryFn: api.getBackupsInfo }),
 } as const;

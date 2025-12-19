@@ -2,17 +2,17 @@ import type { Control } from "react-hook-form";
 import type { TagsInputProps } from "@mantine/core";
 import { IconTags } from "@tabler/icons-react";
 import { TagsInput } from "#common/TagsInput/TagsInput";
-import type { TermDetail } from "#term/api/types";
+import type { TermForm } from "#term/api/types";
 import classes from "../../TermForm.module.css";
 
 interface TermTagsField extends Omit<TagsInputProps, "name"> {
-  control: Control<TermDetail>;
+  control: Control<TermForm>;
 }
 
 export function TermTagsField({ control, ...props }: TermTagsField) {
   return (
     <TagsInput
-      name="termTags"
+      name="tags"
       control={control}
       placeholder="Tags"
       maxDropdownHeight={200}

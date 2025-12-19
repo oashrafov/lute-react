@@ -15,7 +15,7 @@ from lute.language.service import Service as LangService
 bp = Blueprint("api_languages", __name__, url_prefix="/api/languages")
 
 
-@bp.route("/user", methods=["GET"])
+@bp.route("/", methods=["GET"])
 def get_user_languages():
     "get user defined languages"
 
@@ -48,7 +48,7 @@ def get_user_languages():
     return languages, 200
 
 
-@bp.route("/predefined", methods=["GET"])
+@bp.route("/presets", methods=["GET"])
 def get_predefined_languages():
     "get predefined language names only"
 
@@ -71,12 +71,12 @@ def create_language():
         service = LangService(db.session)
         lang_id = service.load_language_def(data["name"])
 
-        return {"id": lang_id}, 200
+        return {"id": lang_id}, 201
 
-    return ""
+    return {"message": "bad request"}, 400
 
 
-@bp.route("/predefined/<string:langname>", methods=["GET"])
+@bp.route("/presets/<string:langname>", methods=["GET"])
 def get_predefined_language(langname):
     "get predefined language form data"
 
@@ -94,7 +94,7 @@ def get_predefined_language(langname):
     return _lang_to_dict(language)
 
 
-@bp.route("/user/<int:langid>", methods=["GET"])
+@bp.route("/<int:langid>", methods=["GET"])
 def get_user_language(langid):
     """
     get existing language form data
@@ -118,55 +118,53 @@ def get_language_form():
     """
     default language form settings
     """
-    empty_dict = {
-        "active": True,
-        "for": "terms",
-        "type": "embedded",
-        "url": "",
-        "label": "",
-        "hostname": "",
-    }
+    # empty_dict = {
+    #     "isActive": True,
+    #     "usedFor": "terms",
+    #     "type": "embedded",
+    #     "url": "",
+    #     "label": "",
+    #     "hostname": "",
+    # }
 
     return {
-        "character_substitutions": "´='|`='|’='|‘='|...=…|..=‥",
-        "split_sentences": ".!?",
-        "split_sentence_exceptions": "Mr.|Mrs.|Dr.|[A-Z].|Vd.|Vds.",
-        "word_chars": "a-zA-ZÀ-ÖØ-öø-ȳáéíóúÁÉÍÓÚñÑ",
-        "right_to_left": False,
-        "show_romanization": False,
-        "parser_type": "spacedel",
-        "dictionaries": [empty_dict, empty_dict],
+        "name": "",
+        "characterSubstitutions": "´='|`='|’='|‘='|...=…|..=‥",
+        "splitSentencesAt": ".!?",
+        "splitSentencesExceptions": "Mr.|Mrs.|Dr.|[A-Z].|Vd.|Vds.",
+        "wordCharacters": "a-zA-ZÀ-ÖØ-öø-ȳáéíóúÁÉÍÓÚñÑ",
+        "textDirection": "ltr",
+        "showPronunciation": False,
+        "parserType": "spacedel",
+        "dictionaries": [],
     }
 
 
 def _lang_to_dict(language):
-    ret = {}
-    ret["id"] = language.id
-    ret["name"] = language.name
-    ret["show_romanization"] = language.show_romanization
-    ret["right_to_left"] = language.right_to_left
-    ret["parser_type"] = language.parser_type
-    ret["character_substitutions"] = language.character_substitutions
-    ret["split_sentences"] = language.regexp_split_sentences
-    ret["split_sentence_exceptions"] = language.exceptions_split_sentences
-    ret["word_chars"] = language.word_characters
-    ret["dictionaries"] = []
-    for d in language.dictionaries:
-        url = d.dicturi
-        hostname = urlparse(url).hostname
-        dictionary = {
-            "id": d.id,
-            "for": d.usefor,
-            "type": d.dicttype.replace("html", ""),
-            "url": url,
-            "active": d.is_active,
-            "hostname": hostname,
-            "label": (
-                hostname.split("www.")[-1]
-                if hostname and hostname.startswith("www.")
-                else hostname
-            ),
-        }
-        ret["dictionaries"].append(dictionary)
-
-    return ret
+    return {
+        "id": language.id,
+        "name": language.name,
+        "showPronunciation": language.show_romanization,
+        "textDirection": "rtl" if language.right_to_left else "ltr",
+        "parserType": language.parser_type,
+        "characterSubstitutions": language.character_substitutions,
+        "splitSentencesAt": language.regexp_split_sentences,
+        "splitSentencesExceptions": language.exceptions_split_sentences,
+        "wordCharacters": language.word_characters,
+        "dictionaries": [
+            {
+                "id": d.id,
+                "usedFor": d.usefor,
+                "type": d.dicttype.replace("html", ""),
+                "url": (url := d.dicturi),
+                "isActive": d.is_active,
+                "hostname": (hostname := urlparse(url).hostname),
+                "label": (
+                    hostname.split("www.")[-1]
+                    if hostname and hostname.startswith("www.")
+                    else hostname
+                ),
+            }
+            for d in language.dictionaries
+        ],
+    }

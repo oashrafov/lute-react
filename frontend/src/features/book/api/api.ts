@@ -1,40 +1,41 @@
 import { API_BASE_URL } from "#resources/constants";
 import { apiClient } from "#utils/apiClient";
 import { objToFormData } from "#utils/utils";
-import type {
-  BookDetail,
-  BooksList,
-  BookStats,
-  EditAction,
-  CreateBookForm,
-  Page,
-  CreateBookResponse,
-  EditBookResponse,
-  DeleteBookResponse,
-  GenerateContentFromURLResponse,
-  GenerateContentFromFileResponse,
-} from "./types";
+import type { EditAction, CreateBookForm } from "./types";
+import {
+  BookDetailSchema,
+  CreateBookFormDefaultsSchema,
+  BooksListResponseSchema,
+  BookStatsSchema,
+  CreateBookResponseSchema,
+  DeleteBookResponseSchema,
+  EditBookResponseSchema,
+  GenerateContentFromFileResponseSchema,
+  GenerateContentFromURLResponseSchema,
+  PageSchema,
+  ProcessPageResponseSchema,
+} from "./schemas";
 
 const BASE_URL = "/books";
-import { createBookFormSchema } from "./schemas";
 
 export const api = {
   getById(id: number) {
-    return apiClient.get<BookDetail>(`${BASE_URL}/${id}`);
+    return apiClient.get(`${BASE_URL}/${id}`, BookDetailSchema);
   },
 
   getAll(filters?: string) {
-    return apiClient.get<BooksList>(
-      filters ? `${BASE_URL}/?${filters}` : `${BASE_URL}/`
+    return apiClient.get(
+      filters ? `${BASE_URL}/?${filters}` : `${BASE_URL}/`,
+      BooksListResponseSchema
     );
   },
 
   getStats(id: number) {
-    return apiClient.get<BookStats>(`${BASE_URL}/${id}/stats`);
+    return apiClient.get(`${BASE_URL}/${id}/stats`, BookStatsSchema);
   },
 
   getPage(bookId: number, pageNum: number) {
-    return apiClient.get<Page>(`${BASE_URL}/${bookId}/pages/${pageNum}`);
+    return apiClient.get(`${BASE_URL}/${bookId}/pages/${pageNum}`, PageSchema);
   },
 
   async getAudioSrc(bookId: number) {
@@ -50,43 +51,49 @@ export const api = {
   },
 
   create(data: CreateBookForm) {
-    return apiClient.post<CreateBookResponse>(`${BASE_URL}/`, {
+    return apiClient.post(`${BASE_URL}/`, CreateBookResponseSchema, {
       body: objToFormData(data),
     });
   },
 
   edit(id: number, data: EditAction) {
-    return apiClient.patch<EditBookResponse>(`${BASE_URL}/${id}`, {
+    return apiClient.patch(`${BASE_URL}/${id}`, EditBookResponseSchema, {
       body: objToFormData(data),
     });
   },
 
   delete(id: number) {
-    return apiClient.delete<DeleteBookResponse>(`${BASE_URL}/${id}`);
+    return apiClient.delete(`${BASE_URL}/${id}`, DeleteBookResponseSchema);
   },
 
   generateContentFromURL(url: string) {
-    return apiClient.post<GenerateContentFromURLResponse>(
+    return apiClient.post(
       `${BASE_URL}/parse/url`,
+      GenerateContentFromURLResponseSchema,
       { headers: { "Content-Type": "text/plain" }, body: url }
     );
   },
 
   generateContentFromFile(file: File) {
-    return apiClient.post<GenerateContentFromFileResponse>(
+    return apiClient.post(
       `${BASE_URL}/parse/file`,
+      GenerateContentFromFileResponseSchema,
       { body: objToFormData({ file }) }
     );
   },
 
   processPage(bookId: number, pageNum: number) {
-    return apiClient.post(`${BASE_URL}/${bookId}/pages/${pageNum}`, {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ shouldTrack: true }),
-    });
+    return apiClient.post(
+      `${BASE_URL}/${bookId}/pages/${pageNum}`,
+      ProcessPageResponseSchema,
+      {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shouldTrack: true }),
+      }
+    );
   },
 
   getFormValues() {
-    return apiClient.get<typeof createBookFormSchema>(`${BASE_URL}/form`);
+    return apiClient.get(`${BASE_URL}/form`, CreateBookFormDefaultsSchema);
   },
 };

@@ -16,5 +16,5 @@ export function useTermQuery() {
     }
   }
 
-  return useQuery(query.detail(params));
+  return useQuery(query.detailSkippable(params));
 }

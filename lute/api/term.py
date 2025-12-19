@@ -40,12 +40,12 @@ def get_terms():
 
     fields = {
         "text": "WoText",
-        "parentsString": "ParentText",
+        "parents": "ParentText",
         "translation": "WoTranslation",
         "language": "LgName",
         "status": "StID",
-        "createdOn": "WoCreated",
-        "tagsString": "TagList",
+        "createdAt": "WoCreated",
+        "tags": "TagList",
     }
 
     for flt in filters:
@@ -53,7 +53,7 @@ def get_terms():
         value = flt.get("value", "")
         mode = filter_modes.get(field, "contains")
 
-        if field in fields and field not in ("status", "createdOn"):
+        if field in fields and field not in ("status", "createdAt"):
             where.append(get_filter(mode, fields[field], value))
 
         if field == "status":
@@ -68,7 +68,7 @@ def get_terms():
             status_range = statuses[value0 : value1 + 1]
             where.append(f" AND StID IN ({', '.join(map(str, status_range))})")
 
-        elif field == "createdOn":
+        elif field == "createdAt":
             value0 = value[0]
             value1 = value[1]
 
@@ -131,17 +131,17 @@ def get_terms():
         response.append(
             {
                 "id": row.WordID,
-                "language": row.LgName,
+                "languageName": row.LgName,
                 "languageId": row.LgID,
                 "textDirection": "rtl" if row.LgRightToLeft == 1 else "ltr",
                 "text": row.WoText,
-                "parentsString": row.ParentText,
-                "translation": row.WoTranslation,
-                "romanization": row.WoRomanization,
-                "statusId": row.StID,
-                "image": row.WiSource,
-                "createdOn": row.WoCreated,
-                "tagsString": row.TagList,
+                "parents": row.ParentText.join(",") if row.ParentText else [],
+                "translation": row.WoTranslation or "",
+                "pronunciation": row.WoRomanization or "",
+                "status": row.StID,
+                "imageSource": row.WiSource or "",
+                "createdAt": row.WoCreated,
+                "tags": row.TagList.join(",") if row.TagList else [],
                 # "statusLabel": row.StText,
             }
         )
@@ -178,18 +178,17 @@ def export_terms():
     "Generate export file of terms."
     # !!! NEED TO GET ALL DATA, NOT FILTERED OR PAGINATED (OR CAN USE PARAMS FOR CUSTOM EXPORT)
     export_file = os.path.join(current_app.env_config.temppath, "terms.csv")
-    response = get_terms()
-    term_data = response.get_json()
+    term_data = get_terms()
     # Term data is an array of dicts, with the sql field name as dict
     # keys.  These need to be mapped to headings.
     heading_to_fieldname = {
         "Term": "text",
-        "Parent": "parentText",
+        "Parent": "parents",
         "Translation": "translation",
         "Language": "language",
-        "Status": "statusLabel",
-        "Added on": "createdOn",
-        "Pronunciation": "romanization",
+        "Status": "status",
+        "Added on": "createdAt",
+        "Pronunciation": "pronunciation",
     }
 
     headings = heading_to_fieldname.keys()
@@ -242,7 +241,7 @@ def create_term():
 
     # print(term, "ID")
 
-    return {"text": text}
+    return {"id": -1, "text": text}, 201
 
 
 @bp.route("/<int:termid>", methods=["PATCH"])
@@ -251,7 +250,7 @@ def edit_term(termid):
 
     print(request.form)
 
-    return {"id": termid}
+    return {"id": termid, "text": "text"}, 200
 
 
 @bp.route("/", methods=["PATCH"])
@@ -281,7 +280,7 @@ def delete_term(termid):
 
     print(request.data)
 
-    return {"id": termid}
+    return {"id": termid, "text": "text"}
 
 
 @bp.route("<int:termid>/popup", methods=["GET"])
@@ -318,7 +317,7 @@ def get_term_popup(termid):
         "pronunciation": d.romanization,
         "translation": d.translation,
         "tags": d.tags,
-        "images": d.popup_image_data,
+        "imageData": d.popup_image_data if d.popup_image_data else None,
     }
 
 
@@ -341,9 +340,9 @@ def get_sentences(langid, text):
         refdata.append((f"\"{p['term']}\"", p["refs"]))
 
     refcount = sum(len(ref[1]) for ref in refdata)
-    variations = [
+    inflections = [
         {
-            "term": k,
+            "inflection": k,
             "references": [
                 {
                     "id": dtos.index(dto),
@@ -359,7 +358,7 @@ def get_sentences(langid, text):
         for k, dtos in refdata
     ]
 
-    return {"text": text, "variations": variations if refcount > 0 else []}
+    return {"text": text, "inflections": inflections if refcount > 0 else []}
 
 
 @bp.route("/<text>/<int:langid>/suggestions", methods=["GET"])
@@ -376,7 +375,7 @@ def get_term_suggestions(text, langid):
         {
             "id": t.id,
             "text": t.text,
-            "translation": t.translation,
+            "translation": t.translation or "",
             "status": t.status,
         }
         for t in matches
@@ -400,14 +399,15 @@ def _term_to_dict(term):
     return {
         "id": term.id,
         "text": term.text or "",
-        "textLC": term.text_lc or "",
+        "textLowercase": term.text_lc or "",
         "originalText": term.original_text or "",
         "status": term.status,
         "translation": term.translation or "",
-        "romanization": term.romanization or "",
+        "pronunciation": term.romanization or "",
         "notes": "placeholder note",
-        "syncStatus": term.sync_status,
-        "termTags": term.term_tags,
+        "shouldSyncStatus": term.sync_status,
+        "tags": term.term_tags,
         "parents": term.parents,
-        "currentImg": term.current_image,
+        "imageSource": term.current_image or "",
+        "languageId": term.language_id,
     }

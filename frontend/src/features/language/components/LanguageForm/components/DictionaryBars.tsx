@@ -1,5 +1,5 @@
 import { ScrollArea } from "@mantine/core";
-import type { Control, FieldValues } from "react-hook-form";
+import { useFormContext, type FieldArrayWithId } from "react-hook-form";
 import {
   closestCenter,
   DndContext,
@@ -18,21 +18,15 @@ import { RemoveDictionaryButton } from "./DictionaryBar/components/RemoveDiction
 import { DraggableContainer } from "./DraggableContainer";
 import { DictionaryBar } from "./DictionaryBar/DictionaryBar";
 import { MIN_LANGUAGE_DICTS } from "#resources/constants";
-import type { Dictionary } from "#language/api/types";
+import type { LanguageForm } from "#language/api/types";
 
-interface DictionaryBars<T extends FieldValues> {
-  control: Control<T>;
-  dictionaries: Dictionary[];
-  onSet: (dicts: Dictionary[]) => void;
+interface DictionaryBars {
+  dictionaries: FieldArrayWithId<LanguageForm>[];
   onRemove: (index: number) => void;
 }
 
-export function DictionaryBars<T extends FieldValues>({
-  control,
-  dictionaries,
-  onSet,
-  onRemove,
-}: DictionaryBars<T>) {
+export function DictionaryBars({ dictionaries, onRemove }: DictionaryBars) {
+  const { control, setValue } = useFormContext<LanguageForm>();
   const numOfDicts = dictionaries.length;
 
   const sensors = useSensors(
@@ -45,10 +39,14 @@ export function DictionaryBars<T extends FieldValues>({
     if (!over || active.id === over.id) {
       return;
     }
-    const oldIndex = dictionaries.findIndex((dict) => dict.id === active.id);
-    const newIndex = dictionaries.findIndex((dict) => dict.id === over.id);
+    const oldIndex = dictionaries.findIndex(
+      (dict, index) => `${dict.url}${index}` === active.id
+    );
+    const newIndex = dictionaries.findIndex(
+      (dict, index) => `${dict.url}${index}` === over.id
+    );
     const reordered = arrayMove(dictionaries, oldIndex, newIndex);
-    onSet(reordered);
+    setValue("dictionaries", reordered);
   }
 
   function handleRemoveDict(index: number) {
@@ -66,10 +64,12 @@ export function DictionaryBars<T extends FieldValues>({
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}>
         <SortableContext
-          items={dictionaries.map((dict) => dict.id)}
+          items={dictionaries.map((dict, index) => `${dict.url}${index}`)}
           strategy={verticalListSortingStrategy}>
           {dictionaries.map((dict, index) => (
-            <DraggableContainer key={dict.id} id={dict.id}>
+            <DraggableContainer
+              key={`${dict.url}${index}`}
+              id={`${dict.url}${index}`}>
               <DictionaryBar
                 control={control}
                 dict={dict}

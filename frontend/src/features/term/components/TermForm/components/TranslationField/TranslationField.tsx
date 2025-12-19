@@ -3,12 +3,12 @@ import type { Control } from "react-hook-form";
 import type { TextareaProps } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
 import { Textarea } from "#common/Textarea/Textarea";
-import type { TermDetail } from "#term/api/types";
+import type { TermForm } from "#term/api/types";
 import { moveCursorToEnd } from "#utils/utils";
 import classes from "../../TermForm.module.css";
 
 interface TranslationField extends Omit<TextareaProps, "name"> {
-  control: Control<TermDetail>;
+  control: Control<TermForm>;
   inputRef?: RefObject<HTMLTextAreaElement>;
 }
 

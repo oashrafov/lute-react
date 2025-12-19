@@ -10,7 +10,7 @@ import { query } from "#settings/api/query";
 export function DeleteLanguageButton() {
   const { t } = useTranslation("page", { keyPrefix: "languages" });
   const { langId } = useSearch({ from: "/languages" });
-  const { data: initial } = useSuspenseQuery(query.init());
+  const { data: initial } = useSuspenseQuery(query.globalData());
   const selectedLangName = initial.languageChoices.filter(
     (lang) => lang.id === langId
   )[0]?.name;

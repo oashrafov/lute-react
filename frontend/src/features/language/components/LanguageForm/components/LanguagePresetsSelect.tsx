@@ -5,7 +5,7 @@ import {
   useRouterState,
   type ValidateFromPath,
 } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   Combobox,
   Input,
@@ -16,11 +16,11 @@ import {
 import { IconLanguage } from "@tabler/icons-react";
 import { query } from "#language/api/query";
 
-export const LanguageSelect = memo(function LanguageSelect() {
+export const LanguagePresetsSelect = memo(function LanguagePresetsSelect() {
   const { langId, langName } = useSearch({ strict: false });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate({ from: pathname as ValidateFromPath });
-  const { data: languages } = useQuery(query.predefinedLanguagesList());
+  const { data: presets } = useSuspenseQuery(query.presetsList());
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -29,13 +29,13 @@ export const LanguageSelect = memo(function LanguageSelect() {
   const [search, setSearch] = useState("");
 
   let filteredOptions: string[];
-  if (languages) {
-    const shouldFilterOptions = languages.every((item) => item !== search);
+  if (presets) {
+    const shouldFilterOptions = presets.every((item) => item !== search);
     filteredOptions = shouldFilterOptions
-      ? languages.filter((item) =>
+      ? presets.filter((item) =>
           item.toLowerCase().includes(search.toLowerCase().trim())
         )
-      : languages;
+      : presets;
   } else {
     filteredOptions = [];
   }

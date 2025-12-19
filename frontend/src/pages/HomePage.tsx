@@ -11,19 +11,19 @@ import { query } from "#settings/api/query";
 
 export function HomePage() {
   const media = useMediaQuery();
-  const { data: initial } = useSuspenseQuery(query.init());
+  const { data } = useSuspenseQuery(query.globalData());
   return (
     <>
       {/* after user wipes off or deactivates demo mode tutorialBookId is set to null */}
-      {initial.tutorialBookId && (
+      {data.tutorialBookId && (
         <Box px={20} pb={10}>
-          <DemoNotice tutorialBookId={initial.tutorialBookId} />
+          <DemoNotice tutorialBookId={data.tutorialBookId} />
         </Box>
       )}
 
-      {!initial.haveLanguages && <WelcomeAlert />}
+      {!data.hasLanguages && <WelcomeAlert />}
 
-      {initial.haveBooks && (
+      {data.hasBooks && (
         <PageContainer>
           <PageTitle>Books</PageTitle>
           {!media || media === "desktop" ? <BooksTable /> : <BooksGrid />}

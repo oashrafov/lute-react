@@ -108,7 +108,7 @@ export function BookCard({ book, onEditSuccess }: BookCard) {
             </UnstyledButton>
 
             <Text fz="xs" c="dimmed">
-              {book.language}
+              {book.languageName}
             </Text>
 
             <Box>

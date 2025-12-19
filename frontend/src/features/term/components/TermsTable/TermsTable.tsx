@@ -39,7 +39,7 @@ const COLUMN_FILTERS = [{ id: "status", value: [0, 6] }];
 
 export function TermsTable() {
   const { termIds } = useSearch({ strict: false });
-  const { data: initial } = useSuspenseQuery(settingsQuery.init());
+  const { data: globalData } = useSuspenseQuery(settingsQuery.globalData());
   const { data: termTags } = useSuspenseQuery(termQuery.tagSuggestions());
   const [editModalOpened, setEditModalOpened] = useState(false);
 
@@ -55,15 +55,16 @@ export function TermsTable() {
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(
     {
       // tags: false,
-      "createdOn": false,
-      "parentsString": true,
+      "createdAt": false,
+      "parents": true,
       "mrt-row-actions": false,
     }
   );
 
   const columns = useMemo(
-    () => columnDefinition(initial.languageChoices, termTags, setColumnFilters),
-    [initial.languageChoices, termTags]
+    () =>
+      columnDefinition(globalData.languageChoices, termTags, setColumnFilters),
+    [globalData.languageChoices, termTags]
   );
 
   const searchParams = new URLSearchParams({
@@ -102,7 +103,7 @@ export function TermsTable() {
   function handleShowParentsOnly() {
     setColumnVisibility((v) => ({
       ...v,
-      parentsString: !v.parentsString,
+      parents: !v.parents,
     }));
     setShowParentsOnly((v) => !v);
   }
@@ -171,7 +172,9 @@ export function TermsTable() {
     },
 
     renderEmptyRowsFallback: ({ table }) => {
-      const language = table.getColumn("language").getFilterValue() as string;
+      const language = table
+        .getColumn("languageName")
+        .getFilterValue() as string;
       return language?.length > 0 ? (
         <EmptyRow tableName="terms" language={language} />
       ) : null;

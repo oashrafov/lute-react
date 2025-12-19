@@ -1,5 +1,5 @@
 import type { Status, TextitemElement } from "#resources/types";
-import type { TermDetail } from "#term/api/types";
+import type { TermForm } from "#term/api/types";
 import { clamp } from "#utils/utils";
 import { getHovered, getMarked } from "./text";
 
@@ -43,23 +43,23 @@ function _getShiftedStatusData(
 
 export function shiftStatusForSelected(
   shiftBy: number
-): Pick<TermDetail, "id" | "status">[] | undefined {
+): Pick<TermForm, "id" | "status">[] | undefined {
   const textitems = getMarked().concat(getHovered());
   if (!textitems.length) return;
 
   const initial = _getTextitemsStatusData(textitems);
   const updated = _getShiftedStatusData(initial, shiftBy);
 
-  const res = Object.entries(updated).flatMap(([status, termIds]) => {
-    return termIds.map((id) => ({ id, status: Number(status) }));
-  });
+  const res = Object.entries(updated).flatMap(([status, termIds]) =>
+    termIds.map((id) => ({ id, status: Number(status) as Status }))
+  );
 
   return res;
 }
 
 export function setStatusForSelected(
   status: Status
-): Pick<TermDetail, "id" | "status">[] | undefined {
+): Pick<TermForm, "id" | "status">[] | undefined {
   const termIds = getMarked()
     .concat(getHovered())
     .map((textitem) => Number(textitem.dataset.wordId));
@@ -69,7 +69,7 @@ export function setStatusForSelected(
   const res = termIds.map((id) => ({
     id,
     status,
-  })) as Pick<TermDetail, "id" | "status">[];
+  })) as Pick<TermForm, "id" | "status">[];
 
   return res;
 }

@@ -13,8 +13,7 @@ export const Route = createFileRoute("/books/$bookId")({
     ].includes(location.pathname);
 
     if (shouldRedirect) {
-      redirect({
-        throw: true,
+      throw redirect({
         to: "/books/$bookId/pages/$pageNum",
         params: { bookId: params.bookId, pageNum: 1 },
       });

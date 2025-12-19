@@ -20,13 +20,13 @@ export const mutation = {
         });
         await Promise.all([
           context.client.invalidateQueries({
-            queryKey: settingsQuery.init().queryKey,
+            queryKey: settingsQuery.globalData().queryKey,
           }),
           context.client.invalidateQueries({
-            queryKey: langQuery.userLanguagesList().queryKey,
+            queryKey: langQuery.list().queryKey,
           }),
           context.client.invalidateQueries({
-            queryKey: langQuery.predefinedLanguagesList().queryKey,
+            queryKey: langQuery.presetsList().queryKey,
           }),
         ]);
       },

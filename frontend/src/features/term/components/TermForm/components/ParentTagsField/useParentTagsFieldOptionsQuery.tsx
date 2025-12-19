@@ -1,4 +1,3 @@
-import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { buildSuggestionsList } from "#helpers/term";
 import { MAX_TERM_SUGGESTIONS } from "#resources/constants";
@@ -7,10 +6,13 @@ import { query } from "#term/api/query";
 export function useParentTagsFieldOptionsQuery(
   search: string,
   termText: string,
-  existingParents: string[]
+  existingParents: string[],
+  languageId?: number
 ) {
-  const { langId } = useSearch({ strict: false });
-  const { data, isFetching } = useQuery(query.termSuggestions(search, langId));
+  console.log(search, languageId);
+  const { data, isFetching } = useQuery(
+    query.termSuggestions(search, languageId)
+  );
   const suggestions = data
     ? buildSuggestionsList(data.filter((d) => d.text !== termText))
     : [];

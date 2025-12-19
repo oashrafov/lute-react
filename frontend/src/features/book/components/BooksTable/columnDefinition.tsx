@@ -32,7 +32,7 @@ export const columnDefinition = (
   },
   {
     header: "LANGUAGE",
-    accessorKey: "language",
+    accessorKey: "languageName",
     filterVariant: "select",
     columnFilterModeOptions: null,
     mantineFilterSelectProps: {
@@ -40,7 +40,7 @@ export const columnDefinition = (
     },
     Cell: ({ row }) => (
       <LanguageCell
-        language={row.original.language}
+        language={row.original.languageName}
         onSetColumnFilters={onSetColumnFilters}
       />
     ),

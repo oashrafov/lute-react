@@ -1,5 +1,4 @@
 import type { ComponentProps } from "react";
-import type { Textitem } from "#book/api/types";
 import {
   handleMouseDown,
   handleMouseOver,
@@ -7,12 +6,13 @@ import {
 } from "#helpers/interactions-desktop";
 import { TermPopup } from "#term/components/TermPopup/TermPopup";
 import { TextItem } from "./TextItem";
+import type { WordTextitem } from "#book/api/types";
 
-interface WordTextItem extends ComponentProps<typeof TextItem> {
-  data: Textitem;
+interface WordTextItemProps extends ComponentProps<typeof TextItem> {
+  data: WordTextitem;
 }
 
-export function WordTextItem({ data, ...props }: WordTextItem) {
+export function WordTextItem({ data, ...props }: WordTextItemProps) {
   return (
     <TermPopup id={data.wordId}>
       <TextItem

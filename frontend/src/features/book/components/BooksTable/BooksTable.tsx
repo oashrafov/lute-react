@@ -42,13 +42,13 @@ const PAGINATION = {
 
 const COLUMN_FILTER_FNS = {
   title: "contains",
-  language: "contains",
+  languageName: "contains",
   wordCount: "greaterThan",
   status: "greaterThan",
 };
 
 export const BooksTable = memo(function BooksTable() {
-  const { data: initial } = useSuspenseQuery(settingsQuery.init());
+  const { data: globalData } = useSuspenseQuery(settingsQuery.globalData());
   const [editedRow, setEditedRow] = useState<MRT_Row<BooksListItem> | null>(
     null
   );
@@ -77,13 +77,13 @@ export const BooksTable = memo(function BooksTable() {
   const columns = useMemo(
     () =>
       columnDefinition(
-        initial.languageChoices,
-        initial.bookTags,
+        globalData.languageChoices,
+        globalData.bookTags,
         setColumnFilters,
         setEditedRow,
         setShelf
       ),
-    [initial.languageChoices, initial.bookTags]
+    [globalData.languageChoices, globalData.bookTags]
   );
 
   const searchParams = new URLSearchParams({
@@ -141,7 +141,9 @@ export const BooksTable = memo(function BooksTable() {
     getRowId: (row) => String(row.id),
 
     renderEmptyRowsFallback: ({ table }) => {
-      const language = table.getColumn("language").getFilterValue() as string;
+      const language = table
+        .getColumn("languageName")
+        .getFilterValue() as string;
       const isLanguageFiltered = language?.length > 0;
       return isLanguageFiltered ? (
         <EmptyRow tableName="books" language={language} />
@@ -189,8 +191,9 @@ export const BooksTable = memo(function BooksTable() {
         styles={{ title: { fontSize: "1.1rem", fontWeight: 600 } }}>
         {editedRow && (
           <EditBookForm
-            book={editedRow.original}
-            bookTags={initial.bookTags}
+            book={{ ...editedRow.original, audioFile: null }}
+            textDirection={editedRow.original.textDirection}
+            bookTags={globalData.bookTags}
             onCloseModal={() => setEditedRow(null)}
           />
         )}

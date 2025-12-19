@@ -2,11 +2,11 @@ import { IconBubbleText } from "@tabler/icons-react";
 import type { TextInputProps } from "@mantine/core";
 import type { Control } from "react-hook-form";
 import { TextInput } from "#common/TextInput/TextInput";
-import type { TermDetail } from "#term/api/types";
+import type { TermForm } from "#term/api/types";
 import classes from "../../TermForm.module.css";
 
 interface TermField extends Omit<TextInputProps, "name"> {
-  control: Control<TermDetail>;
+  control: Control<TermForm>;
 }
 
 export function TermField({ control, ...props }: TermField) {

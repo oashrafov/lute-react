@@ -1,32 +1,25 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, Text } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
-import { PageSpinner } from "#common/PageSpinner/PageSpinner";
 import { query } from "#settings/api/query";
 
 export function AppInfo() {
-  const { data } = useQuery(query.appInfo());
-
-  if (!data) {
-    return <PageSpinner />;
-  }
-
+  const { data } = useSuspenseQuery(query.appInfo());
   return (
     <>
-      <Text component="p" size="md">
+      <Text>
         <b>LUTE</b>: Learning Using Texts v3
       </Text>
-
-      <Text component="p" size="md">
+      <Text>
         <b>Version</b>: {data.version}
       </Text>
-      <Text component="p" size="md">
-        <b>Data path</b>: {data.datapath}
+      <Text>
+        <b>Data path</b>: {data.luteDbDirectory}
       </Text>
-      <Text component="p" size="md">
-        <b>Database</b>: {data.database}
+      <Text>
+        <b>Database</b>: {data.luteDb}
       </Text>
       {data.isDocker && (
-        <Text component="p">
+        <Text>
           <em>
             Note these are paths in your container, not on the host. You mounted
             host paths when you started the container.
@@ -35,13 +28,13 @@ export function AppInfo() {
       )}
 
       <Stack mt="md" gap={0}>
-        <Text component="p">
+        <Text>
           <b>Repository</b>:{" "}
           <a href="https://github.com/LuteOrg/lute-v3" target="_blank">
             lute-v3
           </a>
         </Text>
-        <Text component="p">Lute is released under the MIT License.</Text>
+        <Text>Lute is released under the MIT License.</Text>
       </Stack>
     </>
   );

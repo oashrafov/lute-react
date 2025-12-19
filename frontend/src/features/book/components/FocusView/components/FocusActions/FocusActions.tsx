@@ -4,10 +4,10 @@ import { MarkRestAsKnownButton } from "#book/components/common/MarkRestAsKnownBu
 import { ShowDictionariesChip } from "./ShowDictionariesChip";
 import { FocusToolbar } from "../FocusToolbar/FocusToolbar";
 import { FocusBookmarksButton } from "../FocusBookmarksButton";
-import type { PageBookmark } from "#book/api/types";
+import type { Bookmarks } from "#book/api/types";
 
 interface FocusActions {
-  bookmarks: PageBookmark | null;
+  bookmarks: Bookmarks | null;
   showDicts: boolean;
   onShowDicts: Dispatch<SetStateAction<boolean>>;
 }

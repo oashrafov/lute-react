@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
 import { ActionIcon, Group } from "@mantine/core";
+import type { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { IconGripVertical } from "@tabler/icons-react";
 
 interface DraggableContainer {
-  id: number;
+  id: UniqueIdentifier;
   children: ReactNode;
 }
 

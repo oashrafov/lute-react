@@ -1,79 +1,17 @@
-import type { TextDirection } from "#resources/types";
-
-export interface SentenceReferenceData {
-  id: number;
-  sentence: string;
-  bookId: number;
-  bookTitle: string;
-  pageNumber: number;
-  sentenceId: number;
-}
-
-export interface TermVariation {
-  term: string;
-  references: SentenceReferenceData[];
-}
-
-export interface SentencesResponse {
-  text: string;
-  variations: TermVariation[];
-}
-
-export interface TermPopupSection {
-  tags: string[];
-  text: string;
-  pronunciation: string;
-  translation: string;
-}
-
-export interface TermPopup extends TermPopupSection {
-  images: [string, string][];
-  components: TermPopupSection[];
-  parents: TermPopupSection[];
-}
-
-export interface TermDetail {
-  id: number | null;
-  originalText: string;
-  text: string;
-  textLC: string;
-  parents: string[];
-  translation: string;
-  romanization: string;
-  notes: string;
-  status: number;
-  syncStatus: boolean;
-  termTags: string[];
-  currentImg: string | null;
-}
-
-export interface TermsListItem {
-  createdOn: string;
-  id: number;
-  image: string | null;
-  language: string;
-  languageId: number;
-  textDirection: TextDirection;
-  parentsString: string | null;
-  romanization: string | null;
-  statusId: number;
-  tagsString: string;
-  text: string;
-  translation: string | null;
-}
-
-export interface TermsList {
-  data: TermsListItem[];
-  filteredCount: number;
-  totalCount: number;
-}
-
-export interface Tag {
-  id: number;
-  text: string;
-  comment: string;
-  termCount: number;
-}
+import { z } from "zod";
+import {
+  SentenceReferenceDataSchema,
+  SentencesResponseSchema,
+  TagSchema,
+  TermDetailSchema,
+  TermFormSchema,
+  TermInflectionSchema,
+  TermPopupSchema,
+  TermPopupSectionSchema,
+  TermsListItemSchema,
+  TermsListSchema,
+  TermSuggestionSchema,
+} from "./schemas";
 
 export type TermQueryParams = TermByIdQueryParams | TermByTextParams;
 
@@ -86,9 +24,14 @@ interface TermByTextParams {
   langId: number;
 }
 
-export interface TermSuggestion {
-  id: number;
-  text: string;
-  translation: string;
-  status: number;
-}
+export type SentenceReferenceData = z.infer<typeof SentenceReferenceDataSchema>;
+export type TermInflection = z.infer<typeof TermInflectionSchema>;
+export type SentencesResponse = z.infer<typeof SentencesResponseSchema>;
+export type TermPopupSection = z.infer<typeof TermPopupSectionSchema>;
+export type TermPopup = z.infer<typeof TermPopupSchema>;
+export type TermDetail = z.infer<typeof TermDetailSchema>;
+export type TermsList = z.infer<typeof TermsListSchema>;
+export type TermsListItem = z.infer<typeof TermsListItemSchema>;
+export type TermForm = z.infer<typeof TermFormSchema>;
+export type TermSuggestion = z.infer<typeof TermSuggestionSchema>;
+export type Tag = z.infer<typeof TagSchema>;

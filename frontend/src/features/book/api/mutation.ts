@@ -24,10 +24,10 @@ export const mutation = {
       mutationFn: api.create,
       onSuccess: (_data, _variables, _onMutateResult, context) => {
         context.client.invalidateQueries({
-          queryKey: bookQuery.list().queryKey,
+          queryKey: bookQuery.allList(),
         });
         context.client.invalidateQueries({
-          queryKey: settingsQuery.init().queryKey,
+          queryKey: settingsQuery.globalData().queryKey,
         });
       },
       onError: (error) => notifications.show(errorMessage(error.message)),
@@ -39,7 +39,7 @@ export const mutation = {
       mutationFn: ({ id, data }: EditBookData) => api.edit(id, data),
       onSuccess: (data, { userData }, _onMutateResult, context) => {
         context.client.invalidateQueries({
-          queryKey: bookQuery.list().queryKey,
+          queryKey: bookQuery.allList(),
         });
         if (userData?.showNotification ?? true) {
           notifications.show(bookUpdated(data.title));
@@ -53,10 +53,10 @@ export const mutation = {
       mutationFn: api.delete,
       onSuccess: (data, _variables, _onMutateResult, context) => {
         context.client.invalidateQueries({
-          queryKey: bookQuery.list().queryKey,
+          queryKey: bookQuery.allList(),
         });
         context.client.invalidateQueries({
-          queryKey: settingsQuery.init().queryKey,
+          queryKey: settingsQuery.globalData().queryKey,
         });
         notifications.show(bookDeleted(data.title));
       },
@@ -83,7 +83,7 @@ export const mutation = {
         api.processPage(bookId, pageNum),
       onSuccess: (_data, { bookId, pageNum }, _onMutateResult, context) => {
         context.client.invalidateQueries({
-          queryKey: bookQuery.list().queryKey,
+          queryKey: bookQuery.allList(),
         });
         context.client.invalidateQueries({
           queryKey: bookQuery.page(bookId, pageNum).queryKey,

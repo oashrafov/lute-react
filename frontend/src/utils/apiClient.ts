@@ -2,87 +2,67 @@ import { z } from "zod";
 import { API_BASE_URL } from "#resources/constants";
 
 export const apiClient = {
-  get<T>(
+  get<T extends z.ZodType>(
     endpoint: string,
-    options?: RequestInit,
-    responseSchema?: z.ZodType<T>
+    responseSchema: T,
+    options?: RequestInit
   ) {
-    return this._request(
-      endpoint,
-      {
-        ...options,
-        headers: {
-          "Content-Type": "application/json",
-          ...options?.headers,
-        },
-      },
-      responseSchema
-    );
-  },
-
-  post<T>(
-    endpoint: string,
-    options: RequestInit,
-    responseSchema?: z.ZodType<T>
-  ) {
-    return this._request(
-      endpoint,
-      {
-        ...options,
-        method: "POST",
-      },
-      responseSchema
-    );
-  },
-
-  delete<T>(endpoint: string, responseSchema?: z.ZodType<T>) {
-    return this._request(
-      endpoint,
-      {
-        method: "DELETE",
-      },
-      responseSchema
-    );
-  },
-
-  patch<T>(
-    endpoint: string,
-    options: RequestInit,
-    responseSchema?: z.ZodType<T>
-  ) {
-    return this._request(
-      endpoint,
-      {
-        ...options,
-        method: "PATCH",
-      },
-      responseSchema
-    );
-  },
-
-  async _request<T>(
-    endpoint: string,
-    options: RequestInit,
-    responseSchema?: z.ZodType<T>
-  ): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: "GET",
+    return request(endpoint, responseSchema, {
       ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      method: "GET",
     });
+  },
 
-    if (!response.ok) {
-      const message = await response.json();
-      throw new Error(message);
-    }
+  post<T extends z.ZodType>(
+    endpoint: string,
+    responseSchema: T,
+    options: RequestInit
+  ) {
+    return request(endpoint, responseSchema, {
+      ...options,
+      method: "POST",
+    });
+  },
 
-    if (responseSchema) {
-      const parsed = responseSchema.safeParse(response);
-      if (!parsed.success) {
-        throw new Error("Invalid response format");
-      }
-      return parsed.data;
-    }
+  delete<T extends z.ZodType>(endpoint: string, responseSchema: T) {
+    return request(endpoint, responseSchema, {
+      method: "DELETE",
+    });
+  },
 
-    return await response.json();
+  patch<T extends z.ZodType>(
+    endpoint: string,
+    responseSchema: T,
+    options: RequestInit
+  ) {
+    return request(endpoint, responseSchema, {
+      ...options,
+      method: "PATCH",
+    });
   },
 };
+
+async function request<T extends z.ZodType>(
+  endpoint: string,
+  responseSchema: T,
+  options: RequestInit
+): Promise<z.infer<T>> {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+
+  if (!response.ok) {
+    const message = await response.json();
+    throw new Error(message);
+  }
+
+  const parsed = responseSchema.safeParse(await response.json());
+  if (!parsed.success) {
+    console.log(parsed.error.message);
+    throw new Error(parsed.error.message);
+  }
+
+  return parsed.data;
+}

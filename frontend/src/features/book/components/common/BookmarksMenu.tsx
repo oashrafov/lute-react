@@ -1,21 +1,16 @@
 import { type ReactNode } from "react";
-import { getRouteApi } from "@tanstack/react-router";
 import { Divider, Menu, Text } from "@mantine/core";
 import { BookmarksAccordion } from "./BookmarksAccordion";
-import type { PageBookmark } from "#book/api/types";
-
-const route = getRouteApi("/books/$bookId/pages/$pageNum/");
+import type { Bookmarks } from "#book/api/types";
 
 interface BookmarksMenu {
-  data: PageBookmark;
+  data: Bookmarks;
   children: ReactNode;
 }
 
 export function BookmarksMenu({ data, children }: BookmarksMenu) {
-  const { pageNum } = route.useParams();
-
   const bookmarkCount = Object.values(data).reduce(
-    (acc, current) => acc + current.length,
+    (acc, current) => acc + current.sentences.length,
     0
   );
   const pageCount = Object.keys(data).length;
@@ -31,7 +26,7 @@ export function BookmarksMenu({ data, children }: BookmarksMenu) {
 
           <Divider />
 
-          <BookmarksAccordion defaultValue={String(pageNum)} bookmarks={data} />
+          <BookmarksAccordion bookmarks={data} />
         </>
       </Menu.Dropdown>
     </Menu>

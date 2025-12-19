@@ -45,16 +45,11 @@ export const columnDefinition = (
   },
   {
     header: "PARENT",
-    accessorKey: "parentsString",
+    accessorKey: "parents",
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     minSize: 200,
     enableEditing: true,
-    Cell: ({ row }) => {
-      const parentsList = row.original.parentsString
-        ? row.original.parentsString.split(",")
-        : [];
-      return <TagsGroup tags={parentsList} />;
-    },
+    Cell: ({ row }) => <TagsGroup tags={row.original.parents} />,
     Edit: ({ row, cell }) => <ParentEdit row={row} cell={cell} />,
   },
   {
@@ -69,20 +64,15 @@ export const columnDefinition = (
   },
   {
     header: "TAGS",
-    id: "tagsString",
-    accessorKey: "tagsString",
+    id: "tags",
+    accessorKey: "tags",
     mantineFilterSelectProps: {
       data: tagChoices,
     },
     enableEditing: true,
     filterVariant: "select",
     columnFilterModeOptions: null,
-    Cell: ({ row }) => {
-      const tagsList = row.original.tagsString
-        ? row.original.tagsString.split(",")
-        : [];
-      return <TagsGroup tags={tagsList} />;
-    },
+    Cell: ({ row }) => <TagsGroup tags={row.original.tags} />,
     Edit: ({ cell }) => <TagsEdit cell={cell} tagChoices={tagChoices} />,
   },
   {
@@ -93,11 +83,11 @@ export const columnDefinition = (
     size: 210,
     enableEditing: true,
     accessorFn: (row) => {
-      const statusId = row.statusId;
+      const statusId = row.status;
       return statusId === 98 ? 7 : statusId === 99 ? 6 : statusId;
     },
     Cell: ({ row }) => {
-      const statusId = row.original.statusId;
+      const statusId = row.original.status;
       return (
         <StatusCell
           statusId={statusId}
@@ -107,7 +97,7 @@ export const columnDefinition = (
       );
     },
     Edit: ({ row, cell }) => {
-      const [value, setValue] = useState(String(row.original.statusId));
+      const [value, setValue] = useState(String(row.original.status));
       return (
         <StatusRadio
           size="sm"
@@ -139,7 +129,7 @@ export const columnDefinition = (
   },
   {
     header: "LANGUAGE",
-    accessorKey: "language",
+    accessorKey: "languageName",
     filterVariant: "select",
     columnFilterModeOptions: null,
     enableEditing: false,
@@ -148,16 +138,16 @@ export const columnDefinition = (
     },
     Cell: ({ row }) => (
       <LanguageCell
-        language={row.original.language}
+        language={row.original.languageName}
         onSetColumnFilters={setColumnFilters}
       />
     ),
   },
   {
     header: "ADDED ON",
-    id: "createdOn",
+    id: "createdAt",
     filterVariant: "date-range",
-    accessorFn: (originalRow) => new Date(originalRow.createdOn),
+    accessorFn: (originalRow) => new Date(originalRow.createdAt),
     columnFilterModeOptions: null,
     enableEditing: false,
     Cell: ({ cell }) => {

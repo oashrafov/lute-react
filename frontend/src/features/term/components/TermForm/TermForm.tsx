@@ -1,9 +1,8 @@
 import { useState, type KeyboardEvent, type RefObject } from "react";
-import { useSearch } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
+import { useRouteContext } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Controller } from "react-hook-form";
 import { Group, rem, Collapse, InputClearButton } from "@mantine/core";
-import { modals } from "@mantine/modals";
 import { ParentTagsField } from "./components/ParentTagsField/ParentTagsField";
 import { TranslationField } from "./components/TranslationField/TranslationField";
 import { TermField } from "./components/TermField/TermField";
@@ -18,35 +17,20 @@ import { NotesButton } from "./components/NotesButton";
 import { TermImagePopover } from "../TermImagePopover/TermImagePopover";
 import { FormButtons } from "#common/FormButtons/FormButtons";
 import { StatusRadio } from "../StatusRadio/StatusRadio";
-import { deleteTermConfirm } from "#resources/modals";
+import { useTermForm } from "./useTermForm";
 import { query } from "#term/api/query";
-import type { TermDetail } from "#term/api/types";
-import { mutation } from "#term/api/mutation";
+import type { TermForm } from "#term/api/types";
 import classes from "./TermForm.module.css";
 
-interface TermForm {
-  term?: TermDetail;
+interface TermFormProps {
+  term?: TermForm;
   translationFieldRef?: RefObject<HTMLTextAreaElement>;
   onSetTermText?: (text: string) => void;
   onSubmitSuccess?: () => void;
   showPronunciation?: boolean;
   showNotes?: boolean;
+  languageId?: number;
 }
-
-const initialValues: TermDetail = {
-  id: null,
-  originalText: "",
-  text: "",
-  textLC: "",
-  parents: [],
-  romanization: "",
-  notes: "",
-  status: 1,
-  syncStatus: false,
-  termTags: [],
-  translation: "",
-  currentImg: null,
-};
 
 export function TermForm({
   term,
@@ -55,29 +39,24 @@ export function TermForm({
   translationFieldRef,
   onSetTermText,
   onSubmitSuccess,
-}: TermForm) {
-  const { textDir } = useSearch({ strict: false });
-  const createTermMutation = mutation.useCreateTerm();
-  const editTermMutation = mutation.useEditTerm();
-  const deleteTermMutation = mutation.useDeleteTerm();
+  languageId,
+}: TermFormProps) {
+  const { textDirectionMap } = useRouteContext({ from: "__root__" });
+  const textDirection = languageId ? textDirectionMap[languageId] : "ltr";
 
-  const {
-    control,
-    getValues,
-    setValue,
-    watch,
-    reset,
-    handleSubmit: handleFormSubmit,
-  } = useForm<TermDetail>({ defaultValues: term ?? initialValues });
-
-  const hasText = !!watch("text");
-  const numOfParents = watch("parents", []).length;
-
-  const { data: tags } = useQuery(query.tagSuggestions());
-
+  const { data: tags } = useSuspenseQuery(query.tagSuggestions());
   const editMode = !!(term && term.id !== null);
   const prefilledMode = !!(term && term.id === null && term.originalText);
-  const termImage = getValues().currentImg;
+
+  const {
+    methods: { control, getValues, setValue, watch },
+    onSubmit,
+    handleDeleteTerm,
+  } = useTermForm(editMode, prefilledMode, term, onSubmitSuccess);
+
+  const hasText = !!watch("originalText");
+  const numOfParents = watch("parents", []).length;
+  const termImage = getValues().imageSource;
 
   const [notesOpened, setNotesOpened] = useState(showNotes);
   const [pronunciationOpened, setPronunciationOpened] =
@@ -92,7 +71,7 @@ export function TermForm({
     if (hasSingleParent) {
       setValue("status", obj.status);
     }
-    setValue("syncStatus", hasSingleParent);
+    setValue("shouldSyncStatus", hasSingleParent);
     setValue("parents", parents);
   }
 
@@ -110,7 +89,7 @@ export function TermForm({
   }
 
   function handleClearTags() {
-    setValue("termTags", []);
+    setValue("tags", []);
   }
 
   function handleKeydown(e: KeyboardEvent) {
@@ -128,57 +107,18 @@ export function TermForm({
     }
   }
 
-  function handleSubmit(data: TermDetail) {
-    if (editMode) {
-      editTerm(data);
-    } else {
-      createTerm(data);
-    }
-  }
-
-  function createTerm(data: TermDetail) {
-    createTermMutation.mutate(data, {
-      onSuccess: () => {
-        if (prefilledMode) {
-          reset();
-        }
-        onSubmitSuccess?.();
-      },
-    });
-  }
-
-  function editTerm(data: TermDetail) {
-    editTermMutation.mutate(data, {
-      onSuccess: () => {
-        onSubmitSuccess?.();
-      },
-    });
-  }
-
-  function handleDeleteTerm() {
-    modals.openConfirmModal(
-      deleteTermConfirm(term!.text, () =>
-        deleteTermMutation.mutate(term!.id!, {
-          onSuccess: () => {
-            onSubmitSuccess?.();
-          },
-        })
-      )
-    );
-  }
-
   function handleToLowerCase() {
     setValue("text", getValues().text.toLowerCase());
   }
 
   return (
-    <form onSubmit={handleFormSubmit(handleSubmit)} onKeyDown={handleKeydown}>
+    <form onSubmit={onSubmit} onKeyDown={handleKeydown}>
       <div className={`${classes.termBox} ${classes.fieldBox}`}>
         <TermField
           control={control}
           readOnly={editMode}
           variant={editMode ? "filled" : "default"}
-          wrapperProps={{ dir: textDir }}
+          wrapperProps={{ dir: textDirection }}
           rightSection={
             <ToLowerCaseButton
               disabled={!hasText}
@@ -189,7 +129,7 @@ export function TermForm({
         {!prefilledMode && !editMode && (
           <LoadDictsButton
             disabled={!hasText}
-            onClick={() => onSetTermText?.(getValues().text)}
+            onClick={() => onSetTermText?.(getValues().originalText)}
           />
         )}
         {editMode && (
@@ -210,6 +150,7 @@ export function TermForm({
         termText={getValues().originalText}
         onOptionSubmit={handleParentSubmit}
         onTagClick={handleParentClick}
+        languageId={languageId}
       />
       <Collapse in={pronunciationOpened}>
         <PronunciationField control={control} />
@@ -217,7 +158,7 @@ export function TermForm({
       <div className={`${classes.translationBox} ${classes.fieldBox}`}>
         <TranslationField
           control={control}
-          wrapperProps={{ dir: textDir }}
+          wrapperProps={{ dir: textDirection }}
           inputRef={translationFieldRef}
         />
         {termImage && <TermImagePopover imageName={termImage} />}

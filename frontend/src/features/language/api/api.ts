@@ -1,46 +1,45 @@
+import { z } from "zod";
 import { apiClient } from "#utils/apiClient";
-import type {
-  UserLanguageDetail,
-  UserLanguagesList,
-  LanguageForm,
-  PredefinedLanguageDetail,
-  LanguageParser,
-} from "./types";
+import {
+  LanguageDetailSchema,
+  LanguageFormDefaultsSchema,
+  LanguageParserSchema,
+  LanguageResponseSchema,
+  LanguagePresetsSchema,
+  LanguagesListSchema,
+  LanguageFormSchema,
+} from "./schemas";
 
 const BASE_URL = "/languages";
 
 export const api = {
-  getUserLanguages() {
-    return apiClient.get<UserLanguagesList>(`${BASE_URL}/user`);
+  getAll() {
+    return apiClient.get(`${BASE_URL}/`, LanguagesListSchema);
   },
 
-  getPredefinedLanguages() {
-    return apiClient.get<string[]>(`${BASE_URL}/predefined`);
+  getById(id: number) {
+    return apiClient.get(`${BASE_URL}/${id}`, LanguageDetailSchema);
   },
 
-  getUserLanguage(id: number) {
-    return apiClient.get<UserLanguageDetail>(`${BASE_URL}/user/${id}`);
+  getLanguagePresetNames() {
+    return apiClient.get(`${BASE_URL}/presets`, LanguagePresetsSchema);
   },
 
-  getPredefinedLanguage(langName: string) {
-    return apiClient.get<PredefinedLanguageDetail>(
-      `${BASE_URL}/predefined/${langName}`
-    );
+  getLanguagePreset(langName: string) {
+    return apiClient.get(`${BASE_URL}/presets/${langName}`, LanguageFormSchema);
   },
 
   getParsers() {
-    return apiClient.get<LanguageParser[]>(`${BASE_URL}/parsers`);
+    return apiClient.get(`${BASE_URL}/parsers`, z.array(LanguageParserSchema));
   },
 
   getFormValues() {
-    return apiClient.get<LanguageForm>(`${BASE_URL}/form`);
+    return apiClient.get(`${BASE_URL}/form`, LanguageFormDefaultsSchema);
   },
 
   create(name: string, loadStories?: boolean) {
-    return apiClient.post(BASE_URL, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    return apiClient.post(BASE_URL, LanguageResponseSchema, {
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, loadStories }),
     });
   },

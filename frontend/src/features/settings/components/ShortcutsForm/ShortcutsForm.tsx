@@ -1,5 +1,5 @@
 import { type KeyboardEvent } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Fieldset, Group, InputClearButton, rem } from "@mantine/core";
 import { TextInput } from "#common/TextInput/TextInput";
@@ -9,16 +9,16 @@ import type { ShortcutsForm } from "#settings/api/types";
 import { query } from "#settings/api/query";
 
 function getShortcutsInCategory(category: string, data: ShortcutsForm) {
-  return Object.entries(data!)
+  return Object.entries(data)
     .map(([id, shortcut]) => ({ ...shortcut, id: id }))
     .filter((shortcut) => shortcut.category === category);
 }
 
 export function ShortcutsForm() {
-  const { data } = useQuery(query.shortcuts());
+  const { data } = useSuspenseQuery(query.shortcuts());
   const { setValue, control, watch } = useForm({
     defaultValues: Object.fromEntries(
-      Object.entries(data!).map(([key, value]) => [key, value.key])
+      Object.entries(data).map(([key, value]) => [key, value.key])
     ),
   });
 
@@ -54,7 +54,7 @@ export function ShortcutsForm() {
               styles={{
                 legend: { fontSize: rem(20), fontWeight: 700 },
               }}>
-              {getShortcutsInCategory(key, data!).map((shortcut) => (
+              {getShortcutsInCategory(key, data).map((shortcut) => (
                 <TextInput
                   key={shortcut.id}
                   control={control}

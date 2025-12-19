@@ -7,6 +7,8 @@ import type { View } from "#resources/types";
 import { BookPage } from "#pages/BookPage";
 import { query as bookQuery } from "#book/api/query";
 import { query as settingsQuery } from "#settings/api/query";
+import { query as langQuery } from "#language/api/query";
+import { query as termQuery } from "#term/api/query";
 
 type TermIds = number[];
 
@@ -27,40 +29,39 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
   params: {
     parse: (params) => ({ pageNum: Number(params.pageNum) }),
   },
-  loaderDeps: ({ search: { langId, textDir } }) => ({ langId, textDir }),
-  loader: async ({ context, params, deps: { langId, textDir } }) => {
-    let bookData;
+  beforeLoad: async ({ context, params }) => {
     try {
-      bookData = await context.queryClient.ensureQueryData(
+      const bookData = await context.queryClient.ensureQueryData(
         bookQuery.detail(params.bookId)
       );
+      return {
+        langId: bookData.languageId,
+        textDirection: bookData.textDirection,
+      };
     } catch {
-      redirect({
-        throw: true,
-        to: "/",
-      });
-      return;
+      throw redirect({ to: "/" });
     }
+  },
+  loaderDeps: ({ search: { textDir } }) => ({ textDir }),
+  loader: async ({ context, params, deps: { textDir } }) => {
+    const bookData = await context.queryClient.ensureQueryData(
+      bookQuery.detail(params.bookId)
+    );
 
     if (params.pageNum > bookData.pageCount) {
-      redirect({
-        throw: true,
+      throw redirect({
         params: { bookId: params.bookId, pageNum: bookData.pageCount },
         search: true,
       });
-      return;
     }
 
-    if (langId === undefined || textDir === undefined) {
-      redirect({
-        throw: true,
+    if (textDir === undefined) {
+      throw redirect({
         search: (prev) => ({
           ...prev,
-          langId: bookData.languageId,
           textDir: bookData.textDirection,
         }),
       });
-      return;
     }
 
     const responses = await Promise.all([
@@ -69,7 +70,10 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
       ),
       context.queryClient.ensureQueryData(settingsQuery.settingsForm()),
       context.queryClient.ensureQueryData(settingsQuery.shortcuts()),
-      context.queryClient.ensureQueryData(settingsQuery.appInfo()),
+      context.queryClient.ensureQueryData(termQuery.tagSuggestions()),
+      context.queryClient.ensureQueryData(
+        langQuery.detail(bookData.languageId)
+      ),
     ]);
 
     return [bookData, ...responses];

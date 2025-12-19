@@ -7,12 +7,13 @@ import { api } from "./api";
 
 export const query = {
   all: () => ["books"],
+  allList: () => [...query.all(), "list"],
   allStats: () => [...query.all(), "stats"],
   allDetails: () => [...query.all(), "detail"],
   allPages: () => [...query.all(), "page"],
   list: (filters?: string) =>
     queryOptions({
-      queryKey: [...query.all(), filters],
+      queryKey: [...query.allList(), filters],
       queryFn: () => api.getAll(filters),
       placeholderData: keepPreviousData,
     }),
@@ -40,9 +41,9 @@ export const query = {
       queryFn: bookId ? () => api.getAudioSrc(bookId) : skipToken,
       refetchOnWindowFocus: false,
     }),
-  bookForm: () =>
+  form: () =>
     queryOptions({
-      queryKey: ["bookForm"],
+      queryKey: ["form"],
       queryFn: api.getFormValues,
     }),
 } as const;

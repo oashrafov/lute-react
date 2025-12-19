@@ -1,18 +1,23 @@
 import { useRef } from "react";
+import { useRouteContext } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Box, ScrollAreaAutosize } from "@mantine/core";
 import { VerticalPanels } from "../ResizablePanels/VerticalPanels";
 import { DictsPane } from "#language/components/DictsPane/DictsPane";
-import { useUserLanguageQuery } from "#language/hooks/useUserLanguageQuery";
 import { TermInfoPane } from "#book/components/TermInfoPane/TermInfoPane";
-import type { TermDetail } from "#term/api/types";
+import type { TermForm } from "#term/api/types";
+import { query } from "#language/api/query";
 import classes from "./TranslationPane.module.css";
 
 interface TranslationPane {
-  term: TermDetail;
+  term: TermForm;
 }
 
 export function TranslationPane({ term }: TranslationPane) {
-  const { data: language } = useUserLanguageQuery();
+  const { langId } = useRouteContext({
+    from: "/books/$bookId/pages/$pageNum/",
+  });
+  const { data: language } = useSuspenseQuery(query.detail(langId));
   const translationFieldRef = useRef<HTMLTextAreaElement>(null);
 
   function handleReturnFocusToForm() {
@@ -34,22 +39,20 @@ export function TranslationPane({ term }: TranslationPane) {
               key={term.text}
               term={term}
               translationFieldRef={translationFieldRef}
-              showPronunciationField={language?.show_romanization}
+              showPronunciationField={language.showPronunciation}
             />
           </ScrollAreaAutosize>
         }
         bottomPanel={
           <Box display="flex" h="100%">
             <Box className={classes.dictTabsContainer}>
-              {language && (
-                <DictsPane
-                  dictionaries={language.dictionaries.filter(
-                    (dict) => dict.for === "terms"
-                  )}
-                  termText={term.text}
-                  onReturnFocusToForm={handleReturnFocusToForm}
-                />
-              )}
+              <DictsPane
+                dictionaries={language.dictionaries.filter(
+                  (dict) => dict.usedFor === "terms"
+                )}
+                termText={term.text}
+                onReturnFocusToForm={handleReturnFocusToForm}
+              />
             </Box>
           </Box>
         }

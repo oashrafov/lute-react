@@ -7,7 +7,7 @@ from flask import Blueprint, current_app
 from lute import __version__
 from lute.db import db
 
-from lute.settings.current import current_settings, current_hotkeys
+from lute.settings.current import current_settings
 from lute.models.book import Book
 from lute.models.language import Language
 from lute.models.setting import UserSetting
@@ -34,7 +34,7 @@ def wipe_db():
             "message": "Success",
         }
 
-    return response, 200
+    return response, 204
 
 
 @bp.route("/settings/db", methods=["PATCH"])
@@ -67,8 +67,8 @@ def initialize():
     have_books = len(db.session.query(Book).all()) > 0
 
     return {
-        "haveLanguages": have_languages,
-        "haveBooks": have_books,
+        "hasLanguages": have_languages,
+        "hasBooks": have_books,
         "tutorialBookId": tutorial_book_id,
         "languageChoices": [
             {"name": language.name, "id": language.id}
@@ -113,28 +113,30 @@ def user_settings():
     """
 
     settings_form_values = {
-        "open_popup_in_new_tab",
-        "stop_audio_on_term_form_open",
-        "stats_calc_sample_size",
-        "term_popup_promote_parent_translation",
-        "term_popup_show_components",
-        "mecab_path",
-        "japanese_reading",
+        "open_popup_in_new_tab": "openDictionaryPopupInNewTab",
+        "stop_audio_on_term_form_open": "stopAudioOnTermSelection",
+        "stats_calc_sample_size": "statsCalculationSampleSize",
+        "term_popup_promote_parent_translation": "termPopupPromoteParentTranslation",
+        "term_popup_show_components": "termPopupShowComponents",
+        "mecab_path": "mecabPath",
+        "japanese_reading": "japaneseScript",
     }
 
     form_settings = {
-        k: v for k, v in current_settings.items() if k in settings_form_values
+        settings_form_values[k]: v
+        for k, v in current_settings.items()
+        if k in settings_form_values
     }
 
     bs = _get_backup_settings()
     backup_settings = {
-        "backup_enabled": bs.backup_enabled,
-        "backup_dir": bs.backup_dir,
-        "last_backup_display_date": bs.last_backup_display_date,
-        "time_since_last_backup": bs.time_since_last_backup,
-        "backup_warn": bs.backup_warn,
-        "backup_count": bs.backup_count,
-        "backup_auto": bs.backup_auto,
+        "isBackupEnabled": bs.backup_enabled,
+        "backupDirectory": bs.backup_dir,
+        "backupLastDate": bs.last_backup_display_date,
+        "backupTimeSinceLast": bs.time_since_last_backup,
+        "shouldBackupWarn": bs.backup_warn,
+        "backupCount": bs.backup_count,
+        "shouldAutoBackup": bs.backup_auto,
     }
 
     settings = form_settings | backup_settings
@@ -204,8 +206,8 @@ def version():
     ac = current_app.env_config
     return {
         "version": __version__,
-        "datapath": ac.datapath,
-        "database": ac.dbfilename,
+        "luteDbDirectory": ac.datapath,
+        "luteDb": ac.dbfilename,
         "isDocker": ac.is_docker,
     }
 

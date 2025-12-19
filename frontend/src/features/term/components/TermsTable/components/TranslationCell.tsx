@@ -8,7 +8,7 @@ interface TranslationCell {
 }
 
 export function TranslationCell({ row }: TranslationCell) {
-  const img = row.original.image;
+  const img = row.original.imageSource;
   const langId = row.original.languageId;
   return (
     <>

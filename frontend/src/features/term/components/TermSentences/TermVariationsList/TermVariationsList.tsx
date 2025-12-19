@@ -1,16 +1,16 @@
-import type { TermVariation } from "#term/api/types";
+import type { TermInflection } from "#term/api/types";
 import { TermVariationItem } from "../TermVariationItem/TermVariationItem";
 import classes from "./TermVariationsList.module.css";
 
 interface TermVariationsList {
-  data: TermVariation[];
+  data: TermInflection[];
 }
 
 export function TermVariationsList({ data }: TermVariationsList) {
   return (
     <ul className={classes.list}>
       {data.map(
-        ({ term, references }) =>
+        ({ inflection: term, references }) =>
           references.length > 0 && (
             <li key={term}>
               <TermVariationItem term={term} references={references} />

@@ -8,16 +8,26 @@ import type { TermQueryParams } from "./types";
 
 export const query = {
   all: () => ["terms"],
+  allList: () => [...query.all(), "list"],
   allDetails: () => [...query.all(), "detail"],
   allTags: () => [...query.all(), "tags"],
   allSuggestions: () => [...query.all(), "suggestions"],
   list: (filters?: string) =>
     queryOptions({
-      queryKey: [...query.all(), filters],
+      queryKey: [...query.allList(), filters],
       queryFn: () => api.getAll(filters),
       placeholderData: keepPreviousData,
     }),
-  detail: (data?: TermQueryParams) =>
+  detail: (data: TermQueryParams) =>
+    queryOptions({
+      queryKey: [...query.allDetails(), ...Object.values(data ?? {})],
+      queryFn:
+        "id" in data
+          ? () => api.getById(data.id)
+          : () => api.getByText(data.text, data.langId),
+      refetchOnWindowFocus: false,
+    }),
+  detailSkippable: (data?: TermQueryParams) =>
     queryOptions({
       queryKey: [...query.allDetails(), ...Object.values(data ?? {})],
       queryFn:

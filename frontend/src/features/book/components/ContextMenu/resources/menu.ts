@@ -44,7 +44,6 @@ export const menu = [
       {
         label: "Selection",
         icon: IconClipboardCheck,
-        // !FIX have changed handleCopy in the actions file. fix
         action: async (textitem: TextitemElement) => handleTextCopy(textitem),
       },
       {

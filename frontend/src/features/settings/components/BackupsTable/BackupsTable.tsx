@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Text, Tooltip } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import {
@@ -43,12 +43,12 @@ const columns: MRT_ColumnDef<Backup>[] = [
 ];
 
 export function BackupsTable() {
-  const { data } = useQuery(query.backups());
+  const { data } = useSuspenseQuery(query.backups());
 
   const table = useMantineReactTable({
     ...defaultOptions,
     columns,
-    data: data?.backups || [],
+    data: data.backups,
 
     enableColumnFilters: false,
     enablePagination: false,
@@ -67,7 +67,7 @@ export function BackupsTable() {
         <Text
           component="p"
           size="sm"
-          p={5}>{`Backups directory: ${data?.directory}`}</Text>
+          p={5}>{`Backups directory: ${data.directory}`}</Text>
       </TableTopToolbar>
     ),
   });

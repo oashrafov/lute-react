@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearch } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { ActionIcon, Collapse, Stack } from "@mantine/core";
@@ -18,9 +18,11 @@ export function BookContentFields() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
   const {
     control,
+    getValues,
     formState: { errors },
   } = useFormContext<CreateBookForm>();
-  const { textDir } = useSearch({ from: "/create-book" });
+  const { textDirectionMap } = useRouteContext({ from: "__root__" });
+  const textDirection = textDirectionMap[getValues().languageId];
   const [visibleInput, setVisibleInput] = useState<"file" | "url" | null>(null);
 
   const generateContentButtons = (
@@ -44,7 +46,7 @@ export function BookContentFields() {
         name="title"
         control={control}
         label={t("titleLabel")}
-        wrapperProps={{ dir: textDir }}
+        wrapperProps={{ dir: textDirection }}
         required
         withAsterisk
         leftSection={<IconHeading />}
@@ -55,7 +57,7 @@ export function BookContentFields() {
         control={control}
         label={t("textLabel")}
         description={t("textDescription")}
-        wrapperProps={{ dir: textDir }}
+        wrapperProps={{ dir: textDirection }}
         required
         withAsterisk
         spellCheck={false}

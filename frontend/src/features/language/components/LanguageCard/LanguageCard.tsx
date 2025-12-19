@@ -1,8 +1,12 @@
 import { Group, Stack, Text } from "@mantine/core";
-import type { UserLanguagesItem } from "#language/api/types";
+import type { UserLanguagesListItem } from "#language/api/types";
 import classes from "./LanguageCard.module.css";
 
-export function LanguageCard({ data }: { data: UserLanguagesItem }) {
+interface LanguageCard {
+  data: UserLanguagesListItem;
+}
+
+export function LanguageCard({ data }: LanguageCard) {
   return (
     <Stack gap="xs">
       <Text fz="sm" className={classes.label} lh={1.4} fw={500} lineClamp={1}>

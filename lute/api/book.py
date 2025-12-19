@@ -49,13 +49,15 @@ def create_book():
     try:
         book_service = BookService()
 
-        for key, value in data.items():
-            if hasattr(book, key):
-                if value and value.isdigit():
-                    value = int(value)
-                setattr(book, key, value)
+        book.title = data.title
+        book.text = data.text
+        book.language_id = data.languageId
+        book.source_uri = data.source
+        book.book_tags = data.tags
+        book.threshold_page_tokens = data.wordsPerPage
+        book.split_by = data.splitBy
 
-        audio_file = files_dict.get("audio_file", None)
+        audio_file = files_dict.get("audioFile", None)
         if audio_file:
             if audio_file.filename is None:
                 raise BookImportException("Must set audio name")
@@ -99,7 +101,7 @@ def get_books():
 
     fields = {
         "title": {"num": False, "column": "BkTitle"},
-        "language": {"num": False, "column": "LgName"},
+        "languageName": {"num": False, "column": "LgName"},
         "tags": {"num": False, "column": "TagList"},
         "wordCount": {"num": True, "column": "WordCount"},
         "status": {"num": True, "column": "UnknownPercent"},
@@ -167,7 +169,7 @@ def get_books():
             """
 
     filtered_count = db.session.execute(SQLText(filtered)).scalar()
-    archived_count = db.session.execute(SQLText(archived)).scalar()
+    archived_count = db.session.execute(SQLText(archived)).scalar() or 0
     total_count = db.session.execute(SQLText(total)).scalar()
     active_count = total_count - archived_count
 
@@ -232,35 +234,19 @@ def get_book(bookid):
             else None
         ),
         # mock bookmarks
-        "bookmarks": {
-            2: [  # page
-                {
-                    "id": 2,  # sentence id
-                    "description": "This sentence reminds me of my chilhood",
-                },
-                {"id": 6, "description": "Oh, the memories"},
-                {"id": 8, "description": "Are we looting?"},
-            ],
-            9: [
-                {
-                    "id": 2,
-                    "description": "This sentence reminds me of my chilhood",
-                },
-                {"id": 5, "description": "Oh, the memories"},
-                {"id": 6, "description": "Are we looting?"},
-                {"id": 7, "description": "Are we looting?"},
-                {"id": 8, "description": "Are we looting?"},
-            ],
-            12: [
-                {
-                    "id": 4,
-                    "description": "This sentence reminds me of my chilhood",
-                },
-                {"id": 5, "description": "Oh, the memories"},
-                {"id": 6, "description": "Are we looting?"},
-                {"id": 7, "description": "Are we looting?"},
-            ],
-        },
+        "bookmarks": [
+            {
+                "page": 2,
+                "sentences": [
+                    {
+                        "id": 2,
+                        "description": "description_2",
+                    },
+                    {"id": 6, "description": "description_6"},
+                    {"id": 8, "description": "description_8"},
+                ],
+            },
+        ],
     }
 
     return book_dict
@@ -357,7 +343,7 @@ def parse_content_from_url():
     except BookImportException as e:
         return e.message, 400
 
-    return {"title": b.title, "source_uri": b.source_uri, "text": b.text}
+    return {"title": b.title, "source": b.source_uri, "text": b.text}
 
 
 @bp.route("/parse/file", methods=["POST"])
@@ -441,12 +427,14 @@ def get_stats(bookid):
     )
     status_distribution.pop(98, "")
 
-    with_percentages = {}
-    for status, words in status_distribution.items():
-        pct = words / sum_words * 100
-        with_percentages[status] = {"wordCount": words, "percentage": pct}
-
-    return with_percentages
+    return [
+        {
+            "status": status,
+            "wordCount": words,
+            "percentage": words / sum_words * 100,
+        }
+        for status, words in status_distribution.items()
+    ]
 
 
 @bp.route("/form", methods=["GET"])
@@ -454,13 +442,14 @@ def get_new_book_form():
     return {
         "title": "",
         "text": "",
-        "importurl": "",
-        "text_file": None,
-        "audio_file": None,
-        "threshold_page_tokens": 250,
-        "split_by": "paragraphs",
-        "source_uri": "",
-        "book_tags": [],
+        "languageId": None,
+        "importUrl": "",
+        "textFile": None,
+        "audioFile": None,
+        "wordsPerPage": 250,
+        "splitBy": "paragraphs",
+        "source": "",
+        "tags": [],
     }
 
 
@@ -510,7 +499,7 @@ def _get_pinned_books(ids):
 def _book_row_to_dict(row):
     return {
         "id": row.BkID,
-        "language": row.LgName,
+        "languageName": row.LgName,
         "languageId": row.BkLgID,
         "textDirection": "rtl" if row.LgRightToLeft == 1 else "ltr",
         "source": row.BkSourceURI or "",
@@ -534,7 +523,7 @@ def _paragraphs_to_dict_array(paragraphs):
                 {
                     "id": textitem.span_id,
                     "displayText": textitem.html_display_text,
-                    "langId": getattr(textitem, "lang_id", None),
+                    "languageId": getattr(textitem, "lang_id", None),
                     "paragraphId": textitem.paragraph_number,
                     "sentenceId": textitem.sentence_number,
                     "text": textitem.text,

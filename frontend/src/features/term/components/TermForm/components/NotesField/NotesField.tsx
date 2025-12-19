@@ -2,11 +2,11 @@ import type { Control } from "react-hook-form";
 import type { TextareaProps } from "@mantine/core";
 import { IconNote } from "@tabler/icons-react";
 import { Textarea } from "#common/Textarea/Textarea";
-import type { TermDetail } from "#term/api/types";
+import type { TermForm } from "#term/api/types";
 import classes from "../../TermForm.module.css";
 
 interface NotesField extends Omit<TextareaProps, "name"> {
-  control: Control<TermDetail>;
+  control: Control<TermForm>;
 }
 
 export function NotesField({ control, ...props }: NotesField) {

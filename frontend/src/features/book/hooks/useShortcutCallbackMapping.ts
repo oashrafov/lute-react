@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useSearch } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import { markTextitemsRange } from "#helpers/text";
 import { setStatusForSelected, shiftStatusForSelected } from "#helpers/status";
 import { handleMoveSelection } from "#helpers/interactions-desktop";
@@ -14,7 +14,7 @@ import { mutation } from "#term/api/mutation";
 import { getHovered, getMarked } from "#helpers/text";
 import { copyUnitText } from "#helpers/copy";
 import type { TextitemElement } from "#resources/types";
-import type { TermDetail } from "#term/api/types";
+import type { TermForm } from "#term/api/types";
 
 type TextResult = { text: string; textitems: TextitemElement[] };
 type FnResult<T> = T | Promise<T>;
@@ -35,34 +35,36 @@ function withSelection<Args extends unknown[]>(
 export function useShortcutCallbackMapping() {
   const { data } = useSuspenseQuery(query.shortcuts());
   const { themeForm } = useBookContext();
-  const { textDir } = useSearch({ from: "/books/$bookId/pages/$pageNum/" });
+  const { textDirection } = useRouteContext({
+    from: "/books/$bookId/pages/$pageNum/",
+  });
   const { setView, toggleFocus } = useView();
   const { setActiveTerm, clearActiveTerm } = useActiveTermContext();
   const { mutate: editTerm } = mutation.useEditTerm();
 
   const moveCursorToPrevItem = useCallback(
     (elementType: Parameters<typeof handleMoveSelection>[0]) => () => {
-      const term = handleMoveSelection(elementType, -1, textDir);
+      const term = handleMoveSelection(elementType, -1, textDirection);
       if (term) {
         setActiveTerm(term);
       }
     },
-    [setActiveTerm, textDir]
+    [setActiveTerm, textDirection]
   );
 
   const moveCursorToNextItem = useCallback(
     (elementType: Parameters<typeof handleMoveSelection>[0]) => () => {
-      const term = handleMoveSelection(elementType, 1, textDir);
+      const term = handleMoveSelection(elementType, 1, textDirection);
       if (term) {
         setActiveTerm(term);
       }
     },
-    [setActiveTerm, textDir]
+    [setActiveTerm, textDirection]
   );
 
   const withPost = useCallback(
     <Args extends number>(
-      fn: (arg: Args) => Pick<TermDetail, "id" | "status">[] | undefined,
+      fn: (arg: Args) => Pick<TermForm, "id" | "status">[] | undefined,
       arg: Args
     ) => {
       return () => {

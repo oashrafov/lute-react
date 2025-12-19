@@ -1,16 +1,16 @@
 import type { RefObject } from "react";
-import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Tabs } from "@mantine/core";
 import { TermForm } from "#term/components/TermForm/TermForm";
 import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
-import type { TermDetail } from "#term/api/types";
+import type { TermForm as TTermForm } from "#term/api/types";
 import { query } from "#term/api/query";
 import { TermVariationsList } from "#term/components/TermSentences/TermVariationsList/TermVariationsList";
 import { PageSpinner } from "#common/PageSpinner/PageSpinner";
+import { useBookQuery } from "#book/hooks/useBookQuery";
 
 interface TermInfoPane {
-  term: TermDetail;
+  term: TTermForm;
   translationFieldRef: RefObject<HTMLTextAreaElement>;
   showPronunciationField?: boolean;
 }
@@ -20,15 +20,15 @@ export function TermInfoPane({
   translationFieldRef,
   showPronunciationField,
 }: TermInfoPane) {
-  const { langId } = useSearch({ strict: false });
-  const { data } = useQuery(query.sentences(term.text, langId));
+  const { data: book } = useBookQuery();
+  const { data } = useQuery(query.sentences(term.text, book.languageId));
   const { clearActiveTerm } = useActiveTermContext();
 
   return (
     <Tabs defaultValue="termform">
       <Tabs.List>
         <Tabs.Tab value="termform">Term</Tabs.Tab>
-        <Tabs.Tab value="sentences" disabled={!data?.variations.length}>
+        <Tabs.Tab value="sentences" disabled={!data?.inflections.length}>
           Sentences
         </Tabs.Tab>
       </Tabs.List>
@@ -41,14 +41,15 @@ export function TermInfoPane({
             showPronunciation={showPronunciationField}
             translationFieldRef={translationFieldRef}
             onSubmitSuccess={clearActiveTerm}
+            languageId={book.languageId}
           />
         </Box>
       </Tabs.Panel>
 
       <Tabs.Panel value="sentences">
         <Box p={20}>
-          {data?.variations.length ? (
-            <TermVariationsList data={data.variations} />
+          {data?.inflections.length ? (
+            <TermVariationsList data={data.inflections} />
           ) : (
             <PageSpinner />
           )}

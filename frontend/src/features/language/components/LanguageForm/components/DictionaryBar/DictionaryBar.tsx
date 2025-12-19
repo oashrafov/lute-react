@@ -1,24 +1,24 @@
 import { Tooltip } from "@mantine/core";
-import type { Control, FieldValues, Path } from "react-hook-form";
+import type { Control } from "react-hook-form";
 import { TextInput } from "#common/TextInput/TextInput";
 import { Checkbox } from "#common/Checkbox/Checkbox";
 import { Select } from "#common/Select/Select";
 import { TestDictionaryButton } from "./components/TestDictionaryButton";
-import type { Dictionary } from "#language/api/types";
+import type { Dictionary, LanguageForm } from "#language/api/types";
 
-export interface DictionaryBar<T extends FieldValues> {
-  control: Control<T>;
+export interface DictionaryBar {
+  control: Control<LanguageForm>;
+  name: `dictionaries.${number}`;
   dict: Dictionary;
-  name: string;
   editable: boolean;
 }
 
-export function DictionaryBar<T extends FieldValues>({
+export function DictionaryBar({
   name,
   dict,
   control,
   editable,
-}: DictionaryBar<T>) {
+}: DictionaryBar) {
   return (
     <>
       <Tooltip
@@ -27,7 +27,7 @@ export function DictionaryBar<T extends FieldValues>({
         withinPortal={false}
         refProp="innerRef">
         <Checkbox
-          name={`${name}.active` as Path<T>}
+          name={`${name}.isActive`}
           control={control}
           size="xs"
           disabled={!editable}
@@ -35,7 +35,7 @@ export function DictionaryBar<T extends FieldValues>({
       </Tooltip>
 
       <TextInput
-        name={`${name}.url` as Path<T>}
+        name={`${name}.url`}
         control={control}
         flex={5}
         size="xs"
@@ -55,7 +55,7 @@ export function DictionaryBar<T extends FieldValues>({
         withinPortal={false}
         refProp="innerRef">
         <Select
-          name={`${name}.for` as Path<T>}
+          name={`${name}.usedFor`}
           control={control}
           aria-label="Use dictionary for"
           size="xs"
@@ -72,7 +72,7 @@ export function DictionaryBar<T extends FieldValues>({
         withinPortal={false}
         refProp="innerRef">
         <Select
-          name={`${name}.type` as Path<T>}
+          name={`${name}.type`}
           control={control}
           aria-label="Show dictionary as"
           size="xs"

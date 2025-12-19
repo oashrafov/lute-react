@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import {
   useNavigate,
   useRouterState,
@@ -6,18 +5,16 @@ import {
   type ValidateFromPath,
 } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Group, Radio, rem, ScrollArea } from "@mantine/core";
+import { Group, Radio, ScrollArea, type RadioGroupProps } from "@mantine/core";
 import { LanguageCard } from "../LanguageCard/LanguageCard";
 import { query } from "#language/api/query";
 import classes from "./LanguageCards.module.css";
 
-interface LanguageCards {
-  label: ReactNode;
-  description: string;
-}
-
-export function LanguageCards({ label, description }: LanguageCards) {
-  const { data: languages } = useSuspenseQuery(query.userLanguagesList());
+export function LanguageCards({
+  label,
+  description,
+}: Omit<RadioGroupProps, "children">) {
+  const { data: languages } = useSuspenseQuery(query.list());
   const { langId } = useSearch({ strict: false });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate({ from: pathname as ValidateFromPath });
@@ -26,13 +23,17 @@ export function LanguageCards({ label, description }: LanguageCards) {
 
   function handleLanguageChange(id: number) {
     navigate({
-      search: { langId: langId === id ? undefined : id, langName: undefined },
+      search: (prev) => ({
+        ...prev,
+        langId: langId === id ? undefined : id,
+        textDir: languages.find((land) => land.id === id)?.textDirection,
+        langName: undefined,
+      }),
     });
   }
 
   return (
     <Radio.Group
-      styles={{ description: { marginBottom: rem(5) } }}
       label={label}
       description={description}
       name="langs"
@@ -40,7 +41,7 @@ export function LanguageCards({ label, description }: LanguageCards) {
       onChange={(id) => handleLanguageChange(Number(id))}>
       <ScrollArea type="scroll" offsetScrollbars="x">
         <Group gap={2} wrap="nowrap" align="stretch">
-          {languagesSorted?.map((data) => (
+          {languagesSorted.map((data) => (
             <Radio.Card
               key={data.id}
               value={String(data.id)}

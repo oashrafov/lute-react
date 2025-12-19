@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Select, type SelectProps } from "@mantine/core";
 import { IconSelector } from "@tabler/icons-react";
 import { LoadSampleBooksButton } from "./LoadSampleBooksButton";
@@ -16,8 +16,8 @@ export function SampleBooksSelect({
   onConfirm,
   ...props
 }: SampleBooksSelect) {
-  const { data: initial } = useQuery(settingsQuery.init());
-  const { data: predefined } = useQuery(langQuery.predefinedLanguagesList());
+  const { data: globalData } = useSuspenseQuery(settingsQuery.globalData());
+  const { data: languagePresets } = useSuspenseQuery(langQuery.presetsList());
   const [langName, setLangName] = useState<string | null>("");
 
   const rightSection = langName ? (
@@ -35,13 +35,13 @@ export function SampleBooksSelect({
       {...props}
       autoFocus={false}
       display="inline-block"
-      data={predefined || []}
+      data={languagePresets}
       allowDeselect={false}
       withCheckIcon={false}
       searchable={true}
       value={langName}
       onChange={setLangName}
-      comboboxProps={{ withinPortal: !initial?.haveLanguages }}
+      comboboxProps={{ withinPortal: !globalData.hasLanguages }}
       rightSection={rightSection}
       rightSectionPointerEvents={langName === null ? "none" : "all"}
     />

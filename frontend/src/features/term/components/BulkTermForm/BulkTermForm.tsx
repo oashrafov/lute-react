@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { Divider, Group, Stack, Text } from "@mantine/core";
 import { Checkbox } from "#common/Checkbox/Checkbox";
@@ -7,8 +7,12 @@ import { FormButtons } from "#common/FormButtons/FormButtons";
 import { StatusRadio } from "../StatusRadio/StatusRadio";
 import { query } from "#term/api/query";
 
-function BulkTermForm({ terms }: { terms: number[] }) {
-  const { data: tags } = useQuery(query.tagSuggestions());
+interface BulkTermForm {
+  terms: number[];
+}
+
+function BulkTermForm({ terms }: BulkTermForm) {
+  const { data: tags } = useSuspenseQuery(query.tagSuggestions());
 
   const { control } = useForm({
     defaultValues: {

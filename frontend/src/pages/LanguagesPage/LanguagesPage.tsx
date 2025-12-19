@@ -9,12 +9,12 @@ import { LanguageRadioLabel } from "./LanguageRadioLabel";
 
 export function LanguagesPage() {
   const { t } = useTranslation("page", { keyPrefix: "languages" });
-  const { data } = useSuspenseQuery(query.init());
+  const { data } = useSuspenseQuery(query.globalData());
   return (
     <PageContainer w="75%">
       <PageTitle>{t("title")}</PageTitle>
 
-      {data.haveLanguages && (
+      {data.hasLanguages && (
         <LanguageCards
           label={<LanguageRadioLabel />}
           description={t("languageCardsDescription")}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { IconPlus } from "@tabler/icons-react";
@@ -14,7 +14,7 @@ import type { Tag } from "#term/api/types";
 const defaultOptions = getDefaultTableOptions<Tag>();
 
 export function TagsTable() {
-  const { data } = useQuery(query.tags());
+  const { data } = useSuspenseQuery(query.tags());
   const [openCreateTagModal, setOpenCreateTagModal] = useState(false);
   const columns = useMemo(() => columnDefinition(), []);
 
@@ -22,7 +22,7 @@ export function TagsTable() {
     ...defaultOptions,
 
     columns: columns,
-    data: data || [],
+    data: data,
 
     initialState: {
       ...defaultOptions.initialState,

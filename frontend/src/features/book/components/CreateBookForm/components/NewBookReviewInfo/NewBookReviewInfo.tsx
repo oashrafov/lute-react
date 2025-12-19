@@ -9,7 +9,7 @@ import type { CreateBookForm } from "#book/api/types";
 
 export function NewBookReviewInfo() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
-  const { data: languages } = useSuspenseQuery(query.userLanguagesList());
+  const { data: languages } = useSuspenseQuery(query.list());
   const { getValues } = useFormContext<CreateBookForm>();
   const values = getValues();
   return (
@@ -19,28 +19,27 @@ export function NewBookReviewInfo() {
       </InfoRow>
       <InfoRow>
         <Label>{`${t("languageNameLabel")}:`}</Label>
-        {languages.find((lang) => lang.id === Number(values.language_id))?.name}
+        {languages.find((lang) => lang.id === values.languageId)?.name}
       </InfoRow>
       <InfoRow>
-        <Label>{`${t("wordCountLabel")}:`}</Label>{" "}
-        {values.threshold_page_tokens}
+        <Label>{`${t("wordCountLabel")}:`}</Label> {values.wordsPerPage}
       </InfoRow>
       <InfoRow>
-        <Label>{`${t("splitLabel")}:`}</Label> {values.split_by}
+        <Label>{`${t("splitLabel")}:`}</Label> {values.splitBy}
       </InfoRow>
-      {values.source_uri && (
+      {values.source && (
         <InfoRow>
-          <Label>{`${t("sourceURLLabel")}:`}</Label> {values.source_uri}
+          <Label>{`${t("sourceURLLabel")}:`}</Label> {values.source}
         </InfoRow>
       )}
-      {values.audio_file && (
+      {values.audioFile && (
         <InfoRow>
-          <Label>{`${t("audioFileLabel")}:`}</Label> {values.audio_file.name}
+          <Label>{`${t("audioFileLabel")}:`}</Label> {values.audioFile.name}
         </InfoRow>
       )}
-      {values.book_tags.length > 0 && (
+      {values.tags.length > 0 && (
         <InfoRow>
-          <Label>{`${t("tagsLabel")}:`}</Label> {values.book_tags}
+          <Label>{`${t("tagsLabel")}:`}</Label> {values.tags}
         </InfoRow>
       )}
     </Paper>

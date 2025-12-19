@@ -16,7 +16,8 @@ import { makeBookmarked, scrollSentenceIntoView } from "#helpers/text";
 const route = getRouteApi("/books/$bookId/pages/$pageNum/");
 
 export function TheTextContainer() {
-  const { sentenceId, textDir } = route.useSearch();
+  const { sentenceId } = route.useSearch();
+  const { textDirection } = route.useRouteContext();
   const { data: page } = usePageQuery();
   const { setActiveTerm, clearActiveTerm } = useActiveTermContext();
   const pageProcessed = useProcessPage();
@@ -53,7 +54,7 @@ export function TheTextContainer() {
   return (
     <Box
       pos="relative"
-      dir={textDir}
+      dir={textDirection}
       className="textcontainer"
       ref={applyTextSettings}>
       <LoadingOverlay visible={!pageProcessed} zIndex={199} />

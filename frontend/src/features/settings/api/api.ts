@@ -1,49 +1,48 @@
+import { ResponseSchema } from "#resources/schemas";
 import { apiClient } from "#utils/apiClient";
-import type {
-  AppInfoResponse,
-  BackupsResponse,
-  Highlights,
-  InitialResponse,
-  SettingsForm,
-  ShortcutsForm,
-} from "./types";
+import {
+  AppInfoSchema,
+  BackupsResponseSchema,
+  GlobalDataSchema,
+  HighlightsResponseSchema,
+  SettingsFormSchema,
+  ShortcutsFormSchema,
+} from "./schemas";
 
 const BASE_URL = "";
 
 export const api = {
-  getInitialState() {
-    return apiClient.get<InitialResponse>(`${BASE_URL}/initial`);
+  getGlobalData() {
+    return apiClient.get(`${BASE_URL}/initial`, GlobalDataSchema);
   },
 
   getAppInfo() {
-    return apiClient.get<AppInfoResponse>(`${BASE_URL}/appinfo`);
+    return apiClient.get(`${BASE_URL}/appinfo`, AppInfoSchema);
   },
 
   getShortcuts() {
-    return apiClient.get<ShortcutsForm>(`${BASE_URL}/shortcuts`);
+    return apiClient.get(`${BASE_URL}/shortcuts`, ShortcutsFormSchema);
   },
 
-  getBackupInfo() {
-    return apiClient.get<BackupsResponse>(`${BASE_URL}/backups`);
+  getBackupsInfo() {
+    return apiClient.get(`${BASE_URL}/backups`, BackupsResponseSchema);
   },
 
   getSettingsFormValues() {
-    return apiClient.get<SettingsForm>(`${BASE_URL}/settings/form`);
+    return apiClient.get(`${BASE_URL}/settings/form`, SettingsFormSchema);
   },
 
   getThemeFormValues() {
-    return apiClient.get<Highlights>(`${BASE_URL}/theme/form`);
+    return apiClient.get(`${BASE_URL}/theme/form`, HighlightsResponseSchema);
   },
 
   clearDemoData() {
-    return apiClient.delete(`${BASE_URL}/settings/db`);
+    return apiClient.delete(`${BASE_URL}/settings/db`, ResponseSchema);
   },
 
   deactivateDemoMode() {
-    return apiClient.patch(`${BASE_URL}/settings/db`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    return apiClient.patch(`${BASE_URL}/settings/db`, ResponseSchema, {
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ deactiveDemo: true }),
     });
   },

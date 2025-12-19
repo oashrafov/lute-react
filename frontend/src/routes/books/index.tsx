@@ -2,9 +2,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/books/")({
   beforeLoad: () => {
-    redirect({
-      throw: true,
-      to: "/",
-    });
+    throw redirect({ to: "/" });
   },
 });

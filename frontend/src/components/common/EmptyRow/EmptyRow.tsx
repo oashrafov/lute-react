@@ -9,8 +9,8 @@ interface EmptyRow {
 }
 
 export function EmptyRow({ tableName, language }: EmptyRow) {
-  const { data: initial } = useSuspenseQuery(query.init());
-  const langId = initial.languageChoices.filter(
+  const { data } = useSuspenseQuery(query.globalData());
+  const langId = data.languageChoices.filter(
     (lang) => lang.name === language
   )[0].id;
   return (
@@ -20,7 +20,7 @@ export function EmptyRow({ tableName, language }: EmptyRow) {
       </Text>
       <Button
         renderRoot={(props) => (
-          <Link to="/create-book" params={{ langId: langId }} {...props} />
+          <Link to="/create-book" params={{ langId }} {...props} />
         )}>
         Create one?
       </Button>

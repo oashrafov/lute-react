@@ -8,13 +8,13 @@ import { AppHeader } from "../AppHeader/AppHeader";
 
 export function Layout() {
   const media = useMediaQuery();
-  const { data: initial } = useSuspenseQuery(query.init());
+  const { data } = useSuspenseQuery(query.globalData());
   useNavigationProgress();
   return (
     <>
-      {initial.haveBooks && <AppHeader />}
-      {initial.haveBooks && media === "tablet" && <MainSideMenu />}
-      <main style={{ marginTop: initial.haveBooks ? "6.5rem" : "3rem" }}>
+      {data.hasBooks && <AppHeader />}
+      {data.hasBooks && media === "tablet" && <MainSideMenu />}
+      <main style={{ marginTop: data.hasBooks ? "6.5rem" : "3rem" }}>
         <Outlet />
       </main>
     </>

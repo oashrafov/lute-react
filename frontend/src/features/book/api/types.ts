@@ -1,92 +1,22 @@
-import type z from "zod";
-import type { Status, TextDirection } from "#resources/types";
-import type { createBookFormSchema } from "./schemas";
-
-export interface BookStats {
-  [key: string]: {
-    percentage: number;
-    wordCount: number;
-  };
-}
-
-export interface BooksListItem {
-  id: number;
-  audioName: string | null;
-  currentPage: number;
-  isArchived: boolean;
-  isCompleted: boolean;
-  language: string;
-  languageId: number;
-  textDirection: TextDirection;
-  lastRead: string;
-  pageCount: number;
-  source: string;
-  tags: string[];
-  title: string;
-  unknownPercent: number | null;
-  wordCount: number;
-}
-
-export interface BooksList {
-  data: BooksListItem[];
-  activeCount: number;
-  archivedCount: number;
-  filteredCount: number;
-  totalCount: number;
-}
-
-export interface SentenceBookmark {
-  id: number;
-  description: string;
-}
-
-export interface PageBookmark {
-  [key: string]: SentenceBookmark[];
-}
-
-export interface Audio {
-  id: number;
-  name: string;
-  position: 0;
-  bookmarks: number[];
-}
-
-export interface BookDetail {
-  id: number;
-  languageId: number;
-  currentPage: number;
-  pageCount: number;
-  source: string;
-  title: string;
-  audio: Audio | null;
-  bookmarks: PageBookmark | null;
-  textDirection: TextDirection;
-}
-
-export interface Textitem {
-  id: number;
-  displayText: string;
-  classes: string;
-  langId: number | null;
-  paragraphId: number;
-  sentenceId: number;
-  text: string;
-  statusClass: string;
-  order: number;
-  wordId: number | null;
-  isWord: boolean;
-  status: Status | null;
-  isSentenceStart: boolean;
-  isSentenceEnd: boolean;
-  isOverlapped: boolean;
-}
-
-export type Paragraph = Textitem[][];
-
-export interface Page {
-  text: string;
-  paragraphs: Paragraph[];
-}
+import { z } from "zod";
+import {
+  AudioSchema,
+  BookDetailSchema,
+  BooksListItemSchema,
+  BookmarksSchema,
+  CreateBookResponseSchema,
+  DeleteBookResponseSchema,
+  EditBookResponseSchema,
+  GenerateContentFromFileResponseSchema,
+  GenerateContentFromURLResponseSchema,
+  ProcessPageResponseSchema,
+  TextitemSchema,
+  PageSchema,
+  ParagraphSchema,
+  CreateBookFormSchema,
+  EditBookFormSchema,
+  WordTextitemSchema,
+} from "./schemas";
 
 export interface EditAction {
   action:
@@ -99,30 +29,24 @@ export interface EditAction {
   [key: string]: unknown;
 }
 
-export interface CreateBookResponse {
-  id: number;
-  title: string;
-  languageId: number;
-}
+export type EditBookForm = z.infer<typeof EditBookFormSchema>;
+export type Audio = z.infer<typeof AudioSchema>;
+export type BooksListItem = z.infer<typeof BooksListItemSchema>;
+export type Bookmarks = z.infer<typeof BookmarksSchema>;
+export type Textitem = z.infer<typeof TextitemSchema>;
+export type WordTextitem = z.infer<typeof WordTextitemSchema>;
+export type Paragraph = z.infer<typeof ParagraphSchema>;
 
-export interface EditBookResponse {
-  id: number;
-  title: string;
-  archivedCount?: number;
-}
-
-export interface DeleteBookResponse {
-  title: string;
-}
-
-export interface GenerateContentFromURLResponse {
-  title: string;
-  source_uri: string;
-  text: string;
-}
-
-export interface GenerateContentFromFileResponse {
-  text: string;
-}
-
-export type CreateBookForm = z.infer<typeof createBookFormSchema>;
+export type Page = z.infer<typeof PageSchema>;
+export type BookDetail = z.infer<typeof BookDetailSchema>;
+export type CreateBookForm = z.infer<typeof CreateBookFormSchema>;
+export type CreateBookResponse = z.infer<typeof CreateBookResponseSchema>;
+export type EditBookResponse = z.infer<typeof EditBookResponseSchema>;
+export type DeleteBookResponse = z.infer<typeof DeleteBookResponseSchema>;
+export type GenerateContentFromURLResponse = z.infer<
+  typeof GenerateContentFromURLResponseSchema
+>;
+export type GenerateContentFromFileResponse = z.infer<
+  typeof GenerateContentFromFileResponseSchema
+>;
+export type ProcessPageResponse = z.infer<typeof ProcessPageResponseSchema>;

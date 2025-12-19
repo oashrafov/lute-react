@@ -5,14 +5,15 @@ import { IconSitemap } from "@tabler/icons-react";
 import { MAX_TERM_SUGGESTIONS } from "#resources/constants";
 import { TagsField } from "#common/TagsField/TagsField";
 import { useParentTagsFieldOptionsQuery } from "./useParentTagsFieldOptionsQuery";
-import type { TermDetail } from "#term/api/types";
+import type { TermForm } from "#term/api/types";
 import classes from "../../TermForm.module.css";
 
 interface ParentTagsField {
-  control: Control<TermDetail>;
+  control: Control<TermForm>;
   termText: string;
   onOptionSubmit: (parent: string) => void;
   onTagClick?: (item: string) => void;
+  languageId?: number;
 }
 
 export function ParentTagsField({
@@ -20,6 +21,7 @@ export function ParentTagsField({
   onTagClick,
   onOptionSubmit,
   control,
+  languageId,
 }: ParentTagsField) {
   const { field } = useController({ name: "parents", control });
   const [search, setSearch] = useState("");
@@ -28,7 +30,8 @@ export function ParentTagsField({
   const { data, isFetching } = useParentTagsFieldOptionsQuery(
     search,
     termText,
-    value
+    value,
+    languageId
   );
 
   const inputRightSection =

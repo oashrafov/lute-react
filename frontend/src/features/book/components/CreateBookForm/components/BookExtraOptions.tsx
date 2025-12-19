@@ -19,7 +19,7 @@ import type { CreateBookForm } from "#book/api/types";
 
 export function BookExtraOptions() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
-  const { data: initial } = useSuspenseQuery(query.init());
+  const { data: globalData } = useSuspenseQuery(query.globalData());
   const {
     control,
     setValue,
@@ -28,12 +28,12 @@ export function BookExtraOptions() {
     formState: { errors },
   } = useFormContext<CreateBookForm>();
 
-  const hasAudioFile = !!watch("audio_file");
+  const hasAudioFile = !!watch("audioFile");
   const clearButton = hasAudioFile && (
     <InputClearButton
       onClick={() => {
-        setValue("audio_file", null);
-        clearErrors("audio_file");
+        setValue("audioFile", null);
+        clearErrors("audioFile");
       }}
     />
   );
@@ -41,37 +41,37 @@ export function BookExtraOptions() {
   return (
     <>
       <FileInput
-        name="audio_file"
+        name="audioFile"
         control={control}
         label={t("audioFileLabel")}
         description=".mp3, .m4a, .wav, .ogg, .opus, .aac, .flac, .webm"
         accept="audio/mpeg,audio/ogg,audio/mp4,audio/aac,audio/flac,audio/webm"
         leftSection={<IconHeadphones />}
         rightSection={clearButton}
-        error={errors.audio_file?.message}
+        error={errors.audioFile?.message}
       />
 
       <NumberInput
-        name="threshold_page_tokens"
+        name="wordsPerPage"
         control={control}
         label={t("wordCountLabel")}
         leftSection={<IconBracketsContain />}
         min={1}
         max={1500}
-        error={errors.threshold_page_tokens?.message}
+        error={errors.wordsPerPage?.message}
       />
 
       <TextInput
-        name="source_uri"
+        name="source"
         control={control}
         placeholder="http://"
         label={t("sourceURLLabel")}
         leftSection={<IconLink />}
-        error={errors.source_uri?.message}
+        error={errors.source?.message}
       />
 
       <Select
-        name="split_by"
+        name="splitBy"
         control={control}
         label={t("splitLabel")}
         data={[
@@ -81,17 +81,17 @@ export function BookExtraOptions() {
         leftSection={<IconCut />}
         searchable={false}
         allowDeselect={false}
-        error={errors.split_by?.message}
+        error={errors.splitBy?.message}
       />
 
       <TagsInput
-        name="book_tags"
+        name="tags"
         control={control}
         label="Tags"
-        data={initial.bookTags}
+        data={globalData.bookTags}
         clearable
         leftSection={<IconTags />}
-        error={errors.book_tags?.message}
+        error={errors.tags?.message}
       />
     </>
   );

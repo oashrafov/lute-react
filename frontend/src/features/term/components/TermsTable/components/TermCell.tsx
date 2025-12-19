@@ -1,5 +1,5 @@
-import { Button, Text } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
+import { Button, Text } from "@mantine/core";
 import type { MRT_Row } from "mantine-react-table";
 import type { TermsListItem } from "#term/api/types";
 
@@ -17,7 +17,6 @@ export function TermCell({ row }: TermCell) {
         <Link
           to="/terms/$termId"
           params={{ termId: row.original.id }}
-          search={(prev) => ({ ...prev, langId: row.original.languageId })}
           {...props}
         />
       )}

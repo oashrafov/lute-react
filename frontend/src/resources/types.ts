@@ -1,7 +1,14 @@
-export type Status = 0 | 1 | 2 | 3 | 4 | 5 | 98 | 99;
-export type HighlightType = "bg" | "text" | "solid" | "dashed" | "none";
+import { z } from "zod";
+import {
+  StatusSchema,
+  HighlightTypeSchema,
+  TextDirectionSchema,
+} from "./schemas";
+
+export type Status = z.infer<typeof StatusSchema>;
+export type HighlightType = z.infer<typeof HighlightTypeSchema>;
+export type TextDirection = z.infer<typeof TextDirectionSchema>;
 export type TextUnit = "sentence" | "paragraph" | "page";
-export type TextDirection = "ltr" | "rtl";
 export type View = "default" | "focus" | "edit";
 export type LocalStorageItem =
   | "Lute.view"

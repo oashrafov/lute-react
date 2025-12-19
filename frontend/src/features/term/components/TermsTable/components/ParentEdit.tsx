@@ -13,12 +13,8 @@ interface ParentEdit {
 }
 
 export function ParentEdit({ row, cell }: ParentEdit) {
-  const parentsList = row.original.parentsString
-    ? row.original.parentsString.split(",")
-    : [];
-
   const [search, setSearch] = useState("");
-  const [value, setValue] = useState(parentsList);
+  const [value, setValue] = useState(row.original.parents);
   const { data } = useQuery(
     query.termSuggestions(search, row.original.languageId)
   );

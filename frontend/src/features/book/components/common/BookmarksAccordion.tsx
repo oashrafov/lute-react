@@ -1,28 +1,35 @@
+import { useParams } from "@tanstack/react-router";
 import { Accordion, Stack, type AccordionProps } from "@mantine/core";
 import { BookmarkButton } from "./BookmarkButton";
-import type { PageBookmark } from "#book/api/types";
+import type { Bookmarks } from "#book/api/types";
 
 interface BookmarksAccordion extends AccordionProps {
-  bookmarks: PageBookmark;
+  bookmarks: Bookmarks;
 }
 
 export function BookmarksAccordion({
   bookmarks,
   ...props
 }: BookmarksAccordion) {
+  const { pageNum } = useParams({ from: "/books/$bookId/pages/$pageNum/" });
   return (
-    <Accordion variant="filled" miw={220} disableChevronRotation {...props}>
-      {Object.entries(bookmarks).map(([bookmarkPage, bookmarks]) => (
-        <Accordion.Item key={bookmarkPage} value={String(bookmarkPage)}>
-          <Accordion.Control fz="xs">Page {bookmarkPage}</Accordion.Control>
+    <Accordion
+      variant="filled"
+      miw={220}
+      disableChevronRotation
+      defaultValue={String(pageNum)}
+      {...props}>
+      {bookmarks.map(({ page, sentences }) => (
+        <Accordion.Item key={page} value={String(page)}>
+          <Accordion.Control fz="xs">Page {page}</Accordion.Control>
           <Accordion.Panel>
             <Stack gap={5} align="center">
-              {bookmarks.map((bookmark) => (
+              {sentences.map((sentence) => (
                 <BookmarkButton
-                  key={bookmark.id}
-                  id={bookmark.id}
-                  page={Number(bookmarkPage)}
-                  description={bookmark.description}
+                  key={sentence.id}
+                  id={sentence.id}
+                  page={page}
+                  description={sentence.description}
                 />
               ))}
             </Stack>

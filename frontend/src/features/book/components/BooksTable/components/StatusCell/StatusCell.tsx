@@ -28,21 +28,19 @@ export function StatusCell({ bookId }: { bookId: number }) {
 
   return (
     <Progress.Root size={16} radius={10} className={classes.bar}>
-      {Object.entries(data).map(
-        ([status, { wordCount, percentage }], index) => {
-          const msg = `${labels[status]}: ${percentage.toFixed(0)}% (${wordCount} words)`;
-          return (
-            percentage >= 1 && (
-              <Tooltip key={index} label={msg}>
-                <Progress.Section
-                  value={percentage}
-                  color={`var(--lute-color-highlight-status${status}`}
-                />
-              </Tooltip>
-            )
-          );
-        }
-      )}
+      {data.map(({ status, wordCount, percentage }, index) => {
+        const msg = `${labels[status]}: ${percentage.toFixed(0)}% (${wordCount} words)`;
+        return (
+          percentage >= 1 && (
+            <Tooltip key={index} label={msg}>
+              <Progress.Section
+                value={percentage}
+                color={`var(--lute-color-highlight-status${status}`}
+              />
+            </Tooltip>
+          )
+        );
+      })}
     </Progress.Root>
   );
 }

@@ -14,7 +14,7 @@ export function TranslationEdit({ row, cell }: TranslationEdit) {
   const [value, setValue] = useState(
     typeof cellValue === "string" ? cellValue : ""
   );
-  const img = row.original.image;
+  const img = row.original.imageSource;
   return (
     <>
       <Textarea

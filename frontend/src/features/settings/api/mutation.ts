@@ -13,7 +13,7 @@ export function useClearDemoData() {
         queryKey: bookQuery.all(),
       });
       await context.client.invalidateQueries({
-        queryKey: settingsQuery.init().queryKey,
+        queryKey: settingsQuery.globalData().queryKey,
       });
       notifications.show(demoDataCleared);
     },
@@ -25,7 +25,7 @@ export function useDeactivateDemoMode() {
     mutationFn: api.deactivateDemoMode,
     onSuccess: (_data, _variables, _onMutateResult, context) => {
       context.client.invalidateQueries({
-        queryKey: settingsQuery.init().queryKey,
+        queryKey: settingsQuery.globalData().queryKey,
       });
       notifications.show(demoDeactivated);
     },

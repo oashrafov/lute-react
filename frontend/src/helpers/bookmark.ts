@@ -13,12 +13,6 @@ export function handleBookmarkSentence(textitem: TextitemElement) {
   makeFlashing(textitems);
   clearAllFlashing();
 
-  // all_bookmarks = {
-  //   book_id: {
-  //     page_num: [{ sentence_id: 0, bookmark_description: "" }],
-  //   },
-  // };
-
   console.log(`POST sentence id: ${sentenceId} to db`);
 
   return { text: getTextContent(textitems), textitems };

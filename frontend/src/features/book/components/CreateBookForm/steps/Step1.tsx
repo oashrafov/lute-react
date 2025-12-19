@@ -1,6 +1,6 @@
 import { useController, useFormContext } from "react-hook-form";
 import { Center, Group } from "@mantine/core";
-import { UserLanguageSelect } from "#language/components/UserLanguageSelect/UserLanguageSelect";
+import { LanguageSelect } from "#language/components/LanguageSelect/LanguageSelect";
 import { OpenLanguageFormButton } from "../components/OpenLanguageFormButton";
 import type { CreateBookForm } from "#book/api/types";
 
@@ -12,7 +12,7 @@ export function Step1() {
 
   const {
     field: { onChange, value, ref, ...rest },
-  } = useController({ control, name: "language_id" });
+  } = useController({ control, name: "languageId" });
 
   function handleLanguageChange(id: string | null) {
     if (id) {
@@ -22,18 +22,18 @@ export function Step1() {
 
   return (
     <Center>
-      <UserLanguageSelect
+      <LanguageSelect
         onChange={handleLanguageChange}
-        value={String(value)}
+        value={value ? String(value) : ""}
         required
         withAsterisk
-        error={errors.language_id?.message}
+        error={errors.languageId?.message}
         {...rest}
         inputContainer={(input) => (
           <Group gap={5}>
             {input}
             <OpenLanguageFormButton
-              mb={errors.language_id?.message ? 5 : undefined}
+              mb={errors.languageId?.message ? 5 : undefined}
             />
           </Group>
         )}

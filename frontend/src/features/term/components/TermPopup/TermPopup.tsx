@@ -7,19 +7,17 @@ import { query } from "#term/api/query";
 import type { TermPopup } from "#term/api/types";
 
 interface TermPopupProps {
-  id: number | null;
+  id: number;
   children: ReactNode;
 }
 
 export function TermPopup({ children, id }: TermPopupProps) {
   const queryClient = useQueryClient();
   const [opened, { close, open }] = useDisclosure(false);
-  const [popupData, setPopupData] = useState<TermPopup>();
+  const [popupData, setPopupData] = useState<TermPopup | null>(null);
 
   async function fetchPopupData() {
-    if (id !== null) {
-      setPopupData(await queryClient.fetchQuery(query.popup(id)));
-    }
+    setPopupData(await queryClient.ensureQueryData(query.popup(id)));
   }
 
   return (

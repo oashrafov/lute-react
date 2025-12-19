@@ -44,7 +44,7 @@ export function BooksGridTopToolbar({
   onSetGlobalFilter,
   hasArchived,
 }: BooksGridTopToolbar) {
-  const { data: initial } = useSuspenseQuery(query.init());
+  const { data: globalData } = useSuspenseQuery(query.globalData());
 
   const shelfSelectData = [
     { label: "Show: Active", value: "active" },
@@ -136,7 +136,7 @@ export function BooksGridTopToolbar({
           onChange={(v) => setActiveLang(v ?? "")}
           placeholder="All languages"
           allowDeselect={false}
-          data={initial.languageChoices.map((language) => language.name)}
+          data={globalData.languageChoices.map((language) => language.name)}
           clearable
           w="100%"
         />

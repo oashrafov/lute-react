@@ -12,15 +12,23 @@ import { TextInput } from "#common/TextInput/TextInput";
 import { TagsInput } from "#common/TagsInput/TagsInput";
 import { FormButtons } from "#common/FormButtons/FormButtons";
 import { mutation } from "#book/api/mutation";
-import type { BooksListItem, EditAction } from "#book/api/types";
+import type { EditAction, EditBookForm } from "#book/api/types";
+import type { TextDirection } from "#resources/types";
 
-interface EditBookForm {
-  book: BooksListItem;
+interface EditBookFormProps {
+  book: EditBookForm;
+  textDirection: TextDirection;
   bookTags: string[];
   onCloseModal: () => void;
 }
 
-export function EditBookForm({ book, bookTags, onCloseModal }: EditBookForm) {
+export function EditBookForm({
+  book,
+  bookTags,
+  onCloseModal,
+  textDirection,
+}: EditBookFormProps) {
+  const { id, ...defaultValues } = book;
   const { mutate } = mutation.useEditBook();
   const [existingAudioName, setExistingAudioName] = useState(book.audioName);
 
@@ -29,35 +37,13 @@ export function EditBookForm({ book, bookTags, onCloseModal }: EditBookForm) {
     setValue,
     watch,
     handleSubmit: handleFormSubmit,
-  } = useForm({
-    defaultValues: {
-      title: book.title,
-      source_uri: book.source,
-      book_tags: book.tags,
-      audio_file: null,
-      audio_filename: book.audioName,
-    },
-  });
+  } = useForm<typeof defaultValues>({ defaultValues });
 
-  const hasAudioFile = !!watch("audio_file");
-
-  // const form = umf({
-  //   mode: "controlled",
-  //   initialValues: {
-  //     title: book.title,
-  //     source_uri: book.source,
-  //     book_tags: book.tags,
-  //     audio_file: undefined,
-  //   },
-  //   transformValues: (values) => ({
-  //     ...values,
-  //     audio_filename: existingAudioName,
-  //   }),
-  // });
+  const hasAudioFile = !!watch("audioFile");
 
   function handleClearAudio() {
     setExistingAudioName("");
-    setValue("audio_file", null);
+    setValue("audioFile", null);
   }
 
   function handleSubmit(data: EditAction) {
@@ -77,14 +63,14 @@ export function EditBookForm({ book, bookTags, onCloseModal }: EditBookForm) {
         name="title"
         control={control}
         label="Title"
-        wrapperProps={{ dir: book.textDirection }}
+        wrapperProps={{ dir: textDirection }}
         required
         withAsterisk
         leftSection={<IconHeading />}
       />
 
       <FileInput
-        name="audio_file"
+        name="audioFile"
         control={control}
         label="Audio file"
         description=".mp3, .m4a, .wav, .ogg, .opus"
@@ -108,14 +94,14 @@ export function EditBookForm({ book, bookTags, onCloseModal }: EditBookForm) {
       />
 
       <TextInput
-        name="source_uri"
+        name="source"
         control={control}
         label="Source URL"
         leftSection={<IconLink />}
       />
 
       <TagsInput
-        name="book_tags"
+        name="tags"
         control={control}
         label="Tags"
         data={bookTags}

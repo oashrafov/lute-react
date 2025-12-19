@@ -20,12 +20,25 @@
     "nextStepButtonLabel": "Next",
     "backButtonLabel": "Back",
     "reviewButtonLabel": "Review",
-    "languageNameLabel": "Language"
+    "languageNameLabel": "Language",
+
+    "error": {
+      "languageRequired": "A language must be selected",
+      "titleTooShort": "Title must be at least 1 character long",
+      "titleTooLong": "Title cannot be longer than 255 characters",
+      "textTooShort": "Text content must be at least 1 character long",
+      "invalidTextFile": "Valid file formats are: txt, epub, pdf, srt, vtt",
+      "invalidAudioFile": "Valid file formats are: mp3, m4a, wav, ogg, opus, aac, flac, webm",
+      "wordsPerPageTooLow": "There has to be at least 1 word per page",
+      "wordsPerPageTooHigh": "Can't add more than 1500 words per page",
+      "invalidSourceURL": "Invalid URL format",
+      "sourceURLTooLong": "URL length cannot be more than 1000 characters"
+    }
   },
   "language": {
     "dictionariesLabel": "Dictionaries",
     "pronunciationLabel": "Show pronunciation field",
-    "rtlLabel": "Is right-to-left",
+    "textDirectionLabel": "Text direction",
     "parseLabel": "Parse as",
     "charSubsLabel": "Character substitutions",
     "splitLabel": "Split sentences at",
@@ -58,6 +71,6 @@
     "pronunciationCharsLabel": "Pronunciation characters",
     "katakana": "Katakana",
     "hiragana": "Hiragana",
-    "romanji": "Romanji"
+    "romaji": "Romaji"
   }
 }

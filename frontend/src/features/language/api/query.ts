@@ -3,19 +3,18 @@ import { api } from "./api";
 
 export const query = {
   all: () => ["languages"],
-  allUser: () => [...query.all(), "user"],
-  allPredefined: () => [...query.all(), "predefined"],
-  allUserLangDetails: () => [...query.allUser(), "detail"],
-  allPredefinedLangDetails: () => [...query.allPredefined(), "detail"],
-  userLanguagesList: () =>
+  allPresets: () => [...query.all(), "preset"],
+  allDetails: () => [...query.all(), "detail"],
+  allPresetDetails: () => [...query.allPresets(), "detail"],
+  list: () =>
     queryOptions({
-      queryKey: [...query.allUser()],
-      queryFn: api.getUserLanguages,
+      queryKey: [...query.all()],
+      queryFn: api.getAll,
     }),
-  predefinedLanguagesList: () =>
+  presetsList: () =>
     queryOptions({
-      queryKey: [...query.allPredefined()],
-      queryFn: api.getPredefinedLanguages,
+      queryKey: [...query.allPresets()],
+      queryFn: api.getLanguagePresetNames,
       staleTime: Infinity,
     }),
   parsers: () =>
@@ -24,22 +23,27 @@ export const query = {
       queryFn: api.getParsers,
       staleTime: Infinity,
     }),
-  userLanguageDetail: (id?: number) =>
+  detail: (id: number) =>
     queryOptions({
-      queryKey: [...query.allUserLangDetails(), id],
-      queryFn:
-        id != null && id !== 0 ? () => api.getUserLanguage(id) : skipToken,
+      queryKey: [...query.allDetails(), id],
+      queryFn: () => api.getById(id),
       refetchOnWindowFocus: false,
     }),
-  predefinedLanguageDetail: (name?: string) =>
+  detailSkippable: (id?: number) =>
     queryOptions({
-      queryKey: [...query.allPredefinedLangDetails(), name],
-      queryFn: name ? () => api.getPredefinedLanguage(name) : skipToken,
+      queryKey: [...query.allDetails(), id],
+      queryFn: id != null && id > 0 ? () => api.getById(id) : skipToken,
+      refetchOnWindowFocus: false,
+    }),
+  presetDetail: (name?: string) =>
+    queryOptions({
+      queryKey: [...query.allPresetDetails(), name],
+      queryFn: name ? () => api.getLanguagePreset(name) : skipToken,
       staleTime: Infinity,
     }),
-  languageForm: () =>
+  form: () =>
     queryOptions({
-      queryKey: ["languageForm"],
+      queryKey: ["form"],
       queryFn: api.getFormValues,
     }),
 } as const;

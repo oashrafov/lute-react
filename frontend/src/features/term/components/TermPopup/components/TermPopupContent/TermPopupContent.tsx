@@ -20,11 +20,12 @@ export function TermPopupContent({ data }: TermPopupContent) {
 
       {data.pronunciation && <em>{data.pronunciation}</em>}
 
-      {Object.entries(data.images).map(([img, tooltip]) => (
-        <Tooltip key={img} label={tooltip}>
-          <Image fit="cover" w={150} h={150} src={`${BACKEND_URL}${img}`} />
-        </Tooltip>
-      ))}
+      {data.imageData &&
+        Object.entries(data.imageData).map(([img, tooltip]) => (
+          <Tooltip key={img} label={tooltip}>
+            <Image fit="cover" w={150} h={150} src={`${BACKEND_URL}${img}`} />
+          </Tooltip>
+        ))}
 
       {data.translation && (
         <Text mt="sm" dangerouslySetInnerHTML={{ __html: data.translation }} />

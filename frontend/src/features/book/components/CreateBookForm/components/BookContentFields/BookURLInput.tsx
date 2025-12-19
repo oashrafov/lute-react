@@ -17,29 +17,29 @@ export function BookURLInput() {
     clearErrors,
     formState: { errors },
   } = useFormContext<CreateBookForm>();
-  const hasImportURL = !!watch("importurl");
+  const hasImportURL = !!watch("importUrl");
   const { mutate, isPending } = mutation.useGenerateContentFromURL();
 
   function handlePopulateFromUrl() {
-    const url = getValues().importurl;
+    const url = getValues().importUrl;
     if (url) {
       mutate(url, { onSuccess: (data) => reset(data) });
-      setValue("importurl", "");
+      setValue("importUrl", "");
     }
   }
 
   const clearButton = hasImportURL && (
     <InputClearButton
       onClick={() => {
-        setValue("importurl", "");
-        clearErrors("importurl");
+        setValue("importUrl", "");
+        clearErrors("importUrl");
       }}
     />
   );
 
   return (
     <TextInput
-      name="importurl"
+      name="importUrl"
       control={control}
       label={t("importfromURLLabel")}
       leftSection={<IconWorldWww />}
@@ -49,16 +49,16 @@ export function BookURLInput() {
         <Group>
           {input}
           <Button
-            disabled={!hasImportURL || !!errors.importurl?.message}
+            disabled={!hasImportURL || !!errors.importUrl?.message}
             variant="filled"
-            mb={errors.importurl?.message ? 5 : undefined}
+            mb={errors.importUrl?.message ? 5 : undefined}
             loading={isPending}
             onClick={handlePopulateFromUrl}>
             {t("importLabel")}
           </Button>
         </Group>
       )}
-      error={errors.importurl?.message}
+      error={errors.importUrl?.message}
     />
   );
 }

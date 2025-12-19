@@ -16,12 +16,12 @@ export function BookFileInput() {
     formState: { errors },
   } = useFormContext<CreateBookForm>();
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
-  const hasTextFile = !!watch("text_file");
+  const hasTextFile = !!watch("textFile");
 
   const { mutate, isPending } = mutation.useParseContentFromFile();
 
   function handleParseFile() {
-    const file = getValues().text_file;
+    const file = getValues().textFile;
     if (file) {
       mutate(file, {
         onSuccess: (data) => {
@@ -34,15 +34,15 @@ export function BookFileInput() {
   const clearButton = hasTextFile && (
     <InputClearButton
       onClick={() => {
-        setValue("text_file", null);
-        clearErrors("text_file");
+        setValue("textFile", null);
+        clearErrors("textFile");
       }}
     />
   );
 
   return (
     <FileInput
-      name="text_file"
+      name="textFile"
       control={control}
       label={t("textFileLabel")}
       description=".txt, .epub, .pdf, .srt, .vtt"
@@ -59,17 +59,17 @@ export function BookFileInput() {
         <Group wrap="nowrap" align="flex-end">
           {input}
           <Button
-            disabled={!hasTextFile || !!errors.text_file?.message}
+            disabled={!hasTextFile || !!errors.textFile?.message}
             variant="filled"
             loading={isPending}
-            mb={errors.text_file?.message ? 5 : undefined}
+            mb={errors.textFile?.message ? 5 : undefined}
             style={{ flexShrink: 0 }}
             onClick={handleParseFile}>
             {t("importLabel")}
           </Button>
         </Group>
       )}
-      error={errors.text_file?.message}
+      error={errors.textFile?.message}
     />
   );
 }
