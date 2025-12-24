@@ -35,14 +35,15 @@ def get_terms():
     ids = json.loads(request.args.get("ids", "[]"))
     if ids:
         ids_str = ", ".join(map(str, ids))
-        parentsql = f"select WpParentWoID from wordparents where WpWoID in ({ids_str})"  # FIX - parent terms don't get filtered (for status specifically)
+        # FIX - parent terms don't get filtered (for status specifically)
+        parentsql = f"select WpParentWoID from wordparents where WpWoID in ({ids_str})"
         where.append(f" AND (WordID IN ({ids_str})) OR (WordID IN ({parentsql}))")
 
     fields = {
         "text": "WoText",
         "parents": "ParentText",
         "translation": "WoTranslation",
-        "language": "LgName",
+        "languageName": "LgName",
         "status": "StID",
         "createdAt": "WoCreated",
         "tags": "TagList",
@@ -135,13 +136,13 @@ def get_terms():
                 "languageId": row.LgID,
                 "textDirection": "rtl" if row.LgRightToLeft == 1 else "ltr",
                 "text": row.WoText,
-                "parents": row.ParentText.join(",") if row.ParentText else [],
+                "parents": row.ParentText.split(",") if row.ParentText else [],
                 "translation": row.WoTranslation or "",
                 "pronunciation": row.WoRomanization or "",
                 "status": row.StID,
                 "imageSource": row.WiSource or "",
                 "createdAt": row.WoCreated,
-                "tags": row.TagList.join(",") if row.TagList else [],
+                "tags": row.TagList.split(",") if row.TagList else [],
                 # "statusLabel": row.StText,
             }
         )
