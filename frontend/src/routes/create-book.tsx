@@ -1,13 +1,19 @@
-import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  stripSearchParams,
+  type SearchSchemaInput,
+} from "@tanstack/react-router";
 import { query as langQuery } from "#language/api/query";
 import { query as bookQuery } from "#book/api/query";
 import { CreateBookPage } from "#pages/CreateBookPage/CreateBookPage";
 
 interface Search {
+  step: number;
   langForm?: boolean;
 }
 
-const defaultSearch: Search = {
+const defaultSearch = {
+  step: 0,
   langForm: false,
 };
 
@@ -20,11 +26,11 @@ export const Route = createFileRoute("/create-book")({
       context.queryClient.ensureQueryData(langQuery.parsers()),
     ]);
   },
-  validateSearch: (search: Record<string, unknown>): Search => ({
-    langForm:
-      search.langForm !== undefined
-        ? Boolean(search.langForm)
-        : defaultSearch.langForm,
+  validateSearch: (
+    search: Record<string, unknown> & SearchSchemaInput
+  ): Search => ({
+    langForm: Boolean(search.langForm ?? defaultSearch.langForm),
+    step: Number(search.step ?? defaultSearch.step),
   }),
   search: {
     middlewares: [stripSearchParams(defaultSearch)],

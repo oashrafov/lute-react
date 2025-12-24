@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { getRouteApi } from "@tanstack/react-router";
 import { FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Stepper, Button, Group } from "@mantine/core";
@@ -8,9 +8,11 @@ import { Step2 } from "./steps/Step2";
 import { Step3 } from "./steps/Step3";
 import { StepCompleted } from "./steps/StepCompleted";
 import { BookCreatedModal } from "./components/BookCreatedModal";
-import type { CreateBookForm } from "#book/api/types";
 import { useCreateBookForm } from "./useCreateBookForm";
+import type { CreateBookForm } from "#book/api/types";
 import classes from "./CreateBookForm.module.css";
+
+const route = getRouteApi("/create-book");
 
 const fieldsByStep: Array<keyof CreateBookForm>[] = [
   ["languageId"],
@@ -20,23 +22,36 @@ const fieldsByStep: Array<keyof CreateBookForm>[] = [
 
 export function CreateBookForm() {
   const { t } = useTranslation("form", { keyPrefix: "newBook" });
-  const [currentStep, setCurrentStep] = useState(0);
+  const { step } = route.useSearch();
+  const navigate = route.useNavigate();
+
+  function setStep(step: number) {
+    navigate({ search: (prev) => ({ ...prev, step }) });
+  }
+
+  function setStepInDirection(delta: 1 | -1) {
+    const newStep = step + delta;
+    if (newStep <= 3 && newStep >= 0) {
+      setStep(newStep);
+    }
+  }
+
   const {
     methods,
     onSubmit,
     createBookMutation: { isSuccess, isPending, data, reset: resetMutation },
-  } = useCreateBookForm(() => setCurrentStep(0));
-  const currentFields = fieldsByStep[currentStep];
+  } = useCreateBookForm(() => setStep(0));
+  const currentFields = fieldsByStep[step];
 
   async function goToNextStep() {
     const valid = await methods.trigger(currentFields);
     if (valid) {
-      setCurrentStep((step) => (step < 3 ? step + 1 : step));
+      setStepInDirection(1);
     }
   }
 
   function goToPrevStep() {
-    setCurrentStep((step) => (step > 0 ? step - 1 : step));
+    setStepInDirection(-1);
     methods.clearErrors(currentFields);
   }
 
@@ -45,8 +60,8 @@ export function CreateBookForm() {
       <form id="create-book-form" onSubmit={onSubmit}>
         <FormProvider {...methods}>
           <Stepper
-            active={currentStep}
-            onStepClick={setCurrentStep}
+            active={step}
+            onStepClick={setStep}
             allowNextStepsSelect={false}
             styles={{ content: { paddingTop: 32 } }}
             classNames={{ stepLabel: classes.label, stepIcon: classes.icon }}>
@@ -67,12 +82,12 @@ export function CreateBookForm() {
       </form>
 
       <Group justify="center" mt="xl" gap={5}>
-        {currentStep <= 3 && (
+        {step <= 3 && step > 0 && (
           <Button variant="default" onClick={goToPrevStep} disabled={isSuccess}>
             {t("backButtonLabel")}
           </Button>
         )}
-        {currentStep === 3 && (
+        {step === 3 && (
           <Button
             form="create-book-form"
             type="submit"
@@ -82,11 +97,11 @@ export function CreateBookForm() {
             Create
           </Button>
         )}
-        {currentStep < 3 && (
+        {step < 3 && (
           <Button
             onClick={goToNextStep}
-            color={currentStep === 2 ? "orange.6" : undefined}>
-            {t(currentStep === 2 ? "reviewButtonLabel" : "nextStepButtonLabel")}
+            color={step === 2 ? "orange.6" : undefined}>
+            {t(step === 2 ? "reviewButtonLabel" : "nextStepButtonLabel")}
           </Button>
         )}
       </Group>
