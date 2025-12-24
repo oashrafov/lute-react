@@ -9,7 +9,6 @@ export function useParentTagsFieldOptionsQuery(
   existingParents: string[],
   languageId?: number
 ) {
-  console.log(search, languageId);
   const { data, isFetching } = useQuery(
     query.termSuggestions(search, languageId)
   );
