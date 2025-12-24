@@ -30,9 +30,9 @@ const PAGINATION = {
 
 const COLUMN_FILTER_FNS = {
   text: "contains",
-  parentsString: "contains",
+  parents: "contains",
   translation: "contains",
-  language: "contains",
+  languageName: "contains",
 };
 
 const COLUMN_FILTERS = [{ id: "status", value: [0, 6] }];
@@ -64,7 +64,7 @@ export function TermsTable() {
   const columns = useMemo(
     () =>
       columnDefinition(globalData.languageChoices, termTags, setColumnFilters),
-    [globalData.languageChoices, termTags]
+    [globalData, termTags]
   );
 
   const searchParams = new URLSearchParams({

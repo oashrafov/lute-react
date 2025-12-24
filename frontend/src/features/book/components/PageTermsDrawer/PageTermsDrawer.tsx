@@ -16,7 +16,7 @@ export function PageTermsDrawer() {
   return (
     <Drawer
       size="100%"
-      opened={Boolean(termIds && termIds.length > 0)}
+      opened={termIds.length > 0}
       onClose={handleClose}
       title={`Terms for page ${pageNum}`}
       styles={{ title: { fontWeight: 500 } }}

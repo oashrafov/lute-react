@@ -2,6 +2,7 @@ import {
   createFileRoute,
   redirect,
   stripSearchParams,
+  type SearchSchemaInput,
 } from "@tanstack/react-router";
 import type { View } from "#resources/types";
 import { BookPage } from "#pages/BookPage";
@@ -13,15 +14,15 @@ import { query as termQuery } from "#term/api/query";
 type TermIds = number[];
 
 interface Search {
-  view?: View;
-  termIds?: TermIds;
-  sentenceId?: number;
+  view: View;
+  termIds: number[];
+  sentenceId: number;
 }
 
 const defaultSearch = {
   view: "default" as View,
-  termIds: undefined,
-  sentenceId: undefined,
+  termIds: [],
+  sentenceId: -1,
 };
 
 export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
@@ -78,16 +79,12 @@ export const Route = createFileRoute("/books/$bookId/pages/$pageNum/")({
 
     return [bookData, ...responses];
   },
-  validateSearch: (search: Record<string, unknown>): Search => ({
-    view: (search?.view as View) ?? defaultSearch.view,
-    termIds:
-      search.termIds !== undefined
-        ? (search.termIds as TermIds)
-        : defaultSearch.termIds,
-    sentenceId:
-      search.sentenceId !== undefined
-        ? Number(search.sentenceId)
-        : defaultSearch.sentenceId,
+  validateSearch: (
+    search: Record<string, unknown> & SearchSchemaInput
+  ): Search => ({
+    view: (search.view as View) ?? defaultSearch.view,
+    termIds: (search.termIds as TermIds) ?? defaultSearch.termIds,
+    sentenceId: Number(search.sentenceId ?? defaultSearch.sentenceId),
   }),
   search: {
     middlewares: [stripSearchParams(defaultSearch)],

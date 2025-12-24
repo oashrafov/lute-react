@@ -46,7 +46,7 @@ export function TheTextContainer() {
   );
 
   useEffect(() => {
-    if (sentenceId && sentenceId !== -1) {
+    if (sentenceId !== -1) {
       makeBookmarked(scrollSentenceIntoView(sentenceId)); // class is removed with mouseOut
     }
   }, [sentenceId]);
