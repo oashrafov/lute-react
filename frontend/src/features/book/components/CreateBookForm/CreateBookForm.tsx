@@ -1,16 +1,11 @@
 import { getRouteApi } from "@tanstack/react-router";
 import { FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Stepper, Button, Group } from "@mantine/core";
-import { IconBook2, IconFileSettings, IconLanguage } from "@tabler/icons-react";
-import { Step1 } from "./steps/Step1";
-import { Step2 } from "./steps/Step2";
-import { Step3 } from "./steps/Step3";
-import { StepCompleted } from "./steps/StepCompleted";
+import { Button, Group } from "@mantine/core";
 import { BookCreatedModal } from "./components/BookCreatedModal";
 import { useCreateBookForm } from "./useCreateBookForm";
+import { CreateBookFormStepper } from "./components/CreateBookFormStepper/CreateBookFormStepper";
 import type { CreateBookForm } from "#book/api/types";
-import classes from "./CreateBookForm.module.css";
 
 const route = getRouteApi("/create-book");
 
@@ -59,25 +54,7 @@ export function CreateBookForm() {
     <>
       <form id="create-book-form" onSubmit={onSubmit}>
         <FormProvider {...methods}>
-          <Stepper
-            active={step}
-            onStepClick={setStep}
-            allowNextStepsSelect={false}
-            styles={{ content: { paddingTop: 32 } }}
-            classNames={{ stepLabel: classes.label, stepIcon: classes.icon }}>
-            <Stepper.Step label={t("step1Label")} icon={<IconLanguage />}>
-              <Step1 />
-            </Stepper.Step>
-            <Stepper.Step label={t("step2Label")} icon={<IconBook2 />}>
-              <Step2 />
-            </Stepper.Step>
-            <Stepper.Step label={t("step3Label")} icon={<IconFileSettings />}>
-              <Step3 />
-            </Stepper.Step>
-            <Stepper.Completed>
-              <StepCompleted />
-            </Stepper.Completed>
-          </Stepper>
+          <CreateBookFormStepper active={step} onStepClick={setStep} />
         </FormProvider>
       </form>
 

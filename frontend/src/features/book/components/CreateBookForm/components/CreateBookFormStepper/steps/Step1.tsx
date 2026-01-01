@@ -1,7 +1,7 @@
 import { useController, useFormContext } from "react-hook-form";
 import { Center, Group } from "@mantine/core";
 import { LanguageSelect } from "#language/components/LanguageSelect/LanguageSelect";
-import { OpenLanguageFormButton } from "../components/OpenLanguageFormButton";
+import { OpenLanguageFormButton } from "../../OpenLanguageFormButton";
 import type { CreateBookForm } from "#book/api/types";
 
 export function Step1() {

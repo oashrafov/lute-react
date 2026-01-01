@@ -1,5 +1,5 @@
 import { Group } from "@mantine/core";
-import { NewBookReviewInfo } from "../components/NewBookReviewInfo/NewBookReviewInfo";
+import { NewBookReviewInfo } from "../../NewBookReviewInfo/NewBookReviewInfo";
 
 export function StepCompleted() {
   return (
