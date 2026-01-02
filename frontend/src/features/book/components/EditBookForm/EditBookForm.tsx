@@ -42,7 +42,7 @@ export function EditBookForm({
   const hasAudioFile = !!watch("audioFile");
 
   function handleClearAudio() {
-    setExistingAudioName("");
+    setExistingAudioName(null);
     setValue("audioFile", null);
   }
 

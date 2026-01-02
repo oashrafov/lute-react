@@ -29,16 +29,16 @@ const BookSchema = z.object({
     .string()
     .min(1, "Title must be at least 1 character long")
     .max(255, "Title cannot be longer than 255 characters"),
-  source: z.url().max(1000).or(z.literal("")),
+  source: z.url().max(1000).nullable(),
   tags: z.array(z.string()),
   audio: AudioSchema.nullable(),
-  audioName: AudioSchema.shape.name.or(z.literal("")),
+  audioName: AudioSchema.shape.name.nullable(),
   textDirection: TextDirectionSchema,
   pageCount: z.int().positive(),
   currentPage: z.int().positive(),
   wordCount: z.int().positive(),
   unknownPercent: z.float32().nullable(),
-  lastRead: z.string(),
+  lastRead: z.string().nullable(),
   languageName: z.string().nonempty(),
   isCompleted: z.boolean(),
   isArchived: z.boolean(),
@@ -76,8 +76,8 @@ export const BooksListItemSchema = BookDataBaseSchema.extend(
 );
 
 const WordTextitemBaseSchema = z.object({
-  wordId: z.int(),
-  status: StatusSchema.nullable(),
+  wordId: z.int().nullable(), // non processed words won't have id initially
+  status: StatusSchema,
   languageId: z.int().positive(),
 });
 
@@ -110,9 +110,9 @@ export const WordTextitemSchema = z.object({
 export const TextitemSchema = z.discriminatedUnion("isWord", [
   TextitemBaseSchema.extend({
     isWord: z.literal(false),
-    wordId: WordTextitemBaseSchema.shape.wordId.nullable(),
-    languageId: WordTextitemBaseSchema.shape.languageId.nullable(),
-    status: WordTextitemBaseSchema.shape.status,
+    wordId: z.literal(null),
+    languageId: z.literal(null),
+    status: z.literal(null),
   }),
   WordTextitemSchema,
 ]);
@@ -154,7 +154,7 @@ export const CreateBookResponseSchema = BookSchema.pick({
 export const EditBookResponseSchema = BookSchema.pick({
   id: true,
   title: true,
-}).extend({ archivedCount: z.int().nonnegative() });
+}).extend({ archivedCount: z.int().nonnegative().optional() });
 
 export const DeleteBookResponseSchema = BookSchema.pick({
   title: true,

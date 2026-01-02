@@ -15,7 +15,7 @@ export const SettingsFormSchema = z.object({
   termPopupPromoteParentTranslation: z.boolean(),
   termPopupShowComponents: z.boolean(),
   japaneseScript: z.enum(["hiragana", "katakana", "romaji"]),
-  mecabPath: z.string(),
+  mecabPath: z.string().nullable(),
 });
 
 export const AppInfoSchema = z.object({

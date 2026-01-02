@@ -157,7 +157,7 @@ def get_books():
         limit = f" LIMIT {size} OFFSET {start}"
 
     realbase = f"({base_sql}) realbase".replace("\n", " ")
-    filtered = f"SELECT COUNT(*) FROM {realbase} {" ".join(where)}"
+    filtered = f"SELECT COUNT(*) FROM {realbase} {' '.join(where)}"
     archived = """
                 SELECT COUNT(*) AS ArchivedBookCount
                 FROM books
@@ -173,7 +173,7 @@ def get_books():
     total_count = db.session.execute(SQLText(total)).scalar()
     active_count = total_count - archived_count
 
-    final_query = f"{base_sql} {" ".join(where)} {order_by} {limit}"
+    final_query = f"{base_sql} {' '.join(where)} {order_by} {limit}"
     results = db.session.execute(SQLText(final_query)).fetchall()
 
     books_list = []
@@ -212,7 +212,7 @@ def get_book(bookid):
     book_dict = {
         "id": book.id,
         "title": book.title,
-        "source": book.source_uri,
+        "source": book.source_uri or None,
         "pageCount": book.page_count,
         "currentPage": page_num,
         "languageId": book.language.id,
@@ -405,7 +405,11 @@ def get_audio(bookid):
     except FileNotFoundError:
         return (
             jsonify(
-                {"error": f"Audio file not found: {fname.rsplit('useraudio\\')[-1]}"}
+                {
+                    "error": "Audio file not found: {}".format(
+                        fname.rsplit("useraudio\\")[-1]
+                    )
+                }
             ),
             404,
         )
@@ -502,8 +506,8 @@ def _book_row_to_dict(row):
         "languageName": row.LgName,
         "languageId": row.BkLgID,
         "textDirection": "rtl" if row.LgRightToLeft == 1 else "ltr",
-        "source": row.BkSourceURI or "",
-        "audioName": row.BkAudioFilename or "",
+        "source": row.BkSourceURI or None,
+        "audioName": row.BkAudioFilename or None,
         "title": row.BkTitle,
         "wordCount": row.WordCount,
         "pageCount": row.PageCount,

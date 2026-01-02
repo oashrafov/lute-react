@@ -120,8 +120,8 @@ def get_terms():
             FROM words
             """
 
-    filtered = f"SELECT COUNT(*) FROM {realbase} {" ".join(where)}"
-    final_query = f"{terms_base_sql} {" ".join(where)} {order_by} {limit}"
+    filtered = f"SELECT COUNT(*) FROM {realbase} {' '.join(where)}"
+    final_query = f"{terms_base_sql} {' '.join(where)} {order_by} {limit}"
 
     filtered_count = db.session.execute(SQLText(filtered)).scalar()
     total_count = db.session.execute(SQLText(total)).scalar()

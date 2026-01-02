@@ -61,6 +61,7 @@ async function request<T extends z.ZodType>(
   const parsed = responseSchema.safeParse(await response.json());
   if (!parsed.success) {
     console.log(parsed.error.message);
+    console.trace("trace");
     throw new Error(parsed.error.message);
   }
 
