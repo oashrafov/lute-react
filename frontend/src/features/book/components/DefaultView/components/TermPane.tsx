@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Box, LoadingOverlay } from "@mantine/core";
 import { TranslationPane } from "./TranslationPane/TranslationPane";
+import { EmptyTermPane } from "./EmptyTermPane/EmptyTermPane";
 import { PageSpinner } from "#common/PageSpinner/PageSpinner";
 import { useTermQuery } from "#term/hooks/useTermQuery";
 import { useActiveTermContext } from "#term/hooks/useActiveTermContext";
@@ -23,10 +24,14 @@ export function TermPane() {
   const showThemeForm = themeForm.isOpen;
   const showTranslationPane = isTermActive && !showThemeForm;
   const showBulkTermForm = isSelectionMode && !showThemeForm;
+  const isEmpty = !(showTranslationPane || showBulkTermForm || showThemeForm);
 
   return (
     <Box pos="relative" h="100%">
       <LoadingOverlay visible={isFetching} />
+
+      {isEmpty && <EmptyTermPane />}
+
       {showTranslationPane && <TranslationPane term={term} />}
 
       {showBulkTermForm && (
