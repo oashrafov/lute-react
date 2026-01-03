@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { DictionaryBars } from "./DictionaryBars";
 import { AddDictionaryButton } from "./AddDictionaryButton";
 import type { Dictionary, LanguageForm } from "#language/api/types";
-
 const emptyDictionary: Dictionary = {
   id: null,
   usedFor: "terms",
@@ -24,7 +23,6 @@ export function Dictionaries({ control }: Dictionaries) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "dictionaries",
-    keyName: "key",
   });
   function handleAddDictionary() {
     append(emptyDictionary);
