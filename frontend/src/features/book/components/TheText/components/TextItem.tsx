@@ -6,12 +6,13 @@ export const TextItem = forwardRef<
   HTMLSpanElement,
   ComponentPropsWithoutRef<"span"> & { data: Textitem }
 >(function TextItem(props, ref) {
-  const { data, ...restProps } = props;
+  const { data, id, className, ...restProps } = props;
 
   const classes =
     "textitem" +
     (data.isWord ? ` ${TEXTITEM_CLASS.word}` : "") +
-    (data.isOverlapped ? ` ${TEXTITEM_CLASS.overlapped}` : "");
+    (data.isOverlapped ? ` ${TEXTITEM_CLASS.overlapped}` : "") +
+    (className ? ` ${className}` : "");
 
   return (
     <span

@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { cloneElement, useState, type ReactElement } from "react";
 import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import type { TermPopup } from "#term/api/types";
 
 interface TermPopupProps {
   id: number;
-  children: ReactNode;
+  children: ReactElement;
 }
 
 export function TermPopup({ children, id }: TermPopupProps) {
@@ -19,6 +19,12 @@ export function TermPopup({ children, id }: TermPopupProps) {
   async function fetchPopupData() {
     setPopupData(await queryClient.ensureQueryData(query.popup(id)));
   }
+
+  const textitem = cloneElement(children, {
+    onMouseEnter: open,
+    onMouseLeave: close,
+    onContextMenu: close,
+  });
 
   return (
     <Popover
@@ -35,11 +41,7 @@ export function TermPopup({ children, id }: TermPopupProps) {
       shadow="md"
       opened={opened}
       onOpen={fetchPopupData}>
-      <Popover.Target>
-        <span onMouseEnter={open} onMouseLeave={close} onContextMenu={close}>
-          {children}
-        </span>
-      </Popover.Target>
+      <Popover.Target>{textitem}</Popover.Target>
       <Popover.Dropdown hidden={!popupData} style={{ pointerEvents: "none" }}>
         {popupData && <TermPopupContent data={popupData} />}
       </Popover.Dropdown>

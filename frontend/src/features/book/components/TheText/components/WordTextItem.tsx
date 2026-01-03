@@ -13,15 +13,18 @@ interface WordTextItemProps extends ComponentProps<typeof TextItem> {
 }
 
 export function WordTextItem({ data, ...props }: WordTextItemProps) {
-  return (
-    <TermPopup id={data.wordId}>
-      <TextItem
-        {...props}
-        data={data}
-        onMouseDown={handleMouseDown}
-        onMouseOver={handleMouseOver}
-        onMouseOut={handleMouseOut}
-      />
-    </TermPopup>
+  const textitem = (
+    <TextItem
+      {...props}
+      data={data}
+      onMouseDown={handleMouseDown}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+    />
+  );
+  return data.wordId ? (
+    <TermPopup id={data.wordId}>{textitem}</TermPopup>
+  ) : (
+    textitem
   );
 }
