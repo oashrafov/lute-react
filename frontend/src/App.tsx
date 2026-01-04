@@ -18,7 +18,7 @@ import "mantine-react-table/styles.css";
 import "./styles/index.css";
 import "./styles/highlight.css";
 import { GlobalContextProvider } from "./store/globalContext";
-import { AppInfo } from "./components/Modals/AppInfo";
+import { AppInfo } from "./components/AppInfo/AppInfo";
 import { ErrorPage } from "./pages/ErrorPage/ErrorPage";
 import { routeTree } from "./routeTree.gen";
 

@@ -1,9 +1,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Stack, Text } from "@mantine/core";
+import { Code, Group, Stack, Text } from "@mantine/core";
 import { query } from "#settings/api/query";
+import { DockerPathInfo } from "./DockerPathInfo";
 
 export function AppInfo() {
   const { data } = useSuspenseQuery(query.appInfo());
+
   return (
     <>
       <Text>
@@ -13,19 +15,15 @@ export function AppInfo() {
         <b>Version</b>: {data.version}
       </Text>
       <Text>
-        <b>Data path</b>: {data.luteDbDirectory}
+        <b>Data path</b>:{" "}
+        <Group display="inline-flex" gap={5}>
+          <Code fz="sm">{data.luteDbDirectory}</Code>
+          {data.isDocker && <DockerPathInfo />}
+        </Group>
       </Text>
       <Text>
-        <b>Database</b>: {data.luteDb}
+        <b>Database</b>: <Code fz="sm">{data.luteDb}</Code>
       </Text>
-      {data.isDocker && (
-        <Text>
-          <em>
-            Note these are paths in your container, not on the host. You mounted
-            host paths when you started the container.
-          </em>
-        </Text>
-      )}
 
       <Stack mt="md" gap={0}>
         <Text>
