@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { InputClearButton, Text, Tooltip } from "@mantine/core";
 import { useForm } from "react-hook-form";
 import {
@@ -14,20 +15,20 @@ import { FormButtons } from "#common/FormButtons/FormButtons";
 import { mutation } from "#book/api/mutation";
 import type { EditAction, EditBookForm } from "#book/api/types";
 import type { TextDirection } from "#resources/types";
+import { query } from "#settings/api/query";
 
 interface EditBookFormProps {
   book: EditBookForm;
   textDirection: TextDirection;
-  bookTags: string[];
-  onCloseModal: () => void;
+  onAction: () => void;
 }
 
 export function EditBookForm({
   book,
-  bookTags,
-  onCloseModal,
+  onAction,
   textDirection,
 }: EditBookFormProps) {
+  const { data: globalData } = useSuspenseQuery(query.globalData());
   const { id, ...defaultValues } = book;
   const { mutate } = mutation.useEditBook();
   const [existingAudioName, setExistingAudioName] = useState(book.audioName);
@@ -48,7 +49,7 @@ export function EditBookForm({
 
   function handleSubmit(data: EditAction) {
     mutate({ id: book.id, data: data });
-    onCloseModal();
+    onAction();
   }
 
   return (
@@ -104,11 +105,11 @@ export function EditBookForm({
         name="tags"
         control={control}
         label="Tags"
-        data={bookTags}
+        data={globalData.bookTags}
         leftSection={<IconTags />}
       />
 
-      <FormButtons discardCallback={onCloseModal} />
+      <FormButtons discardCallback={onAction} />
     </form>
   );
 }

@@ -1,6 +1,6 @@
-import { memo, useMemo, useState } from "react";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { Box, Modal, SegmentedControl } from "@mantine/core";
+import { memo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Box, SegmentedControl } from "@mantine/core";
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -12,17 +12,16 @@ import {
 } from "mantine-react-table";
 import type { RowPinningState, Updater } from "@tanstack/react-table";
 import { IconPin, IconPinnedOff } from "@tabler/icons-react";
+import { EditBookModal } from "./components/EditBookModal";
 import { EmptyRow } from "#common/EmptyRow/EmptyRow";
 import { TableTopToolbar } from "#common/TableTopToolbar/TableTopToolbar";
 import { TableTopToolbarDefaultItems } from "#common/TableTopToolbarDefaultItems/TableTopToolbarDefaultItems";
-import { EditBookForm } from "../EditBookForm/EditBookForm";
 import { BookActions } from "./components/BookActions";
 import { getDefaultTableOptions } from "#resources/table-options-default";
-import { columnDefinition } from "./columnDefinition";
+import { useColumnDefinition } from "./columnDefinition";
 import { setLocalStorageItem, getFromLocalStorage } from "#helpers/general";
 import { TABLE_PAGE_SIZE } from "#resources/constants";
-import { query as settingsQuery } from "#settings/api/query";
-import { query as bookQuery } from "#book/api/query";
+import { query } from "#book/api/query";
 import type { BooksListItem } from "#book/api/types";
 import type { Shelf } from "#book/resources/types";
 
@@ -48,7 +47,6 @@ const COLUMN_FILTER_FNS = {
 };
 
 export const BooksTable = memo(function BooksTable() {
-  const { data: globalData } = useSuspenseQuery(settingsQuery.globalData());
   const [editedRow, setEditedRow] = useState<MRT_Row<BooksListItem> | null>(
     null
   );
@@ -74,17 +72,7 @@ export const BooksTable = memo(function BooksTable() {
   const [columnFilterFns, setColumnFilterFns] =
     useState<MRT_ColumnFilterFnsState>(COLUMN_FILTER_FNS);
 
-  const columns = useMemo(
-    () =>
-      columnDefinition(
-        globalData.languageChoices,
-        globalData.bookTags,
-        setColumnFilters,
-        setEditedRow,
-        setShelf
-      ),
-    [globalData.languageChoices, globalData.bookTags]
-  );
+  const columns = useColumnDefinition(setColumnFilters, setEditedRow, setShelf);
 
   const searchParams = new URLSearchParams({
     shelf: shelf,
@@ -97,7 +85,7 @@ export const BooksTable = memo(function BooksTable() {
     sorting: JSON.stringify(sorting ?? []),
   });
 
-  const { data: books } = useQuery(bookQuery.list(searchParams.toString()));
+  const { data: books } = useQuery(query.list(searchParams.toString()));
 
   const table = useMantineReactTable({
     ...defaultOptions,
@@ -184,20 +172,11 @@ export const BooksTable = memo(function BooksTable() {
   return (
     <>
       <MantineReactTable table={table} />
-      <Modal
+      <EditBookModal
         opened={!!editedRow}
+        book={editedRow && editedRow.original}
         onClose={() => setEditedRow(null)}
-        title="Edit book"
-        styles={{ title: { fontSize: "1.1rem", fontWeight: 600 } }}>
-        {editedRow && (
-          <EditBookForm
-            book={{ ...editedRow.original, audioFile: null }}
-            textDirection={editedRow.original.textDirection}
-            bookTags={globalData.bookTags}
-            onCloseModal={() => setEditedRow(null)}
-          />
-        )}
-      </Modal>
+      />
     </>
   );
 });
